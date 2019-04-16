@@ -117,15 +117,10 @@ public class WebServer extends HTTPServer {
 
     }
 
-    public WebServer(int port) {
-        this();
-        configuration.put(PORT_KEY, port);
-    }
-
-    public WebServer(String hostname, int port) {
-        this();
+    public void start(String hostname, int port) throws IOException {
         configuration.put(HOST_KEY, hostname);
         configuration.put(PORT_KEY, port);
+        start();
     }
 
     public File getDocumentRoot() {

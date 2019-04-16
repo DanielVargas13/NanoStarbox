@@ -59,10 +59,6 @@ var templateMimes = ["text/html"];
 
 var server = new JavaAdapter(WebServer, {
 
-blackListDirectory: function(file) {
-  return false;
-},
-
 serveFile: function(file, mimeType, httpSession) {
 
     var magic = server.getMimeTypeResponse(file, mimeType, httpSession);
@@ -87,9 +83,9 @@ serveFile: function(file, mimeType, httpSession) {
 
 }
 
-}, "localhost", 8080);
+});
 
-server.setDocumentRoot("sample/site");
+//server.setDocumentRoot("sample/site");
 server.staticIndexFiles.add("index.js");
 
 server.registerMimeTypeDriver("javascript/x-nano-starbox-servlet",
@@ -104,7 +100,7 @@ server.registerMimeTypeDriver("javascript/x-nano-starbox-servlet",
 
 server.makeSecure(new File("sample/Starbox.jks"), "Starbox");
 
-server.start();
+server.start("localhost", 8080);
 
 function reload() {
     server.stop();
