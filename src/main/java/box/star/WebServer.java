@@ -6,6 +6,7 @@ import box.star.io.protocols.http.HTTPServer;
 import box.star.io.protocols.http.IHTTPSession;
 import box.star.io.protocols.http.response.Response;
 import box.star.io.protocols.http.response.Status;
+import box.star.io.store.Configuration;
 import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
@@ -33,23 +34,40 @@ public class WebServer extends HTTPServer {
         return timer.createAlarm(time, callback, parameter);
     }
 
-    public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
-    public List<String> staticIndexFiles = new ArrayList<>(10);
-    public List<MimeTypeReader> mimeTypeReaders = new ArrayList<>(10);
+    public MimeTypeMap getMimeTypeMap() {
+        return (MimeTypeMap) configuration.get("mimeTypeMap");
+    }
 
-    public Stack<String> templateMimeTypes = new Stack<>();
+    public Stack<String> getStaticIndexFiles() {
+        return (Stack<String>) configuration.get("staticIndexFiles");
+    }
 
-    public Map<File, Template> templateCache = new HashMap<>();
+    public Stack<MimeTypeReader> getMimeTypeReaders() {
+        return (Stack<MimeTypeReader>) configuration.get("mimeTypeReaders");
+    }
+
+    public Stack<String> getTemplateMimeTypes() {
+        return (Stack<String>)configuration.get("templateMimeTypes");
+    }
+
+    public Hashtable<File, Template> getTemplateCache() {
+        return (Hashtable<File, Template>) configuration.get("templateCache");
+    }
+
+    public void addStaticIndexFile(String filename) {
+        getStaticIndexFiles().push(filename);
+    }
 
     public void addTemplateMimeType(String mimeType) {
-        templateMimeTypes.push(mimeType);
+        getTemplateMimeTypes().push(mimeType);
     }
 
     public boolean isTemplateMimeType(String mimeType) {
-        return templateMimeTypes.contains(mimeType);
+        return getTemplateMimeTypes().contains(mimeType);
     }
 
     public Template getTemplate(File source) {
+        Hashtable<File, Template> templateCache = getTemplateCache();
         if (templateCache.containsKey(source)) {
             return templateCache.get(source);
         } else {
@@ -116,6 +134,16 @@ public class WebServer extends HTTPServer {
 
     public WebServer() {
 
+        Stack<String> staticIndexFiles;
+
+        configuration.put("mimeTypeMap", new MimeTypeMap());
+        configuration.put("staticIndexFiles", staticIndexFiles = new Stack<>());
+        configuration.put("mimeTypeReaders", new Stack<>());
+        configuration.put("templateMimeTypes", new Stack<>());
+        configuration.put("templateCache", new Hashtable<>());
+
+        configuration.put("documentRoot", new File("."));
+
         // this field is public...
         staticIndexFiles.add("index.html");
         staticIndexFiles.add("index.htm");
@@ -123,9 +151,7 @@ public class WebServer extends HTTPServer {
 
         addTemplateMimeType(MIME_HTML);
 
-        configuration.put("documentRoot", new File("."));
-
-        mimeTypeReaders.add(new MimeTypeReader() {
+        getMimeTypeReaders().add(new MimeTypeReader() {
             @Override
             public String getMimeTypeMagic(RandomAccessFile data) {
                 String line;
@@ -171,7 +197,7 @@ public class WebServer extends HTTPServer {
     }
 
     public String getFileExtensionMimeType(String extension) {
-        return mimeTypeMap.get(extension);
+        return getMimeTypeMap().get(extension);
     }
 
     public String getFileExtension(File file) {
@@ -179,7 +205,7 @@ public class WebServer extends HTTPServer {
     }
 
     public String getFileExtension(String path) {
-        return mimeTypeMap.getFileExtension(path);
+        return getMimeTypeMap().getFileExtension(path);
     }
 
     public String mimeTypeMagic(@NotNull File check) {
@@ -189,7 +215,7 @@ public class WebServer extends HTTPServer {
             RandomAccessFile stream = null;
             try {
                 stream = new RandomAccessFile(check, "r");
-                for(MimeTypeReader reader: mimeTypeReaders) {
+                for(MimeTypeReader reader: getMimeTypeReaders()) {
                     mimeType = reader.getMimeTypeMagic(stream);
                     if (mimeType != null) { break; }
                     stream.seek(0);
@@ -231,7 +257,7 @@ public class WebServer extends HTTPServer {
      * @return the server's response
      */
     public Response serveDirectory(File directory, IHTTPSession query) {
-        for(String indexType : staticIndexFiles) {
+        for(String indexType : getStaticIndexFiles()) {
             File test = new File(directory, indexType);
             if (test.exists()) return serveFile(test, mimeTypeMagic(test), query);
         }
@@ -272,11 +298,6 @@ public class WebServer extends HTTPServer {
      */
     public Response serveFile(File file, String mimeType, IHTTPSession query) {
 
-        // use a custom-mime-type-driver?
-        Response thisMagicMimeTypeResponse = getMimeTypeResponse(file, mimeType, query);
-        if (thisMagicMimeTypeResponse != null) return thisMagicMimeTypeResponse;
-
-        // hash-out the static site file.
         return staticFileResponse(file, mimeType, query);
 
     }

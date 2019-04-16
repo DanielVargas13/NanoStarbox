@@ -32,7 +32,7 @@ serveFile: function(file, mimeType, httpSession) {
         }
         var template = server.getTemplate(file);
         var documentPath = file.getPath();
-        return Response.newFixedLengthResponse(Status.OK, mimeType, template.fill({
+        return server.stringResponse(Status.OK, mimeType, template.fill({
             replace: function (data, record){
                 return evalObject(obj, data, documentPath, record.line);
             }
@@ -46,7 +46,7 @@ serveFile: function(file, mimeType, httpSession) {
 });
 
 server.setDocumentRoot("sample/site");
-server.staticIndexFiles.add("index.js");
+server.addStaticIndexFile("index.js");
 
 server.registerMimeTypeDriver("javascript/x-nano-starbox-servlet",
    new JavaAdapter(Packages.box.star.WebServer.MimeTypeDriver, {

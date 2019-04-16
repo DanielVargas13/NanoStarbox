@@ -711,6 +711,10 @@ public abstract class HTTPServer {
         return res;
     }
 
+    public Response stringResponse(Status status, String mimeType, String text) {
+        return Response.newFixedLengthResponse(status, mimeType, text);
+    }
+
     public Response blankResponse(Status status) {
         return plainTextResponse(status, "");
     }
