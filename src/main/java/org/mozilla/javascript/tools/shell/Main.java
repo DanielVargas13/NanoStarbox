@@ -458,7 +458,7 @@ public class Main
             ShellConsole console = global.getConsole(cs);
             if (filename == null) {
                 // print implementation version
-                console.println(cx.getImplementationVersion());
+                console.println("JavaScript/Starbox");
             }
 
             int lineno = 1;
