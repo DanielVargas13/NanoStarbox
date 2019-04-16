@@ -1,0 +1,34 @@
+
+Nano Starbox JavaScript Application Suite (C) 2019; Hypersoft-Systems: U.-S.-A.
+
+Java Class: box.star.js.Run
+Resource Topic: Help
+
+Section: Command Switches
+===============================================================================
+
+To specify a command, you must use a command switch specifier of the form:
+
+JavaScript:     command: data
+   Windows:     /command data
+      Unix:     --command data
+
+Command Switch Name   Details
+===================== =========================================================
+
+main                  Specify a script to run as main. Remaining parameters
+                      will be sent to the script's main(parameters) function,
+                      and the program will terminate when the script finishes.
+
+run                   Run a script file. Parameter processing will continue
+                      after execution.
+
+add-class-path        Add directory to Java Classpath. Parameter processing
+                      will continue after execution.
+
+optimization-level    Set the given number (-1 through 9) as the optimization
+                      level of the script interpreter.
+
+===============================================================================
+
+Example: main: script.js [parameters]

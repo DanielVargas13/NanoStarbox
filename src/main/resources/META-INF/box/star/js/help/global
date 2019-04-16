@@ -1,0 +1,52 @@
+
+JavaScript Global Environment Help
+
+Global Package          Java Package
+======================= ========================================================
+NanoStarbox             box.star
+--------------------------------------------------------------------------------
+
+Global Class            Java Class
+======================= ========================================================
+File                    java.io.File
+System                  java.lang.System
+--------------------------------------------------------------------------------
+
+Global Object/Property  Description
+======================= ========================================================
+[UNKNOWN]               Some values in this section may have no help available.
+--------------------------------------------------------------------------------
+
+Global Function         Description
+======================= ========================================================
+addClassPath(path)      Add the given directory to the system-class-path.
+
+importClass(clsPath)    Imports a single Java class.
+importPackage(pkgPath)  Imports a single Java package.
+
+getFileText(path)       Get the path-data as text.
+setFileText(path, data) Set the path-data as text.
+
+getResourceText(path)   Get archive resource.
+
+help([topic])           Display usage and help messages.
+
+loadScript(path)        Load and execute JavaScript source file.
+loadObject(o, path)     Load and execute JavaScript source file with this = o.
+
+evalObject(o, s)        Execute JavaScript s with this = o.
+
+print([expr ...])       Evaluate and print expressions.
+
+enterConsole()          Start the interactive-console.
+quit()                  Quit the interactive-console.
+
+spawn(function)         Runs the function on new thread; returns thread.
+spawn(script)           Runs the script on new thread; returns thread.
+
+sync(function, [o])     Creates a synchronized function. If o is not supplied,
+                        the object to synchronize with will be function's this,
+                        when called.
+
+version([number])       Get or set the JavaScript version number.
+--------------------------------------------------------------------------------
