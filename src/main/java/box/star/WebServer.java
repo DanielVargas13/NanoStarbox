@@ -6,6 +6,7 @@ import box.star.io.protocols.http.HTTPServer;
 import box.star.io.protocols.http.IHTTPSession;
 import box.star.io.protocols.http.response.Response;
 import box.star.io.protocols.http.response.Status;
+import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,28 @@ public class WebServer extends HTTPServer {
     public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
     public List<String> staticIndexFiles = new ArrayList<>(10);
     public List<MimeTypeReader> mimeTypeReaders = new ArrayList<>(10);
+
+    public Stack<String> templateMimeTypes = new Stack<>();
+
+    public Map<File, Template> templateCache = new HashMap<>();
+
+    public void addTemplateMimeType(String mimeType) {
+        templateMimeTypes.push(mimeType);
+    }
+
+    public boolean isTemplateMimeType(String mimeType) {
+        return templateMimeTypes.contains(mimeType);
+    }
+
+    public Template getTemplate(File source) {
+        if (templateCache.containsKey(source)) {
+            return templateCache.get(source);
+        } else {
+            Template data;
+            templateCache.put(source, data = new Template(source));
+            return data;
+        }
+    }
 
     @Override
     public void stop() {
@@ -97,6 +120,8 @@ public class WebServer extends HTTPServer {
         staticIndexFiles.add("index.html");
         staticIndexFiles.add("index.htm");
         staticIndexFiles.add("index.xml");
+
+        addTemplateMimeType(MIME_HTML);
 
         configuration.put("documentRoot", new File("."));
 

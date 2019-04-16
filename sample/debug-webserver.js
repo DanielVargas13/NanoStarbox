@@ -17,46 +17,6 @@ var
     System = java.lang.System
 ;
 
-var templateMimes = ["text/html"];
-
-    (function templateCache(global){
-
-    /*
-        Templates require text-pre-processing, so we cache them for latency.
-        Templates older than 10 minutes, are automatically unloaded.
-
-    */
-
-        var templateCache = {};
-        var oneMinute = 1000 * 60;
-        var tenMinutes = oneMinute * 10;
-
-        global.getTemplate = sync(function getTemplate(path) {
-
-            var file = path;
-            var data = templateCache[file.getPath()];
-            var stamp = Date.now();
-            if (data != undefined) {
-                if (file.exists() && file.lastModified() > data.lastDiskAccess) {
-                    data.template = new Template(file);
-                    data.lastDiskAccess = stamp;
-                }
-            } else {
-                data = (templateCache[file.getPath()] = {
-                    lastDiskAccess: stamp, template: new Template(file)
-                })
-            }
-            data.lastReadAccess = stamp;
-            return data.template;
-
-        }, templateCache);
-
-        function unloadTemplate(path) {
-            delete templateCache[path.getAbsolutePath()];
-        }
-
-    })(this);
-
 var server = new JavaAdapter(WebServer, {
 
 serveFile: function(file, mimeType, httpSession) {
@@ -64,13 +24,13 @@ serveFile: function(file, mimeType, httpSession) {
     var magic = server.getMimeTypeResponse(file, mimeType, httpSession);
     if (magic != null) return magic;
 
-    if (templateMimes.indexOf(""+mimeType) != -1) {
+    if (server.isTemplateMimeType(mimeType)) {
         var obj = {
           httpSession: httpSession,
           template: file,
           path: file.getParent()
         }
-        var template = getTemplate(file);
+        var template = server.getTemplate(file);
         var documentPath = file.getPath();
         return Response.newFixedLengthResponse(Status.OK, mimeType, template.fill({
             replace: function (data, record){
@@ -85,7 +45,7 @@ serveFile: function(file, mimeType, httpSession) {
 
 });
 
-//server.setDocumentRoot("sample/site");
+server.setDocumentRoot("sample/site");
 server.staticIndexFiles.add("index.js");
 
 server.registerMimeTypeDriver("javascript/x-nano-starbox-servlet",
