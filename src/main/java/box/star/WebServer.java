@@ -6,7 +6,7 @@ import box.star.io.protocols.http.HTTPServer;
 import box.star.io.protocols.http.IHTTPSession;
 import box.star.io.protocols.http.response.Response;
 import box.star.io.protocols.http.response.Status;
-import box.star.io.store.Configuration;
+
 import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
