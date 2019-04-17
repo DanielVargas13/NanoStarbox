@@ -1,5 +1,5 @@
 This project is managed with IntelliJ IDEA.
 
-Build the project to get started with this plugin.
+Build the NanoStarbox to get started with this plugin.
 
-Also check out the test.
+Then check out the test.
