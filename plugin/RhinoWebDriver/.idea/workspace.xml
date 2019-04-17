@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="02224f8b-91bf-416d-a5ab-2d76194ca40a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/main/java/box/star/WebServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,10 +17,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="579">
+            <state relative-caret-position="816">
               <caret line="48" selection-start-line="48" selection-end-line="48" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -31,11 +29,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
+            <state relative-caret-position="241">
+              <caret line="23" column="22" lean-forward="true" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,11 +71,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java" />
         <option value="$PROJECT_DIR$/test/box/star/js/README.MD" />
         <option value="$PROJECT_DIR$/README.MD" />
         <option value="$PROJECT_DIR$/src/box/star/js/RhinoTemplateFiller.java" />
         <option value="$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java" />
+        <option value="$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java" />
       </list>
     </option>
   </component>
@@ -249,34 +247,34 @@
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="RhinoWebDriverTest_p - 2019.04.16 at 19h 29m 28s.xml">
-      <configuration name="RhinoWebDriverTest.p" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 19h 58m 09s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 20h 54m 02s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 20h 56m 35s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 20h 57m 40s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 21h 05m 08s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 21h 05m 57s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 22h 40m 24s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="RhinoWebDriverTest - 2019.04.16 at 22h 40m 48s.xml">
       <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
     </history-entry>
     <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 12m 21s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 28m 01s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 30m 39s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 31m 22s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 31m 40s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 32m 47s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 33m 10s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 33m 32s.xml">
+      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 34m 38s.xml">
       <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -291,7 +289,7 @@
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32843137" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32843137" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -337,16 +335,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoTemplateFiller.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -361,8 +349,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
+        <state relative-caret-position="816">
           <caret line="48" selection-start-line="48" selection-end-line="48" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="23" column="22" lean-forward="true" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
