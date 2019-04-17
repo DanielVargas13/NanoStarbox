@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="trim">
+      <change afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/README.MD" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,20 +26,38 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+            <state relative-caret-position="68">
+              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4828">
+              <caret line="310" selection-start-line="310" selection-end-line="310" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
+        <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="242" selection-start-line="242" selection-end-line="242" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="34">
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -120,7 +140,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/box/star/js/fx/Run.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/shell/Global.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/resources/Messages.properties" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/Run.java" />
@@ -168,9 +187,10 @@
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/plugin/README.MD" />
         <option value="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
+        <option value="$PROJECT_DIR$/plugin/README.MD" />
+        <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" />
       </list>
     </option>
   </component>
@@ -207,55 +227,47 @@
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-              <item name="site" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-              <item name="site" type="462c0819:PsiDirectoryNode" />
-              <item name="rhino-web-driver" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -273,7 +285,7 @@
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553645091194" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/plugin/RhinoWebDriver" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -306,11 +318,11 @@
       <recent name="box.star.io.web" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\test\box\star\js" />
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\plugin\src" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site" />
       <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\sample\site\listing" />
-      <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\src\main\java" />
-      <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\src\main\java\box\star\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site\rhino-web-driver" />
@@ -450,7 +462,8 @@
     <MESSAGE value="touch-ups" />
     <MESSAGE value="housekeeping" />
     <MESSAGE value="trim" />
-    <option name="LAST_COMMIT_MESSAGE" value="trim" />
+    <MESSAGE value="correction" />
+    <option name="LAST_COMMIT_MESSAGE" value="correction" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -465,13 +478,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/GuiCallback.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sample/site/login.js" />
     <entry file="file://$PROJECT_DIR$/sample/site/javascript-test.js" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/js/ScriptHost.java" />
@@ -771,13 +777,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin/README.MD">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -799,18 +798,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+        <state relative-caret-position="68">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="242" selection-start-line="242" selection-end-line="242" />
+        <state relative-caret-position="4828">
+          <caret line="310" selection-start-line="310" selection-end-line="310" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>

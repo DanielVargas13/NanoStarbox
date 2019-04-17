@@ -1,0 +1,1 @@
+This project is managed with IntelliJ IDEA.
