@@ -11,7 +11,6 @@ import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
 
-import javax.activation.MimeType;
 import java.io.*;
 import java.util.*;
 
@@ -47,10 +46,6 @@ public class WebServer extends HTTPServer {
         return (Stack<MimeTypeReader>) configuration.get("mimeTypeReaders");
     }
 
-    public Stack<String> getTemplateMimeTypes() {
-        return (Stack<String>)configuration.get("templateMimeTypes");
-    }
-
     public Hashtable<File, Template> getTemplateCache() {
         return (Hashtable<File, Template>) configuration.get("templateCache");
     }
@@ -59,12 +54,8 @@ public class WebServer extends HTTPServer {
         getStaticIndexFiles().push(filename);
     }
 
-    public void addTemplateMimeType(String mimeType) {
-        getTemplateMimeTypes().push(mimeType);
-    }
-
     public boolean isTemplateMimeType(String mimeType) {
-        return getTemplateMimeTypes().contains(mimeType);
+        return getTemplateFillerTable().containsKey(mimeType);
     }
 
     public Template getTemplate(File source) {
@@ -152,7 +143,6 @@ public class WebServer extends HTTPServer {
         configuration.put("mimeTypeMap", new MimeTypeMap());
         configuration.put("staticIndexFiles", staticIndexFiles = new Stack<>());
         configuration.put("mimeTypeReaders", new Stack<>());
-        configuration.put("templateMimeTypes", new Stack<>());
         configuration.put("templateCache", new Hashtable<>());
         configuration.put("mimeTypeDriverTable", new Hashtable<>());
         configuration.put("templateFillerTable", new Hashtable<>());
@@ -163,8 +153,6 @@ public class WebServer extends HTTPServer {
         staticIndexFiles.add("index.html");
         staticIndexFiles.add("index.htm");
         staticIndexFiles.add("index.xml");
-
-        addTemplateMimeType(MIME_HTML);
 
         getMimeTypeReaders().add(new MimeTypeReader() {
             @Override

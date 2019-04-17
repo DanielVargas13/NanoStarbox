@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoTemplateFiller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,7 +20,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
@@ -32,32 +29,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="311" column="70" selection-start-line="311" selection-start-column="70" selection-end-line="311" selection-end-column="70" />
+            <state relative-caret-position="187">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plugin/README.MD">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -268,6 +247,24 @@
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+              <item name="site" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+              <item name="site" type="462c0819:PsiDirectoryNode" />
+              <item name="rhino-web-driver" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -499,7 +496,9 @@
     <MESSAGE value="trim" />
     <MESSAGE value="correction" />
     <MESSAGE value="notes" />
-    <option name="LAST_COMMIT_MESSAGE" value="notes" />
+    <MESSAGE value="tidy-interface" />
+    <MESSAGE value="favor new template cache" />
+    <option name="LAST_COMMIT_MESSAGE" value="favor new template cache" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -832,10 +831,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
+    <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
@@ -846,20 +845,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="311" column="70" selection-start-line="311" selection-start-column="70" selection-end-line="311" selection-end-column="70" />
+        <state relative-caret-position="187">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
