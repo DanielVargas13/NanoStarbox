@@ -48,21 +48,6 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         Context.exit();
     }
 
-    public String replace(String script, Template.SourceData record) {
-        Context cx = Context.enter();
-        try {
-            Script eval = cx.compileString(script,
-                    record.file, record.line, null);
-            Scriptable shell = getScriptShell(cx);
-            return (String) Context.jsToJava(eval.exec(cx, shell), String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
-        } finally {
-            Context.exit();
-        }
-    }
-
     @Override
     public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
         Context cx = Context.enter();
