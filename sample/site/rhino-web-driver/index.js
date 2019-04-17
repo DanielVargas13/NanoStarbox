@@ -1,4 +1,4 @@
-//->mime-type: javascript/x-nano-starbox-servlet
+//->mime-type: javascript/x-nano-starbox-rhino-servlet
 
 var Status = Packages.box.star.io.protocols.http.response.Status;
 var ByteArrayOutputStream = java.io.ByteArrayOutputStream;

@@ -11,9 +11,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template.TemplateFiller {
+public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template.Filler {
 
-    private static final String RHINO_DRIVER_KEY = "javascript/x-nano-starbox-servlet";
+    private static final String RHINO_DRIVER_KEY = "javascript/x-nano-starbox-rhino-servlet";
 
     Global global;
 
@@ -22,7 +22,10 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
         Context cx = Context.enter();
         global.init(cx);
         cx.evaluateString(global,
-                "var NanoStarbox = Packages.box.star, System = java.lang.System, File = java.io.File;", "<stdin>", 1, null);
+                "var NanoStarbox = Packages.box.star, "+
+                        "System = java.lang.System, "+
+                        "File = java.io.File;",
+                "<stdin>", 1, null);
         Context.exit();
         addGlobalObject("server", server);
         server.addStaticIndexFile("index.js");
@@ -31,14 +34,16 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
 
     public void addGlobalObject(String name, Object javaObject) {
         Context cx = Context.enter();
-        ScriptRuntime.setObjectProp(global, name, Context.javaToJS(javaObject, global), cx);
+        ScriptRuntime.setObjectProp(global, name,
+                Context.javaToJS(javaObject, global), cx);
         Context.exit();
     }
 
     public String replace(String script, Template.SourceData record) {
         Context cx = Context.enter();
         try {
-            Script eval = cx.compileString(script, record.file, record.line, null);
+            Script eval = cx.compileString(script,
+                    record.file, record.line, null);
             Scriptable shell = getScriptShell(cx);
             return (String) Context.jsToJava(eval.exec(cx, shell), String.class);
         } catch (Exception e) {
