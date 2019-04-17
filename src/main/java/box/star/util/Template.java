@@ -1,7 +1,6 @@
 package box.star.util;
 
 import box.star.io.Streams;
-import org.mozilla.javascript.EcmaError;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -164,8 +163,7 @@ public class Template implements Serializable {
         }
             TagData find = tagData[tagData.length - 1];
             sb.append(sourceData.substring(find.end));
-        } catch (EcmaError ee) {
-            ee.initColumnNumber(record.column);
+        } catch (Exception ee) {
             throw ee;
         }
 

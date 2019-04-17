@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="NanoStarbox">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../jar/NanoStarbox.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

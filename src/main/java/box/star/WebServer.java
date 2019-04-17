@@ -83,7 +83,9 @@ public class WebServer extends HTTPServer {
         super.stop();
     }
 
-    private Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = new Hashtable<>(5);
+    public Hashtable<String, MimeTypeDriver> getMimeTypeDriverTable() {
+        return (Hashtable<String, MimeTypeDriver>) configuration.get("mimeTypeDriverTable");
+    }
 
     /**
      * Provides a basic-mime-type-driver-system.
@@ -124,6 +126,7 @@ public class WebServer extends HTTPServer {
      * @param driver
      */
     public final void registerMimeTypeDriver(String mimeType, MimeTypeDriver driver) {
+        Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
         if (mimeTypeDriverTable.containsKey(mimeType)) {
             driver.next = mimeTypeDriverTable.get(mimeType);
             mimeTypeDriverTable.put(mimeType, driver);
@@ -141,6 +144,7 @@ public class WebServer extends HTTPServer {
         configuration.put("mimeTypeReaders", new Stack<>());
         configuration.put("templateMimeTypes", new Stack<>());
         configuration.put("templateCache", new Hashtable<>());
+        configuration.put("mimeTypeDriverTable", new Hashtable<>());
 
         configuration.put("documentRoot", new File("."));
 
@@ -265,7 +269,7 @@ public class WebServer extends HTTPServer {
     }
 
     public Response getMimeTypeResponse(File file, String mimeType, IHTTPSession query) {
-
+        Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
         MimeTypeDriver mimeTypeDriver = mimeTypeDriverTable.get(mimeType);
         Response out = null;
 
@@ -297,6 +301,17 @@ public class WebServer extends HTTPServer {
      * @return the server's response
      */
     public Response serveFile(File file, String mimeType, IHTTPSession query) {
+
+        Response magic = getMimeTypeResponse(file, mimeType, query);
+        if (magic != null) return magic;
+
+        if (isTemplateMimeType(mimeType)) {
+            Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
+            Template.TemplateFiller driver = (Template.TemplateFiller) mimeTypeDriverTable.get("javascript/x-nano-starbox-servlet");
+            if (driver == null) return staticFileResponse(file, mimeType, query);
+            Template template = getTemplate(file);
+            return  stringResponse(Status.OK, mimeType, template.fill(driver));
+        }
 
         return staticFileResponse(file, mimeType, query);
 

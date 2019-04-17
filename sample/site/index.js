@@ -1,6 +1,13 @@
 //->mime-type: javascript/x-nano-starbox-servlet
 
-function response(server, file, mimeType, httpSession) {
+NanoStarbox = Packages.box.star;
+var Status = Packages.box.star.io.protocols.http.response.Status;
+var ByteArrayInputStream = java.io.ByteArrayInputStream,
+    ByteArrayOutputStream = java.io.ByteArrayOutputStream,
+    System = java.lang.System
+;
+
+function generateServiceResponse(file, mimeType, httpSession) {
     var captureStream = new ByteArrayOutputStream();
     var scriptDirectory = file.getParent();
     if (System.getProperty("os.name").startsWith("Windows")) new NanoStarbox.Command("cmd", "/c")
@@ -15,5 +22,5 @@ function response(server, file, mimeType, httpSession) {
                     .writeErrorTo(captureStream)
                         .start("ls");
     }
-    return Response.newFixedLengthResponse(Status.OK, WebServer.MIME_PLAINTEXT,  captureStream.toString());
+    return server.plainTextResponse(Status.OK, captureStream.toString());
 };

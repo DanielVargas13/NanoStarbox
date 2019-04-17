@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="NanoStarbox">
-    <output-path>$PROJECT_DIR$/out/artifacts/NanoStarbox</output-path>
+    <output-path>$PROJECT_DIR$/jar</output-path>
     <root id="archive" name="NanoStarbox.jar">
       <element id="module-output" name="NanoStarbox" />
       <element id="directory" name="META-INF">
