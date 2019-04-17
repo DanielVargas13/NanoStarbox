@@ -1,11 +1,7 @@
 //->mime-type: javascript/x-nano-starbox-servlet
 
-NanoStarbox = Packages.box.star;
 var Status = Packages.box.star.io.protocols.http.response.Status;
-var ByteArrayInputStream = java.io.ByteArrayInputStream,
-    ByteArrayOutputStream = java.io.ByteArrayOutputStream,
-    System = java.lang.System
-;
+var ByteArrayOutputStream = java.io.ByteArrayOutputStream;
 
 function generateServiceResponse(file, mimeType, httpSession) {
     var captureStream = new ByteArrayOutputStream();

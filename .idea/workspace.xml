@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,8 +23,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+            <state relative-caret-position="68">
+              <caret line="4" column="58" selection-start-line="4" selection-start-column="58" selection-end-line="4" selection-end-column="58" />
             </state>
           </provider>
         </entry>
@@ -109,7 +107,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/SourceReader.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/fx/Run.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/shell/Global.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/resources/Messages.properties" />
@@ -160,6 +157,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/plugin/README.MD" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
+        <option value="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" />
       </list>
     </option>
   </component>
@@ -388,6 +386,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.34449404" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
@@ -455,7 +454,8 @@
     <MESSAGE value="clean header" />
     <MESSAGE value="notice" />
     <MESSAGE value="https; moved scripting site" />
-    <option name="LAST_COMMIT_MESSAGE" value="https; moved scripting site" />
+    <MESSAGE value="touch-ups" />
+    <option name="LAST_COMMIT_MESSAGE" value="touch-ups" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -828,8 +828,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        <state relative-caret-position="68">
+          <caret line="4" column="58" selection-start-line="4" selection-start-column="58" selection-end-line="4" selection-end-column="58" />
         </state>
       </provider>
     </entry>

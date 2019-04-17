@@ -21,6 +21,8 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
         global = new Global();
         Context cx = Context.enter();
         global.init(cx);
+        cx.evaluateString(global,
+                "var NanoStarbox = Packages.box.star, System = java.lang.System, File = java.io.File;", "<stdin>", 1, null);
         Context.exit();
         addGlobalObject("server", server);
         server.addStaticIndexFile("index.js");
