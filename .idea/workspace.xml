@@ -4,9 +4,8 @@
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample/site/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample/site/static-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,81 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
               <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="649">
-              <caret line="312" selection-start-line="312" selection-end-line="312" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#5987#5988#0" expanded="true" />
-                <element signature="e#6050#6051#0" expanded="true" />
-                <element signature="e#6106#6107#0" expanded="true" />
-                <element signature="e#6161#6162#0" expanded="true" />
-                <element signature="e#6528#6529#0" expanded="true" />
-                <element signature="e#6556#6557#0" expanded="true" />
-                <element signature="e#6604#6605#0" expanded="true" />
-                <element signature="e#6659#6660#0" expanded="true" />
-                <element signature="e#6723#6724#0" expanded="true" />
-                <element signature="e#6777#6778#0" expanded="true" />
-                <element signature="e#6826#6827#0" expanded="true" />
-                <element signature="e#6881#6882#0" expanded="true" />
-                <element signature="e#6932#6933#0" expanded="true" />
-                <element signature="e#6994#6995#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Template.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="166" selection-start-line="166" selection-end-line="166" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3439#3440#0" expanded="true" />
-                <element signature="e#3496#3497#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/plugin/README.MD">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ParametersTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="16" column="36" selection-start-line="16" selection-start-column="36" selection-end-line="16" selection-end-column="36" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -223,7 +152,6 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/RhinoWebDriver.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/RhinoWebDriver.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/WebServerTest.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/WebServerTest.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/WebServerTest.java" />
@@ -231,6 +159,7 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/plugin/README.MD" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
       </list>
     </option>
   </component>
@@ -267,6 +196,16 @@
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="plugin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
               <item name="sample" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -274,6 +213,58 @@
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
               <item name="sample" type="462c0819:PsiDirectoryNode" />
               <item name="site" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+              <item name="site" type="462c0819:PsiDirectoryNode" />
+              <item name="rhino-web-driver" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -349,132 +340,6 @@
         </RuleState>
       </list>
     </option>
-  </component>
-  <component name="RunManager" selected="JUnit.RhinoWebDriverTest.t">
-    <configuration name="JSConsole" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.mozilla.javascript.tools.shell.JSConsole" />
-      <module name="NanoStarbox" />
-      <option name="PROGRAM_PARAMETERS" value="-opt 9" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.mozilla.javascript.tools.shell.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="JSDebugger" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="org.mozilla.javascript.tools.debugger.Main" />
-      <module name="NanoStarbox" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.mozilla.javascript.tools.debugger.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RhinoWebDriverTest.a" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RhinoWebDriver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.js.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.js" />
-      <option name="MAIN_CLASS_NAME" value="box.star.js.RhinoWebDriverTest" />
-      <option name="METHOD_NAME" value="a" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RhinoWebDriverTest.maintest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RhinoWebDriver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.js.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.js" />
-      <option name="MAIN_CLASS_NAME" value="box.star.js.RhinoWebDriverTest" />
-      <option name="METHOD_NAME" value="maintest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RhinoWebDriverTest.t" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RhinoWebDriver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.js.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.js" />
-      <option name="MAIN_CLASS_NAME" value="box.star.js.RhinoWebDriverTest" />
-      <option name="METHOD_NAME" value="t" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="WebServerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RhinoWebDriver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.js.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.js" />
-      <option name="MAIN_CLASS_NAME" value="box.star.js.WebServerTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="WebServerTest.maintest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="RhinoWebDriver" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.js.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.js" />
-      <option name="MAIN_CLASS_NAME" value="box.star.js.WebServerTest" />
-      <option name="METHOD_NAME" value="maintest" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <list>
-      <item itemvalue="Application.JSConsole" />
-      <item itemvalue="Application.JSDebugger" />
-      <item itemvalue="JUnit.WebServerTest.maintest" />
-      <item itemvalue="JUnit.WebServerTest" />
-      <item itemvalue="JUnit.RhinoWebDriverTest.maintest" />
-      <item itemvalue="JUnit.RhinoWebDriverTest.a" />
-      <item itemvalue="JUnit.RhinoWebDriverTest.t" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JUnit.RhinoWebDriverTest.t" />
-        <item itemvalue="JUnit.RhinoWebDriverTest.a" />
-        <item itemvalue="JUnit.RhinoWebDriverTest.maintest" />
-        <item itemvalue="JUnit.WebServerTest" />
-        <item itemvalue="JUnit.WebServerTest.maintest" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR,SHOW_NON_PUBLIC,SHOW_PROPERTIES" />
@@ -589,7 +454,8 @@
     <MESSAGE value="Move template cache" />
     <MESSAGE value="clean header" />
     <MESSAGE value="notice" />
-    <option name="LAST_COMMIT_MESSAGE" value="notice" />
+    <MESSAGE value="https; moved scripting site" />
+    <option name="LAST_COMMIT_MESSAGE" value="https; moved scripting site" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -796,13 +662,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Global.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
@@ -852,13 +711,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/RhinoWebDriver.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
@@ -866,30 +718,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2563#2564#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="649">
-          <caret line="312" selection-start-line="312" selection-end-line="312" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5987#5988#0" expanded="true" />
-            <element signature="e#6050#6051#0" expanded="true" />
-            <element signature="e#6106#6107#0" expanded="true" />
-            <element signature="e#6161#6162#0" expanded="true" />
-            <element signature="e#6528#6529#0" expanded="true" />
-            <element signature="e#6556#6557#0" expanded="true" />
-            <element signature="e#6604#6605#0" expanded="true" />
-            <element signature="e#6659#6660#0" expanded="true" />
-            <element signature="e#6723#6724#0" expanded="true" />
-            <element signature="e#6777#6778#0" expanded="true" />
-            <element signature="e#6826#6827#0" expanded="true" />
-            <element signature="e#6881#6882#0" expanded="true" />
-            <element signature="e#6932#6933#0" expanded="true" />
-            <element signature="e#6994#6995#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -941,15 +769,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Template.java">
+    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="166" selection-start-line="166" selection-end-line="166" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3439#3440#0" expanded="true" />
-            <element signature="e#3496#3497#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="68">
+          <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
@@ -960,10 +790,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Template.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="323">
+          <caret line="166" selection-start-line="166" selection-end-line="166" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3439#3440#0" expanded="true" />
+            <element signature="e#3496#3497#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="751">
+          <caret line="309" column="34" selection-start-line="309" selection-start-column="34" selection-end-line="309" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5987#5988#0" expanded="true" />
+            <element signature="e#6050#6051#0" expanded="true" />
+            <element signature="e#6106#6107#0" expanded="true" />
+            <element signature="e#6161#6162#0" expanded="true" />
+            <element signature="e#6528#6529#0" expanded="true" />
+            <element signature="e#6556#6557#0" expanded="true" />
+            <element signature="e#6604#6605#0" expanded="true" />
+            <element signature="e#6659#6660#0" expanded="true" />
+            <element signature="e#6723#6724#0" expanded="true" />
+            <element signature="e#6777#6778#0" expanded="true" />
+            <element signature="e#6826#6827#0" expanded="true" />
+            <element signature="e#6881#6882#0" expanded="true" />
+            <element signature="e#6932#6933#0" expanded="true" />
+            <element signature="e#6994#6995#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
         </state>
       </provider>
     </entry>

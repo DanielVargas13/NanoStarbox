@@ -35,7 +35,7 @@ public class Template implements Serializable {
         }
     }
 
-    public interface TemplateFiller {
+    public interface Filler {
         String replace(String data, SourceData record);
     }
 
@@ -125,7 +125,7 @@ public class Template implements Serializable {
     }
 
     public String map(Map<String, String> source) {
-        TemplateFiller mapTemplate = new TemplateFiller() {
+        Filler mapTemplate = new Filler() {
             @Override
             public String replace(String data, SourceData record) {
                 return source.get(data);
@@ -134,7 +134,7 @@ public class Template implements Serializable {
         return fill(mapTemplate);
     }
 
-    public String fill(TemplateFiller templateFiller) {
+    public String fill(Filler filler) {
 
         if (source.lastModified() > creationTime) {
             try {
@@ -154,8 +154,8 @@ public class Template implements Serializable {
         for (TagData tag: tagData) {
             record = tag.record;
             sb.append(sourceData.substring(head, tag.start));
-            sb.append(templateFiller!=null?
-                    templateFiller.replace(tag.getSelection(sourceData), record)
+            sb.append(filler !=null?
+                    filler.replace(tag.getSelection(sourceData), record)
                     :
                     "REPLACEMENT-TEXT"
             );

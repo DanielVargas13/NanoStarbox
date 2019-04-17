@@ -307,10 +307,10 @@ public class WebServer extends HTTPServer {
 
         if (isTemplateMimeType(mimeType)) {
             Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
-            Template.TemplateFiller driver = (Template.TemplateFiller) mimeTypeDriverTable.get("javascript/x-nano-starbox-servlet");
-            if (driver == null) return staticFileResponse(file, mimeType, query);
+            Template.Filler filler = (Template.Filler) mimeTypeDriverTable.get("javascript/x-nano-starbox-servlet");
+            if (filler == null) return staticFileResponse(file, mimeType, query);
             Template template = getTemplate(file);
-            return  stringResponse(Status.OK, mimeType, template.fill(driver));
+            return  stringResponse(Status.OK, mimeType, template.fill(filler));
         }
 
         return staticFileResponse(file, mimeType, query);
