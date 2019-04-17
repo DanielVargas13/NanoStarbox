@@ -106,6 +106,7 @@ public class WebServer extends HTTPServer {
     public static class MimeTypeDriver implements IResponseHandler {
         private MimeTypeDriver next;
         // override this method.
+        public Template.Filler getTemplateFiller(){return null;};
         public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession){
             return null;
         }
@@ -307,7 +308,8 @@ public class WebServer extends HTTPServer {
 
         if (isTemplateMimeType(mimeType)) {
             Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
-            Template.Filler filler = (Template.Filler) mimeTypeDriverTable.get("javascript/x-nano-starbox-rhino-servlet");
+            Template.Filler filler = (Template.Filler)
+                    mimeTypeDriverTable.get("javascript/x-nano-starbox-rhino-servlet").getTemplateFiller();
             if (filler == null) return staticFileResponse(file, mimeType, query);
             Template template = getTemplate(file);
             return  stringResponse(Status.OK, mimeType, template.fill(filler));

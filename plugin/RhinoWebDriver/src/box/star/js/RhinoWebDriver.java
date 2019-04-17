@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template.Filler {
+public class RhinoWebDriver extends WebServer.MimeTypeDriver {
 
     private static final String RHINO_DRIVER_KEY = "javascript/x-nano-starbox-rhino-servlet";
 
@@ -32,6 +32,13 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
         addGlobalObject("server", server);
         server.addStaticIndexFile("index.js");
         server.registerMimeTypeDriver(RHINO_DRIVER_KEY, this);
+    }
+
+    RhinoTemplateFiller rhinoTemplateFiller;
+    public RhinoTemplateFiller getTemplateFiller(){
+        return (rhinoTemplateFiller == null)?
+                rhinoTemplateFiller = new RhinoTemplateFiller(this) :
+                rhinoTemplateFiller;
     }
 
     public void addGlobalObject(String name, Object javaObject) {
@@ -78,7 +85,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
         }
     }
 
-    private Scriptable getScriptShell(Context cx) {
+    Scriptable getScriptShell(Context cx) {
         return ScriptRuntime.newObject(cx, global, "Object", null);
     }
 
