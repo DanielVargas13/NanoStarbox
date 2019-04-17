@@ -2,328 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/RhinoWebDriver.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/NanoStarbox.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/NanoStarbox.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample/site/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ByteCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ClassFileField.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ClassFileMethod.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ClassFileWriter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ConstantEntry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ConstantPool.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/ExceptionTableEntry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/FieldOrMethodRef.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/SuperBlock.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/classfile/TypeInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Arguments.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ArrowFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/BaseFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/BoundFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Callable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ClassCache.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ClassShutter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/CodeGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/CompilerEnvirons.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ConsString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ConstProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Context.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ContextAction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ContextFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ContextListener.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ContinuationPending.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/DToA.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Decompiler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/DefaultErrorReporter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/DefiningClassLoader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Delegator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ES6Iterator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/EcmaError.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/EmbeddedSlotMap.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ErrorReporter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Evaluator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/EvaluatorException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ExternalArrayData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Function.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/FunctionObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/GeneratedClassLoader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/HashSlotMap.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IRFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Icode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IdFunctionCall.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IdFunctionObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IdFunctionObjectES6.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IdScriptableObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ImporterTopLevel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/InterfaceAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/InterpretedFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Interpreter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/InterpreterData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/JavaAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/JavaMembers.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/JavaScriptException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Kit.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/LazilyLoadedCtor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/MemberBox.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeArray.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeArrayIterator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeBoolean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeCall.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeCallSite.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeContinuation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeDate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeError.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeGlobal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeIterator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJSON.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaArray.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaClass.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaConstructor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaMethod.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaPackage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeJavaTopPackage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeMath.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeNumber.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeScript.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeStringIterator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeSymbol.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NativeWith.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Node.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/NodeTransformer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ObjArray.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ObjToIntMap.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Parser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/PolicySecurityController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Ref.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RefCallable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RegExpProxy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RhinoException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RhinoSecurityManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Script.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptRuntime.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptRuntimeES6.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptStackElement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Scriptable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptableObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SecureCaller.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SecurityController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SecurityUtilities.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SlotMap.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SlotMapContainer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Sorting.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SpecialRef.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/StackStyle.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Symbol.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SymbolKey.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/SymbolScriptable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Synchronizer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ThreadSafeSlotMapContainer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Token.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/TokenStream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/TopLevel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/UintMap.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Undefined.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/UniqueTag.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/VMBridge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/WrapFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/WrappedException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Wrapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/annotations/JSConstructor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/annotations/JSFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/annotations/JSGetter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/annotations/JSSetter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/annotations/JSStaticFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ArrayComprehension.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ArrayComprehensionLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ArrayLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Assignment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/AstNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/AstRoot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Block.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/BreakStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/CatchClause.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Comment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ConditionalExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ContinueStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/DestructuringForm.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/DoLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ElementGet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/EmptyExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/EmptyStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ErrorCollector.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ErrorNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ExpressionStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ForInLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ForLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/FunctionCall.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/FunctionNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/GeneratorExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/GeneratorExpressionLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/IdeErrorReporter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/IfStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/InfixExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Jump.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/KeywordLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Label.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/LabeledStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/LetNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Loop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Name.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/NewExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/NodeVisitor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/NumberLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ObjectLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ObjectProperty.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ParenthesizedExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ParseProblem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/PropertyGet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/RegExpLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ReturnStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Scope.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ScriptNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/StringLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/SwitchCase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/SwitchStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Symbol.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/ThrowStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/TryStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/UnaryExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/VariableDeclaration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/VariableInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/WhileLoop.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/WithStatement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlDotQuery.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlElemRef.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlExpression.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlFragment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlLiteral.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlMemberGet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlPropRef.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlRef.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/XmlString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ast/Yield.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/ModuleScope.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/ModuleScript.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/ModuleScriptProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/Require.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/RequireBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/package.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/CachingModuleScriptProviderBase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/DefaultUrlConnectionExpiryCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/ModuleSource.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/ModuleSourceProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/ModuleSourceProviderBase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/MultiModuleScriptProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/ParsedContentType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/SoftCachingModuleScriptProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/StrongCachingModuleScriptProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/UrlConnectionExpiryCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/UrlConnectionSecurityDomainProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/UrlModuleSourceProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/commonjs/module/provider/package.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/debug/DebugFrame.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/debug/DebuggableObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/debug/DebuggableScript.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/debug/Debugger.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/jdk15/VMBridge_jdk15.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/jdk18/VMBridge_jdk18.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/json/JsonParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/Block.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/ClassCompiler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/Codegen.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/OptFunctionNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/OptRuntime.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/OptTransformer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/optimizer/Optimizer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/regexp/NativeRegExp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/regexp/NativeRegExpCtor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/regexp/RegExpImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/regexp/SubString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/resources/Messages.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/resources/Messages_fr.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/serialize/ScriptableInputStream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/serialize/ScriptableOutputStream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/SourceReader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/ToolErrorReporter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/Dim.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/GuiCallback.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/ScopeProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/SourceProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/SwingGui.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/build.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/treetable/AbstractCellEditor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/treetable/JTreeTable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/treetable/TreeTableModel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/treetable/TreeTableModelAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/CodePrinter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/FileBody.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/IdValuePair.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/idswitch/SwitchGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/jsc/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/resources/Messages.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/ConsoleTextArea.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Environment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Global.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/JSConsole.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/JavaPolicySecurity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/QuitAction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/SecurityProxy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/ShellConsole.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/ShellContextFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/ShellLine.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/ByteIo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/Conversions.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeArrayBuffer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeArrayBufferView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeDataView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeFloat32Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeFloat64Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeInt16Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeInt32Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeInt8Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeTypedArrayIterator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeTypedArrayView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeUint16Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeUint32Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeUint8Array.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/typedarrays/NativeUint8ClampedArray.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/CachedPowers.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/DiyFp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/DoubleConversion.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/DoubleHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/FastDtoa.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/v8dtoa/FastDtoaBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xml/XMLLib.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xml/XMLObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/Namespace.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/QName.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XML.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLCtor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLLibImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLList.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLName.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLObjectImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XMLWithScope.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XmlNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/xmlimpl/XmlProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/code/DocumentRouter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/code/global.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/code/jCafe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/help/box.star.js.Run" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/help/global" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample/site/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample/site/static-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -341,16 +24,7 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sample/debug-webserver.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="40" selection-start-line="26" selection-end-line="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sample/site/index.js">
+        <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
               <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
@@ -398,11 +72,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="17">
               <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -497,7 +180,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/box/star/js/ScriptHost.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/SourceReader.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/fx/Run.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/shell/Global.java" />
@@ -548,6 +230,7 @@
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/plugin/README.MD" />
       </list>
     </option>
   </component>
@@ -581,6 +264,17 @@
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="sample" type="462c0819:PsiDirectoryNode" />
+              <item name="site" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -597,7 +291,7 @@
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553645091194" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../plugin/RhinoWebDriver" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/plugin/RhinoWebDriver" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -637,11 +331,11 @@
       <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\src\main\java\box\star\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site\rhino-web-driver" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\src" />
       <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\src\main" />
-      <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\sample\site" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -894,7 +588,8 @@
     <MESSAGE value="Clean startup" />
     <MESSAGE value="Move template cache" />
     <MESSAGE value="clean header" />
-    <option name="LAST_COMMIT_MESSAGE" value="clean header" />
+    <MESSAGE value="notice" />
+    <option name="LAST_COMMIT_MESSAGE" value="notice" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -909,13 +604,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/ScopeProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/GuiCallback.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1108,7 +796,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sample/site/static-page.html">
+    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
@@ -1164,7 +852,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sample/site/index.js">
+    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
@@ -1269,6 +957,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin/README.MD">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
