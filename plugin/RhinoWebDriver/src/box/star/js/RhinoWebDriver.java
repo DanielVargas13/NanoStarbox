@@ -15,16 +15,18 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver implements Template
 
     private static final String RHINO_DRIVER_KEY = "javascript/x-nano-starbox-rhino-servlet";
 
+    private static final String initScript =
+            "var NanoStarbox = Packages.box.star, "+
+                "System = java.lang.System, "+
+                "File = java.io.File;";
+
     Global global;
 
     public RhinoWebDriver(WebServer server) {
         global = new Global();
         Context cx = Context.enter();
         global.init(cx);
-        cx.evaluateString(global,
-                "var NanoStarbox = Packages.box.star, "+
-                        "System = java.lang.System, "+
-                        "File = java.io.File;",
+        cx.evaluateString(global, initScript,
                 "<stdin>", 1, null);
         Context.exit();
         addGlobalObject("server", server);
