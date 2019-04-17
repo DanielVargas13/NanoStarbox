@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/Shell.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/RhinoWebDriver/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,11 +23,69 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+              <caret line="4" selection-start-line="4" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="346">
+              <caret line="96" selection-start-line="96" selection-end-line="96" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3584#3585#0" expanded="true" />
+                <element signature="e#3681#3682#0" expanded="true" />
+                <element signature="e#4641#4642#0" expanded="true" />
+                <element signature="e#4767#4768#0" expanded="true" />
+                <element signature="e#4844#4845#0" expanded="true" />
+                <element signature="e#4873#4874#0" expanded="true" />
+                <element signature="e#4908#4909#0" expanded="true" />
+                <element signature="e#4945#4946#0" expanded="true" />
+                <element signature="e#4979#4980#0" expanded="true" />
+                <element signature="e#5016#5017#0" expanded="true" />
+                <element signature="e#5039#5040#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#289#290#0" expanded="true" />
+                <element signature="e#321#322#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="127">
+              <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/io/File.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="704">
+              <caret line="613" column="18" selection-start-line="613" selection-start-column="18" selection-end-line="613" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -119,13 +180,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/shell/Global.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/js/tools/resources/Messages.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/Run.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/META-INF/box/star/js/code/DocumentRouter.js" />
         <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RhinoException.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/web/Template.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Global.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Parser.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/store/StateContainer.java" />
@@ -170,6 +226,11 @@
         <option value="$PROJECT_DIR$/plugin/README.MD" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
       </list>
     </option>
   </component>
@@ -202,51 +263,6 @@
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-              <item name="star" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin" type="462c0819:PsiDirectoryNode" />
-              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-              <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -301,6 +317,78 @@
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="io" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="io" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="lang" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -325,8 +413,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
-      <recent name="box.star.js" />
       <recent name="box.star" />
+      <recent name="box.star.js" />
       <recent name="box.star.io.store" />
       <recent name="box.star.io.web" />
     </key>
@@ -340,9 +428,9 @@
       <recent name="" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="box.star.js" />
       <recent name="box.star" />
       <recent name="box.star.io" />
+      <recent name="box.star.js" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="box.star" />
@@ -376,6 +464,29 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="ShellTest.run" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box.star" />
+      <option name="MAIN_CLASS_NAME" value="box.star.ShellTest" />
+      <option name="METHOD_NAME" value="run" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ShellTest.run" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR,SHOW_NON_PUBLIC,SHOW_PROPERTIES" />
   </component>
@@ -390,24 +501,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="WebServerTest_maintest - 2019.04.16 at 17h 59m 31s.xml">
-      <configuration name="WebServerTest.maintest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="WebServerTest - 2019.04.16 at 17h 59m 58s.xml">
-      <configuration name="WebServerTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="WebServerTest - 2019.04.16 at 18h 01m 04s.xml">
-      <configuration name="WebServerTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="WebServerTest - 2019.04.16 at 18h 01m 26s.xml">
-      <configuration name="WebServerTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="WebServerTest - 2019.04.16 at 18h 03m 09s.xml">
-      <configuration name="WebServerTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="WebServerTest - 2019.04.16 at 18h 04m 46s.xml">
-      <configuration name="WebServerTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="RhinoWebDriverTest_maintest - 2019.04.16 at 18h 05m 52s.xml">
       <configuration name="RhinoWebDriverTest.maintest" configurationId="JUnit" />
     </history-entry>
@@ -420,12 +513,30 @@
     <history-entry file="RhinoWebDriverTest_t - 2019.04.16 at 18h 15m 38s.xml">
       <configuration name="RhinoWebDriverTest.t" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 02m 45s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 04m 14s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 04m 45s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 06m 06s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 08m 56s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.17 at 05h 12m 12s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.34449404" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -444,6 +555,7 @@
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32843137" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.32843137" />
       <window_info anchor="bottom" id="Script Monkey" order="11" weight="0.32843137" />
+      <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" side_tool="true" visible="true" weight="0.022692889" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24962178" />
@@ -513,41 +625,10 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sample/site/login.js" />
-    <entry file="file://$PROJECT_DIR$/sample/site/javascript-test.js" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/js/ScriptHost.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/IRFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="2236" column="18" selection-start-line="2236" selection-start-column="18" selection-end-line="2236" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Parser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="65">
-          <caret line="247" column="27" selection-start-line="247" selection-start-column="27" selection-end-line="247" selection-end-column="27" />
-          <folding>
-            <element signature="e#11689#11690#0" expanded="true" />
-            <element signature="e#11733#11734#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptRuntime.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4247">
           <caret line="1993" selection-start-line="1993" selection-end-line="1993" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -855,10 +936,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/File.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/io/File.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="613" column="18" selection-start-line="613" selection-start-column="18" selection-end-line="613" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Thread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="698" column="29" selection-start-line="698" selection-start-column="29" selection-end-line="698" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="96" selection-start-line="96" selection-end-line="96" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3584#3585#0" expanded="true" />
+            <element signature="e#3681#3682#0" expanded="true" />
+            <element signature="e#4641#4642#0" expanded="true" />
+            <element signature="e#4767#4768#0" expanded="true" />
+            <element signature="e#4844#4845#0" expanded="true" />
+            <element signature="e#4873#4874#0" expanded="true" />
+            <element signature="e#4908#4909#0" expanded="true" />
+            <element signature="e#4945#4946#0" expanded="true" />
+            <element signature="e#4979#4980#0" expanded="true" />
+            <element signature="e#5016#5017#0" expanded="true" />
+            <element signature="e#5039#5040#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#289#290#0" expanded="true" />
+            <element signature="e#321#322#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

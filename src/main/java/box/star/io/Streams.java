@@ -1,13 +1,10 @@
 package box.star.io;
 
+import box.star.Shell;
 import com.sun.istack.internal.NotNull;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Properties;
 
 public class Streams {
 
