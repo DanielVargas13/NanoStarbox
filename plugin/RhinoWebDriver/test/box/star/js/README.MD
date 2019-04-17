@@ -1,5 +1,7 @@
-This project is managed with IntelliJ IDEA.
+If you need to update NanoStarbox.jar, while running this test, you'll get an
+error while trying. Stop the test, update the host library, and restart the test.
 
-Build the project to get started with this plugin.
+The default address is: https://localhost:8080
 
-Also check out the test.
+The test allows you to browse a test-site at the address to verify the plugin
+functionality.
