@@ -21,7 +21,6 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
                 "File = java.io.File;";
 
     Global global;
-    RhinoTemplateFiller rhinoTemplateFiller;
 
     public RhinoWebDriver(WebServer server) {
         global = new Global();
@@ -33,11 +32,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         addGlobalObject("server", server);
         server.addStaticIndexFile("index.js");
         server.registerMimeTypeDriver(RHINO_DRIVER_KEY, this);
-        rhinoTemplateFiller = new RhinoTemplateFiller(this);
-    }
-
-    public RhinoTemplateFiller getTemplateFiller(){
-        return rhinoTemplateFiller;
+        server.registerTemplateFiller(server.MIME_HTML, new RhinoTemplateFiller(this));
     }
 
     public void addGlobalObject(String name, Object javaObject) {

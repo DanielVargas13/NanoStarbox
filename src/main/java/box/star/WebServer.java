@@ -11,6 +11,7 @@ import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
 
+import javax.activation.MimeType;
 import java.io.*;
 import java.util.*;
 
@@ -136,6 +137,14 @@ public class WebServer extends HTTPServer {
         mimeTypeDriverTable.put(mimeType, driver);
     }
 
+    private Hashtable<String, Template.Filler> getTemplateFillerTable(){
+        return (Hashtable<String, Template.Filler>) configuration.get("templateFillerTable");
+    }
+
+    public final void registerTemplateFiller(String mimeType, Template.Filler filler) {
+        getTemplateFillerTable().put(mimeType, filler);
+    }
+
     public WebServer() {
 
         Stack<String> staticIndexFiles;
@@ -146,6 +155,7 @@ public class WebServer extends HTTPServer {
         configuration.put("templateMimeTypes", new Stack<>());
         configuration.put("templateCache", new Hashtable<>());
         configuration.put("mimeTypeDriverTable", new Hashtable<>());
+        configuration.put("templateFillerTable", new Hashtable<>());
 
         configuration.put("documentRoot", new File("."));
 
@@ -307,9 +317,8 @@ public class WebServer extends HTTPServer {
         if (magic != null) return magic;
 
         if (isTemplateMimeType(mimeType)) {
-            Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
-            Template.Filler filler = (Template.Filler)
-                    mimeTypeDriverTable.get("javascript/x-nano-starbox-rhino-servlet").getTemplateFiller();
+            Hashtable<String, Template.Filler> table = getTemplateFillerTable();
+            Template.Filler filler = table.get(mimeType);
             if (filler == null) return staticFileResponse(file, mimeType, query);
             Template template = getTemplate(file);
             return  stringResponse(Status.OK, mimeType, template.fill(filler));
