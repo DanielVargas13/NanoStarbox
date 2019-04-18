@@ -7,19 +7,26 @@ import java.util.Stack;
 
 public class Shell extends Thread {
 
-    private Shell parent; private int shellNumber, exitCode = -1;
-    private Stack<Shell> subshells = new Stack<>();
-
-    String currentDirectory;
-    private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
-
-    public Hashtable<String, String> environment;
-    private IExecutive controller;
+    public interface IExecutiveFactory {
+        IExecutive getMainShell();
+        IExecutive getSubShell(IExecutive mainShell);
+    }
 
     public interface IExecutive {
         void main(String[] parameters);
         int exitStatus();
     }
+
+    private Shell parent; private int shellNumber, exitCode = -1;
+    private Stack<Shell> subShells = new Stack<>();
+
+    String currentDirectory;
+    private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
+
+    public Hashtable<String, String> environment;
+
+    private IExecutiveFactory controllerFactory;
+    private IExecutive controller;
 
     private String resolve(String file){
         boolean local = file == null || file.equals("") ||
@@ -43,13 +50,14 @@ public class Shell extends Thread {
         for(Integer stream:data.keySet()) setStream(stream, data.get(stream));
     }
 
-    public Shell(IExecutive controller) {
-        this(controller, null);
+    public Shell(IExecutiveFactory factory) {
+        this(factory, null);
     }
 
-    public Shell(IExecutive controller, Map<Integer, Closeable> streamCollection){
+    public Shell(IExecutiveFactory factory, Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
-        this.controller = controller;
+        this.controllerFactory = factory;
+        this.controller = factory.getMainShell();
         this.environment = new Hashtable<>(System.getenv());
         setStream(0, System.in);
         setStream(1, System.out);
@@ -58,25 +66,22 @@ public class Shell extends Thread {
         this.setCurrentDirectory(System.getProperty("user.dir"));
     }
 
-    private Shell(Shell main, IExecutive controller, Map<Integer, Closeable> streams) {
+    private Shell(Shell main, Map<Integer, Closeable> streams) {
         this.parent = main;
-        this.controller = controller;
+        this.controllerFactory = main.controllerFactory;
+        this.controller = controllerFactory.getSubShell(main.controller);
         this.currentDirectory = main.currentDirectory;
         this.mapAllStreams(main.streamCollection); // get base...
         this.mapAllStreams(streams); // get layer...
         this.environment = (Hashtable)main.environment.clone(); // get copy...
-        synchronized (main.subshells) {
-            this.shellNumber = main.subshells.size();
-            main.subshells.push(this);
+        synchronized (main.subShells) {
+            this.shellNumber = main.subShells.size();
+            main.subShells.push(this);
         }
     }
 
-    public Shell createSubshell(IExecutive controller){
-        return new Shell(this, controller, null);
-    }
-
-    public Shell createSubshell(IExecutive controller, Map<Integer, Closeable> streamCollection){
-        return new Shell(this, controller, streamCollection);
+    public Shell createSubShell(Map<Integer, Closeable> streamCollection){
+        return new Shell(this, streamCollection);
     }
 
     private String[] parameters = new String[0];
