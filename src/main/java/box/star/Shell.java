@@ -17,29 +17,23 @@ public class Shell extends Thread {
     protected void main(String[] parameters) {}
     protected int exitStatus() {return 0;}
 
-    private Shell parent; private int shellNumber, exitCode = -1;
-    private Stack<Shell> subShells = new Stack<>();
+    private Shell parent;
+
+    private final int shellNumber;
+    private int exitCode = -1;
+
+    protected Stack<Shell> subShells = new Stack<>();
 
     private String currentDirectory;
     private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
 
-    public Hashtable<String, String> environment;
+    protected Hashtable<String, String> environment;
 
-    private String resolve(String file){
+    public final File getFile(String file){
         boolean local = file == null || file.equals("") ||
-                file.equals(".") || file.startsWith("./") ||
+                file.equals(".") || file.startsWith("./") || file.startsWith(".\\") ||
                 (! file.startsWith("/") && ! file.matches("^[a-zA-Z]:"));
-        return ((local)?new File(currentDirectory, file):new File(file)).getPath();
-    }
-
-    public FileInputStream getFileInputStream(String file){
-        try { return new FileInputStream(resolve(file)); }
-        catch (FileNotFoundException e) { throw new RuntimeException(e); }
-    }
-
-    public FileOutputStream getFileOutputStream(String file) {
-        try { return new FileOutputStream(resolve(file)); }
-        catch (Exception e) {throw new RuntimeException(e);}
+        return ((local)?new File(currentDirectory, file):new File(file));
     }
 
     private void mapAllStreams(Map<Integer, Closeable> data){
@@ -53,6 +47,7 @@ public class Shell extends Thread {
         setStream(STDOUT, System.out);
         setStream(STDERR, System.err);
         this.mapAllStreams(streamCollection);
+        this.shellNumber = -1;
         this.environment = new Hashtable<>(System.getenv());
         this.setCurrentDirectory(System.getProperty("user.dir"));
     }
@@ -72,16 +67,17 @@ public class Shell extends Thread {
 
     private String[] parameters = new String[0];
 
-    public void exec(String... parameters){
+    public final void exec(String... parameters){
         Thread caller = Thread.currentThread();
         if (caller.equals(this)) {
             throw new IllegalThreadStateException("cannot call class method from within shell");
         }
+        this.exitCode = -1;
         this.parameters = parameters;
         this.start();
     }
 
-    public int getExitStatus() {
+    public final int getExitStatus() {
         Thread caller = Thread.currentThread();
         if (caller.equals(this)) {
             throw new IllegalThreadStateException("cannot call own class method from within shell");
@@ -95,7 +91,7 @@ public class Shell extends Thread {
 
     boolean running;
     @Override
-    public void run() {
+    public final void run() {
         if (running) {
             throw new IllegalThreadStateException("Shell is already running");
         }
@@ -109,18 +105,18 @@ public class Shell extends Thread {
         }
     }
 
-    public void setCurrentDirectory(String currentDirectory) {
+    public final void setCurrentDirectory(String currentDirectory) {
         if (environment.containsKey("PWD")) {
             environment.put("PWD", currentDirectory);
         }
         this.currentDirectory = currentDirectory;
     }
 
-    public String getCurrentDirectory() { return currentDirectory; }
+    public final String getCurrentDirectory() { return currentDirectory; }
 
-    public Closeable getStream(int stream) { return streamCollection.get(stream); }
+    public final Closeable getStream(int stream) { return streamCollection.get(stream); }
 
-    public void setStream(int stream, Closeable source) {
+    public final void setStream(int stream, Closeable source) {
         if (stream == STDERR) {
             if (!(source instanceof OutputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard error"));
         } else if (stream == STDOUT) {
@@ -131,24 +127,33 @@ public class Shell extends Thread {
         streamCollection.put(stream, source);
     }
 
-    public BufferedReader getBufferedReader(int stream, int size) {
-        return new BufferedReader(new InputStreamReader((InputStream)getStream(stream)), size);
+    public final InputStream getInputStream(int stream){
+        Closeable wanted = getStream(stream);
+        if (wanted instanceof InputStream) return (InputStream) wanted;
+        throw new ClassCastException("shell stream #"+stream+" is not an input stream");
     }
 
-    public BufferedReader getBufferedReader(int stream) {
-        return getBufferedReader(stream, 4096);
+    public final OutputStream getOutputStream(int stream) {
+        Closeable wanted = getStream(stream);
+        if (wanted instanceof OutputStream) return (OutputStream) wanted;
+        throw new ClassCastException("shell stream #"+stream+" is not an output stream");
     }
 
-    public PrintWriter getPrintWriter(int stream) {
-        return new PrintWriter((OutputStream)getStream(stream));
+    public final PrintWriter getPrintWriter(int stream) {
+        return new PrintWriter(getOutputStream(stream));
     }
 
-    public Shell getParent(){ return parent; }
+    public final Shell getParent(){ return parent; }
 
-    public boolean isRootShell(){ return parent == null; }
+    public final boolean isRootShell(){ return parent == null; }
 
-    public boolean isSubShell(){ return parent != null; }
+    public final boolean isSubShell(){ return parent != null; }
 
-    public int getShellNumber() { return shellNumber; }
+    public final int getShellNumber() { return shellNumber; }
+
+    @Override
+    public final synchronized void start() {
+        super.start();
+    }
 
 }

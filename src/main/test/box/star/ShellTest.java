@@ -12,20 +12,15 @@ class ShellTest {
         @Override
         public void main(String[] parameters) {
             try {
-                Shell subshell = new Shell(this, null){
+                Shell subShell = new Shell(this, null){
                     @Override
                     public void main(String[] parameters) {
                         PrintWriter error = getPrintWriter(STDERR);
                         error.println(parameters[0]);
                         error.flush();
-                        super.main(parameters);
-                    }
-                    @Override
-                    public int exitStatus() {
-                        return super.exitStatus();
                     }
                 };
-                subshell.exec("hello world");
+                subShell.exec("hello world");
                 Thread.sleep(Integer.valueOf(parameters[0]));
             } catch (Exception e) {e.printStackTrace();}
         }

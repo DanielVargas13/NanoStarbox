@@ -33,10 +33,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1646">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
+            <state relative-caret-position="2567">
+              <caret line="151" selection-start-line="151" selection-end-line="151" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#5543#5544#0" expanded="true" />
+                <element signature="e#5880#5881#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -46,11 +48,9 @@
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="204">
-              <caret line="19" selection-start-line="19" selection-end-line="19" />
+              <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#620#621#0" expanded="true" />
-                <element signature="e#693#694#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -207,8 +207,8 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
-        <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
       </list>
     </option>
   </component>
@@ -875,10 +875,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1646">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
+        <state relative-caret-position="2567">
+          <caret line="151" selection-start-line="151" selection-end-line="151" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#5543#5544#0" expanded="true" />
+            <element signature="e#5880#5881#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -886,11 +888,9 @@
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
-          <caret line="19" selection-start-line="19" selection-end-line="19" />
+          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#620#621#0" expanded="true" />
-            <element signature="e#693#694#0" expanded="true" />
           </folding>
         </state>
       </provider>
