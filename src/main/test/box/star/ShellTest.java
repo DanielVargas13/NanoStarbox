@@ -15,6 +15,9 @@ class ShellTest {
         public void main(String[] parameters) {
             try {
                 Shell subShell = new Shell(this, null){
+                    PrintWriter getPrintWriter(int stream) {
+                        return new PrintWriter(getOutputStream(stream));
+                    }
                     @Override
                     public void main(String[] parameters) {
                         PrintWriter error = getPrintWriter(STDERR);

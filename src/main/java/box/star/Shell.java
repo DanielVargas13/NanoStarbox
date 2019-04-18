@@ -150,10 +150,6 @@ public class Shell extends Thread {
         throw new ClassCastException("shell stream #"+stream+" is not an output stream");
     }
 
-    public final PrintWriter getPrintWriter(int stream) {
-        return new PrintWriter(getOutputStream(stream));
-    }
-
     public final Shell getParent(){ return parent; }
 
     public final boolean isRootShell(){ return parent == null; }
