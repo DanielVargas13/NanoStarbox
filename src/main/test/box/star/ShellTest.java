@@ -15,7 +15,7 @@ class ShellTest {
                 Shell subshell = new Shell(this, null){
                     @Override
                     public void main(String[] parameters) {
-                        PrintWriter error = sh.getPrintWriter(2);
+                        PrintWriter error = getPrintWriter(STDERR);
                         error.println(parameters[0]);
                         error.flush();
                         super.main(parameters);

@@ -10,16 +10,17 @@ import java.util.Stack;
  */
 public class Shell extends Thread {
 
-    protected void main(String[] parameters) {}
+    public final static int STDIN = 0;
+    public final static int STDOUT = 1;
+    public final static int STDERR = 2;
 
-    protected int exitStatus() {
-        return 0;
-    }
+    protected void main(String[] parameters) {}
+    protected int exitStatus() {return 0;}
 
     private Shell parent; private int shellNumber, exitCode = -1;
     private Stack<Shell> subShells = new Stack<>();
 
-    String currentDirectory;
+    private String currentDirectory;
     private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
 
     public Hashtable<String, String> environment;
@@ -48,9 +49,9 @@ public class Shell extends Thread {
 
     public Shell(Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
-        setStream(0, System.in);
-        setStream(1, System.out);
-        setStream(2, System.err);
+        setStream(STDIN, System.in);
+        setStream(STDOUT, System.out);
+        setStream(STDERR, System.err);
         this.mapAllStreams(streamCollection);
         this.environment = new Hashtable<>(System.getenv());
         this.setCurrentDirectory(System.getProperty("user.dir"));
@@ -120,11 +121,11 @@ public class Shell extends Thread {
     public Closeable getStream(int stream) { return streamCollection.get(stream); }
 
     public void setStream(int stream, Closeable source) {
-        if (stream == 2) {
+        if (stream == STDERR) {
             if (!(source instanceof OutputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard error"));
-        } else if (stream == 1) {
+        } else if (stream == STDOUT) {
             if (!(source instanceof OutputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard output"));
-        } else if (stream == 0) {
+        } else if (stream == STDIN) {
             if (!(source instanceof InputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard input"));
         }
         streamCollection.put(stream, source);
