@@ -8,35 +8,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShellTest {
 
-    Shell.IShellControllerFactory shellFactory = new Shell.IShellControllerFactory() {
-
+    Shell sh = new Shell(null) {
         @Override
-        public Shell.IShellController createMainController() {
-            return new Shell.IShellController() {
-                @Override
-                public void main(String[] parameters) {
-                    try {
+        public void main(String[] parameters) {
+            try {
+                Shell subshell = new Shell(this, null){
+                    @Override
+                    public void main(String[] parameters) {
                         PrintWriter error = sh.getPrintWriter(2);
-                        error.println("hello world");
+                        error.println(parameters[0]);
                         error.flush();
-                        Thread.sleep(Integer.valueOf(parameters[0]));
-                    } catch (Exception e) {e.printStackTrace();}
-                }
-                @Override
-                public int exitStatus() {
-                    return 12;
-                }
-            };
+                        super.main(parameters);
+                    }
+                    @Override
+                    public int exitStatus() {
+                        return super.exitStatus();
+                    }
+                };
+                subshell.exec("hello world");
+                Thread.sleep(Integer.valueOf(parameters[0]));
+            } catch (Exception e) {e.printStackTrace();}
         }
-
         @Override
-        public Shell.IShellController createSubController(Shell.IShellController context) {
-            return createMainController();
+        public int exitStatus() {
+            return 12;
         }
-
     };
-
-    Shell sh = new Shell(shellFactory);
 
     @Test void run(){
         sh.exec("650");

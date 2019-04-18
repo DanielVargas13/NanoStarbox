@@ -10,14 +10,10 @@ import java.util.Stack;
  */
 public class Shell extends Thread {
 
-    public interface IShellControllerFactory {
-        IShellController createMainController();
-        IShellController createSubController(IShellController mainShell);
-    }
+    protected void main(String[] parameters) {}
 
-    public interface IShellController {
-        void main(String[] parameters);
-        int exitStatus();
+    protected int exitStatus() {
+        return 0;
     }
 
     private Shell parent; private int shellNumber, exitCode = -1;
@@ -27,9 +23,6 @@ public class Shell extends Thread {
     private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
 
     public Hashtable<String, String> environment;
-
-    private IShellControllerFactory controllerFactory;
-    private IShellController controller;
 
     private String resolve(String file){
         boolean local = file == null || file.equals("") ||
@@ -53,44 +46,27 @@ public class Shell extends Thread {
         for(Integer stream:data.keySet()) setStream(stream, data.get(stream));
     }
 
-    public Shell(IShellControllerFactory factory) {
-        this(factory, null);
-    }
-
-    public Shell(IShellControllerFactory factory, Map<Integer, Closeable> streamCollection){
+    public Shell(Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
-        this.controllerFactory = factory;
-        this.controller = factory.createMainController();
-        this.setCurrentDirectory(System.getProperty("user.dir"));
         setStream(0, System.in);
         setStream(1, System.out);
         setStream(2, System.err);
         this.mapAllStreams(streamCollection);
         this.environment = new Hashtable<>(System.getenv());
+        this.setCurrentDirectory(System.getProperty("user.dir"));
     }
 
-    /**
-     * Sub Shell Builder
-     * @param main
-     * @param streams
-     */
-    private Shell(Shell main, Map<Integer, Closeable> streams) {
+    public Shell(Shell main, Map<Integer, Closeable> streams) {
         super(Shell.class.getName());
         this.parent = main;
-        this.controllerFactory = main.controllerFactory;
-        this.controller = controllerFactory.createSubController(main.controller);
-        this.currentDirectory = main.currentDirectory;
         this.mapAllStreams(main.streamCollection); // get base...
         this.mapAllStreams(streams); // get layer...
         this.environment = (Hashtable)main.environment.clone(); // get copy...
+        this.currentDirectory = main.currentDirectory;
         synchronized (main.subShells) {
             this.shellNumber = main.subShells.size();
             main.subShells.push(this);
         }
-    }
-
-    public Shell createSubShell(Map<Integer, Closeable> streamCollection){
-        return new Shell(this, streamCollection);
     }
 
     private String[] parameters = new String[0];
@@ -123,13 +99,12 @@ public class Shell extends Thread {
             throw new IllegalThreadStateException("Shell is already running");
         }
         running = true;
-        if (controller == null) return;
         try {
-            controller.main(parameters);
+            main(parameters);
         } catch (Exception e){throw new RuntimeException(e);}
         finally {
             running = false;
-            exitCode = controller.exitStatus();
+            exitCode = exitStatus();
         }
     }
 
