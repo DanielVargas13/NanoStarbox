@@ -15,14 +15,14 @@ public class Shell extends Thread {
     public final static int STDERR = 2;
 
     protected void main(String[] parameters) {}
-    protected int exitStatus() {return 0;}
+    protected int exitStatus() {return exitCode;}
 
     private Shell parent;
 
     private final int shellNumber;
-    private int exitCode = -1;
+    private int exitCode = 0;
 
-    protected Stack<Shell> subShells = new Stack<>();
+    protected Stack<Shell> children = new Stack<>();
 
     private String currentDirectory;
     private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
@@ -59,9 +59,9 @@ public class Shell extends Thread {
         this.mapAllStreams(streams); // get layer...
         this.environment = (Hashtable)main.environment.clone(); // get copy...
         this.currentDirectory = main.currentDirectory;
-        synchronized (main.subShells) {
-            this.shellNumber = main.subShells.size();
-            main.subShells.push(this);
+        synchronized (main.children) {
+            this.shellNumber = main.children.size();
+            main.children.push(this);
         }
     }
 
@@ -72,7 +72,9 @@ public class Shell extends Thread {
         if (caller.equals(this)) {
             throw new IllegalThreadStateException("cannot call class method from within shell");
         }
-        this.exitCode = -1;
+        if (running) {
+            throw new IllegalThreadStateException("Shell is already running");
+        }
         this.parameters = parameters;
         this.start();
     }
@@ -89,7 +91,7 @@ public class Shell extends Thread {
         return exitCode;
     }
 
-    boolean running;
+    private boolean running;
     @Override
     public final void run() {
         if (running) {
@@ -153,6 +155,9 @@ public class Shell extends Thread {
 
     @Override
     public final synchronized void start() {
+        if (running) {
+            throw new IllegalThreadStateException("Shell is already running");
+        }
         super.start();
     }
 
