@@ -14,9 +14,9 @@ public class Shell extends Thread {
     private Map<Integer, Closeable> streamCollection = new Hashtable<>(3);
 
     public Hashtable<String, String> environment;
-    private IShellExecutive controller;
+    private IExecutive controller;
 
-    public interface IShellExecutive {
+    public interface IExecutive {
         void main(String[] parameters);
         int exitStatus();
     }
@@ -43,11 +43,11 @@ public class Shell extends Thread {
         for(Integer stream:data.keySet()) setStream(stream, data.get(stream));
     }
 
-    public Shell(IShellExecutive controller) {
+    public Shell(IExecutive controller) {
         this(controller, null);
     }
 
-    public Shell(IShellExecutive controller, Map<Integer, Closeable> streamCollection){
+    public Shell(IExecutive controller, Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
         this.controller = controller;
         this.environment = new Hashtable<>(System.getenv());
@@ -58,7 +58,7 @@ public class Shell extends Thread {
         this.setCurrentDirectory(System.getProperty("user.dir"));
     }
 
-    private Shell(Shell main, IShellExecutive controller, Map<Integer, Closeable> streams) {
+    private Shell(Shell main, IExecutive controller, Map<Integer, Closeable> streams) {
         this.parent = main;
         this.controller = controller;
         this.currentDirectory = main.currentDirectory;
@@ -71,7 +71,11 @@ public class Shell extends Thread {
         }
     }
 
-    public Shell createSubshell(IShellExecutive controller, Map<Integer, Closeable> streamCollection){
+    public Shell createSubshell(IExecutive controller){
+        return new Shell(this, controller, null);
+    }
+
+    public Shell createSubshell(IExecutive controller, Map<Integer, Closeable> streamCollection){
         return new Shell(this, controller, streamCollection);
     }
 
