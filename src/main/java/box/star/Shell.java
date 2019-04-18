@@ -8,8 +8,8 @@ import java.util.Stack;
 public class Shell extends Thread {
 
     public interface IExecutiveFactory {
-        IExecutive getMainShell();
-        IExecutive getSubShell(IExecutive mainShell);
+        IExecutive getMainController();
+        IExecutive getSubController(IExecutive mainShell);
     }
 
     public interface IExecutive {
@@ -57,7 +57,7 @@ public class Shell extends Thread {
     public Shell(IExecutiveFactory factory, Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
         this.controllerFactory = factory;
-        this.controller = factory.getMainShell();
+        this.controller = factory.getMainController();
         this.environment = new Hashtable<>(System.getenv());
         setStream(0, System.in);
         setStream(1, System.out);
@@ -69,7 +69,7 @@ public class Shell extends Thread {
     private Shell(Shell main, Map<Integer, Closeable> streams) {
         this.parent = main;
         this.controllerFactory = main.controllerFactory;
-        this.controller = controllerFactory.getSubShell(main.controller);
+        this.controller = controllerFactory.getSubController(main.controller);
         this.currentDirectory = main.currentDirectory;
         this.mapAllStreams(main.streamCollection); // get base...
         this.mapAllStreams(streams); // get layer...

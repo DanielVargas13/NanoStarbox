@@ -11,7 +11,7 @@ class ShellTest {
     Shell.IExecutiveFactory shellFactory = new Shell.IExecutiveFactory() {
 
         @Override
-        public Shell.IExecutive getMainShell() {
+        public Shell.IExecutive getMainController() {
             return new Shell.IExecutive() {
                 @Override
                 public void main(String[] parameters) {
@@ -31,8 +31,8 @@ class ShellTest {
         }
 
         @Override
-        public Shell.IExecutive getSubShell(Shell.IExecutive mainShell) {
-            return getMainShell();
+        public Shell.IExecutive getSubController(Shell.IExecutive mainShell) {
+            return getMainController();
         }
 
     };
