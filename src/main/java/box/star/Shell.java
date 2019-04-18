@@ -69,6 +69,11 @@ public class Shell extends Thread {
         this.environment = new Hashtable<>(System.getenv());
     }
 
+    /**
+     * Sub Shell Builder
+     * @param main
+     * @param streams
+     */
     private Shell(Shell main, Map<Integer, Closeable> streams) {
         super(Shell.class.getName());
         this.parent = main;
