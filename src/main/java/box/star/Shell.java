@@ -24,7 +24,7 @@ public class Shell extends Thread {
     private String resolve(String file){
         boolean local = file == null || file.equals("") ||
                 file.equals(".") || file.startsWith("./") ||
-                (! file.startsWith("/") && ! file.matches("^[a-zA-Z]:/"));
+                (! file.startsWith("/") && ! file.matches("^[a-zA-Z]:"));
         return ((local)?new File(currentDirectory, file):new File(file)).getPath();
     }
 
@@ -43,7 +43,11 @@ public class Shell extends Thread {
         for(Integer stream:data.keySet()) setStream(stream, data.get(stream));
     }
 
-    public Shell(Map<Integer, Closeable>streamCollection, IShellExecutive controller){
+    public Shell(IShellExecutive controller) {
+        this(controller, null);
+    }
+
+    public Shell(IShellExecutive controller, Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
         this.controller = controller;
         this.environment = new Hashtable<>(System.getenv());
@@ -54,7 +58,7 @@ public class Shell extends Thread {
         this.setCurrentDirectory(System.getProperty("user.dir"));
     }
 
-    private Shell(Shell main, Map<Integer, Closeable> streams, IShellExecutive controller) {
+    private Shell(Shell main, IShellExecutive controller, Map<Integer, Closeable> streams) {
         this.parent = main;
         this.controller = controller;
         this.currentDirectory = main.currentDirectory;
@@ -67,18 +71,26 @@ public class Shell extends Thread {
         }
     }
 
-    public Shell createSubshell(Map<Integer, Closeable>streamCollection, IShellExecutive controller){
-        return new Shell(this, streamCollection, controller);
+    public Shell createSubshell(IShellExecutive controller, Map<Integer, Closeable> streamCollection){
+        return new Shell(this, controller, streamCollection);
     }
 
     private String[] parameters = new String[0];
 
     public void exec(String... parameters){
+        Thread caller = Thread.currentThread();
+        if (caller.equals(this)) {
+            throw new IllegalThreadStateException("cannot call class method from within shell");
+        }
         this.parameters = parameters;
         this.start();
     }
 
-    public int getExitCode() {
+    public int getExitStatus() {
+        Thread caller = Thread.currentThread();
+        if (caller.equals(this)) {
+            throw new IllegalThreadStateException("cannot call own class method from within shell");
+        }
         if (this.isAlive()) {
             try { this.join();
             } catch (InterruptedException e) {}
@@ -86,13 +98,19 @@ public class Shell extends Thread {
         return exitCode;
     }
 
+    boolean running;
     @Override
     public void run() {
+        if (running) {
+            throw new IllegalThreadStateException("Shell is already running");
+        }
+        running = true;
         if (controller == null) return;
         try {
             controller.main(parameters);
         } catch (Exception e){throw new RuntimeException(e);}
         finally {
+            running = false;
             exitCode = controller.exitStatus();
         }
     }
@@ -108,31 +126,31 @@ public class Shell extends Thread {
         return currentDirectory;
     }
 
-    public Closeable getStream(int number) {
-        return streamCollection.get(number);
+    public Closeable getStream(int stream) {
+        return streamCollection.get(stream);
     }
 
-    public void setStream(int number, Closeable source) {
-        if (number == 2) {
+    public void setStream(int stream, Closeable source) {
+        if (stream == 2) {
             if (!(source instanceof OutputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard error"));
-        } else if (number == 1) {
+        } else if (stream == 1) {
             if (!(source instanceof OutputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard output"));
-        } else if (number == 0) {
+        } else if (stream == 0) {
             if (!(source instanceof InputStream)) throw new RuntimeException(new IllegalArgumentException("Wrong parameter type for standard input"));
         }
-        streamCollection.put(number, source);
+        streamCollection.put(stream, source);
     }
 
-    public BufferedReader getBufferedReader(int channel, int size) {
-        return new BufferedReader(new InputStreamReader((InputStream)getStream(channel)), size);
+    public BufferedReader getBufferedReader(int stream, int size) {
+        return new BufferedReader(new InputStreamReader((InputStream)getStream(stream)), size);
     }
 
-    public BufferedReader getBufferedReader(int channel) {
-        return getBufferedReader(channel, 4096);
+    public BufferedReader getBufferedReader(int stream) {
+        return getBufferedReader(stream, 4096);
     }
 
-    public PrintWriter getPrintWriter(int channel) {
-        return new PrintWriter((OutputStream)getStream(channel));
+    public PrintWriter getPrintWriter(int stream) {
+        return new PrintWriter((OutputStream)getStream(stream));
     }
 
     public Shell getParent(){
