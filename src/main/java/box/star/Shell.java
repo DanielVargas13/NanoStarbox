@@ -116,6 +116,15 @@ public class Shell extends Thread {
 
     public final String getCurrentDirectory() { return currentDirectory; }
 
+    public boolean haveStream(int stream) {
+        return streamCollection.containsKey(stream);
+    }
+
+    public boolean haveStream(int stream, Class<?> type){
+        Closeable wanted = getStream(stream);
+        return (wanted != null && type.isAssignableFrom(wanted.getClass()));
+    }
+
     public final Closeable getStream(int stream) { return streamCollection.get(stream); }
 
     public final void setStream(int stream, Closeable source) {

@@ -33,12 +33,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2567">
-              <caret line="151" selection-start-line="151" selection-end-line="151" />
+            <state relative-caret-position="139">
+              <caret line="125" column="5" lean-forward="true" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#5543#5544#0" expanded="true" />
-                <element signature="e#5880#5881#0" expanded="true" />
+                <element signature="e#3832#3833#0" expanded="true" />
+                <element signature="e#3870#3871#0" expanded="true" />
+                <element signature="e#5540#5541#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -47,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+            <state relative-caret-position="272">
+              <caret line="20" column="45" selection-start-line="20" selection-start-column="45" selection-end-line="20" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -489,9 +490,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ShellTest_run - 2019.04.18 at 12h 00m 17s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="ShellTest_run - 2019.04.18 at 12h 02m 27s.xml">
       <configuration name="ShellTest.run" configurationId="JUnit" />
     </history-entry>
@@ -519,11 +517,15 @@
     <history-entry file="ShellTest_run - 2019.04.18 at 15h 07m 00s.xml">
       <configuration name="ShellTest.run" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ShellTest_run - 2019.04.18 at 16h 13m 00s.xml">
+      <configuration name="ShellTest.run" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -605,7 +607,8 @@
     <MESSAGE value="Shell Tech: Factory Main" />
     <MESSAGE value="Shell Tech: Refactor" />
     <MESSAGE value="Shell Tech: v2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shell Tech: v2" />
+    <MESSAGE value="Shell Tech: foundation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shell Tech: foundation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -875,20 +878,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2567">
-          <caret line="151" selection-start-line="151" selection-end-line="151" />
+        <state relative-caret-position="139">
+          <caret line="125" column="5" lean-forward="true" selection-start-line="125" selection-start-column="5" selection-end-line="125" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#5543#5544#0" expanded="true" />
-            <element signature="e#5880#5881#0" expanded="true" />
+            <element signature="e#3832#3833#0" expanded="true" />
+            <element signature="e#3870#3871#0" expanded="true" />
+            <element signature="e#5540#5541#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+        <state relative-caret-position="272">
+          <caret line="20" column="45" selection-start-line="20" selection-start-column="45" selection-end-line="20" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

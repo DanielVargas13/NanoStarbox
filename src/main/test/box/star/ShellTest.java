@@ -2,6 +2,7 @@ package box.star;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShellTest {
 
     Shell sh = new Shell(null) {
+        int myExitCode = 12;
         @Override
         public void main(String[] parameters) {
             try {
@@ -26,7 +28,7 @@ class ShellTest {
         }
         @Override
         public int exitStatus() {
-            return 12;
+            return myExitCode;
         }
     };
 
