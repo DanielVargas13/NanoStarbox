@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShellTest {
 
-    Shell.IExecutiveFactory shellFactory = new Shell.IExecutiveFactory() {
+    Shell.IShellControllerFactory shellFactory = new Shell.IShellControllerFactory() {
 
         @Override
-        public Shell.IExecutive getMainController() {
-            return new Shell.IExecutive() {
+        public Shell.IShellController createMainController() {
+            return new Shell.IShellController() {
                 @Override
                 public void main(String[] parameters) {
                     try {
@@ -22,7 +22,6 @@ class ShellTest {
                         Thread.sleep(Integer.valueOf(parameters[0]));
                     } catch (Exception e) {e.printStackTrace();}
                 }
-
                 @Override
                 public int exitStatus() {
                     return 12;
@@ -31,8 +30,8 @@ class ShellTest {
         }
 
         @Override
-        public Shell.IExecutive getSubController(Shell.IExecutive mainShell) {
-            return getMainController();
+        public Shell.IShellController createSubController(Shell.IShellController context) {
+            return createMainController();
         }
 
     };

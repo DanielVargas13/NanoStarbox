@@ -30,37 +30,31 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1904">
-              <caret line="11" column="31" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
+            <state relative-caret-position="17">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1736#1737#0" expanded="true" />
-                <element signature="e#2866#2867#0" expanded="true" />
-                <element signature="e#2922#2923#0" expanded="true" />
-                <element signature="e#4498#4499#0" expanded="true" />
-                <element signature="e#4595#4596#0" expanded="true" />
-                <element signature="e#5551#5552#0" expanded="true" />
-                <element signature="e#5675#5676#0" expanded="true" />
-                <element signature="e#5330#5331#0" expanded="true" />
-                <element signature="e#5359#5360#0" expanded="true" />
-                <element signature="e#5394#5395#0" expanded="true" />
-                <element signature="e#5431#5432#0" expanded="true" />
-                <element signature="e#5465#5466#0" expanded="true" />
-                <element signature="e#5502#5503#0" expanded="true" />
-                <element signature="e#5947#5948#0" expanded="true" />
+                <element signature="e#1743#1744#0" expanded="true" />
+                <element signature="e#1778#1779#0" expanded="true" />
+                <element signature="e#2992#2993#0" expanded="true" />
+                <element signature="e#3048#3049#0" expanded="true" />
+                <element signature="e#5552#5553#0" expanded="true" />
+                <element signature="e#5606#5607#0" expanded="true" />
+                <element signature="e#5659#5660#0" expanded="true" />
+                <element signature="e#5730#5731#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="578">
+              <caret line="34" column="9" lean-forward="true" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#559#560#0" expanded="true" />
@@ -232,8 +226,8 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
       </list>
     </option>
   </component>
@@ -538,7 +532,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -617,7 +611,9 @@
     <MESSAGE value="Shell Tech: Refactor, Stream Usage" />
     <MESSAGE value="Shell Tech: Convenience Method" />
     <MESSAGE value="Shell Tech: Convenience Method, Refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shell Tech: Convenience Method, Refactor" />
+    <MESSAGE value="Shell Tech: Factory Main" />
+    <MESSAGE value="Shell Tech: Refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shell Tech: Refactor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -981,40 +977,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1904">
-          <caret line="11" column="31" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1736#1737#0" expanded="true" />
-            <element signature="e#2866#2867#0" expanded="true" />
-            <element signature="e#2922#2923#0" expanded="true" />
-            <element signature="e#4498#4499#0" expanded="true" />
-            <element signature="e#4595#4596#0" expanded="true" />
-            <element signature="e#5551#5552#0" expanded="true" />
-            <element signature="e#5675#5676#0" expanded="true" />
-            <element signature="e#5330#5331#0" expanded="true" />
-            <element signature="e#5359#5360#0" expanded="true" />
-            <element signature="e#5394#5395#0" expanded="true" />
-            <element signature="e#5431#5432#0" expanded="true" />
-            <element signature="e#5465#5466#0" expanded="true" />
-            <element signature="e#5502#5503#0" expanded="true" />
-            <element signature="e#5947#5948#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="578">
+          <caret line="34" column="9" lean-forward="true" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#559#560#0" expanded="true" />
             <element signature="e#607#608#0" expanded="true" />
             <element signature="e#998#999#0" expanded="true" />
             <element signature="e#1033#1034#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1743#1744#0" expanded="true" />
+            <element signature="e#1778#1779#0" expanded="true" />
+            <element signature="e#2992#2993#0" expanded="true" />
+            <element signature="e#3048#3049#0" expanded="true" />
+            <element signature="e#5552#5553#0" expanded="true" />
+            <element signature="e#5606#5607#0" expanded="true" />
+            <element signature="e#5659#5660#0" expanded="true" />
+            <element signature="e#5730#5731#0" expanded="true" />
           </folding>
         </state>
       </provider>

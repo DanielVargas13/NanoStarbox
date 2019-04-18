@@ -5,14 +5,17 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Thread based shell implementation.
+ */
 public class Shell extends Thread {
 
-    public interface IExecutiveFactory {
-        IExecutive getMainController();
-        IExecutive getSubController(IExecutive mainShell);
+    public interface IShellControllerFactory {
+        IShellController createMainController();
+        IShellController createSubController(IShellController mainShell);
     }
 
-    public interface IExecutive {
+    public interface IShellController {
         void main(String[] parameters);
         int exitStatus();
     }
@@ -25,8 +28,8 @@ public class Shell extends Thread {
 
     public Hashtable<String, String> environment;
 
-    private IExecutiveFactory controllerFactory;
-    private IExecutive controller;
+    private IShellControllerFactory controllerFactory;
+    private IShellController controller;
 
     private String resolve(String file){
         boolean local = file == null || file.equals("") ||
@@ -50,26 +53,27 @@ public class Shell extends Thread {
         for(Integer stream:data.keySet()) setStream(stream, data.get(stream));
     }
 
-    public Shell(IExecutiveFactory factory) {
+    public Shell(IShellControllerFactory factory) {
         this(factory, null);
     }
 
-    public Shell(IExecutiveFactory factory, Map<Integer, Closeable> streamCollection){
+    public Shell(IShellControllerFactory factory, Map<Integer, Closeable> streamCollection){
         super(Shell.class.getName());
         this.controllerFactory = factory;
-        this.controller = factory.getMainController();
-        this.environment = new Hashtable<>(System.getenv());
+        this.controller = factory.createMainController();
+        this.setCurrentDirectory(System.getProperty("user.dir"));
         setStream(0, System.in);
         setStream(1, System.out);
         setStream(2, System.err);
         this.mapAllStreams(streamCollection);
-        this.setCurrentDirectory(System.getProperty("user.dir"));
+        this.environment = new Hashtable<>(System.getenv());
     }
 
     private Shell(Shell main, Map<Integer, Closeable> streams) {
+        super(Shell.class.getName());
         this.parent = main;
         this.controllerFactory = main.controllerFactory;
-        this.controller = controllerFactory.getSubController(main.controller);
+        this.controller = controllerFactory.createSubController(main.controller);
         this.currentDirectory = main.currentDirectory;
         this.mapAllStreams(main.streamCollection); // get base...
         this.mapAllStreams(streams); // get layer...
@@ -131,13 +135,9 @@ public class Shell extends Thread {
         this.currentDirectory = currentDirectory;
     }
 
-    public String getCurrentDirectory() {
-        return currentDirectory;
-    }
+    public String getCurrentDirectory() { return currentDirectory; }
 
-    public Closeable getStream(int stream) {
-        return streamCollection.get(stream);
-    }
+    public Closeable getStream(int stream) { return streamCollection.get(stream); }
 
     public void setStream(int stream, Closeable source) {
         if (stream == 2) {
@@ -162,20 +162,12 @@ public class Shell extends Thread {
         return new PrintWriter((OutputStream)getStream(stream));
     }
 
-    public Shell getParent(){
-        return parent;
-    }
+    public Shell getParent(){ return parent; }
 
-    public boolean isRootShell(){
-        return parent == null;
-    }
+    public boolean isRootShell(){ return parent == null; }
 
-    public boolean isSubShell(){
-        return parent != null;
-    }
+    public boolean isSubShell(){ return parent != null; }
 
-    public int getShellNumber() {
-        return shellNumber;
-    }
+    public int getShellNumber() { return shellNumber; }
 
 }
