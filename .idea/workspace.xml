@@ -2,9 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Environment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Process.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Process.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/test/box/star/ThreadGroupTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/XT3_ONE.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/XT3_ONE.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/Shell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/Shell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/Shell.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,61 +32,58 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" selection-start-line="4" selection-end-line="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="152" selection-start-line="152" selection-end-line="152" />
+            <state relative-caret-position="119">
+              <caret line="7" column="16" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3832#3833#0" expanded="true" />
-                <element signature="e#3870#3871#0" expanded="true" />
+                <element signature="e#489#490#0" expanded="true" />
+                <element signature="e#528#529#0" expanded="true" />
+                <element signature="e#850#851#0" expanded="true" />
+                <element signature="e#875#876#0" expanded="true" />
+                <element signature="e#1340#1341#0" expanded="true" />
+                <element signature="e#1378#1379#0" expanded="true" />
+                <element signature="e#1928#1929#0" expanded="true" />
+                <element signature="e#1959#1960#0" expanded="true" />
+                <element signature="e#1869#1870#0" expanded="true" />
+                <element signature="e#1909#1910#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
+        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="136">
+              <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#446#447#0" expanded="true" />
-                <element signature="e#541#542#0" expanded="true" />
+                <element signature="e#324#325#0" expanded="true" />
+                <element signature="e#418#419#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
+        <entry file="file://$PROJECT_DIR$/../test.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="17">
+              <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Process.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="442">
+              <caret line="81" selection-start-line="81" selection-end-line="81" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2268#2269#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -160,24 +167,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/RhinoException.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/web/Template.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/shell/Global.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/mozilla/javascript/Parser.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/store/StateContainer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/protocols/http/HTTPService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/util/JavaDocumentProvider.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/util/DocumentProvider.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/util/WebServerPage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/ObjectStore.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/PersistantObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/PersistentObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/StateObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/web/DocumentRouter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/util/DocumentServiceRunner.java" />
-        <option value="$PROJECT_DIR$/src/main/test/box/star/io/store/StateObjectTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/store/StateObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/opkit/Parameters.java" />
         <option value="$PROJECT_DIR$/sample/site/static-page.html" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/io/web/TemplateTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/VirtualPage.java" />
@@ -206,11 +195,29 @@
         <option value="$PROJECT_DIR$/plugin/README.MD" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/util/ShellTest.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/ThreadGroup.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/util/Process.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/IO.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Environment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/IShellRunnable.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java" />
+        <option value="$PROJECT_DIR$/test.bat" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/ShellTest.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/ThreadGroupTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Process.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" />
+        <option value="$PROJECT_DIR$/../test.sh" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/ShellTest.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java" />
       </list>
     </option>
   </component>
@@ -247,24 +254,6 @@
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-              <item name="site" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-              <item name="site" type="462c0819:PsiDirectoryNode" />
-              <item name="rhino-web-driver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -305,17 +294,7 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="io" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-              <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="exec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -340,6 +319,16 @@
               <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="exec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -379,6 +368,32 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="lang" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; 1.8 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="rt.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="concurrent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -393,6 +408,7 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553645091194" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JAVA" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js" />
@@ -403,10 +419,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="box.star.exec" />
+      <recent name="box.star.util" />
       <recent name="box.star" />
       <recent name="box.star.js" />
       <recent name="box.star.io.store" />
-      <recent name="box.star.io.web" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
       <recent name="box.star" />
@@ -423,6 +440,8 @@
       <recent name="box.star.js" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="box.star.exec" />
+      <recent name="box" />
       <recent name="box.star" />
       <recent name="box.star.js" />
       <recent name="box.star.io.web" />
@@ -454,8 +473,68 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="ShellTest.run" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.ShellTest.main (1)">
+    <configuration name="ShellTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="box.star.exec.ShellTest" />
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.exec.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShellTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box" />
+      <option name="MAIN_CLASS_NAME" value="box.ShellTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShellTest.main (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.exec.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box.star.exec" />
+      <option name="MAIN_CLASS_NAME" value="box.star.exec.ShellTest" />
+      <option name="METHOD_NAME" value="main" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShellTest.main" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box" />
+      <option name="MAIN_CLASS_NAME" value="box.ShellTest" />
+      <option name="METHOD_NAME" value="main" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ThreadGroupTest.program" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="NanoStarbox" />
       <extension name="coverage">
         <pattern>
@@ -464,8 +543,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="box.star" />
-      <option name="MAIN_CLASS_NAME" value="box.star.ShellTest" />
-      <option name="METHOD_NAME" value="run" />
+      <option name="MAIN_CLASS_NAME" value="box.star.ThreadGroupTest" />
+      <option name="METHOD_NAME" value="program" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -473,7 +552,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ShellTest.run" />
+        <item itemvalue="JUnit.ShellTest.main (1)" />
+        <item itemvalue="Application.ShellTest" />
+        <item itemvalue="JUnit.ThreadGroupTest.program" />
+        <item itemvalue="JUnit.ShellTest.main" />
+        <item itemvalue="JUnit.ShellTest (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -491,40 +574,71 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ShellTest_run - 2019.04.18 at 12h 02m 40s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ShellTest_(1) - 2019.04.19 at 09h 59m 12s.xml">
+      <configuration name="ShellTest (1)" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 12h 03m 07s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ShellTest_(1) - 2019.04.19 at 10h 08m 13s.xml">
+      <configuration name="ShellTest (1)" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 12h 06m 49s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ShellTest_main - 2019.04.19 at 10h 17m 05s.xml">
+      <configuration name="ShellTest.main" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 12h 39m 23s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ShellTest_main - 2019.04.19 at 10h 18m 44s.xml">
+      <configuration name="ShellTest.main" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 14h 52m 02s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ShellTest_main - 2019.04.19 at 10h 19m 37s.xml">
+      <configuration name="ShellTest.main" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 14h 52m 30s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 22m 40s.xml">
+      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 15h 01m 14s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 24m 00s.xml">
+      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 15h 07m 00s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 26m 57s.xml">
+      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 16h 13m 00s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 27m 31s.xml">
+      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ShellTest_run - 2019.04.18 at 16h 23m 53s.xml">
-      <configuration name="ShellTest.run" configurationId="JUnit" />
+    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 28m 09s.xml">
+      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
+      <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" sideWeight="0.50364965" side_tool="true" weight="0.24627976" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3627451" />
+      <window_info anchor="bottom" auto_hide="true" id="Run" order="2" sideWeight="0.49776787" weight="0.5522876" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4003268" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.34313726" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50223213" side_tool="true" weight="0.35457516" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32843137" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.32843137" />
+      <window_info anchor="bottom" id="Script Monkey" order="11" weight="0.32843137" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24962178" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Maven" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" order="8" side_tool="true" weight="0.10363086" />
+    </layout>
+    <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
       <window_info id="Image Layers" order="2" />
@@ -553,35 +667,6 @@
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" order="8" side_tool="true" weight="0.25567323" />
-    </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17810458" visible="true" weight="0.3221726" />
-      <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8218954" side_tool="true" weight="0.3221726" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" sideWeight="0.50364965" side_tool="true" weight="0.24627976" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.76797384" />
-      <window_info anchor="bottom" auto_hide="true" id="Run" order="2" sideWeight="0.49776787" weight="0.5522876" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39869282" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.34313726" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50223213" side_tool="true" weight="0.35457516" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.32843137" />
-      <window_info anchor="bottom" id="Script Monkey" order="11" weight="0.32843137" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24962178" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Maven" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout-to-restore>
   </component>
   <component name="VcsManagerConfiguration">
@@ -623,109 +708,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/ScriptRuntime.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/protocols/http/HTTPService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="68" selection-start-line="68" selection-end-line="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/etc/MimeTypeMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Object.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="554" column="19" selection-start-line="554" selection-start-column="19" selection-end-line="554" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/io/store/StateObjectTest.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/store/StateObject.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/opkit/Parameters.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-571">
-          <caret line="101" column="16" selection-start-line="101" selection-start-column="16" selection-end-line="101" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Page.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/WebServerPageTest.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/mime-type/default-mimetypes.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Timer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/etc/usr/UserCredentialsManager.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/io/store/ConfigurationTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="20" column="29" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/store/CacheObjectFile.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/util/HTTPServiceHost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="50" column="25" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/protocols/http/HTTPClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-218">
-          <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/protocols/http/sockets/SecureServerSocketFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="41">
-          <caret line="46" column="13" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/protocols/http/content/ContentType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="40" column="5" lean-forward="true" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/web/DocumentRouter.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/mozilla/javascript/tools/debugger/Main.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/store/Configuration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2805">
-          <caret line="187" selection-start-line="187" selection-end-line="187" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5491#5492#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/store/ObjectSerializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -852,13 +834,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Thread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="698" column="29" selection-start-line="698" selection-start-column="29" selection-end-line="698" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -866,36 +841,271 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Runtime.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+        <state>
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
-          <caret line="152" selection-start-line="152" selection-end-line="152" />
+          <caret line="382" selection-start-line="374" selection-end-line="382" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Process.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="959">
+          <caret line="214" column="24" selection-start-line="214" selection-start-column="24" selection-end-line="214" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ShellTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" selection-start-line="6" selection-end-line="7" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3832#3833#0" expanded="true" />
-            <element signature="e#3870#3871#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Process.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="77" selection-start-line="72" selection-end-line="77" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#439#440#0" expanded="true" />
+            <element signature="e#458#459#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="69" selection-start-line="58" selection-end-line="69" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#417#418#0" expanded="true" />
+            <element signature="e#457#458#0" expanded="true" />
+            <element signature="e#914#915#0" expanded="true" />
+            <element signature="e#953#954#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/concurrent/ConcurrentHashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="1080" column="16" selection-start-line="1080" selection-start-column="16" selection-end-line="1080" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Environment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#181#182#0" expanded="true" />
+            <element signature="e#200#201#0" expanded="true" />
+            <element signature="e#236#237#0" expanded="true" />
+            <element signature="e#265#266#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="76" selection-start-line="76" selection-end-line="76" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#574#575#0" expanded="true" />
+            <element signature="e#641#642#0" expanded="true" />
+            <element signature="e#671#672#0" expanded="true" />
+            <element signature="e#738#739#0" expanded="true" />
+            <element signature="e#673#674#0" expanded="true" />
+            <element signature="e#700#701#0" expanded="true" />
+            <element signature="e#718#719#0" expanded="true" />
+            <element signature="e#752#753#0" expanded="true" />
+            <element signature="e#855#856#0" expanded="true" />
+            <element signature="e#882#883#0" expanded="true" />
+            <element signature="e#920#921#0" expanded="true" />
+            <element signature="e#946#947#0" expanded="true" />
+            <element signature="e#1011#1012#0" expanded="true" />
+            <element signature="e#1044#1045#0" expanded="true" />
+            <element signature="e#1076#1077#0" expanded="true" />
+            <element signature="e#1127#1128#0" expanded="true" />
+            <element signature="e#1214#1215#0" expanded="true" />
+            <element signature="e#1249#1250#0" expanded="true" />
+            <element signature="e#1311#1312#0" expanded="true" />
+            <element signature="e#1339#1340#0" expanded="true" />
+            <element signature="e#1900#1901#0" expanded="true" />
+            <element signature="e#1937#1938#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="204">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#446#447#0" expanded="true" />
-            <element signature="e#541#542#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Thread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="698" column="29" selection-start-line="698" selection-start-column="29" selection-end-line="698" selection-end-column="29" />
+          <folding>
+            <element signature="e#44253#44254#0" expanded="true" />
+            <element signature="e#44281#44282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/IShellRunnable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="95" column="33" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="5" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ThreadGroupTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/ShellTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#198#199#0" expanded="true" />
+            <element signature="e#236#237#0" expanded="true" />
+            <element signature="e#422#423#0" expanded="true" />
+            <element signature="e#490#491#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Process.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="81" selection-start-line="81" selection-end-line="81" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2268#2269#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../test.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="16" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#489#490#0" expanded="true" />
+            <element signature="e#528#529#0" expanded="true" />
+            <element signature="e#850#851#0" expanded="true" />
+            <element signature="e#875#876#0" expanded="true" />
+            <element signature="e#1340#1341#0" expanded="true" />
+            <element signature="e#1378#1379#0" expanded="true" />
+            <element signature="e#1928#1929#0" expanded="true" />
+            <element signature="e#1959#1960#0" expanded="true" />
+            <element signature="e#1869#1870#0" expanded="true" />
+            <element signature="e#1909#1910#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/ShellTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#324#325#0" expanded="true" />
+            <element signature="e#418#419#0" expanded="true" />
           </folding>
         </state>
       </provider>

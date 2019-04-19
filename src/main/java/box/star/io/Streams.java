@@ -1,6 +1,5 @@
 package box.star.io;
 
-import box.star.Shell;
 import com.sun.istack.internal.NotNull;
 
 import java.io.*;
