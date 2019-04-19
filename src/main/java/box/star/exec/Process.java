@@ -36,22 +36,26 @@ public class Process extends Thread {
         OutputStream outputStream = io.getOutputStream(1);
         OutputStream errorStream = io.getOutputStream(2);
 
+        InputStream sourceError = process.getErrorStream();
+        InputStream sourceOutput = process.getInputStream();
+        OutputStream sourceInput = process.getOutputStream();
+
         byte[] buf = new byte[4096]; int n;
 
         while (process.isAlive()) {
             try {
                 if (inputStream != null && inputStream.available() > 0) {
                     n = inputStream.read(buf);
-                    process.getOutputStream().write(buf, 0, n);
-                    process.getOutputStream().flush();
+                    sourceInput.write(buf, 0, n);
+                    sourceInput.flush();
                 }
-                if (errorStream != null && process.getErrorStream().available() > 0) {
-                    n = process.getErrorStream().read(buf);
+                if (errorStream != null && sourceError.available() > 0) {
+                    n = sourceError.read(buf);
                     errorStream.write(buf, 0, n);
                     errorStream.flush();
                 }
-                if (outputStream != null && process.getInputStream().available() > 0)  {
-                    n = process.getInputStream().read(buf);
+                if (outputStream != null && sourceOutput.available() > 0)  {
+                    n = sourceOutput.read(buf);
                     outputStream.write(buf, 0, n);
                     outputStream.flush();
                 }
