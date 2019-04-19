@@ -51,24 +51,28 @@ public class Streams {
         return (OutputStream) streams.get(2);
     }
 
-    Closeable getStream(int stream) {
+    Closeable get(int stream) {
         return streams.get(stream);
     }
 
+    Streams set(int stream, Closeable value) {
+        streams.put(stream, value);
+        return this;
+    }
+    Streams set(int dest, int source) {
+        streams.put(dest, streams.get(source));
+        return this;
+    }
     OutputStream getOutputStream(int stream) {
-        Closeable value = getStream(stream);
+        Closeable value = get(stream);
         if (value instanceof OutputStream) return (OutputStream) value;
         throw new RuntimeException("stream #"+stream+" is not an OutputStream");
     }
 
     InputStream getInputStream(int stream) {
-        Closeable value = getStream(stream);
+        Closeable value = get(stream);
         if (value instanceof InputStream) return (InputStream) value;
         throw new RuntimeException("stream #"+stream+" is not an InputStream");
-    }
-
-    void setStream(int stream, Closeable value) {
-        streams.put(stream, value);
     }
 
     public void map(Streams streams) {

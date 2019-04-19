@@ -40,6 +40,10 @@ public class Shell extends ThreadGroup {
         return currentDirectory;
     }
 
+    public Process createProcess(){
+        return createProcess(null);
+    }
+
     public Process createProcess(Streams io){
         return new Process(this, io);
     }
@@ -78,15 +82,21 @@ public class Shell extends ThreadGroup {
         return exitCode = process.getExitCode();
     }
 
-    public void start(Shell subshell) {
+    public Shell start(Shell subshell) {
         subshell.thread.start();
         background.add(subshell.thread);
+        return subshell;
     }
 
 
-    public void start(Process process, String... parameters){
+    public Process start(Process process, String... parameters){
         process.start(parameters);
         background.add(process);
+        return process;
+    }
+
+    public Process start(String... parameters) {
+        return start(createProcess(null), parameters);
     }
 
     private int exitCode = -1;

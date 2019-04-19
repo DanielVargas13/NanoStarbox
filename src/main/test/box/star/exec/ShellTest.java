@@ -8,12 +8,14 @@ class ShellTest {
 
     @Test void main() {
         Shell shell = new Shell();
-        Streams out = new Streams();
-        shell.run(shell.createSubshell(out, new Shell.ISubshell() {
+        // Shell.run() runs in foreground
+        shell.run(shell.createSubshell(new Shell.ISubshell() {
             @Override
             public void run(Shell shell) {
-                shell.start(shell.createProcess(null), "cmd", "/c", "dir");
-                shell.setExitCode(0);
+                Process process = shell.createProcess();
+                process.io.set(1, 2); // redirect stdout to stderr
+                shell.start(process,"cmd", "/c", "dir"); // Shell.start() runs in background
+                shell.setExitCode(process.getExitCode());
             }
         }));
 

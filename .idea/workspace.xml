@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Process.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
-              <caret line="86" column="16" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
+              <caret line="42" column="19" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#489#490#0" expanded="true" />
@@ -36,6 +37,8 @@
                 <element signature="e#1378#1379#0" expanded="true" />
                 <element signature="e#1928#1929#0" expanded="true" />
                 <element signature="e#1959#1960#0" expanded="true" />
+                <element signature="e#2500#2501#0" expanded="true" />
+                <element signature="e#2529#2530#0" expanded="true" />
                 <element signature="e#1869#1870#0" expanded="true" />
                 <element signature="e#1909#1910#0" expanded="true" />
               </folding>
@@ -46,8 +49,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="1" lean-forward="true" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+            <state relative-caret-position="323">
+              <caret line="19" column="12" lean-forward="true" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -56,12 +59,14 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/io/Streams.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            <state relative-caret-position="306">
+              <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="63" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#738#739#0" expanded="true" />
+                <element signature="e#772#773#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -205,7 +210,6 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/IO.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Environment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/IShellRunnable.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java" />
         <option value="$PROJECT_DIR$/test.bat" />
@@ -213,10 +217,11 @@
         <option value="$PROJECT_DIR$/src/main/test/box/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ThreadGroupTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Process.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" />
         <option value="$PROJECT_DIR$/../test.sh" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Streams.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java" />
       </list>
     </option>
@@ -294,7 +299,7 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="exec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -319,6 +324,16 @@
               <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="exec" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -564,24 +579,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ShellTest_main - 2019.04.19 at 10h 18m 44s.xml">
-      <configuration name="ShellTest.main" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ShellTest_main - 2019.04.19 at 10h 19m 37s.xml">
-      <configuration name="ShellTest.main" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 22m 40s.xml">
-      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 24m 00s.xml">
-      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 26m 57s.xml">
-      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 27m 31s.xml">
-      <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="ThreadGroupTest_program - 2019.04.19 at 10h 28m 09s.xml">
       <configuration name="ThreadGroupTest.program" configurationId="JUnit" />
     </history-entry>
@@ -594,11 +591,30 @@
     <history-entry file="ShellTest_main_(1) - 2019.04.19 at 10h 56m 09s.xml">
       <configuration name="ShellTest.main (1)" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 03m 37s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 04m 25s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 11m 18s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 12m 19s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 13m 02s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ShellTest_main_(1) - 2019.04.19 at 11h 16m 02s.xml">
+      <configuration name="ShellTest.main (1)" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.8251634" side_tool="true" weight="0.34449404" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -625,7 +641,7 @@
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" order="8" side_tool="true" weight="0.10363086" />
+      <window_info anchor="right" x="0" y="0" width="295" height="544" id="Documentation" order="8" side_tool="true" weight="0.18078668" />
     </layout>
     <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.1748366" visible="true" weight="0.35022694" />
@@ -915,38 +931,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="76" selection-start-line="76" selection-end-line="76" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#574#575#0" expanded="true" />
-            <element signature="e#641#642#0" expanded="true" />
-            <element signature="e#671#672#0" expanded="true" />
-            <element signature="e#738#739#0" expanded="true" />
-            <element signature="e#673#674#0" expanded="true" />
-            <element signature="e#700#701#0" expanded="true" />
-            <element signature="e#718#719#0" expanded="true" />
-            <element signature="e#752#753#0" expanded="true" />
-            <element signature="e#855#856#0" expanded="true" />
-            <element signature="e#882#883#0" expanded="true" />
-            <element signature="e#920#921#0" expanded="true" />
-            <element signature="e#946#947#0" expanded="true" />
-            <element signature="e#1011#1012#0" expanded="true" />
-            <element signature="e#1044#1045#0" expanded="true" />
-            <element signature="e#1076#1077#0" expanded="true" />
-            <element signature="e#1127#1128#0" expanded="true" />
-            <element signature="e#1214#1215#0" expanded="true" />
-            <element signature="e#1249#1250#0" expanded="true" />
-            <element signature="e#1311#1312#0" expanded="true" />
-            <element signature="e#1339#1340#0" expanded="true" />
-            <element signature="e#1900#1901#0" expanded="true" />
-            <element signature="e#1937#1938#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -1058,26 +1042,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="86" column="16" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#489#490#0" expanded="true" />
-            <element signature="e#528#529#0" expanded="true" />
-            <element signature="e#850#851#0" expanded="true" />
-            <element signature="e#875#876#0" expanded="true" />
-            <element signature="e#1340#1341#0" expanded="true" />
-            <element signature="e#1378#1379#0" expanded="true" />
-            <element signature="e#1928#1929#0" expanded="true" />
-            <element signature="e#1959#1960#0" expanded="true" />
-            <element signature="e#1869#1870#0" expanded="true" />
-            <element signature="e#1909#1910#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ThreadGroupTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -1088,10 +1052,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="42" column="19" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#489#490#0" expanded="true" />
+            <element signature="e#528#529#0" expanded="true" />
+            <element signature="e#850#851#0" expanded="true" />
+            <element signature="e#875#876#0" expanded="true" />
+            <element signature="e#1340#1341#0" expanded="true" />
+            <element signature="e#1378#1379#0" expanded="true" />
+            <element signature="e#1928#1929#0" expanded="true" />
+            <element signature="e#1959#1960#0" expanded="true" />
+            <element signature="e#2500#2501#0" expanded="true" />
+            <element signature="e#2529#2530#0" expanded="true" />
+            <element signature="e#1869#1870#0" expanded="true" />
+            <element signature="e#1909#1910#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="63" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#738#739#0" expanded="true" />
+            <element signature="e#772#773#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/exec/ShellTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="1" lean-forward="true" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
+        <state relative-caret-position="323">
+          <caret line="19" column="12" lean-forward="true" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
