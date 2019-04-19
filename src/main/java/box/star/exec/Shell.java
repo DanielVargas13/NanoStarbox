@@ -86,6 +86,7 @@ public class Shell extends ThreadGroup {
      */
     public Shell createSubshell(Streams io, ISubshell subshellInterface) {
         Shell shell = new Shell(this);
+        shell.io.map(io);
         shell.thread = new Thread(this, "Subshell"){
             @Override
             public void run() {

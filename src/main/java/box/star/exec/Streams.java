@@ -59,10 +59,12 @@ public class Streams {
         streams.put(stream, value);
         return this;
     }
+
     Streams set(int dest, int source) {
         streams.put(dest, streams.get(source));
         return this;
     }
+
     OutputStream getOutputStream(int stream) {
         Closeable value = get(stream);
         if (value instanceof OutputStream) return (OutputStream) value;
@@ -75,8 +77,9 @@ public class Streams {
         throw new RuntimeException("stream #"+stream+" is not an InputStream");
     }
 
-    public void map(Streams streams) {
-        this.streams.putAll(streams.streams);
+    public void map(Streams source) {
+        if (source == null) return;
+        this.streams.putAll(source.streams);
     }
 
 }
