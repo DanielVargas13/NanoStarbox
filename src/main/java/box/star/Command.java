@@ -3,10 +3,8 @@ package box.star;
 import com.sun.istack.internal.NotNull;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -97,6 +95,22 @@ public class Command {
         this.parameters = parameters;
     }
 
+    public Command apply(String... parameters) {
+        return new Command(this, parameters);
+    }
+
+    public Command connect(Command start){
+        return Command.chain(this).pipe(start);
+    }
+
+    private Command(Command command, String... parameters) {
+        this.command = command.command;
+        List<String> p = new ArrayList<>();
+        p.addAll(Arrays.asList(command.parameters));
+        p.addAll(Arrays.asList(parameters));
+        String[] n = new String[p.size()];
+        this.parameters = p.toArray(n);
+    }
     /**
      * <p>Sets the read-redirection stream for this command.</p>
      *
