@@ -40,7 +40,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     }
 
     @Override
-    public void onStart(Closeable[] pipe) {
+    final public void onStart(Closeable[] pipe) {
         this.pipe = pipe;
         running = true;
         synchronized (startupMonitor){
@@ -55,7 +55,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     }
 
     @Override
-    public void onExit(int value) {
+    final public void onExit(int value) {
         joinChildren();
         running = false;
         exitValue = value;
@@ -66,7 +66,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
 
     @Override
     public void onException(Exception e) {
-        e.printStackTrace();
+        //e.printStackTrace();
         synchronized (startupMonitor){
             startupMonitor.notifyAll();
         }
@@ -89,7 +89,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
 
     public int getExitValue() {
         if (isRunning()) join();
-        return exitValue;
+        return pipeChain.peek().exitValue;
     }
 
     public Command(Environment environment, String... parameters) {

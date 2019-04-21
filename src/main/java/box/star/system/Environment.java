@@ -23,6 +23,10 @@ public class Environment extends ConcurrentHashMap<String, String> {
         }
     }
 
+    public static void cancelAction(String command){
+        actionMap.remove(command);
+    }
+
     public static void registerAction(Action factory){
         actionMap.put(factory.toString(), factory);
     }
