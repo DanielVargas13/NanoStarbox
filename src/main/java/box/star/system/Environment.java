@@ -191,9 +191,8 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return hostname;
     }
 
-    public static String getNetworkAddress(){
+    public static String getLocalNetworkAddress(){
         InetAddress ip;
-        String hostname = null;
         try {
             ip = InetAddress.getLocalHost();
             return ip.toString();

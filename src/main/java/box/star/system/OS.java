@@ -16,7 +16,7 @@ import java.util.Locale;
  * compare to http://svn.terracotta.org/svn/tc/dso/tags/2.6.4/code/base/common/src/com/tc/util/runtime/Os.java
  * http://www.docjar.com/html/api/org/apache/commons/lang/SystemUtils.java.html
  */
-public  final class OS {
+final class OS {
   /**
    * types of Operating Systems
    */
