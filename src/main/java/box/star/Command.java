@@ -60,7 +60,7 @@ public class Command {
         return this;
     }
 
-    public final String unixCurrentDirKey="PWD";
+    private final String unixCurrentDirKey="PWD";
 
     /**
      * <p>Sets the PWD environment variable for this command.</p>
@@ -95,21 +95,23 @@ public class Command {
         this.parameters = parameters;
     }
 
-    public Command apply(String... parameters) {
-        return new Command(this, parameters);
+    public Command use(String... parameters) {
+        Command base = new Command(this, parameters);
+        return base;
     }
 
     public Command connect(Command start){
         return Command.chain(this).pipe(start);
     }
 
-    private Command(Command command, String... parameters) {
-        this.command = command.command;
+    private Command(Command main, String... parameters) {
+        this.command = main.command;
         List<String> p = new ArrayList<>();
-        p.addAll(Arrays.asList(command.parameters));
+        p.addAll(Arrays.asList(main.parameters));
         p.addAll(Arrays.asList(parameters));
         String[] n = new String[p.size()];
         this.parameters = p.toArray(n);
+        set(main.environment.map);
     }
     /**
      * <p>Sets the read-redirection stream for this command.</p>
