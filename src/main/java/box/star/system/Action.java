@@ -11,9 +11,7 @@ public class Action extends Process implements Runnable, Cloneable {
         Pipe(){
             try {
                 output.connect(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) { e.printStackTrace(); }
         }
         void close(){
             try {
@@ -51,17 +49,22 @@ public class Action extends Process implements Runnable, Cloneable {
         stdin = new BufferedInputStream(p_stdin.input);
         stdout = new BufferedOutputStream(p_stdout.output);
         stderr = new BufferedOutputStream(p_stderr.output);
-        thread = new Thread(this);
+        thread = new Thread(environment.threadGroup, this);
         thread.start();
     }
 
-    public void onException(Exception e){}
+    public void onException(Exception e){
+        if (e instanceof Environment.ExitTrap) {
+            exitValue = ((Environment.ExitTrap)e).getStatus();
+            return;
+        }
+        e.printStackTrace();
+    }
 
     @Override
     final public void run() {
-        try {
-            main(parameters);
-        } catch (Exception e){onException(e);}
+        try { main(parameters); }
+        catch (Exception e){onException(e);}
         finally {
             try {
                 stdin.close();

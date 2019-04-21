@@ -2,6 +2,7 @@ package box.star.system;
 
 import box.star.system.action.echo;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CommandTest {
     /** Auto register builtins ( lazy-testing )

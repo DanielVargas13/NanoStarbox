@@ -10,7 +10,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Environment extends ConcurrentHashMap<String, String> {
 
-    private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
+    static {
+        System.setSecurityManager(new Security());
+    }
+
+    static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
 
@@ -379,5 +383,16 @@ public class Environment extends ConcurrentHashMap<String, String> {
             return null;
         }
 
+    }
+
+    public static class ExitTrap extends RuntimeException {
+        private int status;
+        public ExitTrap(int status, String message){
+            super(message);
+            this.status = status;
+        }
+        public int getStatus() {
+            return status;
+        }
     }
 }
