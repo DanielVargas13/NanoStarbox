@@ -158,15 +158,25 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
         }
     }
 
-    private Command nextCommand;
+    private Stack<Command> pipeChain = new Stack<>();
     public Command pipe(Command cmd) {
-        if (nextCommand == null) nextCommand = this;
-        nextCommand.set(1, cmd);
-        nextCommand = cmd;
+        if (pipeChain.size() == 0) pipeChain.push(this);
+        pipeChain.peek().set(1, cmd);
+        pipeChain.push(cmd);
         return this;
     }
 
-    private String getString(){
+    public Stack<String> getPipeChain() {
+        Stack<String>conversion = new Stack<>();
+        for(Command c: pipeChain) conversion.push(c.toString());
+        return conversion;
+    }
+
+    private final static String dq = "\"";
+    private final static String esc = "\\";
+
+    @Override
+    public String toString() {
         List<String> out = new ArrayList<>();
         out.add(parameters[0]);
         for (int i = 1; i < parameters.length; i++) {
@@ -175,27 +185,6 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
             out.add(dq+parameters[i]+dq);
         }
         return String.join(" ", out);
-    }
-
-    public List<Command> pipeList(){
-        ArrayList<Command> pipeList = new ArrayList<Command>();
-        Closeable v = this;
-        do {
-            Command nextCommand = (Command)v;
-            pipeList.add(nextCommand);
-            v = nextCommand.get(1);
-        } while(v instanceof Command);
-        return pipeList;
-    }
-
-    private final static String dq = "\"";
-    private final static String esc = "\\";
-
-    @Override
-    public String toString() {
-        List<String> list = new ArrayList<>();
-        for(Command c: pipeList()) list.add(c.getString());
-        return String.join(" | ", list);
     }
 
 }
