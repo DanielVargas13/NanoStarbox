@@ -28,9 +28,11 @@ class Security extends SecurityManager {
 
     @Override
     public void checkExit(int status) {
-        if (Thread.currentThread().getThreadGroup().equals(Environment.threadGroup))
-            if (! Thread.currentThread().getName().equals("exit"))
-                throw new Environment.ExitTrap(status,"System.exit method not allowed for thread-group.");
+        Thread thread = Thread.currentThread();
+        String name = thread.getName();
+        if (thread.getThreadGroup().equals(Action.threadGroup))
+            if (! name.equals("exit"))
+                throw new Environment.ExitTrap(status,"System.exit method not allowed for thread-group-action: "+name);
     }
 
     @Override

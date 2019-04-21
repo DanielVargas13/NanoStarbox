@@ -1,9 +1,14 @@
 package box.star.system;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 public class Action extends Process implements Runnable, Cloneable {
+
+    final static ThreadGroup threadGroup = new ThreadGroup(Environment.threadGroup, "Starbox System Actions");
 
     private class Pipe {
         PipedOutputStream output = new PipedOutputStream();
@@ -49,7 +54,7 @@ public class Action extends Process implements Runnable, Cloneable {
         stdin = new BufferedInputStream(p_stdin.input);
         stdout = new BufferedOutputStream(p_stdout.output);
         stderr = new BufferedOutputStream(p_stderr.output);
-        thread = new Thread(environment.threadGroup, this, this.toString());
+        thread = new ActionThread(this);
         thread.start();
     }
 
@@ -339,4 +344,12 @@ public class Action extends Process implements Runnable, Cloneable {
         return false;
     }
 
+    class ActionThread extends Thread {
+        Action target;
+        public ActionThread(Action target) {
+            super(threadGroup, target, target.toString());
+            this.target = target;
+        }
+    }
 }
+

@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/action/exit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Action.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Action.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Security.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Security.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" afterDir="false" />
     </list>
@@ -27,10 +25,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
+            <state relative-caret-position="-1989">
               <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -52,15 +50,6 @@
                 <element signature="e#15889#15890#0" expanded="true" />
                 <element signature="e#15926#15927#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Security.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="32" selection-start-line="32" selection-end-line="32" />
             </state>
           </provider>
         </entry>
@@ -91,8 +80,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="96" selection-start-line="96" selection-end-line="96" />
+            <state relative-caret-position="2380">
+              <caret line="146" column="16" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1903#1904#0" expanded="true" />
@@ -105,32 +94,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+            <state relative-caret-position="238">
+              <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Action.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
-              <folding>
-                <element signature="e#1004#1005#0" expanded="true" />
-                <element signature="e#1028#1029#0" expanded="true" />
-                <element signature="e#3068#3069#0" expanded="true" />
-                <element signature="e#3627#3628#0" expanded="true" />
-                <element signature="e#4183#4184#0" expanded="true" />
-                <element signature="e#4734#4735#0" expanded="true" />
-                <element signature="e#12950#12951#0" expanded="true" />
-                <element signature="e#12978#12979#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -140,12 +110,31 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/action/exit.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
-              <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="e#214#215#0" expanded="true" />
-                <element signature="e#253#254#0" expanded="true" />
+                <element signature="e#243#244#0" expanded="true" />
                 <element signature="e#302#303#0" expanded="true" />
-                <element signature="e#384#385#0" expanded="true" />
+                <element signature="e#386#387#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Action.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1666">
+              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+              <folding>
+                <element signature="e#1004#1005#0" expanded="true" />
+                <element signature="e#1028#1029#0" expanded="true" />
+                <element signature="e#3230#3231#0" expanded="true" />
+                <element signature="e#3789#3790#0" expanded="true" />
+                <element signature="e#4345#4346#0" expanded="true" />
+                <element signature="e#4896#4897#0" expanded="true" />
+                <element signature="e#12950#12951#0" expanded="true" />
+                <element signature="e#12978#12979#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -277,10 +266,10 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/action/echo.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Action.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Security.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/action/exit.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Action.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Security.java" />
       </list>
     </option>
   </component>
@@ -356,17 +345,6 @@
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-              <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="system" type="462c0819:PsiDirectoryNode" />
-              <item name="action" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -706,24 +684,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="CommandTest_action - 2019.04.21 at 12h 44m 17s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest_action - 2019.04.21 at 12h 45m 32s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest_action - 2019.04.21 at 12h 46m 35s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest_action - 2019.04.21 at 14h 29m 57s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest_action - 2019.04.21 at 14h 39m 33s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest_action - 2019.04.21 at 14h 46m 41s.xml">
-      <configuration name="CommandTest.action" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="CommandTest_action - 2019.04.21 at 14h 49m 01s.xml">
       <configuration name="CommandTest.action" configurationId="JUnit" />
     </history-entry>
@@ -734,6 +694,24 @@
       <configuration name="CommandTest.action" configurationId="JUnit" />
     </history-entry>
     <history-entry file="CommandTest_action - 2019.04.21 at 15h 05m 21s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 15h 25m 26s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 15h 26m 25s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 15h 27m 14s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 15h 27m 52s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 16h 11m 28s.xml">
+      <configuration name="CommandTest.action" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_action - 2019.04.21 at 16h 13m 05s.xml">
       <configuration name="CommandTest.action" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -748,7 +726,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17156863" visible="true" weight="0.25189108" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.82843137" side_tool="true" weight="0.25189108" />
@@ -852,7 +829,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Shell Tech: Refactor, Thread Safety" />
     <MESSAGE value="Shell Tech: Refactor, Stream Usage" />
     <MESSAGE value="Shell Tech: Convenience Method" />
     <MESSAGE value="Shell Tech: Convenience Method, Refactor" />
@@ -877,7 +853,8 @@
     <MESSAGE value="Box Command System: Network Machine Technology" />
     <MESSAGE value="Box Command System: Hardening" />
     <MESSAGE value="Box Command System: Aces High" />
-    <option name="LAST_COMMIT_MESSAGE" value="Box Command System: Aces High" />
+    <MESSAGE value="Box Command System: Exit Access Control" />
+    <option name="LAST_COMMIT_MESSAGE" value="Box Command System: Exit Access Control" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1145,21 +1122,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Command.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="96" selection-start-line="96" selection-end-line="96" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1903#1904#0" expanded="true" />
-            <element signature="e#3039#3040#0" expanded="true" />
-            <element signature="e#3652#3653#0" expanded="true" />
-            <element signature="e#4352#4353#0" expanded="true" />
-            <element signature="e#4384#4385#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/io/store/ConfigurationTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="101">
@@ -1181,9 +1143,83 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/action/echo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#336#337#0" expanded="true" />
+            <element signature="e#381#382#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/action/exit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="e#214#215#0" expanded="true" />
+            <element signature="e#243#244#0" expanded="true" />
+            <element signature="e#302#303#0" expanded="true" />
+            <element signature="e#386#387#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Command.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2380">
+          <caret line="146" column="16" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1903#1904#0" expanded="true" />
+            <element signature="e#3039#3040#0" expanded="true" />
+            <element signature="e#3652#3653#0" expanded="true" />
+            <element signature="e#4352#4353#0" expanded="true" />
+            <element signature="e#4384#4385#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Action.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1666">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#1004#1005#0" expanded="true" />
+            <element signature="e#1028#1029#0" expanded="true" />
+            <element signature="e#3230#3231#0" expanded="true" />
+            <element signature="e#3789#3790#0" expanded="true" />
+            <element signature="e#4345#4346#0" expanded="true" />
+            <element signature="e#4896#4897#0" expanded="true" />
+            <element signature="e#12950#12951#0" expanded="true" />
+            <element signature="e#12978#12979#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Security.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
+        <state relative-caret-position="-1989">
           <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1204,65 +1240,6 @@
             <element signature="e#12641#12671#0" expanded="true" />
             <element signature="e#15889#15890#0" expanded="true" />
             <element signature="e#15926#15927#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/action/echo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="39" selection-start-line="39" selection-end-line="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#336#337#0" expanded="true" />
-            <element signature="e#381#382#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Action.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
-          <folding>
-            <element signature="e#1004#1005#0" expanded="true" />
-            <element signature="e#1028#1029#0" expanded="true" />
-            <element signature="e#3068#3069#0" expanded="true" />
-            <element signature="e#3627#3628#0" expanded="true" />
-            <element signature="e#4183#4184#0" expanded="true" />
-            <element signature="e#4734#4735#0" expanded="true" />
-            <element signature="e#12950#12951#0" expanded="true" />
-            <element signature="e#12978#12979#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Security.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/action/exit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
-          <folding>
-            <element signature="e#214#215#0" expanded="true" />
-            <element signature="e#253#254#0" expanded="true" />
-            <element signature="e#302#303#0" expanded="true" />
-            <element signature="e#384#385#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
