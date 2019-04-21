@@ -1,6 +1,8 @@
 package box.star.system;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -167,6 +169,38 @@ public class Environment extends ConcurrentHashMap<String, String> {
             .writeOutputTo((OutputStream)stdio[1])
                 .writeErrorTo((OutputStream)stdio[2]);
         return run.getExitValue();
+    }
+
+    public static boolean isWindows(){
+        return System.getProperty("os.name").toLowerCase().contains("windows");
+    }
+
+    public static boolean isLinux(){
+        return System.getProperty("os.name").toLowerCase().contains("linux");
+    }
+
+    public static String getLocalHostName(){
+        InetAddress ip;
+        String hostname = null;
+        try {
+            ip = InetAddress.getLocalHost();
+            hostname = ip.getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return hostname;
+    }
+
+    public static String getNetworkAddress(){
+        InetAddress ip;
+        String hostname = null;
+        try {
+            ip = InetAddress.getLocalHost();
+            return ip.toString();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
