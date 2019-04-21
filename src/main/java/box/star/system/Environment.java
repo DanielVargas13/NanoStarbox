@@ -20,6 +20,15 @@ public class Environment extends ConcurrentHashMap<String, String> {
     private ConcurrentHashMap<String, Object> objectStore = new ConcurrentHashMap<>();
     private TokenGenerator objStoreToken = new TokenGenerator();
 
+    /**
+     * This method allows for semi-secure-ipc with objects.
+     *
+     * Random tokens are generated and returned to the caller for storage
+     * retrieval using fetch()
+     *
+     * @param value the object to store
+     * @return the storage-token (access-key)
+     */
     public String store(Object value){
         String token;
         do {
@@ -29,6 +38,15 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return token;
     }
 
+    /**
+     * This method allows for retrieval of between-call-environment objects.
+     *
+     * This interface is consistent with a runtime-object-state-server performance.
+     *
+     * @param token the token (access-key) of the custom object state container.
+     * @param <ANY> (Auto class cast)
+     * @return the value of the token or null.
+     */
     public <ANY> ANY fetch(String token){
         return (ANY)objectStore.get(token);
     }
