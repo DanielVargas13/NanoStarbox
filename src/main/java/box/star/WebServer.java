@@ -7,7 +7,7 @@ import box.star.io.protocols.http.IHTTPSession;
 import box.star.io.protocols.http.response.Response;
 import box.star.io.protocols.http.response.Status;
 
-import box.star.util.ITimerCallback;
+import box.star.util.ITimerMethod;
 import box.star.util.Template;
 import box.star.util.Timer;
 import org.jetbrains.annotations.NotNull;
@@ -23,15 +23,15 @@ public class WebServer extends HTTPServer {
         Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession);
     }
 
-    public TimerTask createTimeout(int time, ITimerCallback<Object> callback, Object... parameter) {
+    public TimerTask createTimeout(int time, ITimerMethod<Object> callback, Object... parameter) {
         return timer.createTimeout(time, callback, parameter);
     }
 
-    public TimerTask createInterval(int time, ITimerCallback<Object> callback, Object... parameter) {
+    public TimerTask createInterval(int time, ITimerMethod<Object> callback, Object... parameter) {
         return timer.createInterval(time, callback, parameter);
     }
 
-    public TimerTask createAlarm(Date time, ITimerCallback<Object> callback, Object... parameter) {
+    public TimerTask createAlarm(Date time, ITimerMethod<Object> callback, Object... parameter) {
         return timer.createAlarm(time, callback, parameter);
     }
 
