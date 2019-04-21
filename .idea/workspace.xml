@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/Command.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,8 +26,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-85">
-              <caret line="97" column="22" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
+            <state relative-caret-position="221">
+              <caret line="19" selection-start-line="18" selection-end-line="19" />
               <folding>
                 <element signature="e#2711#2712#0" expanded="true" />
                 <element signature="e#2752#2753#0" expanded="true" />
@@ -36,11 +36,44 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
+            <state relative-caret-position="272">
+              <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="459">
+              <caret line="242" column="1" lean-forward="true" selection-start-line="242" selection-start-column="1" selection-end-line="242" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#263#264#0" expanded="true" />
+                <element signature="e#304#305#0" expanded="true" />
+                <element signature="e#421#422#0" expanded="true" />
+                <element signature="e#456#457#0" expanded="true" />
+                <element signature="e#513#514#0" expanded="true" />
+                <element signature="e#551#552#0" expanded="true" />
+                <element signature="e#1041#1042#0" expanded="true" />
+                <element signature="e#1080#1081#0" expanded="true" />
+                <element signature="e#2194#2195#0" expanded="true" />
+                <element signature="e#1845#1846#0" expanded="true" />
+                <element signature="e#1887#1888#0" expanded="true" />
+                <element signature="e#7890#7920#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/concurrent/ConcurrentHashMap.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="194">
+              <caret line="2366" column="23" selection-start-line="2366" selection-start-column="23" selection-end-line="2366" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -105,8 +138,8 @@
         <option value="HTML File" />
         <option value="Interface" />
         <option value="JavaFXApplication" />
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -175,9 +208,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/box/star/RhinoWebServer.java" />
-        <option value="$PROJECT_DIR$/sample/site/index.js" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/util/RhinoWebDriver.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/RhinoWebDriver.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/WebServerTest.java" />
@@ -226,6 +256,9 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/bin/grep.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/Command.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/CommandTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/etc/Environment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/Environment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
       </list>
     </option>
   </component>
@@ -296,6 +329,16 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -502,6 +545,9 @@
       <recent name="box.star" />
       <recent name="box.star.js" />
     </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="box.star.Environment" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site\rhino-web-driver" />
       <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
@@ -527,7 +573,7 @@
       <module name="NanoStarbox" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="box.star.*" />
+          <option name="PATTERN" value="box.star.system.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -625,9 +671,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="CommandTest - 2019.04.20 at 17h 55m 12s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="CommandTest - 2019.04.20 at 18h 00m 38s.xml">
       <configuration name="CommandTest" configurationId="JUnit" />
     </history-entry>
@@ -655,12 +698,14 @@
     <history-entry file="CommandTest - 2019.04.20 at 18h 10m 11s.xml">
       <configuration name="CommandTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="CommandTest - 2019.04.20 at 20h 06m 47s.xml">
+      <configuration name="CommandTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.17320262" visible="true" weight="0.24479167" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17320262" visible="true" weight="0.24886535" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.82679737" side_tool="true" weight="0.24479167" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -790,17 +835,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/WebServerTest.java" />
-    <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/RhinoWebDriver.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="71">
@@ -888,13 +922,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Process.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/concurrent/ConcurrentHashMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="1080" column="16" selection-start-line="1080" selection-start-column="16" selection-end-line="1080" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
@@ -1142,10 +1169,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/hs_err_pid8924.log">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/concurrent/ConcurrentHashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="2366" column="23" selection-start-line="2366" selection-start-column="23" selection-end-line="2366" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-85">
-          <caret line="97" column="22" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
+        <state relative-caret-position="221">
+          <caret line="19" selection-start-line="18" selection-end-line="19" />
           <folding>
             <element signature="e#2711#2712#0" expanded="true" />
             <element signature="e#2752#2753#0" expanded="true" />
@@ -1153,10 +1197,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
+        <state relative-caret-position="459">
+          <caret line="242" column="1" lean-forward="true" selection-start-line="242" selection-start-column="1" selection-end-line="242" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#263#264#0" expanded="true" />
+            <element signature="e#304#305#0" expanded="true" />
+            <element signature="e#421#422#0" expanded="true" />
+            <element signature="e#456#457#0" expanded="true" />
+            <element signature="e#513#514#0" expanded="true" />
+            <element signature="e#551#552#0" expanded="true" />
+            <element signature="e#1041#1042#0" expanded="true" />
+            <element signature="e#1080#1081#0" expanded="true" />
+            <element signature="e#2194#2195#0" expanded="true" />
+            <element signature="e#1845#1846#0" expanded="true" />
+            <element signature="e#1887#1888#0" expanded="true" />
+            <element signature="e#7890#7920#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
