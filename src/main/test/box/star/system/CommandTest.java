@@ -1,6 +1,6 @@
 package box.star.system;
 
-import box.star.system.builtin.virtual.echo;
+import box.star.system.action.echo;
 import org.junit.jupiter.api.Test;
 
 class CommandTest {

@@ -1,4 +1,4 @@
-package box.star.system.builtin.virtual;
+package box.star.system.action;
 
 import box.star.system.Action;
 
@@ -41,9 +41,9 @@ public class echo extends Action {
 
     /**
      * Override
-     * tries to use this builtin to resolve a complex query of any form.
+     * tries to use this action to resolve a complex query of any form.
      * @param command the command name specified
-     * @return true if this builtin will handle this execution request.
+     * @return true if this action will handle this execution request.
      */
     @Override
     public boolean match(String command) {

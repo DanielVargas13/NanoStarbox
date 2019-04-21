@@ -39,7 +39,7 @@ public class Action extends Process implements Runnable, Cloneable {
      * @return the command name
      */
     public String toString(){
-        return "builtin";
+        return "action";
     }
 
     final void start(Environment environment, String[] parameters){
@@ -328,9 +328,9 @@ public class Action extends Process implements Runnable, Cloneable {
 
     /**
      * Override
-     * tries to use this builtin to resolve a complex query of any form.
+     * tries to use this action to resolve a complex query of any form.
      * @param command the command name specified
-     * @return true if this builtin will handle this execution request.
+     * @return true if this action will handle this execution request.
      */
     public boolean match(String command){
         return false;
