@@ -166,10 +166,8 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
         return this;
     }
 
-    public Stack<String> getPipeChain() {
-        Stack<String>conversion = new Stack<>();
-        for(Command c: pipeChain) conversion.push(c.toString());
-        return conversion;
+    public Stack<Command> getPipeChain() {
+        return (Stack<Command>) pipeChain.clone();
     }
 
     private final static String dq = "\"";
