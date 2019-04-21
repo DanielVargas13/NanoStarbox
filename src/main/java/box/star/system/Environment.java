@@ -39,7 +39,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     /**
-     * Registers a custom java class action from an instance factory instance.
+     * Registers a custom java class action from an instance-factory instance.
      *
      * @param factory the Action subclass instance to use
      */
@@ -100,18 +100,20 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     /**
      * Sets the environemnt process/io wait-timer.
-     *
-     * <ol>
-     *     <li>stdin</li>
-     *     <li>stdout</li>
-     *     <li>stderr</li>
-     *     <li>process</li>
-     * </ol>
+     * <br><br>
+     * <p>Timers:
+     * <ul>
+     *     <li><code>Environment.IO_READABLE</code> for the (readable) command output</li>
+     *     <li><code>Environment.IO_WRITABLE</code> for the (writable) command input</li>
+     *     <li><code>Envrionment.IO_ERROR</code> for the (readable) command error</li>
+     *     <li><code>Environment.WT_PROCESS</code> for the process wait</li>
+     * </ul>
+     * </p>
      * @param timer the timer to write
-     * @param value the value in milliseconds
+     * @param millis the value in milliseconds
      */
-    public void setWaitTimeout(int timer, long value){
-        executiveWaitTimers[timer] = value;
+    public void setWaitTimeout(int timer, long millis){
+        executiveWaitTimers[timer] = millis;
     }
 
     /**
@@ -244,6 +246,16 @@ public class Environment extends ConcurrentHashMap<String, String> {
         }
     }
 
+    /**
+     * Runs a command and returns an executive.
+     *
+     * Finds the action by name or match. if that fails, locates the command
+     * in the current environment if available.
+     *
+     * @param parameters the command parameter string.
+     * @return the environment executive.
+     * @throws IOException if the command is not found.
+     */
     public Executive start(String... parameters) throws IOException{
         String commandName = parameters[0];
         if (actionMap.containsKey(commandName)){
@@ -267,6 +279,14 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return new Executive(p, executiveWaitTimers);
     }
 
+    /**
+     * Runs the given command and waits for the exit value.
+     *
+     * @param stdio the streams to use for the connection.
+     * @param parameters the command and parameters.
+     * @return the exit value.
+     * @throws IOException if the command could not be resolved.
+     */
     public int run(Closeable[] stdio, String... parameters) throws IOException {
         Executive run = start(parameters);
         if (stdio == null) {
