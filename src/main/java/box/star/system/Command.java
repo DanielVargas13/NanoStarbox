@@ -1,18 +1,15 @@
 package box.star.system;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 public class Command implements IRunnableCommand, Runnable, Closeable {
 
-    protected Closeable[] pipe;
+    private Closeable[] pipe;
 
     @Override
     public String getBackgroundThreadName() {
@@ -54,8 +51,15 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
         }
     }
 
+    private void joinChildren(){
+        for(Closeable io:streams) {
+            if (io instanceof Command) ((Command)io).join();
+        }
+    }
+
     @Override
     public void onExit(int value) {
+        joinChildren();
         running = false;
         exitValue = value;
         synchronized (terminationMonitor){
@@ -155,6 +159,14 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
             pipe[1].close();
             pipe[2].close();
         }
+    }
+
+    private Command nextCommand;
+    public Command pipe(Command cmd) {
+        if (nextCommand == null) nextCommand = this;
+        nextCommand.set(1, cmd);
+        nextCommand = cmd;
+        return this;
     }
 
 }

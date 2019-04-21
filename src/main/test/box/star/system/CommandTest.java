@@ -1,6 +1,7 @@
 package box.star.system;
 
 import org.junit.jupiter.api.Test;
+import static box.star.system.Command.*;
 
 class CommandTest {
 
@@ -14,11 +15,10 @@ class CommandTest {
         dir.join();
     }
 
-    @Test void cat(){
+    @Test void grep(){
         Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
-        Command grep = starbox.build("box.star.bin.grep", "home");
-        cat.set(1, grep);
-        cat.run();
+        Command grep = starbox.build("box.star.bin.grep", "hello");
+        cat.pipe(grep).run();
     }
 
 }
