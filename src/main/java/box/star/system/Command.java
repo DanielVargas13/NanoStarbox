@@ -96,6 +96,7 @@ public class Command implements ICommandHost, Runnable, Closeable {
         this.environment = environment;
         this.parameters = parameters;
         this.streams = environment.getStreams();
+        this.pipeChain.push(this);
     }
 
     private Command(Command command, String... parameters) {
@@ -106,9 +107,10 @@ public class Command implements ICommandHost, Runnable, Closeable {
         String[] n = new String[p.size()];
         this.parameters = p.toArray(n);
         this.streams = environment.getStreams();
+        this.pipeChain.push(this);
     }
 
-    public Command build(String... parameters) {
+    public Command create(String... parameters) {
         return new Command(this, parameters);
     }
 
@@ -159,8 +161,8 @@ public class Command implements ICommandHost, Runnable, Closeable {
     }
 
     private Stack<Command> pipeChain = new Stack<>();
+
     public Command pipe(Command cmd) {
-        if (pipeChain.size() == 0) pipeChain.push(this);
         pipeChain.peek().set(1, cmd);
         pipeChain.push(cmd);
         return this;

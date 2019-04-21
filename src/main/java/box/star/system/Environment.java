@@ -1,7 +1,6 @@
 package box.star.system;
 
 import java.io.*;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,7 +8,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
-    private static final Hashtable<String, Builtin> builtins = new Hashtable<>();
+    private static final ConcurrentHashMap<String, Builtin> builtins = new ConcurrentHashMap<>();
 
     public static void registerBuiltin(Class<? extends Builtin> type){
         try {

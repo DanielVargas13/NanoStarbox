@@ -35,8 +35,8 @@ public class Builtin extends Process implements Runnable, Cloneable {
     protected int exitValue;
 
     /**
-     *
-     * @return null for a match-operation (as name)
+     * Override
+     * @return the command name
      */
     public String toString(){
         return "builtin";
@@ -58,7 +58,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
     public void onException(Exception e){}
 
     @Override
-    public void run() {
+    final public void run() {
         try {
             main(parameters);
         } catch (Exception e){onException(e);}
@@ -85,7 +85,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      *                                     by this {@code Process} object has not yet terminated
      */
     @Override
-    public int exitValue() {
+    final public int exitValue() {
         if (thread.isAlive()) throw new IllegalThreadStateException("process not terminated");
         return exitValue;
     }
@@ -99,7 +99,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * @since 1.8
      */
     @Override
-    public boolean isAlive() {
+    final public boolean isAlive() {
         return thread.isAlive();
     }
 
@@ -115,7 +115,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * subprocess
      */
     @Override
-    public OutputStream getOutputStream() {
+    final public OutputStream getOutputStream() {
         return new BufferedOutputStream(p_stdin.output);
     }
 
@@ -131,7 +131,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * subprocess
      */
     @Override
-    public InputStream getInputStream() {
+    final public InputStream getInputStream() {
         return new BufferedInputStream(p_stdout.input);
     }
 
@@ -147,7 +147,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * the subprocess
      */
     @Override
-    public InputStream getErrorStream() {
+    final public InputStream getErrorStream() {
         return new BufferedInputStream(p_stderr.input);
     }
 
@@ -168,7 +168,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      *                              an {@link InterruptedException} is thrown.
      */
     @Override
-    public int waitFor() throws InterruptedException {
+    final public int waitFor() throws InterruptedException {
         thread.join();
         return exitValue;
     }
@@ -198,7 +198,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * @since 1.8
      */
     @Override
-    public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+    final public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
         if (! thread.isAlive()) return true;
         if (timeout <= 0) return false;
 
@@ -226,7 +226,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * implementation dependent.
      */
     @Override
-    public void destroy() {
+    final public void destroy() {
         try {
             stdin.close();
             stdout.close();
@@ -257,7 +257,7 @@ public class Builtin extends Process implements Runnable, Cloneable {
      * @since 1.8
      */
     @Override
-    public Process destroyForcibly() {
+    final public Process destroyForcibly() {
         destroy();
         return this;
     }
@@ -322,10 +322,16 @@ public class Builtin extends Process implements Runnable, Cloneable {
      *                                    be cloned.
      * @see Cloneable
      */
-    protected Object createBuiltin() throws CloneNotSupportedException {
+    final protected Object createBuiltin() throws CloneNotSupportedException {
         return super.clone();
     }
 
+    /**
+     * Override
+     * tries to use this builtin to resolve a complex query of any form.
+     * @param command the command name specified
+     * @return true if this builtin will handle this execution request.
+     */
     public boolean match(String command){
         return false;
     }

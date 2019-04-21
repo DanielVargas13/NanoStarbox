@@ -2,30 +2,32 @@ package box.star.system;
 
 import box.star.system.builtins.*;
 import org.junit.jupiter.api.Test;
-import static box.star.system.Command.*;
 
 class CommandTest {
 
+    static {
+        Environment.registerBuiltin(new echo());
+    }
+
     Environment environment = new Environment();
     Command starbox = new Command(environment, "java", "-cp", "jar/NanoStarbox.jar");
+    Command echo = new Command(environment, "echo");
 
     @Test void main(){
         Command shell = new Command(environment, "cmd", "/c");
-        Command dir = shell.build("dir");
+        Command dir = shell.create("dir");
         dir.exec();
         dir.join();
     }
 
     @Test void grep(){
-        Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
-        Command grep = starbox.build("box.star.bin.grep", "hello");
+        Command cat = starbox.create("box.star.bin.cat", "sample/grep-test.txt");
+        Command grep = starbox.create("box.star.bin.grep", "hello");
         cat.pipe(grep).run();
     }
 
     @Test void builtin(){
-        Environment.registerBuiltin(echo.class);
-        Command echo = new Command(environment,"?:", "hello world");
-        echo.run();
+        echo.create("hello world").run();
     }
 
 }

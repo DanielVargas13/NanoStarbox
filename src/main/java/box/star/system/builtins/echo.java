@@ -10,7 +10,8 @@ import java.util.Stack;
 public class echo extends Builtin {
 
     /**
-     * @return null for a match-operation (as name)
+     * Override
+     * @return the command name
      */
     @Override
     public String toString() {
@@ -29,9 +30,15 @@ public class echo extends Builtin {
         }
     }
 
+    /**
+     * Override
+     * tries to use this builtin to resolve a complex query of any form.
+     * @param command the command name specified
+     * @return true if this builtin will handle this execution request.
+     */
     @Override
     public boolean match(String command) {
-       if (command.equals("?:")) return true;
+       //if (command.equals("?:")) return true;
        return false;
     }
 
