@@ -1,6 +1,6 @@
 package box.star.system;
 
-import box.star.system.action.echo;
+import box.star.system.action.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,11 +10,13 @@ class CommandTest {
      */
     static {
         Environment.registerAction(new echo());
+        Environment.registerAction(new exit());
     }
 
     Environment environment = new Environment();
     Command starbox = new Command(environment, "java", "-cp", "jar/NanoStarbox.jar");
     Command echo = new Command(environment, "echo");
+    Command quit = new Command(environment, "exit");
 
     @Test void main(){
         Command shell = new Command(environment, "cmd", "/c");
@@ -30,6 +32,7 @@ class CommandTest {
     }
 
     @Test void action(){
+        quit.create("4").run();
         echo.create("-n", "hello world").run();
     }
 

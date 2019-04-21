@@ -17,6 +17,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
+    private int lastExitValue = 0;
 
     public static void registerAction(Class<? extends Action> type){
         try {
@@ -122,7 +123,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
                 e.readInputFrom((InputStream) stdio[0]);
                         e.writeOutputTo((OutputStream) stdio[1]);
                         e.writeErrorTo((OutputStream) stdio[2]);
-                runnableCommand.onExit(e.getExitValue());
+                runnableCommand.onExit(lastExitValue = e.getExitValue());
             } catch (Exception e){runnableCommand.onException(e);}
 
         } else {
@@ -178,7 +179,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
         run.readInputFrom((InputStream)stdio[0])
             .writeOutputTo((OutputStream)stdio[1])
                 .writeErrorTo((OutputStream)stdio[2]);
-        return run.getExitValue();
+        return lastExitValue = run.getExitValue();
     }
 
     public static boolean isWindows(){
@@ -270,6 +271,10 @@ public class Environment extends ConcurrentHashMap<String, String> {
         void onStart(Closeable[] pipe);
         void onExit(int value);
         void onException(Exception e);
+    }
+
+    public int getExitValue() {
+        return lastExitValue;
     }
 
     public static class Executive extends ThreadGroup {
@@ -395,4 +400,5 @@ public class Environment extends ConcurrentHashMap<String, String> {
             return status;
         }
     }
+
 }

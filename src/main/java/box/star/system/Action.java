@@ -49,7 +49,7 @@ public class Action extends Process implements Runnable, Cloneable {
         stdin = new BufferedInputStream(p_stdin.input);
         stdout = new BufferedOutputStream(p_stdout.output);
         stderr = new BufferedOutputStream(p_stderr.output);
-        thread = new Thread(environment.threadGroup, this);
+        thread = new Thread(environment.threadGroup, this, this.toString());
         thread.start();
     }
 
