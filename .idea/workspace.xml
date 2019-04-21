@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Builtin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/builtins/echo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/XT3_ONE.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/XT3_ONE.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/ICommandHost.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -27,10 +32,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-952">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="-1513">
+              <caret line="16" column="18" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#572#573#0" expanded="true" />
+                <element signature="e#615#616#0" expanded="true" />
                 <element signature="e#2174#2175#0" expanded="true" />
                 <element signature="e#2213#2214#0" expanded="true" />
               </folding>
@@ -39,10 +46,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/builtins/echo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Executive.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
+            <state relative-caret-position="204">
+              <caret line="19" column="15" lean-forward="true" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
               <folding>
                 <element signature="e#3427#3428#0" expanded="true" />
                 <element signature="e#3489#3490#0" expanded="true" />
@@ -58,9 +77,9 @@
               <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1881#1882#0" expanded="true" />
-                <element signature="e#2929#2930#0" expanded="true" />
-                <element signature="e#3542#3543#0" expanded="true" />
+                <element signature="e#1877#1878#0" expanded="true" />
+                <element signature="e#2925#2926#0" expanded="true" />
+                <element signature="e#3538#3539#0" expanded="true" />
                 <element signature="e#4352#4353#0" expanded="true" />
                 <element signature="e#4384#4385#0" expanded="true" />
               </folding>
@@ -68,13 +87,37 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="45" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
+            <state relative-caret-position="170">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/ICommandHost.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="29" lean-forward="true" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Builtin.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1020">
+              <caret line="61" selection-start-line="61" selection-end-line="61" />
+              <folding>
+                <element signature="e#2736#2737#0" expanded="true" />
+                <element signature="e#3289#3290#0" expanded="true" />
+                <element signature="e#3839#3840#0" expanded="true" />
+                <element signature="e#4384#4385#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -179,11 +222,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" />
-        <option value="$PROJECT_DIR$/plugin/README.MD" />
-        <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
-        <option value="$PROJECT_DIR$/src/main/test/box/star/util/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ThreadGroup.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
@@ -223,12 +261,17 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Timer.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/CommandInputStream.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/ReadableCommandStream.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/WritableCommandStream.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Executive.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/IComandHost.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/ICommandHost.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/BuiltinFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Builtin.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/builtins/echo.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" />
       </list>
     </option>
@@ -310,6 +353,17 @@
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+              <item name="builtins" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -514,19 +568,19 @@
       <recent name="box.star.io" />
       <recent name="box.star.js" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\test\box\star\js" />
-      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
-      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\plugin\src" />
-      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site" />
-      <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\sample\site\listing" />
-    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="box.star.exec2" />
       <recent name="box.star.exec" />
       <recent name="box" />
       <recent name="box.star" />
       <recent name="box.star.js" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\test\box\star\js" />
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\plugin\RhinoWebDriver\plugin\src" />
+      <recent name="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox\sample\site" />
+      <recent name="C:\Users\XT3-ONE\Documents\Java Projects\NanoStarbox\sample\site\listing" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="box.star.Environment" />
@@ -551,7 +605,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.Test: box.star.system.Command">
+  <component name="RunManager" selected="JUnit.CommandTest.builtin">
     <configuration name="CommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="NanoStarbox" />
       <extension name="coverage">
@@ -563,6 +617,22 @@
       <option name="PACKAGE_NAME" value="box.star" />
       <option name="MAIN_CLASS_NAME" value="box.star.CommandTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CommandTest.builtin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.system.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box.star.system" />
+      <option name="MAIN_CLASS_NAME" value="box.star.system.CommandTest" />
+      <option name="METHOD_NAME" value="builtin" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -587,9 +657,11 @@
     <list>
       <item itemvalue="JUnit.CommandTest" />
       <item itemvalue="JUnit.Test: box.star.system.Command" />
+      <item itemvalue="JUnit.CommandTest.builtin" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.CommandTest.builtin" />
         <item itemvalue="JUnit.Test: box.star.system.Command" />
         <item itemvalue="JUnit.CommandTest" />
       </list>
@@ -609,35 +681,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 12m 50s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 07m 22s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 13m 19s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 07m 29s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 13m 54s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 07m 44s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 14m 23s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 08m 22s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 15m 20s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 09m 01s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 15m 34s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 09m 23s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 18m 21s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 10m 15s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 19m 12s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 12m 45s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 24m 02s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 15m 26s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 05h 26m 26s.xml">
-      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    <history-entry file="CommandTest_builtin - 2019.04.21 at 08h 15m 43s.xml">
+      <configuration name="CommandTest.builtin" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -651,7 +723,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17156863" visible="true" weight="0.2526475" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.82843137" side_tool="true" weight="0.24851191" />
@@ -755,7 +826,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="notice" />
     <MESSAGE value="https; moved scripting site" />
     <MESSAGE value="touch-ups" />
     <MESSAGE value="housekeeping" />
@@ -780,7 +850,8 @@
     <MESSAGE value="Command Hero" />
     <MESSAGE value="Commando Ultimate" />
     <MESSAGE value="Box Command" />
-    <option name="LAST_COMMIT_MESSAGE" value="Box Command" />
+    <MESSAGE value="Box Command System" />
+    <option name="LAST_COMMIT_MESSAGE" value="Box Command System" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -824,21 +895,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Runtime.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ShellTest.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Process.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Shell.java" />
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" />
@@ -883,13 +939,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/opkit/Shell.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Process.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
-          <caret line="141" column="32" selection-start-line="141" selection-start-column="32" selection-end-line="141" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Shell.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/IShellRunnable.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/Streams.java" />
@@ -915,13 +964,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec2/Process.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/ProcessImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6698">
-          <caret line="442" selection-start-line="442" selection-end-line="442" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Thread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20026">
@@ -974,29 +1016,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/WritableCommandStream.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/ReadableCommandStream.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sample/grep-test.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" column="23" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-952">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2174#2175#0" expanded="true" />
-            <element signature="e#2213#2214#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1035,10 +1058,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/ICommandHost.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="29" lean-forward="true" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/ProcessImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-45">
+          <caret line="467" column="10" selection-start-line="467" selection-start-column="10" selection-end-line="467" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/Process.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="221" column="25" selection-start-line="221" selection-start-column="25" selection-end-line="221" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Executive.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
+        <state relative-caret-position="204">
+          <caret line="19" column="15" lean-forward="true" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
           <folding>
             <element signature="e#3427#3428#0" expanded="true" />
             <element signature="e#3489#3490#0" expanded="true" />
@@ -1046,10 +1097,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/BuiltinFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        <state relative-caret-position="238">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="e#130#131#0" expanded="true" />
+            <element signature="e#176#177#0" expanded="true" />
+            <element signature="e#311#312#0" expanded="true" />
+            <element signature="e#338#339#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1059,21 +1116,58 @@
           <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1881#1882#0" expanded="true" />
-            <element signature="e#2929#2930#0" expanded="true" />
-            <element signature="e#3542#3543#0" expanded="true" />
+            <element signature="e#1877#1878#0" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
+            <element signature="e#3538#3539#0" expanded="true" />
             <element signature="e#4352#4353#0" expanded="true" />
             <element signature="e#4384#4385#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="45" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
+        <state relative-caret-position="-1513">
+          <caret line="16" column="18" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#572#573#0" expanded="true" />
+            <element signature="e#615#616#0" expanded="true" />
+            <element signature="e#2174#2175#0" expanded="true" />
+            <element signature="e#2213#2214#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/builtins/echo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="47" selection-start-line="17" selection-start-column="47" selection-end-line="17" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Builtin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+          <folding>
+            <element signature="e#2736#2737#0" expanded="true" />
+            <element signature="e#3289#3290#0" expanded="true" />
+            <element signature="e#3839#3840#0" expanded="true" />
+            <element signature="e#4384#4385#0" expanded="true" />
           </folding>
         </state>
       </provider>

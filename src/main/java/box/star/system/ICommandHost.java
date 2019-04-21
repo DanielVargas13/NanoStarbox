@@ -2,7 +2,7 @@ package box.star.system;
 
 import java.io.Closeable;
 
-public interface IRunnableCommand {
+public interface ICommandHost {
     String getBackgroundThreadName();
     boolean isBackgroundMode();
     String[] getParameters();

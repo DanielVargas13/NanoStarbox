@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
-public class Command implements IRunnableCommand, Runnable, Closeable {
+public class Command implements ICommandHost, Runnable, Closeable {
 
     private Closeable[] pipe;
 

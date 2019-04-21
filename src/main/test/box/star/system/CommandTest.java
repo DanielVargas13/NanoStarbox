@@ -1,5 +1,6 @@
 package box.star.system;
 
+import box.star.system.builtins.*;
 import org.junit.jupiter.api.Test;
 import static box.star.system.Command.*;
 
@@ -19,6 +20,12 @@ class CommandTest {
         Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
         Command grep = starbox.build("box.star.bin.grep", "hello");
         cat.pipe(grep).run();
+    }
+
+    @Test void builtin(){
+        Environment.registerBuiltin("echo", echo.class);
+        Command echo = new Command(environment,"echo", "hello world");
+        echo.run();
     }
 
 }

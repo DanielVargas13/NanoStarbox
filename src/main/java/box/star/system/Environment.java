@@ -1,12 +1,22 @@
 package box.star.system;
 
+import box.star.io.protocols.http.request.Method;
+
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Environment extends ConcurrentHashMap<String, String> {
 
     private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
+
+    private static final Hashtable<String, Class<? extends Builtin>> builtins = new Hashtable<>();
+
+    public static void registerBuiltin(String name, Class<? extends Builtin> factory){
+        builtins.put(name, factory);
+    }
 
     public static final int
             IO_READABLE = 0,
@@ -84,7 +94,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return System.getProperty("os.name");
     }
 
-    public void run(IRunnableCommand runnableCommand) {
+    public void run(ICommandHost runnableCommand) {
 
         if (! runnableCommand.isBackgroundMode()) {
 
@@ -117,7 +127,15 @@ public class Environment extends ConcurrentHashMap<String, String> {
         }
     }
 
-    public Executive start(String... parameters) throws IOException {
+    public Executive start(String... parameters) throws IOException{
+        if (builtins.containsKey(parameters[0])){
+            Class factory = builtins.get(parameters[0]);
+            Builtin command;
+            try { command = (Builtin) factory.newInstance(); }
+            catch (Exception e) {throw new RuntimeException(e);}
+            command.start(this, parameters);
+            return new Executive(command, executiveWaitTimers);
+        }
         Process p = Runtime.getRuntime().exec(parameters, compile(), currentDirectory);
         return new Executive(p, executiveWaitTimers);
     }
