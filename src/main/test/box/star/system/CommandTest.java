@@ -1,12 +1,14 @@
 package box.star.system;
 
-import box.star.system.builtins.*;
+import box.star.system.builtin.virtual.echo;
 import org.junit.jupiter.api.Test;
 
 class CommandTest {
-
+    /** Auto register builtins ( lazy-testing )
+     *
+     */
     static {
-        Environment.registerBuiltin(new echo());
+        Environment.registerAction(new echo());
     }
 
     Environment environment = new Environment();
@@ -26,7 +28,7 @@ class CommandTest {
         cat.pipe(grep).run();
     }
 
-    @Test void builtin(){
+    @Test void action(){
         echo.create("hello world").run();
     }
 

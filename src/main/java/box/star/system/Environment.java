@@ -8,19 +8,19 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
-    private static final ConcurrentHashMap<String, Builtin> builtins = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
 
-    public static void registerBuiltin(Class<? extends Builtin> type){
+    public static void registerAction(Class<? extends Action> type){
         try {
-            Builtin factory = type.newInstance();
-            builtins.put(factory.toString(), factory);
+            Action factory = type.newInstance();
+            actionMap.put(factory.toString(), factory);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void registerBuiltin(Builtin factory){
-        builtins.put(factory.toString(), factory);
+    public static void registerAction(Action factory){
+        actionMap.put(factory.toString(), factory);
     }
 
     public static final int
@@ -134,18 +134,18 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     public Executive start(String... parameters) throws IOException{
         String commandName = parameters[0];
-        if (builtins.containsKey(commandName)){
-            Builtin factory = builtins.get(commandName);
-            Builtin command;
-            try { command = (Builtin) factory.createBuiltin(); }
+        if (actionMap.containsKey(commandName)){
+            Action factory = actionMap.get(commandName);
+            Action command;
+            try { command = (Action) factory.createBuiltin(); }
             catch (Exception e) {throw new RuntimeException(e);}
             command.start(this, parameters);
             return new Executive(command, executiveWaitTimers);
         }
-        for (Builtin factory:builtins.values()){
+        for (Action factory: actionMap.values()){
             if (factory.match(commandName)) {
-                Builtin command;
-                try { command = (Builtin) factory.createBuiltin(); }
+                Action command;
+                try { command = (Action) factory.createBuiltin(); }
                 catch (Exception e) {throw new RuntimeException(e);}
                 command.start(this, parameters);
                 return new Executive(command, executiveWaitTimers);

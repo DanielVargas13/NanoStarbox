@@ -1,13 +1,12 @@
-package box.star.system.builtins;
+package box.star.system.builtin.virtual;
 
-import box.star.system.Builtin;
-import box.star.system.Environment;
+import box.star.system.Action;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Stack;
 
-public class echo extends Builtin {
+public class echo extends Action {
 
     /**
      * Override

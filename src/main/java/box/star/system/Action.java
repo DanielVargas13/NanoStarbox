@@ -3,7 +3,7 @@ package box.star.system;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-public class Builtin extends Process implements Runnable, Cloneable {
+public class Action extends Process implements Runnable, Cloneable {
 
     private class Pipe {
         PipedOutputStream output = new PipedOutputStream();
