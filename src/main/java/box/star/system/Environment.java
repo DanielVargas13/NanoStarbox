@@ -39,7 +39,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     /**
-     * Registers a custom java class action from an instance factory instance.
+     * Registers a custom java class action from an instance-factory instance.
      *
      * @param factory the Action subclass instance to use
      */
@@ -101,12 +101,12 @@ public class Environment extends ConcurrentHashMap<String, String> {
     /**
      * Sets the environemnt process/io wait-timer.
      *
-     * <ol>
-     *     <li>stdin</li>
-     *     <li>stdout</li>
-     *     <li>stderr</li>
-     *     <li>process</li>
-     * </ol>
+     * <ul>
+     *     <li>IO_READABLE for the (readable) command output</li>
+     *     <li>IO_WRITABLE for the (writable) command input</li>
+     *     <li>IO_ERROR for the (readable) command error</li>
+     *     <li>WT_PROCESS for the process wait</li>
+     * </ul>
      * @param timer the timer to write
      * @param value the value in milliseconds
      */
