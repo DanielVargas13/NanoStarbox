@@ -322,7 +322,7 @@ public class Action extends Process implements Runnable, Cloneable {
      *                                    be cloned.
      * @see Cloneable
      */
-    final protected Object createBuiltin() throws CloneNotSupportedException {
+    final protected Object createAction() throws CloneNotSupportedException {
         return super.clone();
     }
 

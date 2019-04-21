@@ -137,7 +137,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
         if (actionMap.containsKey(commandName)){
             Action factory = actionMap.get(commandName);
             Action command;
-            try { command = (Action) factory.createBuiltin(); }
+            try { command = (Action) factory.createAction(); }
             catch (Exception e) {throw new RuntimeException(e);}
             command.start(this, parameters);
             return new Executive(command, executiveWaitTimers);
@@ -145,7 +145,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
         for (Action factory: actionMap.values()){
             if (factory.match(commandName)) {
                 Action command;
-                try { command = (Action) factory.createBuiltin(); }
+                try { command = (Action) factory.createAction(); }
                 catch (Exception e) {throw new RuntimeException(e);}
                 command.start(this, parameters);
                 return new Executive(command, executiveWaitTimers);
