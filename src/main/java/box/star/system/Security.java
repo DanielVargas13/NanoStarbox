@@ -114,4 +114,9 @@ class Security extends SecurityManager {
     @Override
     public void checkSecurityAccess(String target) {
     }
+
+    static {
+        System.setSecurityManager(new Security());
+    }
+
 }

@@ -10,15 +10,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Environment extends ConcurrentHashMap<String, String> {
 
-    static {
-        System.setSecurityManager(new Security());
-    }
-
     static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
     private int lastExitValue = 0;
 
+    /**
+     * Registers the given java class action class as a known-factory-action-method.
+     *
+     * @param type the subclass of Action to register.
+     */
     public static void registerAction(Class<? extends Action> type){
         try {
             Action factory = type.newInstance();
@@ -28,10 +29,20 @@ public class Environment extends ConcurrentHashMap<String, String> {
         }
     }
 
+    /**
+     * Removes the given java class action from the known-factory-action-methods.
+     *
+     * @param command the command to disable.
+     */
     public static void cancelAction(String command){
         actionMap.remove(command);
     }
 
+    /**
+     * Registers a custom java class action from an instance factory instance.
+     *
+     * @param factory the Action subclass instance to use
+     */
     public static void registerAction(Action factory){
         actionMap.put(factory.toString(), factory);
     }
@@ -43,20 +54,43 @@ public class Environment extends ConcurrentHashMap<String, String> {
             WT_PROCESS = 3,
             WT_COUNT = 4;
 
+    /**
+     * Convenience method to create blank wait timers.
+     *
+     * @return a wait-timer-set.
+     */
     public final static long[] createWaitTimers(){
         return new long[WT_COUNT];
     }
 
     private Closeable[] streams = new Closeable[]{null, System.out, System.err};
 
+    /**
+     * Gets a copy of the stream-set.
+     *
+     * @return a copy of the stream-set.
+     */
     public Closeable[] getStreams(){
         return streams.clone();
     }
 
+    /**
+     * Gets the stream associated with a stdio stream number.
+     *
+     * @param stream the stream number to get.
+     * @param <ANY> (Closeable: auto cast)
+     * @return the Closeable associated with this stream number
+     */
     public <ANY> ANY get(int stream) {
         return (ANY)streams[stream];
     }
 
+    /**
+     * Sets the stream to a closeable value.
+     *
+     * @param stream the io stream to use (see IO_*)
+     * @param value the closeable stream to set.
+     */
     public void set(int stream, Closeable value){
         streams[stream] = value;
     }
@@ -64,17 +98,58 @@ public class Environment extends ConcurrentHashMap<String, String> {
     private long[] executiveWaitTimers = createWaitTimers();
     private File currentDirectory = new File(System.getProperty("user.dir"));
 
+    /**
+     * Sets the environemnt process/io wait-timer.
+     *
+     * <ol>
+     *     <li>stdin</li>
+     *     <li>stdout</li>
+     *     <li>stderr</li>
+     *     <li>process</li>
+     * </ol>
+     * @param timer the timer to write
+     * @param value the value in milliseconds
+     */
     public void setWaitTimeout(int timer, long value){
         executiveWaitTimers[timer] = value;
     }
 
+    /**
+     * gets the environment process/io wait-timer.
+     *
+     * @param timer the timer to read.
+     * @return the timer value.
+     */
     public long getWaitTimeout(int timer){
         return executiveWaitTimers[timer];
     }
 
+    /**
+     * Creates a new default environment based on the system profile.
+     *
+     * Current directory is inherited.
+     *
+     * Standard input is null.
+     * Standard output is inherited.
+     * Standard error is inherited.
+     */
     public Environment(){this(null, null, null);}
+
+    /**
+     * Creates a custom environment.
+     *
+     * @param directory the current directory to use for execution.
+     * @param base the map to use for the environment.
+     */
     public Environment(File directory, Map<String, String> base){this(directory, base, null);}
 
+    /**
+     * Creates a custom environment.
+     *
+     * @param directory the directory to use for execution.
+     * @param base the map to use for the environment.
+     * @param waitTimers the process/io timer-set to use.
+     */
     private Environment(File directory, Map<String, String> base, long[] waitTimers) {
         if (directory != null) setCurrentDirectory(directory);
         if (base == null) {
@@ -86,10 +161,23 @@ public class Environment extends ConcurrentHashMap<String, String> {
         }
     }
 
+    /**
+     * Creates a simple copy of the current environment.
+     *
+     * Wait timers are copied, the current directory is copied, and the environment
+     * variables are copied.
+     *
+     * @return a new environment
+     */
     public Environment copy(){
         return new Environment(currentDirectory, this, this.executiveWaitTimers);
     }
 
+    /**
+     * Compiles the current environment for execution.
+     *
+     * @return the compiled environment.
+     */
     public final String[] compile(){
         String[] out = new String[size()];
         int i = 0;
@@ -108,10 +196,21 @@ public class Environment extends ConcurrentHashMap<String, String> {
         this.currentDirectory = currentDirectory;
     }
 
+    /**
+     * Gets the system string name for the environment
+     * @return
+     */
     public String getPlatformName(){
-        return OS.getOperatingSystemType().toString();
+        return OS.getOperatingSystemKind().toString();
     }
 
+    /**
+     * Runs the command in the foreground or background, depending on the implementation.
+     *
+     * foreground commands set the last exit value of the command environment.
+     *
+     * @param runnableCommand the command interface to execute
+     */
     public void run(ICommandHost runnableCommand) {
 
         if (! runnableCommand.isBackgroundMode()) {
@@ -183,11 +282,19 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     public static boolean isWindows(){
-        return OS.getOperatingSystemType().equals(OS.Kind.Windows);
+        return OS.getOperatingSystemKind().equals(OS.Kind.Windows);
     }
 
     public static boolean isLinux(){
-        return OS.getOperatingSystemType().equals(OS.Kind.Linux);
+        return OS.getOperatingSystemKind().equals(OS.Kind.Linux);
+    }
+
+    public static boolean isMacOS(){
+        return OS.getOperatingSystemKind().equals(OS.Kind.MacOS);
+    }
+
+    public static boolean isOtherOperatingSystem(){
+        return OS.getOperatingSystemKind().equals(OS.Kind.Other);
     }
 
     public static String getLocalHostName(){
@@ -214,7 +321,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     /**
-     * OS.Kind ostype=OS.getOperatingSystemType();
+     * OS.Kind ostype=OS.getOperatingSystemKind();
      * switch (ostype) {
      *     case Windows: break;
      *     case MacOS: break;
@@ -238,7 +345,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
       };
 
       // cached result of OS detection
-      protected static Kind detectedOS;
+      private static Kind thisKind;
 
       /**
        * detect the operating system from the os.name System property and cache
@@ -246,30 +353,74 @@ public class Environment extends ConcurrentHashMap<String, String> {
        *
        * @returns - the operating system detected
        */
-      public static Kind getOperatingSystemType() {
-        if (detectedOS == null) {
+      public static Kind getOperatingSystemKind() {
+        if (thisKind == null) {
           String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
           if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
-            detectedOS = Kind.MacOS;
+            thisKind = Kind.MacOS;
           } else if (OS.indexOf("win") >= 0) {
-            detectedOS = Kind.Windows;
+            thisKind = Kind.Windows;
           } else if (OS.indexOf("nux") >= 0) {
-            detectedOS = Kind.Linux;
+            thisKind = Kind.Linux;
           } else {
-            detectedOS = Kind.Other;
+            thisKind = Kind.Other;
           }
         }
-        return detectedOS;
+        return thisKind;
       }
     }
 
-    public static interface ICommandHost {
+    /**
+     * Custom command driver interface
+     */
+    public interface ICommandHost {
+        /**
+         * Tell the environment the name of this thread.
+         *
+         * This feature is only called if the command is being run in background mode
+         * as specified by isBackgroundMode()
+         * @return the name of the thread
+         */
         String getBackgroundThreadName();
+
+        /**
+         * Tell the environment how this command is run.
+         * @return true if this command runs in the background.
+         */
         boolean isBackgroundMode();
+
+        /**
+         * Tell the environment what paramters this command provides.
+         * @return the parameters of the target command.
+         */
         String[] getParameters();
+
+        /**
+         * Supply the external process streams for this command.
+         *
+         * @return the external: input, output and error streams.
+         */
         Closeable[] getStreams();
+
+        /**
+         * The environment notifies the client interface that the process has begun.
+         *
+         * @param pipe the internal stdio of the process.
+         */
         void onStart(Closeable[] pipe);
+
+        /**
+         * The environment notifies the client interface that the process has terminated.
+         *
+         * @param value the value of the process termination.
+         */
         void onExit(int value);
+
+        /**
+         * The environment notifies the client that a fatal exception has taken place.
+         *
+         * @param e
+         */
         void onException(Exception e);
     }
 
