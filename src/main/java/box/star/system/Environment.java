@@ -252,7 +252,6 @@ public class Environment extends ConcurrentHashMap<String, String> {
     public void run(ICommandHost runnableCommand) {
 
         if (! runnableCommand.isBackgroundMode()) {
-
             try {
                 Executive e = start(runnableCommand.getParameters());
                 runnableCommand.onStart(e.getStreams());
@@ -595,6 +594,12 @@ public class Environment extends ConcurrentHashMap<String, String> {
             return null;
         }
 
+    }
+
+    public String getSystemLineTerminator(){
+        if (containsKey("SYS_LINE_TERMINATOR")) return get("SYS_LINE_TERMINATOR");
+        if (isWindows()) return "\r\n";
+        else return "\n";
     }
 
     public static class ExitTrap extends RuntimeException {

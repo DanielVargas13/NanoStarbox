@@ -32,7 +32,7 @@ public class echo extends Action {
             break;
         }
         try {
-            String out = String.join(" ", print) + ((lineMode)?"\n":"");
+            String out = String.join(" ", print) + ((lineMode)?environment.getSystemLineTerminator():"");
             stdout.write(out.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
