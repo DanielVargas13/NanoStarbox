@@ -29,7 +29,7 @@ class CommandTest {
     }
 
     @Test void action(){
-        echo.create("hello world").run();
+        echo.create("-n", "hello world").run();
     }
 
 }

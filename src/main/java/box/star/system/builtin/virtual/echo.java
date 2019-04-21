@@ -22,8 +22,18 @@ public class echo extends Action {
         Stack<String>print = new Stack<>();
         print.addAll(Arrays.asList(parameters));
         print.remove(0);
+        boolean lineMode = true;
+        while (print.get(0).startsWith("-")){
+            if (print.get(0).equals("-n")){
+                lineMode = false;
+                print.remove(0);
+                continue;
+            }
+            break;
+        }
         try {
-            stdout.write(String.join(" ", print).getBytes());
+            String out = String.join(" ", print) + ((lineMode)?"\n":"");
+            stdout.write(out.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
