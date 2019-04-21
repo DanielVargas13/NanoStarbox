@@ -7,7 +7,7 @@ public interface IRunnableCommand {
     boolean isBackgroundMode();
     String[] getParameters();
     Closeable[] getStreams();
-    void onStart();
+    void onStart(Closeable[] pipe);
     void onExit(int value);
     void onException(Exception e);
 }

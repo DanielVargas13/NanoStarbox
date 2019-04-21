@@ -1,11 +1,18 @@
 package box.star.system;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Command implements IRunnableCommand, Runnable {
+public class Command implements IRunnableCommand, Runnable, Closeable {
+
+    protected Closeable[] pipe;
 
     @Override
     public String getBackgroundThreadName() {
@@ -24,11 +31,23 @@ public class Command implements IRunnableCommand, Runnable {
 
     @Override
     public Closeable[] getStreams() {
-        return streams;
+        Closeable[] build = new Closeable[3];
+        for (int i = 0; i < streams.length; i++) {
+            Closeable value = streams[i];
+            if (value instanceof Command) {
+                Command command = (Command)value;
+                command.exec();
+                build[i] = command.pipe[i];
+            } else {
+                build[i] = value;
+            }
+        }
+        return build;
     }
 
     @Override
-    public void onStart() {
+    public void onStart(Closeable[] pipe) {
+        this.pipe = pipe;
         running = true;
         synchronized (startupMonitor){
             startupMonitor.notifyAll();
@@ -93,15 +112,18 @@ public class Command implements IRunnableCommand, Runnable {
     }
 
     public void run(){
+        if (isRunning()) return;
         start();
     }
 
     public int start(){
+        if (isRunning()) throw new IllegalStateException("this command is already running");
         environment.run(this);
         return this.exitValue;
     }
 
     public void exec(){
+        if (isRunning()) throw new IllegalStateException("this command is already running");
         backgroundMode = true;
         environment.run(this);
         synchronized (startupMonitor){
@@ -114,14 +136,24 @@ public class Command implements IRunnableCommand, Runnable {
         return (ANY)streams[stream];
     }
 
-    public void set(int stream, Closeable value){
+    public Command set(int stream, Closeable value){
         streams[stream] = value;
+        return this;
     }
 
     public void join(){
         if (isRunning() && isBackgroundMode()) synchronized (terminationMonitor) {
             try { terminationMonitor.wait(); }
             catch (InterruptedException e) {}
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (isRunning()) {
+            pipe[0].close();
+            pipe[1].close();
+            pipe[2].close();
         }
     }
 
