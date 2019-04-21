@@ -18,17 +18,6 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return new long[WT_COUNT];
     }
 
-    public interface IRunnableCommand {
-        ThreadGroup getBackgroundThreadGroup();
-        String getBackgroundThreadName();
-        boolean getBackgroundMode();
-        String[] getParameters();
-        Closeable[] getStreams();
-        void onStart();
-        void onExit(int value);
-        void onException(Exception e);
-    }
-
     private long[] executiveWaitTimers = createWaitTimers();
     private File currentDirectory = new File(System.getProperty("user.dir"));
 
@@ -82,7 +71,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     public void run(IRunnableCommand runnableCommand) {
 
-        if (! runnableCommand.getBackgroundMode()) {
+        if (! runnableCommand.isBackgroundMode()) {
 
             try {
                 runnableCommand.onStart();

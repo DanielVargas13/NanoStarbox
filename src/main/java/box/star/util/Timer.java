@@ -7,10 +7,6 @@ public class Timer {
 
     private java.util.Timer timer = new java.util.Timer();
 
-    public interface ITimerCallback<T> {
-        void onTimer(T data);
-    }
-
     public TimerTask createTimeout(int time, ITimerCallback<Object> callback, Object... parameter) {
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -44,7 +40,7 @@ public class Timer {
         return timerTask;
     }
 
-    public void cancel(){
+    public void cancelTimers(){
         timer.cancel();
     }
 

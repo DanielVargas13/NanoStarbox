@@ -71,7 +71,7 @@ public class WebServer extends HTTPServer {
 
     @Override
     public void stop() {
-        timer.cancel();
+        timer.cancelTimers();
         super.stop();
     }
 
