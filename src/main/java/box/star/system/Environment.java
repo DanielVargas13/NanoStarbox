@@ -1,5 +1,7 @@
 package box.star.system;
 
+import box.star.util.TokenGenerator;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -14,6 +16,22 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
     private int lastExitValue = 0;
+
+    private ConcurrentHashMap<String, Object> objectStore = new ConcurrentHashMap<>();
+    private TokenGenerator objStoreToken = new TokenGenerator();
+
+    public String store(Object value){
+        String token;
+        do {
+            token = objStoreToken.createNewToken(new int[]{4, 4});
+        } while (objectStore.contains(token));
+        objectStore.put(token, value);
+        return token;
+    }
+
+    public <ANY> ANY fetch(String token){
+        return (ANY)objectStore.get(token);
+    }
 
     /**
      * Registers the given java class action class as a known-factory-action-method.

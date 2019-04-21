@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 class CommandTest {
 
-    /** Auto register builtins ( lazy-testing )
+    /**
+     * Auto register actions ( lazy-testing )
      *
      */
     static {
