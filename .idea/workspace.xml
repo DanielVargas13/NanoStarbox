@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/OS.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" afterDir="false" />
     </list>
@@ -26,8 +27,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="181" selection-start-line="181" selection-end-line="181" />
+            <state relative-caret-position="-422">
+              <caret line="154" column="9" lean-forward="true" selection-start-line="154" selection-start-column="9" selection-end-line="154" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#540#541#0" expanded="true" />
@@ -39,6 +40,15 @@
                 <element signature="e#6293#6294#0" expanded="true" />
                 <element signature="e#6321#6322#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/OS.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-85">
+              <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -160,6 +170,7 @@
         <option value="JavaFXApplication" />
         <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
@@ -228,9 +239,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/exec/IO.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java" />
         <option value="$PROJECT_DIR$/test.bat" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
@@ -278,6 +286,9 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/ITimerCallback.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/builtin/virtual/echo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/Type.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/OsCheck.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/OS.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
       </list>
     </option>
@@ -369,16 +380,6 @@
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="box" type="462c0819:PsiDirectoryNode" />
-              <item name="star" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -625,7 +626,7 @@
       <module name="NanoStarbox" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="box.star.system.*" />
+          <option name="PATTERN" value="box.star.system.OS" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -640,7 +641,7 @@
       <module name="NanoStarbox" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="box.star.system.*" />
+          <option name="PATTERN" value="box.star.system.OS" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -657,7 +658,7 @@
       <module name="NanoStarbox" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="box.star.system.*" />
+          <option name="PATTERN" value="box.star.system.OS" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -739,7 +740,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17156863" visible="true" weight="0.25189108" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.82843137" side_tool="true" weight="0.25189108" />
@@ -843,7 +843,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="tidy-interface" />
     <MESSAGE value="favor new template cache" />
     <MESSAGE value="Shell Tech" />
     <MESSAGE value="Shell Tech: Refactor, Thread Safety" />
@@ -868,7 +867,8 @@
     <MESSAGE value="Box Command System: Scriptable Action Pack" />
     <MESSAGE value="Box Timer Tool: verbose parameter interface" />
     <MESSAGE value="Box Command System: Scriptable Action Pack&#10;&#10;Echo effects" />
-    <option name="LAST_COMMIT_MESSAGE" value="Box Command System: Scriptable Action Pack&#10;&#10;Echo effects" />
+    <MESSAGE value="Box Command System: Network Machine Technology" />
+    <option name="LAST_COMMIT_MESSAGE" value="Box Command System: Network Machine Technology" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -912,7 +912,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/util/ProcessTest.java" />
     <entry file="file://$PROJECT_DIR$/src/main/test/box/star/ShellTest.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/exec/ShellHost.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Shell.java" />
@@ -1198,10 +1197,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/OS.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-85">
+          <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="181" selection-start-line="181" selection-end-line="181" />
+        <state relative-caret-position="-422">
+          <caret line="154" column="9" lean-forward="true" selection-start-line="154" selection-start-column="9" selection-end-line="154" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#540#541#0" expanded="true" />

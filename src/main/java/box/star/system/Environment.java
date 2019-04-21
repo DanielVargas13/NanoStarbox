@@ -98,7 +98,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     public String getPlatformName(){
-        return System.getProperty("os.name");
+        return OS.getOperatingSystemType().toString();
     }
 
     public void run(ICommandHost runnableCommand) {
@@ -172,11 +172,11 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     public static boolean isWindows(){
-        return System.getProperty("os.name").toLowerCase().contains("windows");
+        return OS.getOperatingSystemType().equals(OS.Kind.Windows);
     }
 
     public static boolean isLinux(){
-        return System.getProperty("os.name").toLowerCase().contains("linux");
+        return OS.getOperatingSystemType().equals(OS.Kind.Linux);
     }
 
     public static String getLocalHostName(){
