@@ -1,19 +1,11 @@
 package box.star.system;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Command implements IRunnableCommand, Closeable {
-
-    private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Commands");
-
-    @Override
-    public ThreadGroup getBackgroundThreadGroup() {
-        return threadGroup;
-    }
+public class Command implements IRunnableCommand, Runnable {
 
     @Override
     public String getBackgroundThreadName() {
@@ -38,17 +30,29 @@ public class Command implements IRunnableCommand, Closeable {
     @Override
     public void onStart() {
         running = true;
+        synchronized (startupMonitor){
+            startupMonitor.notifyAll();
+        }
     }
 
     @Override
     public void onExit(int value) {
         running = false;
         exitValue = value;
+        synchronized (terminationMonitor){
+            terminationMonitor.notifyAll();
+        }
     }
 
     @Override
     public void onException(Exception e) {
         e.printStackTrace();
+        synchronized (startupMonitor){
+            startupMonitor.notifyAll();
+        }
+        synchronized (terminationMonitor){
+            terminationMonitor.notifyAll();
+        }
     }
 
     public boolean isRunning() {
@@ -61,7 +65,10 @@ public class Command implements IRunnableCommand, Closeable {
     private String[] parameters;
     private Environment environment;
 
+    private String startupMonitor = "start", terminationMonitor = "stop";
+
     public int getExitValue() {
+        if (isRunning()) join();
         return exitValue;
     }
 
@@ -81,13 +88,26 @@ public class Command implements IRunnableCommand, Closeable {
         this.streams = environment.getStreams();
     }
 
-    public Command copy(String... parameters) {
+    public Command build(String... parameters) {
         return new Command(this, parameters);
     }
 
-    public int run(){
+    public void run(){
+        start();
+    }
+
+    public int start(){
         environment.run(this);
         return this.exitValue;
+    }
+
+    public void exec(){
+        backgroundMode = true;
+        environment.run(this);
+        synchronized (startupMonitor){
+            try { startupMonitor.wait(); }
+            catch (InterruptedException e) {}
+        }
     }
 
     public <ANY> ANY get(int stream) {
@@ -98,7 +118,11 @@ public class Command implements IRunnableCommand, Closeable {
         streams[stream] = value;
     }
 
-    @Override
-    public void close() throws IOException {}
+    public void join(){
+        if (isRunning() && isBackgroundMode()) synchronized (terminationMonitor) {
+            try { terminationMonitor.wait(); }
+            catch (InterruptedException e) {}
+        }
+    }
 
 }

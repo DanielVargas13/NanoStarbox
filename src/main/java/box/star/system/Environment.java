@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Environment extends ConcurrentHashMap<String, String> {
 
+    private static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
+
     public static final int
             IO_READABLE = 0,
             IO_WRITABLE = 1,
@@ -98,7 +100,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
             } catch (Exception e){runnableCommand.onException(e);}
 
         } else {
-            Thread t = new Thread(runnableCommand.getBackgroundThreadGroup(),new Runnable() {
+            Thread t = new Thread(threadGroup,new Runnable() {
                 @Override
                 public void run() {
                     try {

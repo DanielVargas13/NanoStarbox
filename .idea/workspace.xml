@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="921c97fc-6f19-44f3-889c-9b6f5036309f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/box/star/util/ITimerCallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/util/Timer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/util/Timer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,46 +28,30 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="19" selection-start-line="18" selection-end-line="19" />
-              <folding>
-                <element signature="e#2711#2712#0" expanded="true" />
-                <element signature="e#2752#2753#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/CommandTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3043">
-              <caret line="179" column="28" lean-forward="true" selection-start-line="179" selection-start-column="28" selection-end-line="179" selection-end-column="28" />
+            <state relative-caret-position="136">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#263#264#0" expanded="true" />
                 <element signature="e#304#305#0" expanded="true" />
+                <element signature="e#595#596#0" expanded="true" />
+                <element signature="e#618#619#0" expanded="true" />
+                <element signature="e#685#686#0" expanded="true" />
+                <element signature="e#728#729#0" expanded="true" />
+                <element signature="e#783#784#0" expanded="true" />
+                <element signature="e#826#827#0" expanded="true" />
                 <element signature="e#421#422#0" expanded="true" />
                 <element signature="e#456#457#0" expanded="true" />
                 <element signature="e#513#514#0" expanded="true" />
                 <element signature="e#551#552#0" expanded="true" />
                 <element signature="e#1041#1042#0" expanded="true" />
                 <element signature="e#1080#1081#0" expanded="true" />
-                <element signature="e#1910#1911#0" expanded="true" />
+                <element signature="e#2251#2252#0" expanded="true" />
                 <element signature="e#1845#1846#0" expanded="true" />
                 <element signature="e#1887#1888#0" expanded="true" />
-                <element signature="e#9559#9589#0" expanded="true" />
+                <element signature="e#8210#8240#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -77,11 +60,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="1666">
+              <caret line="98" selection-start-line="98" selection-end-line="98" />
               <folding>
-                <element signature="e#168#169#0" expanded="true" />
-                <element signature="e#195#196#0" expanded="true" />
+                <element signature="imports" expanded="true" />
                 <element signature="e#256#257#0" expanded="true" />
                 <element signature="e#283#284#0" expanded="true" />
                 <element signature="e#339#340#0" expanded="true" />
@@ -90,28 +72,25 @@
                 <element signature="e#456#457#0" expanded="true" />
                 <element signature="e#509#510#0" expanded="true" />
                 <element signature="e#548#549#0" expanded="true" />
-                <element signature="e#591#592#0" expanded="true" />
-                <element signature="e#617#618#0" expanded="true" />
-                <element signature="e#714#715#0" expanded="true" />
-                <element signature="e#749#750#0" expanded="true" />
-                <element signature="e#908#909#0" expanded="true" />
-                <element signature="e#960#961#0" expanded="true" />
                 <element signature="e#994#995#0" expanded="true" />
                 <element signature="e#1024#1025#0" expanded="true" />
-                <element signature="e#1054#1055#0" expanded="true" />
-                <element signature="e#1084#1085#0" expanded="true" />
-                <element signature="e#840#841#0" expanded="true" />
-                <element signature="e#872#873#0" expanded="true" />
+                <element signature="e#2115#2116#0" expanded="true" />
+                <element signature="e#2144#2145#0" expanded="true" />
+                <element signature="e#2344#2345#0" expanded="true" />
+                <element signature="e#2370#2371#0" expanded="true" />
+                <element signature="e#2782#2783#0" expanded="true" />
+                <element signature="e#2671#2672#0" expanded="true" />
+                <element signature="e#2710#2711#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Timer.java">
+        <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="170">
+              <caret line="10" column="41" lean-forward="true" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -145,8 +124,8 @@
         <option value="HTML File" />
         <option value="Interface" />
         <option value="JavaFXApplication" />
-        <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -215,8 +194,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/test/box/star/WebServerTest.java" />
-        <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/src/box/star/js/WebServerTest.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/WebServerTest.java" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/test/box/star/js/RhinoWebDriverTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Template.java" />
@@ -224,7 +201,6 @@
         <option value="$PROJECT_DIR$/sample/site/rhino-web-driver/index.js" />
         <option value="$PROJECT_DIR$/plugin/README.MD" />
         <option value="$PROJECT_DIR$/plugin/RhinoWebDriver/README.MD" />
-        <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/io/Shell.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/util/ShellTest.java" />
         <option value="$PROJECT_DIR$/src/main/test/box/star/ThreadGroup.java" />
@@ -264,7 +240,10 @@
         <option value="$PROJECT_DIR$/src/main/java/box/star/etc/Environment.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/Environment.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/util/Timer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/WebServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Environment.java" />
+        <option value="$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/box/star/system/Command.java" />
       </list>
     </option>
@@ -380,6 +359,16 @@
               <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NanoStarbox" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NanoStarbox" type="b2602c69:ProjectViewProjectNode" />
@@ -529,11 +518,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="box.star.system" />
       <recent name="box.star" />
       <recent name="box.star.exec2" />
       <recent name="box.star.exec" />
       <recent name="box.star.util" />
-      <recent name="box.star.js" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
       <recent name="box.star.system" />
@@ -587,7 +576,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.CommandTest">
+  <component name="RunManager" selected="JUnit.Test: box.star.system.Command">
     <configuration name="CommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="NanoStarbox" />
       <extension name="coverage">
@@ -634,22 +623,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ShellTest.testBackGroundCommand" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="NanoStarbox" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="box.star.exec.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="box.star.exec" />
-      <option name="MAIN_CLASS_NAME" value="box.star.exec.ShellTest" />
-      <option name="METHOD_NAME" value="testBackGroundCommand" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ShellTest.testMain" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="NanoStarbox" />
       <extension name="coverage">
@@ -666,13 +639,37 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test: box.star.system.Command" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="NanoStarbox" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.system.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box.star.system" />
+      <option name="MAIN_CLASS_NAME" value="box.star.system.CommandTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.CommandTest" />
+      <item itemvalue="JUnit.Test: box.star.system.Command" />
+      <item itemvalue="JUnit.ShellTest" />
+      <item itemvalue="JUnit.ShellTest.catPipe" />
+      <item itemvalue="JUnit.ShellTest.testMain" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.Test: box.star.system.Command" />
         <item itemvalue="JUnit.CommandTest" />
         <item itemvalue="JUnit.ShellTest.testMain" />
         <item itemvalue="JUnit.ShellTest.catPipe" />
         <item itemvalue="JUnit.ShellTest" />
-        <item itemvalue="JUnit.ShellTest.testBackGroundCommand" />
       </list>
     </recent_temporary>
   </component>
@@ -690,41 +687,42 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="CommandTest - 2019.04.20 at 18h 00m 38s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 01m 17s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 03m 22s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 03m 40s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 03m 53s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 07m 11s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 08m 17s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 09m 39s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="CommandTest - 2019.04.20 at 18h 10m 11s.xml">
-      <configuration name="CommandTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="CommandTest - 2019.04.20 at 20h 06m 47s.xml">
       <configuration name="CommandTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="CommandTest_(1) - 2019.04.21 at 01h 10m 54s.xml">
+      <configuration name="CommandTest (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 11m 44s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 17m 39s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 17m 59s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 19m 06s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 20m 30s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 27m 51s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 33m 25s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Test__box_star_system_Command - 2019.04.21 at 01h 35m 39s.xml">
+      <configuration name="Test: box.star.system.Command" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.17320262" visible="true" weight="0.24886535" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.17320262" visible="true" weight="0.24886535" />
       <window_info auto_hide="true" id="Structure" order="1" sideWeight="0.82679737" side_tool="true" weight="0.24479167" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -786,8 +784,6 @@
     </layout-to-restore>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Set main to javascript console" />
-    <MESSAGE value="Quick fix" />
     <MESSAGE value="Clean startup" />
     <MESSAGE value="Move template cache" />
     <MESSAGE value="clean header" />
@@ -811,7 +807,9 @@
     <MESSAGE value="Shell Tech: foundation" />
     <MESSAGE value="Shell Tech: Compromise&#10;&#10;easy way to run commands with pipe io and all that... DONE." />
     <MESSAGE value="maybe core environment..." />
-    <option name="LAST_COMMIT_MESSAGE" value="maybe core environment..." />
+    <MESSAGE value="maybe core environment...&#10;&#10;Round 2" />
+    <MESSAGE value="Commando Games" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commando Games" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -855,20 +853,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sample/site/rhino-web-driver/static-page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="7" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Template.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -892,16 +876,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1195,17 +1169,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="19" selection-start-line="18" selection-end-line="19" />
-          <folding>
-            <element signature="e#2711#2712#0" expanded="true" />
-            <element signature="e#2752#2753#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/util/Timer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -1213,35 +1176,75 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/Command.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="113" selection-start-line="108" selection-end-line="113" />
+          <folding>
+            <element signature="e#2711#2712#0" expanded="true" />
+            <element signature="e#2752#2753#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/WebServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="74">
+          <caret line="33" column="45" selection-start-line="33" selection-start-column="45" selection-end-line="33" selection-end-column="45" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/IRunnableCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Environment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3043">
-          <caret line="179" column="28" lean-forward="true" selection-start-line="179" selection-start-column="28" selection-end-line="179" selection-end-column="28" />
+        <state relative-caret-position="136">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#263#264#0" expanded="true" />
             <element signature="e#304#305#0" expanded="true" />
+            <element signature="e#595#596#0" expanded="true" />
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#685#686#0" expanded="true" />
+            <element signature="e#728#729#0" expanded="true" />
+            <element signature="e#783#784#0" expanded="true" />
+            <element signature="e#826#827#0" expanded="true" />
             <element signature="e#421#422#0" expanded="true" />
             <element signature="e#456#457#0" expanded="true" />
             <element signature="e#513#514#0" expanded="true" />
             <element signature="e#551#552#0" expanded="true" />
             <element signature="e#1041#1042#0" expanded="true" />
             <element signature="e#1080#1081#0" expanded="true" />
-            <element signature="e#1910#1911#0" expanded="true" />
+            <element signature="e#2251#2252#0" expanded="true" />
             <element signature="e#1845#1846#0" expanded="true" />
             <element signature="e#1887#1888#0" expanded="true" />
-            <element signature="e#9559#9589#0" expanded="true" />
+            <element signature="e#8210#8240#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/test/box/star/system/CommandTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="41" lean-forward="true" selection-start-line="10" selection-start-column="41" selection-end-line="10" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/box/star/system/Command.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        <state relative-caret-position="1666">
+          <caret line="98" selection-start-line="98" selection-end-line="98" />
           <folding>
-            <element signature="e#168#169#0" expanded="true" />
-            <element signature="e#195#196#0" expanded="true" />
+            <element signature="imports" expanded="true" />
             <element signature="e#256#257#0" expanded="true" />
             <element signature="e#283#284#0" expanded="true" />
             <element signature="e#339#340#0" expanded="true" />
@@ -1250,18 +1253,15 @@
             <element signature="e#456#457#0" expanded="true" />
             <element signature="e#509#510#0" expanded="true" />
             <element signature="e#548#549#0" expanded="true" />
-            <element signature="e#591#592#0" expanded="true" />
-            <element signature="e#617#618#0" expanded="true" />
-            <element signature="e#714#715#0" expanded="true" />
-            <element signature="e#749#750#0" expanded="true" />
-            <element signature="e#908#909#0" expanded="true" />
-            <element signature="e#960#961#0" expanded="true" />
             <element signature="e#994#995#0" expanded="true" />
             <element signature="e#1024#1025#0" expanded="true" />
-            <element signature="e#1054#1055#0" expanded="true" />
-            <element signature="e#1084#1085#0" expanded="true" />
-            <element signature="e#840#841#0" expanded="true" />
-            <element signature="e#872#873#0" expanded="true" />
+            <element signature="e#2115#2116#0" expanded="true" />
+            <element signature="e#2144#2145#0" expanded="true" />
+            <element signature="e#2344#2345#0" expanded="true" />
+            <element signature="e#2370#2371#0" expanded="true" />
+            <element signature="e#2782#2783#0" expanded="true" />
+            <element signature="e#2671#2672#0" expanded="true" />
+            <element signature="e#2710#2711#0" expanded="true" />
           </folding>
         </state>
       </provider>
