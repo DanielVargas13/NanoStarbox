@@ -18,6 +18,20 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return new long[WT_COUNT];
     }
 
+    private Closeable[] streams = new Closeable[]{null, System.out, System.err};
+
+    public Closeable[] getStreams(){
+        return streams.clone();
+    }
+
+    public <ANY> ANY get(int stream) {
+        return (ANY)streams[stream];
+    }
+
+    public void set(int stream, Closeable value){
+        streams[stream] = value;
+    }
+
     private long[] executiveWaitTimers = createWaitTimers();
     private File currentDirectory = new File(System.getProperty("user.dir"));
 
