@@ -3,8 +3,10 @@ package box.star.system;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class Environment extends ConcurrentHashMap<String, String> {
 
@@ -202,4 +204,176 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return null;
     }
 
+    /**
+     * OS.Kind ostype=OS.getOperatingSystemType();
+     * switch (ostype) {
+     *     case Windows: break;
+     *     case MacOS: break;
+     *     case Linux: break;
+     *     case Other: break;
+     * }
+     * helper class to check the operating system this Java VM runs in
+     *
+     * please keep the notes below as a pseudo-license
+     *
+     * http://stackoverflow.com/questions/228477/how-do-i-programmatically-determine-operating-system-in-java
+     * compare to http://svn.terracotta.org/svn/tc/dso/tags/2.6.4/code/base/common/src/com/tc/util/runtime/Os.java
+     * http://www.docjar.com/html/api/org/apache/commons/lang/SystemUtils.java.html
+     */
+    static final class OS {
+      /**
+       * types of Operating Systems
+       */
+      public enum Kind {
+        Windows, MacOS, Linux, Other
+      };
+
+      // cached result of OS detection
+      protected static Kind detectedOS;
+
+      /**
+       * detect the operating system from the os.name System property and cache
+       * the result
+       *
+       * @returns - the operating system detected
+       */
+      public static Kind getOperatingSystemType() {
+        if (detectedOS == null) {
+          String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+          if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+            detectedOS = Kind.MacOS;
+          } else if (OS.indexOf("win") >= 0) {
+            detectedOS = Kind.Windows;
+          } else if (OS.indexOf("nux") >= 0) {
+            detectedOS = Kind.Linux;
+          } else {
+            detectedOS = Kind.Other;
+          }
+        }
+        return detectedOS;
+      }
+    }
+
+    public static interface ICommandHost {
+        String getBackgroundThreadName();
+        boolean isBackgroundMode();
+        String[] getParameters();
+        Closeable[] getStreams();
+        void onStart(Closeable[] pipe);
+        void onExit(int value);
+        void onException(Exception e);
+    }
+
+    public static class Executive extends ThreadGroup {
+
+        private static final void transfer(InputStream source, OutputStream dest) throws IOException {
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = source.read(buf)) > 0) dest.write(buf, 0, n);
+            dest.flush();
+            if (!System.out.equals(dest) && !System.err.equals(dest)) dest.close();
+            if (!System.in.equals(source)) source.close();
+        }
+
+        private Process host;
+        private Thread readable, writable, error;
+        private long[] waitTimers;
+
+        Executive(Process host, long[] waitTimers) {
+            super("Starbox Environment Executive");
+            this.host = host;
+            if (waitTimers != null) this.waitTimers = waitTimers;
+        }
+
+        public Executive readInputFrom(InputStream input) {
+            if (input == null) return this;
+            (readable = new Thread(this, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        transfer(input, get(IO_WRITABLE));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "Reader")).start();
+            return this;
+        }
+
+        public Executive writeOutputTo(OutputStream output) {
+            if (output == null) return this;
+            (writable = new Thread(this, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        transfer(get(IO_READABLE), output);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "Writer")).start();
+            return this;
+        }
+
+        public Executive writeErrorTo(OutputStream output) {
+            if (output == null) return this;
+            (error = new Thread(this, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        transfer(get(IO_ERROR), output);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "Error")).start();
+            return this;
+        }
+
+        public int getExitValue() {
+            if (writable != null) try {
+                if (waitTimers[IO_WRITABLE] > 0) writable.join(waitTimers[IO_WRITABLE]);
+                else writable.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (readable != null) try {
+                if (waitTimers[IO_READABLE] > 0) readable.join(waitTimers[IO_READABLE]);
+                else readable.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (error != null) try {
+                if (waitTimers[IO_ERROR] > 0) error.join(waitTimers[IO_ERROR]);
+                else error.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (waitTimers[WT_PROCESS] > 0) host.waitFor(waitTimers[WT_PROCESS], TimeUnit.MILLISECONDS);
+                else host.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return host.exitValue();
+        }
+
+        public Closeable[] getStreams(){
+            return new Closeable[]{get(0), get(1), get(2)};
+        }
+
+        @SuppressWarnings("unchecked")
+        public <ANY> ANY get(int stream) {
+            switch (stream) {
+                case IO_WRITABLE: // = 1
+                    return (ANY) host.getOutputStream();
+                case IO_READABLE: // = 0
+                    return (ANY) host.getInputStream();
+                case IO_ERROR: // = 2
+                    return (ANY) host.getErrorStream();
+            }
+            return null;
+        }
+
+    }
 }
