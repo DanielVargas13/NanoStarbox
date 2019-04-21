@@ -2,10 +2,7 @@ package box.star.system;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class Command implements IRunnableCommand, Runnable, Closeable {
 
@@ -127,7 +124,7 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
     }
 
     public void exec(){
-        if (isRunning()) throw new IllegalStateException("this command is already running");
+        if (isRunning()) return;
         backgroundMode = true;
         environment.run(this);
         synchronized (startupMonitor){
@@ -167,6 +164,38 @@ public class Command implements IRunnableCommand, Runnable, Closeable {
         nextCommand.set(1, cmd);
         nextCommand = cmd;
         return this;
+    }
+
+    private String getString(){
+        List<String> out = new ArrayList<>();
+        out.add(parameters[0]);
+        for (int i = 1; i < parameters.length; i++) {
+            String content = parameters[i];
+            content.replaceAll(dq, esc+dq);
+            out.add(dq+parameters[i]+dq);
+        }
+        return String.join(" ", out);
+    }
+
+    public List<Command> pipeList(){
+        ArrayList<Command> pipeList = new ArrayList<Command>();
+        Closeable v = this;
+        do {
+            Command nextCommand = (Command)v;
+            pipeList.add(nextCommand);
+            v = nextCommand.get(1);
+        } while(v instanceof Command);
+        return pipeList;
+    }
+
+    private final static String dq = "\"";
+    private final static String esc = "\\";
+
+    @Override
+    public String toString() {
+        List<String> list = new ArrayList<>();
+        for(Command c: pipeList()) list.add(c.getString());
+        return String.join(" | ", list);
     }
 
 }
