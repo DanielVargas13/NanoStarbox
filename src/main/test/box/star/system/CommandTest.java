@@ -23,8 +23,8 @@ class CommandTest {
     }
 
     @Test void builtin(){
-        Environment.registerBuiltin("echo", echo.class);
-        Command echo = new Command(environment,"echo", "hello world");
+        Environment.registerBuiltin(echo.class);
+        Command echo = new Command(environment,"?:", "hello world");
         echo.run();
     }
 

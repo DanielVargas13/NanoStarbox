@@ -9,6 +9,14 @@ import java.util.Stack;
 
 public class echo extends Builtin {
 
+    /**
+     * @return null for a match-operation (as name)
+     */
+    @Override
+    public String toString() {
+        return "echo";
+    }
+
     @Override
     public void main(String[] parameters) {
         Stack<String>print = new Stack<>();
@@ -18,8 +26,13 @@ public class echo extends Builtin {
             stdout.write(String.join(" ", print).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
         }
+    }
+
+    @Override
+    public boolean match(String command) {
+       if (command.equals("?:")) return true;
+       return false;
     }
 
 }
