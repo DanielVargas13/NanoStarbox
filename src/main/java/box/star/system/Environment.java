@@ -117,14 +117,14 @@ public class Environment extends ConcurrentHashMap<String, String> {
     private File currentDirectory = new File(System.getProperty("user.dir"));
 
     /**
-     * Sets the environemnt process/io wait-timer.
+     * Sets the environment process/io wait-timer.
      * <br><br>
      * <p>Timers:
      * <ul>
-     *     <li><code>Environment.IO_READABLE</code> for the (readable) command output</li>
-     *     <li><code>Environment.IO_WRITABLE</code> for the (writable) command input</li>
-     *     <li><code>Envrionment.IO_ERROR</code> for the (readable) command error</li>
-     *     <li><code>Environment.WT_PROCESS</code> for the process wait</li>
+     *     <li><code>Environment.IO_READABLE</code> for the (readable) command output-stream-wait-time</li>
+     *     <li><code>Environment.IO_WRITABLE</code> for the (writable) command input-stream-wait-time</li>
+     *     <li><code>Environment.IO_ERROR</code> for the (readable) command error-stream-wait-time</li>
+     *     <li><code>Environment.WT_PROCESS</code> for the process wait-time</li>
      * </ul>
      * </p>
      * @param timer the timer to write
