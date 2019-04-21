@@ -596,10 +596,20 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     }
 
+    public static final String SYS_LINE_TERMINATOR = "SYS_LINE_TERMINATOR";
+
     public String getSystemLineTerminator(){
-        if (containsKey("SYS_LINE_TERMINATOR")) return get("SYS_LINE_TERMINATOR");
+        if (containsKey(SYS_LINE_TERMINATOR)) return get(SYS_LINE_TERMINATOR);
         if (isWindows()) return "\r\n";
         else return "\n";
+    }
+
+    public void setSystemLineTerminator(String terminator){
+        put(SYS_LINE_TERMINATOR, terminator);
+    }
+
+    public void clearSystemLineTerminator(){
+        remove(SYS_LINE_TERMINATOR);
     }
 
     public static class ExitTrap extends RuntimeException {
