@@ -221,7 +221,14 @@ public class Environment extends ConcurrentHashMap<String, String> {
      * @return a new environment
      */
     public Environment copy(){
-        return new Environment(currentDirectory, this, this.executiveWaitTimers);
+        Environment copy = new Environment(currentDirectory, this, this.executiveWaitTimers);
+        return copy;
+    }
+
+    public Environment copy(boolean background){
+        Environment copy = new Environment(currentDirectory, this, this.executiveWaitTimers);
+        if (background)copy.streams = this.getStreams();
+        return copy;
     }
 
     /**

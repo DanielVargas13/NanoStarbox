@@ -130,7 +130,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     public void exec(){
         if (isRunning()) return;
         backgroundMode = true;
-        environment.run(this);
+        environment.copy(true).run(this);
         synchronized (startupMonitor){
             try { startupMonitor.wait(); }
             catch (InterruptedException e) {}
