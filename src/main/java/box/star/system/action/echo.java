@@ -10,6 +10,7 @@ public class echo extends Action {
 
     /**
      * Override
+     *
      * @return the command name
      */
     @Override
@@ -19,12 +20,12 @@ public class echo extends Action {
 
     @Override
     public void main(String[] parameters) {
-        Stack<String>print = new Stack<>();
+        Stack<String> print = new Stack<>();
         print.addAll(Arrays.asList(parameters));
         print.remove(0);
         boolean lineMode = true;
-        while (print.get(0).startsWith("-")){
-            if (print.get(0).equals("-n")){
+        while (print.get(0).startsWith("-")) {
+            if (print.get(0).equals("-n")) {
                 lineMode = false;
                 print.remove(0);
                 continue;
@@ -32,7 +33,7 @@ public class echo extends Action {
             break;
         }
         try {
-            String out = String.join(" ", print) + ((lineMode)?environment.getLineTerminator():"");
+            String out = String.join(" ", print) + ((lineMode) ? environment.getLineTerminator() : "");
             stdout.write(out.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,13 +43,14 @@ public class echo extends Action {
     /**
      * Override
      * tries to use this action to resolve a complex query of any form.
+     *
      * @param command the command name specified
      * @return true if this action will handle this execution request.
      */
     @Override
     public boolean match(String command) {
-       //if (command.equals("?:")) return true;
-       return false;
+        //if (command.equals("?:")) return true;
+        return false;
     }
 
 }

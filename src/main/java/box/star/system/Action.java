@@ -1,8 +1,5 @@
 package box.star.system;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
@@ -13,16 +10,21 @@ public class Action extends Process implements Runnable, Cloneable {
     private class Pipe {
         PipedOutputStream output = new PipedOutputStream();
         PipedInputStream input = new PipedInputStream();
-        Pipe(){
+
+        Pipe() {
             try {
                 output.connect(input);
-            } catch (IOException e) { e.printStackTrace(); }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        void close(){
+
+        void close() {
             try {
                 input.close();
                 output.close();
-            } catch (Exception e){}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -39,13 +41,14 @@ public class Action extends Process implements Runnable, Cloneable {
 
     /**
      * Override
+     *
      * @return the command name
      */
-    public String toString(){
+    public String toString() {
         return "action";
     }
 
-    final void start(Environment environment, String[] parameters){
+    final void start(Environment environment, String[] parameters) {
         this.environment = environment;
         this.parameters = parameters;
         p_stdin = new Pipe();
@@ -58,9 +61,9 @@ public class Action extends Process implements Runnable, Cloneable {
         thread.start();
     }
 
-    public void onException(Exception e){
+    public void onException(Exception e) {
         if (e instanceof Environment.ExitTrap) {
-            exitValue = ((Environment.ExitTrap)e).getStatus();
+            exitValue = ((Environment.ExitTrap) e).getStatus();
             return;
         }
         e.printStackTrace();
@@ -68,9 +71,11 @@ public class Action extends Process implements Runnable, Cloneable {
 
     @Override
     final public void run() {
-        try { main(parameters); }
-        catch (Exception e){onException(e);}
-        finally {
+        try {
+            main(parameters);
+        } catch (Exception e) {
+            onException(e);
+        } finally {
             try {
                 stdin.close();
                 stdout.close();
@@ -81,7 +86,8 @@ public class Action extends Process implements Runnable, Cloneable {
         }
     }
 
-    public void main(String[] parameters){}
+    public void main(String[] parameters) {
+    }
 
     /**
      * Returns the exit value for the subprocess.
@@ -207,11 +213,11 @@ public class Action extends Process implements Runnable, Cloneable {
      */
     @Override
     final public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
-        if (! thread.isAlive()) return true;
+        if (!thread.isAlive()) return true;
         if (timeout <= 0) return false;
 
-        long remainingNanos  = unit.toNanos(timeout);
-        long deadline = System.nanoTime() + remainingNanos ;
+        long remainingNanos = unit.toNanos(timeout);
+        long deadline = System.nanoTime() + remainingNanos;
 
         do {
             // Round up to next millisecond
@@ -220,12 +226,12 @@ public class Action extends Process implements Runnable, Cloneable {
             //waitForTimeoutInterruptibly(handle, msTimeout);
             if (Thread.interrupted())
                 throw new InterruptedException();
-            if (! thread.isAlive()) {
+            if (!thread.isAlive()) {
                 return true;
             }
             remainingNanos = deadline - System.nanoTime();
         } while (remainingNanos > 0);
-        return (! thread.isAlive());
+        return (!thread.isAlive());
     }
 
     /**
@@ -337,15 +343,17 @@ public class Action extends Process implements Runnable, Cloneable {
     /**
      * Override
      * tries to use this action to resolve a complex query of any form.
+     *
      * @param command the command name specified
      * @return true if this action will handle this execution request.
      */
-    public boolean match(String command){
+    public boolean match(String command) {
         return false;
     }
 
     class ActionThread extends Thread {
         Action target;
+
         public ActionThread(Action target) {
             super(threadGroup, target, target.toString());
             this.target = target;

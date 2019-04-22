@@ -2,7 +2,10 @@ package box.star.system;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 import static box.star.system.Environment.*;
 
@@ -31,7 +34,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
         for (int i = 0; i < streams.length; i++) {
             Closeable value = streams[i];
             if (value instanceof Command) {
-                Command command = (Command)value;
+                Command command = (Command) value;
                 command.exec();
                 build[i] = command.pipe[i];
             } else {
@@ -45,14 +48,14 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     final public void onStart(Closeable[] pipe) {
         this.pipe = pipe;
         running = true;
-        synchronized (startupMonitor){
+        synchronized (startupMonitor) {
             startupMonitor.notifyAll();
         }
     }
 
-    private void joinChildren(){
-        for(Closeable io:streams) {
-            if (io instanceof Command) ((Command)io).join();
+    private void joinChildren() {
+        for (Closeable io : streams) {
+            if (io instanceof Command) ((Command) io).join();
         }
     }
 
@@ -61,7 +64,7 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
         joinChildren();
         running = false;
         exitValue = value;
-        synchronized (terminationMonitor){
+        synchronized (terminationMonitor) {
             terminationMonitor.notifyAll();
         }
     }
@@ -69,10 +72,10 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     @Override
     public void onException(Exception e) {
         //e.printStackTrace();
-        synchronized (startupMonitor){
+        synchronized (startupMonitor) {
             startupMonitor.notifyAll();
         }
-        synchronized (terminationMonitor){
+        synchronized (terminationMonitor) {
             terminationMonitor.notifyAll();
         }
     }
@@ -116,40 +119,44 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
         return new Command(this, parameters);
     }
 
-    public void run(){
+    public void run() {
         if (isRunning()) return;
         start();
     }
 
-    public int start(){
+    public int start() {
         if (isRunning()) throw new IllegalStateException("this command is already running");
         environment.run(this);
         return this.exitValue;
     }
 
-    public void exec(){
+    public void exec() {
         if (isRunning()) return;
         backgroundMode = true;
         environment.copy(true).run(this);
-        synchronized (startupMonitor){
-            try { startupMonitor.wait(); }
-            catch (InterruptedException e) {}
+        synchronized (startupMonitor) {
+            try {
+                startupMonitor.wait();
+            } catch (InterruptedException e) {
+            }
         }
     }
 
     public <ANY> ANY get(int stream) {
-        return (ANY)streams[stream];
+        return (ANY) streams[stream];
     }
 
-    public Command set(int stream, Closeable value){
+    public Command set(int stream, Closeable value) {
         streams[stream] = value;
         return this;
     }
 
-    public void join(){
+    public void join() {
         if (isRunning() && isBackgroundMode()) synchronized (terminationMonitor) {
-            try { terminationMonitor.wait(); }
-            catch (InterruptedException e) {}
+            try {
+                terminationMonitor.wait();
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -183,8 +190,8 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
         out.add(parameters[0]);
         for (int i = 1; i < parameters.length; i++) {
             String content = parameters[i];
-            content.replaceAll(dq, esc+dq);
-            out.add(dq+parameters[i]+dq);
+            content.replaceAll(dq, esc + dq);
+            out.add(dq + parameters[i] + dq);
         }
         return String.join(" ", out);
     }
