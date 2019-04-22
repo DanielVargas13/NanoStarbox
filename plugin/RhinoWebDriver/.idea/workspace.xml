@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="02224f8b-91bf-416d-a5ab-2d76194ca40a" name="Default Changelist" comment="" />
+    <list default="true" id="02224f8b-91bf-416d-a5ab-2d76194ca40a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,7 +16,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
@@ -26,7 +28,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="102">
@@ -41,7 +43,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoTemplateFiller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
+            <state relative-caret-position="68">
               <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -77,8 +79,8 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1378" />
-    <option name="height" value="780" />
+    <option name="width" value="1386" />
+    <option name="height" value="788" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -86,6 +88,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -110,6 +113,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="box" type="462c0819:PsiDirectoryNode" />
               <item name="star" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="RhinoWebDriver" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RhinoWebDriver" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="box" type="462c0819:PsiDirectoryNode" />
+              <item name="star" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="RhinoWebDriver" type="b2602c69:ProjectViewProjectNode" />
@@ -172,7 +183,6 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -209,7 +219,22 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.RhinoWebDriverTest (1)">
+    <configuration name="RhinoWebDriverTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="RhinoWebDriver" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="box.star.js.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="box.star.js" />
+      <option name="MAIN_CLASS_NAME" value="box.star.js.RhinoWebDriverTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RhinoWebDriverTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="RhinoWebDriver" />
       <extension name="coverage">
@@ -229,14 +254,12 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.RhinoWebDriverTest (1)" />
         <item itemvalue="JUnit.RhinoWebDriverTest" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 30m 39s.xml">
-      <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 31m 22s.xml">
       <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
     </history-entry>
@@ -264,11 +287,15 @@
     <history-entry file="RhinoWebDriverTest - 2019.04.16 at 23h 43m 50s.xml">
       <configuration name="RhinoWebDriverTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="RhinoWebDriverTest_(1) - 2019.04.21 at 21h 50m 54s.xml">
+      <configuration name="RhinoWebDriverTest (1)" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -322,10 +349,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
+    <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="12" column="35" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
+        <state relative-caret-position="153">
+          <caret line="48" selection-start-line="48" selection-end-line="48" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -334,7 +361,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoTemplateFiller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
+        <state relative-caret-position="68">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -342,10 +369,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/box/star/js/RhinoWebDriver.java">
+    <entry file="file://$PROJECT_DIR$/test/box/star/js/RhinoWebDriverTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="48" selection-start-line="48" selection-end-line="48" />
+        <state relative-caret-position="102">
+          <caret line="12" column="35" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
