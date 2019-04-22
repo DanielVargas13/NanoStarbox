@@ -17,8 +17,8 @@ public class Environment extends ConcurrentHashMap<String, String> {
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
     private int lastExitValue = 0;
 
-    private ConcurrentHashMap<String, Object> objectStore = new ConcurrentHashMap<>();
-    private TokenGenerator objStoreToken = new TokenGenerator();
+    private static final ConcurrentHashMap<String, Object> objectStore = new ConcurrentHashMap<>();
+    private static final TokenGenerator objStoreToken = new TokenGenerator();
 
     /**
      * This method allows for semi-secure-ipc with objects.
@@ -39,7 +39,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
     }
 
     /**
-     * This method allows for retrieval of between-call-environment objects.
+     * Get the global object associated with token.
      *
      * This interface is consistent with a runtime-object-state-server performance.
      *
@@ -49,6 +49,15 @@ public class Environment extends ConcurrentHashMap<String, String> {
      */
     public <ANY> ANY fetch(String token){
         return (ANY)objectStore.get(token);
+    }
+
+    /**
+     * Removes the token from the global object store.
+     *
+     * @param token the token to remove.
+     */
+    public void drop(String token){
+        objectStore.remove(token);
     }
 
     /**
@@ -137,14 +146,14 @@ public class Environment extends ConcurrentHashMap<String, String> {
     /**
      * Sets the environment process/io wait-timer.
      * <br><br>
-     * <p>Timers:
+     * Timers:
      * <ul>
      *     <li><code>Environment.IO_READABLE</code> for the (readable) command output-stream-wait-time</li>
      *     <li><code>Environment.IO_WRITABLE</code> for the (writable) command input-stream-wait-time</li>
      *     <li><code>Environment.IO_ERROR</code> for the (readable) command error-stream-wait-time</li>
      *     <li><code>Environment.WT_PROCESS</code> for the process wait-time</li>
      * </ul>
-     * </p>
+     *
      * @param timer the timer to write
      * @param millis the value in milliseconds
      */

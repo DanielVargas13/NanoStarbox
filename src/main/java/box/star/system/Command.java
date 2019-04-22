@@ -4,6 +4,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
+import static box.star.system.Environment.*;
+
 public class Command implements Environment.ICommandHost, Runnable, Closeable {
 
     private Closeable[] pipe;
@@ -154,16 +156,16 @@ public class Command implements Environment.ICommandHost, Runnable, Closeable {
     @Override
     public void close() throws IOException {
         if (isRunning()) {
-            pipe[0].close();
-            pipe[1].close();
-            pipe[2].close();
+            pipe[IO_READABLE].close();
+            pipe[IO_WRITABLE].close();
+            pipe[IO_ERROR].close();
         }
     }
 
     private Stack<Command> pipeChain = new Stack<>();
 
     public Command pipe(Command cmd) {
-        pipeChain.peek().set(1, cmd);
+        pipeChain.peek().set(IO_WRITABLE, cmd);
         pipeChain.push(cmd);
         return this;
     }
