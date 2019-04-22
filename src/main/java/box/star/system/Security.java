@@ -4,7 +4,9 @@ import java.io.FileDescriptor;
 import java.net.InetAddress;
 import java.security.Permission;
 
-class Security extends SecurityManager {
+final class Security extends SecurityManager {
+
+    private Security(){}
 
     @Override
     public void checkPermission(Permission perm) {
@@ -115,8 +117,13 @@ class Security extends SecurityManager {
     public void checkSecurityAccess(String target) {
     }
 
+    final static Security manager;
+
     static {
-        System.setSecurityManager(new Security());
+
+        manager = new Security();
+        System.setSecurityManager(manager);
+
     }
 
 }

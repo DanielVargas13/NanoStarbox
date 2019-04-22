@@ -14,6 +14,10 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     static final ThreadGroup threadGroup = new ThreadGroup("Starbox System Environment");
 
+    public Security getSecurityManager(){
+        return Security.manager;
+    }
+
     private static final ConcurrentHashMap<String, Action> actionMap = new ConcurrentHashMap<>();
     private int lastExitValue = 0;
 
