@@ -175,6 +175,10 @@ public class Environment extends ConcurrentHashMap<String, String> {
         return executiveWaitTimers[timer];
     }
 
+    private void bootNetwork(){
+        this.put("ENV_HOSTNAME", Environment.getLocalHostName());
+        this.put("ENV_IP", Environment.getLocalNetworkAddress());
+    }
     /**
      * Creates a new default environment based on the system profile.
      *
@@ -210,6 +214,7 @@ public class Environment extends ConcurrentHashMap<String, String> {
             for(int i = 0; i<Math.min(waitTimers.length, this.executiveWaitTimers.length); i++)
                 this.executiveWaitTimers[i] = waitTimers[i];
         }
+        bootNetwork();
     }
 
     /**
@@ -616,20 +621,20 @@ public class Environment extends ConcurrentHashMap<String, String> {
 
     }
 
-    public static final String SYS_LINE_TERMINATOR = "SYS_LINE_TERMINATOR";
+    public static final String ENV_LINE_TERMINATOR = "ENV_LINE_TERMINATOR";
 
-    public String getSystemLineTerminator(){
-        if (containsKey(SYS_LINE_TERMINATOR)) return get(SYS_LINE_TERMINATOR);
+    public String getLineTerminator(){
+        if (containsKey(ENV_LINE_TERMINATOR)) return get(ENV_LINE_TERMINATOR);
         if (isWindows()) return "\r\n";
         else return "\n";
     }
 
-    public void setSystemLineTerminator(String terminator){
-        put(SYS_LINE_TERMINATOR, terminator);
+    public void setLineTerminator(String terminator){
+        put(ENV_LINE_TERMINATOR, terminator);
     }
 
-    public void clearSystemLineTerminator(){
-        remove(SYS_LINE_TERMINATOR);
+    public void clearLineTerminator(){
+        remove(ENV_LINE_TERMINATOR);
     }
 
     public static class ExitTrap extends RuntimeException {
