@@ -107,9 +107,23 @@ public class Shell {
       return shell.parent.group.getActionModel(name);
     }
 
+    private Main findSuperActionModel(String name) {
+      return shell.parent.group.findActionModel(name);
+    }
+
     private void createActionModel(Main main) {
       models.put(main.name, main);
       return;
+    }
+
+    private Main findActionModel(String name){
+      for(Main m:models.values()){
+        if (m.match(name)) return m;
+      }
+      if (haveSuperActionModels()){
+        return findSuperActionModel(name);
+      }
+      throw new IllegalArgumentException("unknown shell action model: " + name);
     }
 
     private Main getActionModel(String name) {
@@ -119,7 +133,7 @@ public class Shell {
       if (haveSuperActionModels()) {
         return getSuperActionModel(name);
       }
-      throw new IllegalArgumentException("unknown shell action model: " + name);
+      return findActionModel(name);
     }
 
     private void addAction(Action target) {
@@ -542,6 +556,11 @@ public class Shell {
       Main clone = (Main) super.clone();
       return clone;
     }
+
+    public boolean match(String name) {
+      return false;
+    }
+
   }
 
   public static class Function extends Main {

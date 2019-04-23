@@ -54,6 +54,11 @@ class ShellTest {
                 }
                 return 1;
             }
+
+          @Override
+          public boolean match(String name) {
+            return (name.startsWith(":"));
+          }
         });
     }
 
@@ -62,7 +67,7 @@ class ShellTest {
     }
 
     @Test void main() throws InterruptedException {
-        assertEquals(1, shell.main("echo", "hello world"));
+        assertEquals(1, shell.main(":---", "hello world"));
     }
 
 }
