@@ -30,6 +30,7 @@ public class Shell {
       return;
     }
     traceStream.println(msg);
+    traceStream.flush();
   }
 
   public void traceLifeCycle(boolean trace) {
@@ -219,7 +220,15 @@ public class Shell {
 
   public Object call(String name, Object... parameters){
     Method f = (Method) group.getActionModel(name);
-    return setObject(f.main(parameters));
+    Method m = null;
+    try {
+      m = (Method) f.clone();
+      setObject(m.main(parameters));
+    }
+    catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+    }
+    return status;
   }
 
   public void start(Action action, String... parameters) {
@@ -227,8 +236,14 @@ public class Shell {
   }
 
   public int run(String function, String... parameters){
-    Function f = (Function) group.getActionModel(function);
-    return status = f.main(parameters);
+    Function m = (Function) group.getActionModel(function);
+    Function f = null;
+    try {
+      f = (Function) m.clone();
+      status = f.main(parameters);
+    }
+    catch (CloneNotSupportedException e) {}
+    return status;
   }
 
   public int run(Action action, String... parameters) {
