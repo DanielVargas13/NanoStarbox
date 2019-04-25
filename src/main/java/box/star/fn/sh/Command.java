@@ -1,9 +1,6 @@
 package box.star.fn.sh;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,9 +37,21 @@ public class Command implements Closeable {
     return this;
   }
 
+  public ByteArrayOutputStream writeCapture(){
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeOutputTo(os);
+    return os;
+  }
+
   public Command writeErrorTo(OutputStream os){
     streams.set(2, os);
     return this;
+  }
+
+  public ByteArrayOutputStream errorCapture(){
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeErrorTo(os);
+    return os;
   }
 
   public Stack<Command> getPipeChain() {
