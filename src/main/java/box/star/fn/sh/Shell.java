@@ -24,6 +24,18 @@ public class Shell {
     streams.layer(overlay);
   }
 
+  public void clearFunctions(){
+    functions = new SharedMap<>();
+  }
+
+  public void clearVariables(){
+    variables = new SharedMap<>();
+  }
+
+  public void resetVariables(){
+    variables = new SharedMap<>(System.getenv());
+  }
+
   public void resetStreams(){
     streams = new Streams();
   }
