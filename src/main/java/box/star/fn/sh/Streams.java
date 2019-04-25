@@ -32,7 +32,7 @@ public class Streams {
     set(STDERR, stderr);
   }
 
-  private Streams(Map<Integer, Closeable> streams) {
+  Streams(Map<Integer, Closeable> streams) {
    this.streams = new SharedMap<>(streams.size());
    this.streams.putAll(streams);
   }
@@ -63,6 +63,10 @@ public class Streams {
 
   public Streams copy(){
     return new Streams(streams);
+  }
+
+  void layer(Streams overlay){
+    streams.putAll(overlay.streams);
   }
 
   Streams createLayer(Streams overlay){

@@ -10,8 +10,8 @@ public class Function extends Process implements Runnable, Cloneable, IShellMain
   private int status;
   private Pipe p_stdin, p_stdout, p_stderr;
 
-  Shell shell;
-  SharedMap<String, String> local;
+  protected Shell shell;
+  protected SharedMap<String, String> local;
 
   protected BufferedInputStream stdin;
   protected BufferedOutputStream stdout, stderr;

@@ -15,12 +15,24 @@ public class Shell {
   SharedMap<String, Function>functions;
   Streams streams;
   public int status;
-  
+
+  public void applyVariables(Map<String, String>variables){
+    this.variables.putAll(variables);
+  }
+
+  public void applyStreams(Streams overlay){
+    streams.layer(overlay);
+  }
+
+  public void resetStreams(){
+    streams = new Streams();
+  }
+
   public Shell(){
     this(System.getProperty("user.dir"), System.getenv(), null);
   }
 
-  public Shell(String currentDirectory, Map<String, String> environment, Streams streams) {
+  private Shell(String currentDirectory, Map<String, String> environment, Streams streams) {
     variables = (environment == null)? new SharedMap<>() : new SharedMap<>(environment);
     setCurrentDirectory(currentDirectory);
     functions = new SharedMap<>();
