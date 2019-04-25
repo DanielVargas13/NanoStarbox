@@ -27,6 +27,13 @@ public class Shell {
     else this.streams = new Streams();
   }
 
+  private Shell(Shell shell, Map<String, String> environment) {
+    variables = new SharedMap<>(environment);
+    functions = shell.functions.copy();
+    streams = shell.streams.copy();
+    setCurrentDirectory(shell.getCurrentDirectory());
+  }
+
   public String get(String key) {
     return variables.get(key);
   }
@@ -108,6 +115,16 @@ public class Shell {
 
   public Command build(String... parameters){
     return new Command(this, parameters);
+  }
+
+  public int spawn(String... parameters){
+    Shell shell = new Shell(this, variables);
+    return shell.run(parameters);
+  }
+
+  public int spawn(Map<String, String>variables, String... parameters){
+    Shell shell = new Shell(this, variables);
+    return shell.run(parameters);
   }
 
 }
