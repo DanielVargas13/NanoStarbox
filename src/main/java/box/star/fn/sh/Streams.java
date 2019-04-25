@@ -57,7 +57,7 @@ public class Streams {
     return new ArrayList(streams.values());
   }
 
-  public List<Integer> streams() {
+  public List<Integer> keyList() {
     return new ArrayList<>(streams.keySet());
   }
 

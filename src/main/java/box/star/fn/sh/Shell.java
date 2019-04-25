@@ -78,7 +78,10 @@ public class Shell {
 
   public void remove(String key) {
     variables.remove(key);
-    return;
+  }
+
+  public void remove(Integer key){
+    streams.remove(key);
   }
 
   public String getCurrentDirectory() {
@@ -103,6 +106,10 @@ public class Shell {
 
   public List<String> functions(){
     return new ArrayList<>(functions.keySet());
+  }
+
+  public List<Integer>streams(){
+    return streams.keyList();
   }
 
   public boolean haveFunction(String name){
