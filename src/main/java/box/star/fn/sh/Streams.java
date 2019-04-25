@@ -65,17 +65,17 @@ public class Streams {
     return new Streams(streams);
   }
 
-  void layer(Streams overlay){
+  public void layer(Streams overlay){
     streams.putAll(overlay.streams);
   }
 
-  Streams createLayer(Streams overlay){
+  public Streams createLayer(Streams overlay){
     Streams copy = copy();
     if (overlay != null) copy.streams.putAll(overlay.streams);
     return copy;
   }
 
-  void close(int stream){
+  public void close(int stream){
     Closeable x = streams.get(stream);
     if (x != null) {
       try {x.close();}
