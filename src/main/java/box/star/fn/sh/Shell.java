@@ -1,5 +1,6 @@
 package box.star.fn.sh;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,8 +64,16 @@ public class Shell {
     return variables.get(key);
   }
 
+  public <ANY> ANY get(Integer key){
+    return streams.get(key);
+  }
+
   public void set(String key, String value) {
     variables.put(key, value);
+  }
+
+  public void set(Integer key, Closeable stream){
+    streams.set(key, stream);
   }
 
   public void remove(String key) {
