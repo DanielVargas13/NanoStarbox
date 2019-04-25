@@ -169,7 +169,7 @@ public class Shell {
 
   public int spawn(Map<String, String>variables, String... parameters){
     Shell shell = new Shell(this, variables);
-    return status = shell.run(parameters);
+    return shell.run(parameters);
   }
 
 }
