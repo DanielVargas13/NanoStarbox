@@ -14,6 +14,7 @@ public class Shell {
   SharedMap<String, String> variables;
   SharedMap<String, Function>functions;
   Streams streams;
+  public int status;
   
   public Shell(){
     this(System.getProperty("user.dir"), System.getenv(), null);
@@ -82,13 +83,13 @@ public class Shell {
 
   public int run(String... parameters) {
     Executive p = exec(null, null, parameters);
-    try { return p.waitFor(); }
+    try { return status = p.waitFor(); }
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
   public int run(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive p = exec(locals, streams, parameters);
-    try { return p.waitFor(); }
+    try { return status = p.waitFor(); }
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
@@ -124,7 +125,7 @@ public class Shell {
 
   public int spawn(Map<String, String>variables, String... parameters){
     Shell shell = new Shell(this, variables);
-    return shell.run(parameters);
+    return status = shell.run(parameters);
   }
 
 }

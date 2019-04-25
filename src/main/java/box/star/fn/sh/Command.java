@@ -75,7 +75,7 @@ public class Command implements Closeable {
 
   public int run(){
     exec();
-    return getExitValue();
+    return shell.status = getExitValue();
   }
 
   public Command exec(){
