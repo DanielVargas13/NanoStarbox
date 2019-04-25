@@ -141,6 +141,10 @@ public class Shell {
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
+  public Executive exec(String... parameters){
+    return exec(null, null, parameters);
+  }
+
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
     if (haveFunction(parameters[0])) {
@@ -155,7 +159,7 @@ public class Shell {
     return executive;
   }
 
-  public Executive exec(Command command) {
+  Executive exec(Command command) {
     if (command.executive == null) {
       command.executive = exec(command.locals, command.streams, command.parameters);
     }
