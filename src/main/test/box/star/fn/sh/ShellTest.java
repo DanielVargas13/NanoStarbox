@@ -21,7 +21,7 @@ class ShellTest {
         return 0;
       }
     });
-    Command starbox = shell.build( "java", "-cp", "jar/StarboxShell.jar");
+    Command starbox = shell.build( "java", "-cp", "jar/NanoStarbox.jar");
     Command cat = shell.build("echo", "hello world");
     //Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
     Command grep = starbox.build("box.star.bin.grep", "hello");
