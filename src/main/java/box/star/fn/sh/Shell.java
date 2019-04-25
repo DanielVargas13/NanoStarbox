@@ -1,8 +1,6 @@
 package box.star.fn.sh;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -180,4 +178,30 @@ public class Shell {
     return shell.run(parameters);
   }
 
+  public Shell readInputFrom(InputStream is){
+    streams.set(0, is);
+    return this;
+  }
+
+  public Shell writeOutputTo(OutputStream os){
+    streams.set(1, os);
+    return this;
+  }
+
+  public ByteArrayOutputStream writeCapture(){
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeOutputTo(os);
+    return os;
+  }
+
+  public Shell writeErrorTo(OutputStream os){
+    streams.set(2, os);
+    return this;
+  }
+
+  public ByteArrayOutputStream errorCapture(){
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeErrorTo(os);
+    return os;
+  }
 }
