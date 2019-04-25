@@ -26,5 +26,6 @@ class ShellTest {
     //Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
     Command grep = starbox.build("box.star.bin.grep", "hello");
     cat.pipe(grep).run();
+    shell.spawn("echo", "I'm a genius, today...");
   }
 }
