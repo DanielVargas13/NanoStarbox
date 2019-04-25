@@ -6,8 +6,7 @@ import java.security.Permission;
 
 final class Security extends SecurityManager {
 
-    private Security() {
-    }
+    private Security() {}
 
     @Override
     public void checkPermission(Permission perm) {
@@ -31,11 +30,11 @@ final class Security extends SecurityManager {
 
     @Override
     public void checkExit(int status) {
-        Thread thread = Thread.currentThread();
-        String name = thread.getName();
-        if (thread.getThreadGroup().equals(Action.threadGroup))
-            if (!name.equals("exit"))
-                throw new Environment.ExitTrap(status, "System.exit method not allowed for thread-group-action: " + name);
+//            Thread thread = Thread.currentThread();
+//            String name = thread.getName();
+//            if (thread.getThreadGroup().equals(Action.threadGroup))
+//                if (!name.equals("exit"))
+//                    throw new Environment.ExitTrap(status, "System.exit method not allowed for thread-group-action: " + name);
     }
 
     @Override
