@@ -112,6 +112,10 @@ public class Shell {
     return streams.keyList();
   }
 
+  public boolean haveStream(Integer key){
+    return streams.hasStream(key);
+  }
+
   public boolean haveFunction(String name){
     return functions.containsKey(name);
   }

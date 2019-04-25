@@ -82,4 +82,9 @@ public class Streams {
       catch (IOException e) {}
     }
   }
+
+  public boolean hasStream(Integer key) {
+    return streams.containsKey(key);
+  }
+
 }
