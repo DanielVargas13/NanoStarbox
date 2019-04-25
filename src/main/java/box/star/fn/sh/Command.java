@@ -2,6 +2,8 @@ package box.star.fn.sh;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,21 @@ public class Command implements Closeable {
 
   public Command set(int stream, Closeable value) {
     streams.set(stream, value);
+    return this;
+  }
+
+  public Command readInputFrom(InputStream is){
+    streams.set(0, is);
+    return this;
+  }
+
+  public Command writeOutputTo(OutputStream os){
+    streams.set(1, os);
+    return this;
+  }
+
+  public Command writeErrorTo(OutputStream os){
+    streams.set(2, os);
     return this;
   }
 
