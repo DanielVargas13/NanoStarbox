@@ -8,18 +8,18 @@ package box.star.io.protocols.http;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the mime-type nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -47,49 +47,50 @@ import static box.star.io.protocols.http.HTTPServer.PORT_KEY;
  */
 public class HTTPService implements Runnable {
 
-    private HTTPServer httpd;
+  private final int timeout;
+  private HTTPServer httpd;
+  private IOException socketBindingException;
 
-    private final int timeout;
+  private boolean boundSocketConnection = false;
 
-    private IOException socketBindingException;
+  public HTTPService(HTTPServer httpd, int timeout) {
+    this.httpd = httpd;
+    this.timeout = timeout;
+  }
 
-    private boolean boundSocketConnection = false;
-
-    public HTTPService(HTTPServer httpd, int timeout) {
-        this.httpd = httpd;
-        this.timeout = timeout;
+  @Override
+  public void run() {
+    try {
+      String host = (String) httpd.configuration.get(HOST_KEY);
+      int port = (int) httpd.configuration.get(PORT_KEY);
+      httpd.getMyServerSocket().bind(host != null ? new InetSocketAddress(host, port) : new InetSocketAddress(port));
+      boundSocketConnection = true;
     }
-
-    @Override
-    public void run() {
-        try {
-            String host = (String) httpd.configuration.get(HOST_KEY);
-            int port = (int) httpd.configuration.get(PORT_KEY);
-            httpd.getMyServerSocket().bind(host != null ? new InetSocketAddress(host, port) : new InetSocketAddress(port));
-            boundSocketConnection = true;
-        } catch (IOException e) {
-            this.socketBindingException = e;
-            return;
+    catch (IOException e) {
+      this.socketBindingException = e;
+      return;
+    }
+    do {
+      try {
+        final Socket finalAccept = httpd.getMyServerSocket().accept();
+        if (this.timeout > 0) {
+          finalAccept.setSoTimeout(this.timeout);
         }
-        do {
-            try {
-                final Socket finalAccept = httpd.getMyServerSocket().accept();
-                if (this.timeout > 0) {
-                    finalAccept.setSoTimeout(this.timeout);
-                }
-                final InputStream inputStream = finalAccept.getInputStream();
-                httpd.asyncRunner.exec(httpd.createClientHandler(finalAccept, inputStream));
-            } catch (IOException e) {
-                HTTPServer.LOG.log(Level.FINE, "Communication with the client broken", e);
-            }
-        } while (!httpd.getMyServerSocket().isClosed());
-    }
+        final InputStream inputStream = finalAccept.getInputStream();
+        httpd.asyncRunner.exec(httpd.createClientHandler(finalAccept, inputStream));
+      }
+      catch (IOException e) {
+        HTTPServer.LOG.log(Level.FINE, "Communication with the client broken", e);
+      }
+    } while (!httpd.getMyServerSocket().isClosed());
+  }
 
-    public IOException getSocketBindingException() {
-        return socketBindingException;
-    }
-    public boolean hasBoundSocketConnection() {
-        return boundSocketConnection;
-    }
+  public IOException getSocketBindingException() {
+    return socketBindingException;
+  }
+
+  public boolean hasBoundSocketConnection() {
+    return boundSocketConnection;
+  }
 
 }

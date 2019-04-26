@@ -16,8 +16,17 @@ public class Executive {
   private final Process host;
   private Thread readable, writable, error;
 
-  Executive(Process host){
+  Executive(Process host) {
     this.host = host;
+  }
+
+  private static final void transfer(InputStream source, OutputStream dest) throws IOException {
+    byte[] buf = new byte[8192];
+    int n;
+    while ((n = source.read(buf)) > 0) dest.write(buf, 0, n);
+    dest.flush();
+    if (!System.out.equals(dest) && !System.err.equals(dest)) dest.close();
+    if (!System.in.equals(source)) source.close();
   }
 
   public Executive readInputFrom(InputStream input) {
@@ -27,7 +36,8 @@ public class Executive {
       public void run() {
         try {
           transfer(input, get(IO_WRITABLE));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
           //e.printStackTrace();
         }
       }
@@ -35,7 +45,7 @@ public class Executive {
     return this;
   }
 
-  public Executive writeOutputToCommand(Command command){
+  public Executive writeOutputToCommand(Command command) {
     command.exec();
     writeOutputTo(command.executive.get(1));
     return command.executive;
@@ -43,15 +53,16 @@ public class Executive {
 
   public Executive writeOutputTo(Closeable output) {
     if (output == null) return this;
-    if (output instanceof Command){
-      return writeOutputToCommand((Command)output);
+    if (output instanceof Command) {
+      return writeOutputToCommand((Command) output);
     }
     (writable = new Thread(new Runnable() {
       @Override
       public void run() {
         try {
-          transfer(get(IO_READABLE), (OutputStream)output);
-        } catch (IOException e) {
+          transfer(get(IO_READABLE), (OutputStream) output);
+        }
+        catch (IOException e) {
           //e.printStackTrace();
         }
       }
@@ -66,7 +77,8 @@ public class Executive {
       public void run() {
         try {
           transfer(get(IO_ERROR), output);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
           //e.printStackTrace();
         }
       }
@@ -102,14 +114,5 @@ public class Executive {
   public Process destroyForcibly() {return host.destroyForcibly();}
 
   public boolean isAlive() {return host.isAlive();}
-
-  private static final void transfer(InputStream source, OutputStream dest) throws IOException {
-    byte[] buf = new byte[8192];
-    int n;
-    while ((n = source.read(buf)) > 0) dest.write(buf, 0, n);
-    dest.flush();
-    if (!System.out.equals(dest) && !System.err.equals(dest)) dest.close();
-    if (!System.in.equals(source)) source.close();
-  }
 
 }

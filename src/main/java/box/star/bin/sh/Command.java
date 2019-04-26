@@ -10,55 +10,13 @@ public class Command implements Closeable {
 
   String[] parameters;
   Shell shell;
-  SharedMap<String, String>locals = new SharedMap<>();
+  SharedMap<String, String> locals = new SharedMap<>();
   Streams streams;
   Executive executive;
 
   Stack<Command> pipeChain = new Stack<>();
 
-  public Command pipe(Command cmd) {
-    pipeChain.peek().set(1, cmd);
-    pipeChain.push(cmd);
-    return this;
-  }
-
-  public Command set(int stream, Closeable value) {
-    streams.set(stream, value);
-    return this;
-  }
-
-  public Command readInputFrom(InputStream is){
-    streams.set(0, is);
-    return this;
-  }
-
-  public Command writeOutputTo(OutputStream os){
-    streams.set(1, os);
-    return this;
-  }
-
-  public ByteArrayOutputStream writeCapture(){
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    writeOutputTo(os);
-    return os;
-  }
-
-  public Command writeErrorTo(OutputStream os){
-    streams.set(2, os);
-    return this;
-  }
-
-  public ByteArrayOutputStream errorCapture(){
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    writeErrorTo(os);
-    return os;
-  }
-
-  public Stack<Command> getPipeChain() {
-    return (Stack<Command>) pipeChain.clone();
-  }
-
-  public Command(Shell shell, String... parameters){
+  public Command(Shell shell, String... parameters) {
     this.shell = shell;
     this.streams = shell.streams.copy();
     this.parameters = parameters;
@@ -75,6 +33,48 @@ public class Command implements Closeable {
     this.parameters = p.toArray(n);
     this.streams = shell.streams.copy();
     this.pipeChain.push(this);
+  }
+
+  public Command pipe(Command cmd) {
+    pipeChain.peek().set(1, cmd);
+    pipeChain.push(cmd);
+    return this;
+  }
+
+  public Command set(int stream, Closeable value) {
+    streams.set(stream, value);
+    return this;
+  }
+
+  public Command readInputFrom(InputStream is) {
+    streams.set(0, is);
+    return this;
+  }
+
+  public Command writeOutputTo(OutputStream os) {
+    streams.set(1, os);
+    return this;
+  }
+
+  public ByteArrayOutputStream writeCapture() {
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeOutputTo(os);
+    return os;
+  }
+
+  public Command writeErrorTo(OutputStream os) {
+    streams.set(2, os);
+    return this;
+  }
+
+  public ByteArrayOutputStream errorCapture() {
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    writeErrorTo(os);
+    return os;
+  }
+
+  public Stack<Command> getPipeChain() {
+    return (Stack<Command>) pipeChain.clone();
   }
 
   @Override
@@ -99,12 +99,12 @@ public class Command implements Closeable {
     }
   }
 
-  public int run(){
+  public int run() {
     exec();
     return shell.status = getExitValue();
   }
 
-  public Command exec(){
+  public Command exec() {
     shell.exec(this);
     return this;
   }

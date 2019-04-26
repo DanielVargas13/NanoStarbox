@@ -9,42 +9,18 @@ import java.util.Map;
  * Nano Starbox Function Shell
  */
 public class Shell {
-  
-  SharedMap<String, String> variables;
-  SharedMap<String, Function>functions;
-  Streams streams;
+
   public int status;
+  SharedMap<String, String> variables;
+  SharedMap<String, Function> functions;
+  Streams streams;
 
-  public void applyVariables(Map<String, String>variables){
-    this.variables.putAll(variables);
-  }
-
-  public void applyStreams(Streams overlay){
-    streams.layer(overlay);
-  }
-
-  public void clearFunctions(){
-    functions = new SharedMap<>();
-  }
-
-  public void clearVariables(){
-    variables = new SharedMap<>();
-  }
-
-  public void resetVariables(){
-    variables = new SharedMap<>(System.getenv());
-  }
-
-  public void resetStreams(){
-    streams = new Streams();
-  }
-
-  public Shell(){
+  public Shell() {
     this(System.getProperty("user.dir"), System.getenv(), null);
   }
 
   private Shell(String currentDirectory, Map<String, String> environment, Streams streams) {
-    variables = (environment == null)? new SharedMap<>() : new SharedMap<>(environment);
+    variables = (environment == null) ? new SharedMap<>() : new SharedMap<>(environment);
     setCurrentDirectory(currentDirectory);
     functions = new SharedMap<>();
     if (streams == null) this.streams = new Streams();
@@ -58,11 +34,35 @@ public class Shell {
     setCurrentDirectory(shell.getCurrentDirectory());
   }
 
+  public void applyVariables(Map<String, String> variables) {
+    this.variables.putAll(variables);
+  }
+
+  public void applyStreams(Streams overlay) {
+    streams.layer(overlay);
+  }
+
+  public void clearFunctions() {
+    functions = new SharedMap<>();
+  }
+
+  public void clearVariables() {
+    variables = new SharedMap<>();
+  }
+
+  public void resetVariables() {
+    variables = new SharedMap<>(System.getenv());
+  }
+
+  public void resetStreams() {
+    streams = new Streams();
+  }
+
   public String get(String key) {
     return variables.get(key);
   }
 
-  public <ANY> ANY get(Integer key){
+  public <ANY> ANY get(Integer key) {
     return streams.get(key);
   }
 
@@ -70,7 +70,7 @@ public class Shell {
     variables.put(key, value);
   }
 
-  public void set(Integer key, Closeable stream){
+  public void set(Integer key, Closeable stream) {
     streams.set(key, stream);
   }
 
@@ -78,7 +78,7 @@ public class Shell {
     variables.remove(key);
   }
 
-  public void remove(Integer key){
+  public void remove(Integer key) {
     streams.remove(key);
   }
 
@@ -90,11 +90,11 @@ public class Shell {
     set("PWD", directory);
   }
 
-  public void defineFunction(String name, Function function){
+  public void defineFunction(String name, Function function) {
     functions.put(name, function);
   }
 
-  public void removeFunction(String name){
+  public void removeFunction(String name) {
     functions.remove(name);
   }
 
@@ -102,29 +102,29 @@ public class Shell {
     return new ArrayList<>(variables.keySet());
   }
 
-  public List<String> functions(){
+  public List<String> functions() {
     return new ArrayList<>(functions.keySet());
   }
 
-  public List<Integer>streams(){
+  public List<Integer> streams() {
     return streams.keyList();
   }
 
-  public boolean haveVariable(String key){
+  public boolean haveVariable(String key) {
     return variables.containsKey(key);
   }
 
-  public boolean haveStream(Integer key){
+  public boolean haveStream(Integer key) {
     return streams.hasStream(key);
   }
 
-  public boolean haveFunction(String name){
+  public boolean haveFunction(String name) {
     return functions.containsKey(name);
   }
-  
-  private Function getFunction(String name){
-    if (haveFunction(name))return functions.get(name);
-    throw new RuntimeException("Function "+name+" is not defined in this scope");
+
+  private Function getFunction(String name) {
+    if (haveFunction(name)) return functions.get(name);
+    throw new RuntimeException("Function " + name + " is not defined in this scope");
   }
 
   public int run(String... parameters) {
@@ -139,7 +139,7 @@ public class Shell {
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
-  public Executive exec(String... parameters){
+  public Executive exec(String... parameters) {
     return exec(null, null, parameters);
   }
 
@@ -151,7 +151,8 @@ public class Shell {
     } else try {
       Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
       executive = new Executive(p);
-    } catch (IOException e) { throw new RuntimeException(e);}
+    }
+    catch (IOException e) { throw new RuntimeException(e);}
     Streams pStreams = this.streams.createLayer(streams);
     executive.readInputFrom(pStreams.get(0)).writeOutputTo(pStreams.get(1)).writeErrorTo(pStreams.get(2));
     return executive;
@@ -164,42 +165,42 @@ public class Shell {
     return command.executive;
   }
 
-  public Command build(String... parameters){
+  public Command build(String... parameters) {
     return new Command(this, parameters);
   }
 
-  public int spawn(String... parameters){
+  public int spawn(String... parameters) {
     Shell shell = new Shell(this, variables);
     return shell.run(parameters);
   }
 
-  public int spawn(Map<String, String>variables, String... parameters){
+  public int spawn(Map<String, String> variables, String... parameters) {
     Shell shell = new Shell(this, variables);
     return shell.run(parameters);
   }
 
-  public Shell readInputFrom(InputStream is){
+  public Shell readInputFrom(InputStream is) {
     streams.set(0, is);
     return this;
   }
 
-  public Shell writeOutputTo(OutputStream os){
+  public Shell writeOutputTo(OutputStream os) {
     streams.set(1, os);
     return this;
   }
 
-  public ByteArrayOutputStream writeCapture(){
+  public ByteArrayOutputStream writeCapture() {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     writeOutputTo(os);
     return os;
   }
 
-  public Shell writeErrorTo(OutputStream os){
+  public Shell writeErrorTo(OutputStream os) {
     streams.set(2, os);
     return this;
   }
 
-  public ByteArrayOutputStream errorCapture(){
+  public ByteArrayOutputStream errorCapture() {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     writeErrorTo(os);
     return os;

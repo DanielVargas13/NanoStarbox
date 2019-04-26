@@ -5,32 +5,33 @@ import java.util.concurrent.TimeUnit;
 
 public class Function extends Process implements Runnable, Cloneable, IShellMain {
 
+  protected Shell shell;
+  protected SharedMap<String, String> local;
+  protected BufferedInputStream stdin;
+  protected BufferedOutputStream stdout, stderr;
   private Thread thread;
   private String[] parameters;
   private int status;
   private Pipe p_stdin, p_stdout, p_stderr;
-
-  protected Shell shell;
-  protected SharedMap<String, String> local;
-
-  protected BufferedInputStream stdin;
-  protected BufferedOutputStream stdout, stderr;
+  private boolean destroying;
 
   @Override
-  protected Function clone(){
-    try { return (Function)super.clone();
-    } catch (Exception ignored){}
+  protected Function clone() {
+    try {
+      return (Function) super.clone();
+    }
+    catch (Exception ignored) {}
     return null;
   }
 
-  final Function createInstance(Shell shell, SharedMap<String, String>superLocal){
+  final Function createInstance(Shell shell, SharedMap<String, String> superLocal) {
     Function instance = clone();
     instance.shell = shell;
     if (superLocal == null) instance.local = new SharedMap<>();
     else instance.local = superLocal;
     return instance;
   }
-  
+
   final Function exec(String[] parameters) {
     this.parameters = parameters;
     p_stdin = new Pipe();
@@ -43,27 +44,6 @@ public class Function extends Process implements Runnable, Cloneable, IShellMain
     thread.start();
     return this;
   }
-  
-  private boolean destroying;
-  
-  private class Pipe {
-
-    PipedOutputStream output = new PipedOutputStream();
-    PipedInputStream input = new PipedInputStream();
-
-    Pipe() {
-      try {
-        output.connect(input);
-      } catch (IOException e) { throw new RuntimeException(e); }
-    }
-
-    void close() {
-      try {
-        input.close();
-        output.close();
-      } catch (Exception e) {}
-    }
-  }
 
   @Override
   public int main(String[] parameters) {return 0;}
@@ -72,20 +52,22 @@ public class Function extends Process implements Runnable, Cloneable, IShellMain
   final public void run() {
     try {
       status = main(parameters);
-    } finally {
+    }
+    finally {
       try {
         stdin.close();
         stdout.close();
         stderr.close();
-      } catch (IOException ignored) {}
+      }
+      catch (IOException ignored) {}
     }
   }
 
   @Override
   final public int exitValue() {
     try { thread.join(); }
-    catch (InterruptedException ie){}
-    catch (Exception e){if (! destroying) throw new RuntimeException(e);}
+    catch (InterruptedException ie) {}
+    catch (Exception e) {if (!destroying) throw new RuntimeException(e);}
     return status;
   }
 
@@ -144,16 +126,38 @@ public class Function extends Process implements Runnable, Cloneable, IShellMain
       stdin.close();
       stdout.close();
       stderr.close();
-      if (thread.isAlive()){
+      if (thread.isAlive()) {
         thread.interrupt();
       }
-    } catch (IOException e) { e.printStackTrace(); }
+    }
+    catch (IOException e) { e.printStackTrace(); }
   }
 
   @Override
   final public Process destroyForcibly() {
     destroy();
     return this;
+  }
+
+  private class Pipe {
+
+    PipedOutputStream output = new PipedOutputStream();
+    PipedInputStream input = new PipedInputStream();
+
+    Pipe() {
+      try {
+        output.connect(input);
+      }
+      catch (IOException e) { throw new RuntimeException(e); }
+    }
+
+    void close() {
+      try {
+        input.close();
+        output.close();
+      }
+      catch (Exception e) {}
+    }
   }
 
 }

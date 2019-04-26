@@ -8,18 +8,18 @@ package box.star.io.protocols.http;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the mime-type nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,68 +33,67 @@ package box.star.io.protocols.http;
  * #L%
  */
 
+import box.star.io.protocols.http.HTTPServer.ResponseException;
+import box.star.io.protocols.http.content.CookieHandler;
+import box.star.io.protocols.http.request.Method;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
-import box.star.io.protocols.http.HTTPServer.ResponseException;
-import box.star.io.protocols.http.content.CookieHandler;
-import box.star.io.protocols.http.request.Method;
 
 /**
  * Handles one session, i.e. parses the HTTP request and returns the response.
  */
 public interface IHTTPSession {
 
-    void execute() throws IOException;
+  void execute() throws IOException;
 
-    CookieHandler getCookies();
+  CookieHandler getCookies();
 
-    Map<String, String> getHeaders();
+  Map<String, String> getHeaders();
 
-    InputStream getInputStream();
+  InputStream getInputStream();
 
-    Method getMethod();
+  Method getMethod();
 
-    /**
-     * This method will only return the first value for a given parameter. You
-     * will want to use getParameters if you expect multiple values for a given
-     * key.
-     * 
-     * @deprecated use {@link #getParameters()} instead.
-     */
-    @Deprecated
-    Map<String, String> getParms();
+  /**
+   * This method will only return the first value for a given parameter. You
+   * will want to use getParameters if you expect multiple values for a given
+   * key.
+   *
+   * @deprecated use {@link #getParameters()} instead.
+   */
+  @Deprecated
+  Map<String, String> getParms();
 
-    Map<String, List<String>> getParameters();
+  Map<String, List<String>> getParameters();
 
-    String getQueryParameterString();
+  String getQueryParameterString();
 
-    /**
-     * @return the path part of the URL.
-     */
-    String getUri();
+  /**
+   * @return the path part of the URL.
+   */
+  String getUri();
 
-    /**
-     * Adds the files in the request body to the files map.
-     * 
-     * @param files
-     *            map to modify
-     */
-    void parseBody(Map<String, String> files) throws IOException, ResponseException;
+  /**
+   * Adds the files in the request body to the files map.
+   *
+   * @param files map to modify
+   */
+  void parseBody(Map<String, String> files) throws IOException, ResponseException;
 
-    /**
-     * Get the remote ip address of the requester.
-     * 
-     * @return the IP address.
-     */
-    String getRemoteIpAddress();
+  /**
+   * Get the remote ip address of the requester.
+   *
+   * @return the IP address.
+   */
+  String getRemoteIpAddress();
 
-    /**
-     * Get the remote hostname of the requester.
-     * 
-     * @return the hostname.
-     */
-    String getRemoteHostName();
+  /**
+   * Get the remote hostname of the requester.
+   *
+   * @return the hostname.
+   */
+  String getRemoteHostName();
 }

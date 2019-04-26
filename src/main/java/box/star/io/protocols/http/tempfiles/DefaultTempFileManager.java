@@ -8,18 +8,18 @@ package box.star.io.protocols.http.tempfiles;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the mime-type nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,12 +33,12 @@ package box.star.io.protocols.http.tempfiles;
  * #L%
  */
 
+import box.star.io.protocols.http.HTTPServer;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
-import box.star.io.protocols.http.HTTPServer;
 
 /**
  * Default strategy for creating and cleaning up temporary files.
@@ -52,34 +52,35 @@ import box.star.io.protocols.http.HTTPServer;
  */
 public class DefaultTempFileManager implements ITempFileManager {
 
-    private final File tmpdir;
+  private final File tmpdir;
 
-    private final List<ITempFile> tempFiles;
+  private final List<ITempFile> tempFiles;
 
-    public DefaultTempFileManager() {
-        this.tmpdir = new File(System.getProperty("java.io.tmpdir"));
-        if (!tmpdir.exists()) {
-            tmpdir.mkdirs();
-        }
-        this.tempFiles = new ArrayList<ITempFile>();
+  public DefaultTempFileManager() {
+    this.tmpdir = new File(System.getProperty("java.io.tmpdir"));
+    if (!tmpdir.exists()) {
+      tmpdir.mkdirs();
     }
+    this.tempFiles = new ArrayList<ITempFile>();
+  }
 
-    @Override
-    public void clear() {
-        for (ITempFile file : this.tempFiles) {
-            try {
-                file.delete();
-            } catch (Exception ignored) {
-                HTTPServer.LOG.log(Level.WARNING, "could not delete file ", ignored);
-            }
-        }
-        this.tempFiles.clear();
+  @Override
+  public void clear() {
+    for (ITempFile file : this.tempFiles) {
+      try {
+        file.delete();
+      }
+      catch (Exception ignored) {
+        HTTPServer.LOG.log(Level.WARNING, "could not delete file ", ignored);
+      }
     }
+    this.tempFiles.clear();
+  }
 
-    @Override
-    public ITempFile createTempFile(String filename_hint) throws Exception {
-        DefaultTempFile tempFile = new DefaultTempFile(this.tmpdir);
-        this.tempFiles.add(tempFile);
-        return tempFile;
-    }
+  @Override
+  public ITempFile createTempFile(String filename_hint) throws Exception {
+    DefaultTempFile tempFile = new DefaultTempFile(this.tmpdir);
+    this.tempFiles.add(tempFile);
+    return tempFile;
+  }
 }

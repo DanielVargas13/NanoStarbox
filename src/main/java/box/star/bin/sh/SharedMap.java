@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SharedMap<K,V> extends ConcurrentHashMap<K, V> {
+public class SharedMap<K, V> extends ConcurrentHashMap<K, V> {
 
   public SharedMap() {
     super();
@@ -27,21 +27,21 @@ public class SharedMap<K,V> extends ConcurrentHashMap<K, V> {
     super(initialCapacity, loadFactor, concurrencyLevel);
   }
 
-  public SharedMap<K, V> copy(){
+  public SharedMap<K, V> copy() {
     return new SharedMap<>(this);
   }
 
-  public void merge(Map<K,V>locals){
+  public void merge(Map<K, V> locals) {
     if (locals != null) putAll(locals);
   }
 
-  public SharedMap<K, V> createLayer(SharedMap<K, V> top){
+  public SharedMap<K, V> createLayer(SharedMap<K, V> top) {
     SharedMap<K, V> copy = new SharedMap<>(this);
     copy.putAll(top);
     return copy;
   }
 
-  final String[] compileEnvirons(){
+  final String[] compileEnvirons() {
     return compileEnvirons(null);
   }
 

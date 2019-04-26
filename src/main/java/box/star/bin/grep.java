@@ -1,10 +1,8 @@
 package box.star.bin;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.regex.*;
 import java.util.Scanner;
-import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class grep {
 
@@ -14,27 +12,25 @@ public class grep {
     int matches = 0;
 
     Scanner scan = null;
-    scan = new Scanner( System.in );
+    scan = new Scanner(System.in);
 
     // Get a regular expression from the command line
-    Pattern pat = Pattern.compile( args[0] );
+    Pattern pat = Pattern.compile(args[0]);
 
     // Match lines against the Regular Expression
-    while ( scan.hasNextLine() )
-    {
+    while (scan.hasNextLine()) {
       line = scan.nextLine();
       lines++;
 
       // Check if the current line contains the pattern
-      Matcher match = pat.matcher( line );
-      if (match.find())
-      {
-        System.out.println (line);
+      Matcher match = pat.matcher(line);
+      if (match.find()) {
+        System.out.println(line);
         matches++;
       }
     }
 
-    System.err.println( "grep-status: " + lines + " lines, " + matches + " matches" );
+    System.err.println("grep-status: " + lines + " lines, " + matches + " matches");
 
     System.out.flush();
   }

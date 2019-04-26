@@ -14,7 +14,7 @@ public class Streams {
 
   private SharedMap<Integer, Closeable> streams;
 
-  public Streams(Closeable[] streams){
+  public Streams(Closeable[] streams) {
     this.streams = new SharedMap<Integer, Closeable>();
     for (int i = 0; i < streams.length; i++) {
       set(i, streams[i]);
@@ -33,8 +33,8 @@ public class Streams {
   }
 
   Streams(Map<Integer, Closeable> streams) {
-   this.streams = new SharedMap<>(streams.size());
-   this.streams.putAll(streams);
+    this.streams = new SharedMap<>(streams.size());
+    this.streams.putAll(streams);
   }
 
   public <ANY> ANY get(Integer key) {
@@ -42,7 +42,8 @@ public class Streams {
   }
 
   public void set(Integer key, Closeable value) {
-    if (value == null) { streams.remove(key);
+    if (value == null) {
+      streams.remove(key);
       return;
     }
     streams.put(key, value);
@@ -53,7 +54,7 @@ public class Streams {
     return;
   }
 
-  public List<Closeable> values(){
+  public List<Closeable> values() {
     return new ArrayList(streams.values());
   }
 
@@ -61,21 +62,21 @@ public class Streams {
     return new ArrayList<>(streams.keySet());
   }
 
-  public Streams copy(){
+  public Streams copy() {
     return new Streams(streams);
   }
 
-  public void layer(Streams overlay){
+  public void layer(Streams overlay) {
     streams.putAll(overlay.streams);
   }
 
-  public Streams createLayer(Streams overlay){
+  public Streams createLayer(Streams overlay) {
     Streams copy = copy();
     if (overlay != null) copy.streams.putAll(overlay.streams);
     return copy;
   }
 
-  public void close(int stream){
+  public void close(int stream) {
     Closeable x = streams.get(stream);
     if (x != null) {
       try {x.close();}

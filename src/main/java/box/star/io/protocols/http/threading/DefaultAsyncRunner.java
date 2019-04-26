@@ -8,18 +8,18 @@ package box.star.io.protocols.http.threading;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the mime-type nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,11 +33,11 @@ package box.star.io.protocols.http.threading;
  * #L%
  */
 
+import box.star.io.protocols.http.HTTPClient;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import box.star.io.protocols.http.HTTPClient;
 
 /**
  * Default threading strategy for HTTPServer.
@@ -50,41 +50,40 @@ import box.star.io.protocols.http.HTTPClient;
  */
 public class DefaultAsyncRunner implements IAsyncRunner {
 
-    protected long requestCount;
+  private final List<HTTPClient> running = Collections.synchronizedList(new ArrayList<HTTPClient>());
+  protected long requestCount;
 
-    private final List<HTTPClient> running = Collections.synchronizedList(new ArrayList<HTTPClient>());
+  /**
+   * @return a list with currently running clients.
+   */
+  public List<HTTPClient> getRunning() {
+    return running;
+  }
 
-    /**
-     * @return a list with currently running clients.
-     */
-    public List<HTTPClient> getRunning() {
-        return running;
+  @Override
+  public void closeAll() {
+    // copy of the list for concurrency
+    for (HTTPClient HTTPClient : new ArrayList<HTTPClient>(this.running)) {
+      HTTPClient.close();
     }
+  }
 
-    @Override
-    public void closeAll() {
-        // copy of the list for concurrency
-        for (HTTPClient HTTPClient : new ArrayList<HTTPClient>(this.running)) {
-            HTTPClient.close();
-        }
-    }
+  @Override
+  public void closed(HTTPClient HTTPClient) {
+    this.running.remove(HTTPClient);
+  }
 
-    @Override
-    public void closed(HTTPClient HTTPClient) {
-        this.running.remove(HTTPClient);
-    }
+  @Override
+  public void exec(HTTPClient HTTPClient) {
+    ++this.requestCount;
+    this.running.add(HTTPClient);
+    createThread(HTTPClient).start();
+  }
 
-    @Override
-    public void exec(HTTPClient HTTPClient) {
-        ++this.requestCount;
-        this.running.add(HTTPClient);
-        createThread(HTTPClient).start();
-    }
-
-    protected Thread createThread(HTTPClient HTTPClient) {
-        Thread t = new Thread(HTTPClient);
-        t.setDaemon(true);
-        t.setName("NanoHttpd Request Processor (#" + this.requestCount + ")");
-        return t;
-    }
+  protected Thread createThread(HTTPClient HTTPClient) {
+    Thread t = new Thread(HTTPClient);
+    t.setDaemon(true);
+    t.setName("NanoHttpd Request Processor (#" + this.requestCount + ")");
+    return t;
+  }
 }

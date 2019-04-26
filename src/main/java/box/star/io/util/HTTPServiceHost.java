@@ -8,18 +8,18 @@ package box.star.io.util;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the mime-type nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,43 +33,46 @@ package box.star.io.util;
  * #L%
  */
 
+import box.star.io.protocols.http.HTTPServer;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import box.star.io.protocols.http.HTTPServer;
-
 public class HTTPServiceHost {
 
-    /**
-     * logger to log to.
-     */
-    private static final Logger LOG = Logger.getLogger(HTTPServiceHost.class.getName());
+  /**
+   * logger to log to.
+   */
+  private static final Logger LOG = Logger.getLogger(HTTPServiceHost.class.getName());
 
-    public static void executeInstance(HTTPServer server) {
-        try {
-            server.start();
-        } catch (IOException ioe) {
-            System.err.println("Couldn't start server:\n" + ioe);
-            System.exit(-1);
-        }
-
-        System.out.println("Server started, Hit Enter to stop.\n");
-
-        try {
-            System.in.read();
-        } catch (Throwable ignored) {
-        }
-
-        server.stop();
-        System.out.println("Server stopped.\n");
+  public static void executeInstance(HTTPServer server) {
+    try {
+      server.start();
+    }
+    catch (IOException ioe) {
+      System.err.println("Couldn't start server:\n" + ioe);
+      System.exit(-1);
     }
 
-    public static <T extends HTTPServer> void run(Class<T> serverClass) {
-        try {
-            executeInstance(serverClass.newInstance());
-        } catch (Exception e) {
-            HTTPServiceHost.LOG.log(Level.SEVERE, "Could not create server", e);
-        }
+    System.out.println("Server started, Hit Enter to stop.\n");
+
+    try {
+      System.in.read();
     }
+    catch (Throwable ignored) {
+    }
+
+    server.stop();
+    System.out.println("Server stopped.\n");
+  }
+
+  public static <T extends HTTPServer> void run(Class<T> serverClass) {
+    try {
+      executeInstance(serverClass.newInstance());
+    }
+    catch (Exception e) {
+      HTTPServiceHost.LOG.log(Level.SEVERE, "Could not create server", e);
+    }
+  }
 }
