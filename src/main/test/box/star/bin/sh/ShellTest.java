@@ -1,4 +1,4 @@
-package box.star.fn.sh;
+package box.star.bin.sh;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,7 +6,9 @@ import java.io.IOException;
 
 class ShellTest {
 
-  Shell shell = new Shell();
+  Shell shell = new Shell(){
+
+  };
 
   @Test void main() {
     shell.defineFunction("echo", new Function(){
