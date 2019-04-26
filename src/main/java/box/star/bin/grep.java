@@ -8,20 +8,6 @@ import java.io.*;
 
 public class grep {
 
-  public static void main2(String[] args) {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    String line;
-    try {
-      while ((line = br.readLine()) != null) {
-        for (String expr: args) {
-          if (line.matches(expr)) {
-            System.out.println(line);
-          }
-        }
-      }
-    } catch (Exception e){}
-  }
-
   public static void main(String[] args) {
     String line;
     int lines = 0;
