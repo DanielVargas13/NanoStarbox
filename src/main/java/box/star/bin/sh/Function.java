@@ -1,9 +1,11 @@
 package box.star.bin.sh;
 
+import box.star.bin.sh.promise.StandardMain;
+
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-public class Function extends Process implements Runnable, Cloneable, IShellMain {
+public class Function extends Process implements Runnable, Cloneable, StandardMain {
 
   protected Shell shell;
   protected SharedMap<String, String> local;
