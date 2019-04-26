@@ -1,4 +1,4 @@
-package box.star.fn.sh;
+package box.star.bin.sh;
 
 public interface IShellMain {
   int main(String... parameters);

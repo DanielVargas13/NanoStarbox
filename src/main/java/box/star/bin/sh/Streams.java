@@ -1,4 +1,4 @@
-package box.star.fn.sh;
+package box.star.bin.sh;
 
 import java.io.Closeable;
 import java.io.IOException;

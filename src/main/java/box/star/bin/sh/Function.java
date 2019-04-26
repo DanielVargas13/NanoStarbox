@@ -1,4 +1,4 @@
-package box.star.fn.sh;
+package box.star.bin.sh;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
@@ -140,6 +140,7 @@ public class Function extends Process implements Runnable, Cloneable, IShellMain
   @Override
   final public void destroy() {
     try {
+      destroying = true;
       stdin.close();
       stdout.close();
       stderr.close();
