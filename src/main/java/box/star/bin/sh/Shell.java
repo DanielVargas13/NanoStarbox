@@ -13,6 +13,14 @@ import java.util.*;
  */
 public class Shell implements ShellHost<Shell> {
 
+  private static void fault(Exception x) throws RuntimeException {
+    throw new RuntimeException(x);
+  }
+
+  public static String[] shiftParameter(String[] parameters){
+    return Arrays.copyOfRange(parameters, 1, parameters.length);
+  }
+
   int status;
   SharedMap<String, String> variables;
   SharedMap<String, FunctionFactory> functions;
@@ -208,6 +216,18 @@ public class Shell implements ShellHost<Shell> {
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
+  public Executive execFunction(SharedMap<String, String> locals, String... parameters){
+    FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
+    return new Executive(f.exec(parameters));
+  }
+
+  public Executive execCommand(SharedMap<String, String> locals, String... parameters){
+    Process p = null;
+    try { p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));}
+    catch (IOException e) {throw new RuntimeException(e);}
+    return new Executive(p);
+  }
+
   @Override
   public Executive exec(String... parameters) {
     return exec(null, null, parameters);
@@ -216,21 +236,25 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
-    if (parameters[0] == "builtin"){
-      if (! haveFunction(parameters[1])) {
-        throw new IllegalArgumentException("command "+parameters[2]+" is not a builtin");
+    String commandName = parameters[0];
+    if ("function".equals(commandName)){
+      parameters = shiftParameter(parameters);
+      String target = parameters[0];
+      if (! haveFunction(target)) {
+        throw new IllegalArgumentException("command: "+target+" is not a function");
       }
-      parameters = Arrays.copyOfRange(parameters, 1, parameters.length);
+      executive = execFunction(locals, parameters);
+    } else if ("command".equals(commandName)){
+      parameters = shiftParameter(parameters);
+      executive = execCommand(locals, parameters);
+    } else {
+      if (haveFunction(parameters[0])) {
+        executive = execFunction(locals, parameters);
+      } else {
+        executive = execCommand(locals, parameters);
+      }
     }
-    if (parameters[0] != "command" && haveFunction(parameters[0])) {
-      FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
-      executive = new Executive(f.exec(parameters));
-    } else try {
-      if (parameters[0] == "command") parameters = Arrays.copyOfRange(parameters, 1, parameters.length);
-      Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
-      executive = new Executive(p);
-    }
-    catch (IOException e) { throw new RuntimeException(e);}
+    // this is the part the sets up the streams
     Streams pStreams = this.streams.createLayer(streams);
     executive.readInputFrom(pStreams.get(0)).writeOutputTo(pStreams.get(1)).writeErrorTo(pStreams.get(2));
     return executive;

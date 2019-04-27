@@ -50,9 +50,10 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive exec(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, String... parameters);
   int runPipe(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, List<String[]>commands);
   Executive execPipe(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, List<String[]>commands);
+  Executive execCommand(SharedMap<String, String> locals, String... parameters);
+  Executive execFunction(SharedMap<String, String> locals, String... parameters);
   int spawn(String... parameters);
   int spawn(@Nullable Map<String, String> variables, String... parameters);
-
   File getFile(String file);
 
   String getLineSeparator();
