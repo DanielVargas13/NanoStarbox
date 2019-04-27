@@ -112,6 +112,7 @@ final class Security extends java.lang.SecurityManager {
     public void checkSecurityAccess(String target) {
     }
 
+    private static SecurityManager defaultManager = System.getSecurityManager();
     private static Security manager;
 
     public static boolean install() {
@@ -119,6 +120,11 @@ final class Security extends java.lang.SecurityManager {
         manager = new Security();
         System.setSecurityManager(manager);
         return true;
+    }
+
+    public static SecurityManager getManager(){
+        if (manager == null) return  defaultManager;
+        return manager;
     }
 
 }
