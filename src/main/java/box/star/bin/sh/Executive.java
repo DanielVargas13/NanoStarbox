@@ -23,8 +23,11 @@ public class Executive {
   private static final void transfer(InputStream source, OutputStream dest) throws IOException {
     byte[] buf = new byte[8192];
     int n;
-    while ((n = source.read(buf)) > 0) dest.write(buf, 0, n);
-    dest.flush();
+    while ((n = source.read(buf)) > 0)
+    {
+      dest.write(buf, 0, n);
+      dest.flush();
+    }
     if (!System.out.equals(dest) && !System.err.equals(dest)) dest.close();
     if (!System.in.equals(source)) source.close();
   }
