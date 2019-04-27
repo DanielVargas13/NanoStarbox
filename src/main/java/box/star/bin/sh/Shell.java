@@ -37,8 +37,8 @@ public class Shell implements ShellHost<Shell> {
 
   private Shell(Shell shell, Map<String, String> environment) {
     variables = new SharedMap<>(environment);
-    functions = shell.functions.copy();
-    streams = shell.streams.copy();
+    functions = shell.exportFunctions();
+    streams = new Streams(shell.exportStreams());
     setCurrentDirectory(shell.getCurrentDirectory());
   }
 
@@ -189,6 +189,9 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public FunctionFactory getFunctionFactory(String name) {
     if (haveFunction(name)) return functions.get(name);
+    for (FunctionFactory main:functions.values()){
+      if (main.matchName(name)) return main;
+    }
     throw new RuntimeException("Function " + name + " is not defined in this scope");
   }
 
