@@ -88,4 +88,8 @@ public class Streams {
     return streams.containsKey(key);
   }
 
+  public SharedMap<Integer, Closeable> export() {
+    return streams.copy();
+  }
+
 }

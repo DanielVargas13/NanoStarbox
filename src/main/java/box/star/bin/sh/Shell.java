@@ -1,5 +1,8 @@
 package box.star.bin.sh;
 
+import box.star.bin.sh.promise.Standard;
+import box.star.bin.sh.promise.FunctionProvider;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +11,16 @@ import java.util.Map;
 /**
  * Nano Starbox Function Shell
  */
-public class Shell {
+public class Shell implements Standard<Shell, Executive>, FunctionProvider<Shell> {
 
-  public int status;
+  int status;
   SharedMap<String, String> variables;
   SharedMap<String, Function> functions;
   Streams streams;
+
+  public int getStatus() {
+    return status;
+  }
 
   public Shell() {
     this(System.getProperty("user.dir"), System.getenv(), null);
@@ -34,115 +41,176 @@ public class Shell {
     setCurrentDirectory(shell.getCurrentDirectory());
   }
 
-  public void applyVariables(Map<String, String> variables) {
+  @Override
+  public Shell applyVariables(Map<String, String> variables) {
     this.variables.putAll(variables);
+    return this;
   }
 
-  public void applyStreams(Streams overlay) {
+  @Override
+  public Shell applyFunctions(Map<String, Function> functions) {
+    this.functions.putAll(functions);
+    return this;
+  }
+
+  @Override
+  public Shell applyStreams(Streams overlay) {
     streams.layer(overlay);
+    return this;
   }
 
-  public void clearFunctions() {
+  @Override
+  public Shell clearFunctions() {
     functions = new SharedMap<>();
+    return this;
   }
 
-  public void clearVariables() {
+  @Override
+  public Shell clearVariables() {
     variables = new SharedMap<>();
+    return this;
   }
 
-  public void resetVariables() {
+  @Override
+  public Shell resetVariables() {
     variables = new SharedMap<>(System.getenv());
+    return this;
   }
 
-  public void resetStreams() {
+  @Override
+  public Shell resetStreams() {
     streams = new Streams();
+    return this;
   }
 
+  @Override
   public String get(String key) {
     return variables.get(key);
   }
 
+  @Override
   public <ANY> ANY get(Integer key) {
     return streams.get(key);
   }
 
-  public void set(String key, String value) {
+  @Override
+  public Shell set(String key, String value) {
     variables.put(key, value);
+    return this;
   }
 
-  public void set(Integer key, Closeable stream) {
+  @Override
+  public Shell set(Integer key, Closeable stream) {
     streams.set(key, stream);
+    return this;
   }
 
-  public void remove(String key) {
+  @Override
+  public Shell remove(String key) {
     variables.remove(key);
+    return this;
   }
 
-  public void remove(Integer key) {
+  @Override
+  public Shell remove(Integer key) {
     streams.remove(key);
+    return this;
   }
 
+  @Override
   public String getCurrentDirectory() {
     return get("PWD");
   }
 
-  public void setCurrentDirectory(String directory) {
+  @Override
+  public Shell setCurrentDirectory(String directory) {
     set("PWD", directory);
+    return this;
   }
 
-  public void defineFunction(String name, Function function) {
+  @Override
+  public Shell defineFunction(String name, Function function) {
     functions.put(name, function);
+    return this;
   }
 
-  public void removeFunction(String name) {
+  @Override
+  public Shell removeFunction(String name) {
     functions.remove(name);
+    return this;
   }
 
+  @Override
   public List<String> variables() {
     return new ArrayList<>(variables.keySet());
   }
 
+  @Override
   public List<String> functions() {
     return new ArrayList<>(functions.keySet());
   }
 
+  @Override
   public List<Integer> streams() {
     return streams.keyList();
   }
 
+  @Override
   public boolean haveVariable(String key) {
     return variables.containsKey(key);
   }
 
+  @Override
+  public SharedMap<String, String> exportVariables() {
+    return variables.copy();
+  }
+
+  @Override
   public boolean haveStream(Integer key) {
     return streams.hasStream(key);
   }
 
+  @Override
+  public SharedMap<Integer, Closeable> exportStreams() {
+    return streams.export();
+  }
+
+  @Override
   public boolean haveFunction(String name) {
     return functions.containsKey(name);
   }
 
-  private Function getFunction(String name) {
+  @Override
+  public SharedMap<String, Function> exportFunctions() {
+    return functions.copy();
+  }
+
+  @Override
+  public Function getFunction(String name) {
     if (haveFunction(name)) return functions.get(name);
     throw new RuntimeException("Function " + name + " is not defined in this scope");
   }
 
+  @Override
   public int run(String... parameters) {
     Executive p = exec(null, null, parameters);
     try { return status = p.waitFor(); }
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
+  @Override
   public int run(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive p = exec(locals, streams, parameters);
     try { return status = p.waitFor(); }
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
+  @Override
   public Executive exec(String... parameters) {
     return exec(null, null, parameters);
   }
 
+  @Override
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
     if (haveFunction(parameters[0])) {
@@ -169,21 +237,25 @@ public class Shell {
     return new Command(this, parameters);
   }
 
+  @Override
   public int spawn(String... parameters) {
     Shell shell = new Shell(this, variables);
     return shell.run(parameters);
   }
 
+  @Override
   public int spawn(Map<String, String> variables, String... parameters) {
     Shell shell = new Shell(this, variables);
     return shell.run(parameters);
   }
 
+  @Override
   public Shell readInputFrom(InputStream is) {
     streams.set(0, is);
     return this;
   }
 
+  @Override
   public Shell writeOutputTo(OutputStream os) {
     streams.set(1, os);
     return this;
@@ -195,6 +267,7 @@ public class Shell {
     return os;
   }
 
+  @Override
   public Shell writeErrorTo(OutputStream os) {
     streams.set(2, os);
     return this;
@@ -205,4 +278,5 @@ public class Shell {
     writeErrorTo(os);
     return os;
   }
+
 }
