@@ -220,13 +220,13 @@ public class Shell implements ShellHost<Shell> {
       if (! haveFunction(parameters[1])) {
         throw new IllegalArgumentException("command "+parameters[2]+" is not a builtin");
       }
-      parameters = Arrays.copyOfRange(parameters, 1, parameters.length - 1);
+      parameters = Arrays.copyOfRange(parameters, 1, parameters.length);
     }
     if (parameters[0] != "command" && haveFunction(parameters[0])) {
       FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
       executive = new Executive(f.exec(parameters));
     } else try {
-      if (parameters[0] == "command") parameters = Arrays.copyOfRange(parameters, 1, parameters.length - 1);
+      if (parameters[0] == "command") parameters = Arrays.copyOfRange(parameters, 1, parameters.length);
       Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
       executive = new Executive(p);
     }
