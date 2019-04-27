@@ -5,6 +5,7 @@ import box.star.bin.sh.SharedMap;
 import box.star.bin.sh.Streams;
 import box.star.contract.Nullable;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -51,4 +52,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive execPipe(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, List<String[]>commands);
   int spawn(String... parameters);
   int spawn(@Nullable Map<String, String> variables, String... parameters);
+
+  File getFile(String file);
+
 }

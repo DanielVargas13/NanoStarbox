@@ -298,4 +298,12 @@ public class Shell implements ShellHost<Shell> {
     return os;
   }
 
+  public File getFile(String file){
+    if (file.startsWith("/") || file.matches("^[A-Zaz]:.*$")) return new File(file);
+    if (file.startsWith("./") || file.startsWith(".\\")) return new File(getCurrentDirectory(), file.substring(2));
+    if (file.startsWith("../") || file.startsWith("..\\")) return new File(getCurrentDirectory(), file.substring(3));
+    if (file.equals(".")) return new File(getCurrentDirectory());
+    return new File(getCurrentDirectory(), file);
+  }
+
 }
