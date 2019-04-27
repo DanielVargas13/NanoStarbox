@@ -1,13 +1,14 @@
 package box.star.bin.sh.builtin.unix;
 
 import box.star.bin.sh.Function;
+import box.star.util.Parameters;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Echo extends Function {
+public class Echo extends Function implements Parameters.ParameterHandler {
 
   private static Echo factory;
 
@@ -43,44 +44,55 @@ public class Echo extends Function {
     return out;
   }
 
+  boolean interpretEscapes = false, printLine = true;
+  String line = "";
+  List<String> parameterList;
+
+  @Override
+  public boolean nextParameter(Parameters.CurrentParameter parameter) {
+    if (parameter.value.equals(getName())) {
+      parameterList.remove(0);
+      return true;
+    }
+    if (! parameter.value.startsWith("-")) return false;
+    if (parameter.value.equals("-n")){
+      parameterList.remove(0);
+      printLine = false;
+      return true;
+    }
+    if (parameter.value.equals("-e")){
+      parameterList.remove(0);
+      interpretEscapes = true;
+      return true;
+    }
+    if (parameter.value.equals("-E")){
+      interpretEscapes = false;
+      return true;
+    }
+    return false;
+  }
+
+  @Override public boolean wantParameterValue(Parameters.CurrentParameter parameter) { return false; }
+  @Override public void postParameterValue(Parameters.CurrentParameter parameter, String value) {}
+
   @Override
   public int main(String[] parameters) {
-    List<String> out = new ArrayList<>(Arrays.asList(parameters));
-    out.remove(0);
-    boolean interpretEscapes = false;
-    String swtch = out.get(0), line = shell.getLineSeparator();
-    while (swtch.startsWith("-")){
-      if (swtch.equals("-n")) {
-        line=""; out.remove(0);
-        if (out.size() == 0) break;
-        swtch = out.get(0);
-        if (out.size() == 0) break;
-        continue;
-      }
-      if (swtch.equals("-e")){
-        interpretEscapes = true;
-        out.remove(0);
-        if (out.size() == 0) break;
-        swtch = out.get(0);
-        continue;
-      }
-      if (swtch.equals("-E")){
-        interpretEscapes = false;
-        out.remove(0);
-        if (out.size() == 0) break;
-        swtch = out.get(0);
-        continue;
-      }
-      break;
-    }
-    if (interpretEscapes) out = interpretEscapes(out);
+
+    parameterList = new ArrayList<>(Arrays.asList(parameters));
+
+    Parameters.parse(this, parameters);
+
+    if (interpretEscapes) parameterList = interpretEscapes(parameterList);
+    if (printLine) line = shell.getLineSeparator();
+
     try {
-      stdout.write((String.join(" ", out) + shell.getLineSeparator()).getBytes());
+      stdout.write((String.join(" ", parameterList) + line).getBytes());
     }
     catch (IOException e) {
       e.printStackTrace();
     }
     return 0;
+
   }
 
   @Override
