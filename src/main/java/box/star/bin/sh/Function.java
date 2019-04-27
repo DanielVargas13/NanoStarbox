@@ -59,7 +59,10 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public void run() {
-    if (running) hostAcessOnly("run");
+    if (running) {
+      hostAcessOnly("run");
+      return;
+    }
     running = true;
     try {
       status = main(parameters);
