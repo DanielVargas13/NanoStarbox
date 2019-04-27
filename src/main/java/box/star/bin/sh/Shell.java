@@ -6,10 +6,7 @@ import box.star.bin.sh.promise.ShellHost;
 import box.star.system.OS;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Nano Starbox Function Shell
@@ -219,10 +216,17 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
-    if (haveFunction(parameters[0])) {
+    if (parameters[0] == "builtin"){
+      if (! haveFunction(parameters[1])) {
+        throw new IllegalArgumentException("command "+parameters[2]+" is not a builtin");
+      }
+      parameters = Arrays.copyOfRange(parameters, 1, parameters.length - 1);
+    }
+    if (parameters[0] != "command" && haveFunction(parameters[0])) {
       FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
       executive = new Executive(f.exec(parameters));
     } else try {
+      if (parameters[0] == "command") parameters = Arrays.copyOfRange(parameters, 1, parameters.length - 1);
       Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
       executive = new Executive(p);
     }

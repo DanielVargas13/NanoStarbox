@@ -10,6 +10,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Function extends Process implements FunctionMain, FunctionFactory, FactoryFunction, VariableCatalog<Function>, Runnable, Cloneable {
 
+  @Override
+  public String getHelpUri() {
+    return null;
+  }
+
   private String name;
 
   protected ShellHost shell;
@@ -32,7 +37,7 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     return null;
   }
 
-  final public FactoryFunction createFunction(ShellHost shell, SharedMap<String, String> superLocal) {
+  public FactoryFunction createFunction(ShellHost shell, SharedMap<String, String> superLocal) {
     hostAccessOnly("createFunction(shell, superLocal)");
     Function instance = clone();
     instance.shell = shell;
