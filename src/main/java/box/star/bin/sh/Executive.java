@@ -41,24 +41,15 @@ public class Executive {
           transfer(input, get(IO_WRITABLE));
         }
         catch (IOException e) {
-          //e.printStackTrace();
+          e.printStackTrace();
         }
       }
     }, "Reader")).start();
     return this;
   }
 
-  public Executive writeOutputToCommand(Command command) {
-    command.exec();
-    writeOutputTo(command.executive.get(1));
-    return command.executive;
-  }
-
   public Executive writeOutputTo(Closeable output) {
     if (output == null) return this;
-    if (output instanceof Command) {
-      return writeOutputToCommand((Command) output);
-    }
     (writable = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -66,7 +57,7 @@ public class Executive {
           transfer(get(IO_READABLE), (OutputStream) output);
         }
         catch (IOException e) {
-          //e.printStackTrace();
+          e.printStackTrace();
         }
       }
     }, "Writer")).start();
@@ -82,7 +73,7 @@ public class Executive {
           transfer(get(IO_ERROR), output);
         }
         catch (IOException e) {
-          //e.printStackTrace();
+          e.printStackTrace();
         }
       }
     }, "Error")).start();
@@ -110,7 +101,14 @@ public class Executive {
 
   public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {return host.waitFor(timeout, unit);}
 
-  public int exitValue() {return host.exitValue();}
+  public int exitValue() {
+    try {
+      return host.waitFor();
+    }
+    catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public void destroy() {host.destroy();}
 

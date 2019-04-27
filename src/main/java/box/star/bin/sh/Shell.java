@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Nano Starbox Function Shell
@@ -230,11 +231,25 @@ public class Shell implements ShellHost<Shell> {
     return executive;
   }
 
-  Executive exec(Command command) {
-    if (command.executive == null) {
-      command.executive = exec(command.locals, command.streams, command.parameters);
+  @Override
+  public int runPipe(SharedMap<String, String>locals, Streams streams, List<String[]> commands) {
+    Executive pipe = execPipe(locals, streams, commands);
+    return status = pipe.exitValue();
+  }
+
+  @Override
+  public Executive execPipe(SharedMap<String, String>locals, Streams streams, List<String[]> commands) {
+    Streams pipe_streams = this.streams.createLayer(streams);
+    Streams common_streams = new Streams(pipe_streams.get(0), null, pipe_streams.get(2));
+    Stack<Executive>executives = new Stack<>();
+    executives.add(exec(locals, common_streams, commands.remove(0)));
+    common_streams.set(0, null);
+    for (String[] command: commands){
+      Executive next = exec(locals, common_streams, command);
+      next.readInputFrom(executives.peek().get(0));
+      executives.add(next);
     }
-    return command.executive;
+   return executives.peek().writeOutputTo(pipe_streams.get(1));
   }
 
   public Command build(String... parameters) {

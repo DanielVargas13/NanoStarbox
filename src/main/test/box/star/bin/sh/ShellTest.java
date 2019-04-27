@@ -9,9 +9,7 @@ import java.util.List;
 
 class ShellTest {
 
-  Shell shell = new Shell(){
-
-  };
+  Shell shell = new Shell();
 
   @Test void main() {
     shell.defineFunction(new Function(){

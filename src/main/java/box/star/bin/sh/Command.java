@@ -1,18 +1,67 @@
 package box.star.bin.sh;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import box.star.bin.sh.promise.StreamCatalog;
+import box.star.bin.sh.promise.VariableCatalog;
 
-public class Command implements Closeable {
+import java.io.*;
+import java.util.*;
+
+public class Command implements VariableCatalog<Command>, StreamCatalog<Command> {
+
+  @Override
+  public Command applyVariables(Map<String, String> variables) {
+    locals.putAll(variables);
+    return this;
+  }
+
+  @Override
+  public Command clearVariables() {
+    locals.clear();
+    return this;
+  }
+
+  @Override
+  public Command resetVariables() {
+    locals.clear();
+    return this;
+  }
+
+  @Override
+  public String get(String key) {
+    return locals.get(key);
+  }
+
+  @Override
+  public Command set(String key, String value) {
+    locals.put(key, value);
+    return this;
+  }
+
+  @Override
+  public Command remove(String key) {
+    locals.remove(key);
+    return this;
+  }
+
+  @Override
+  public List<String> variables() {
+    return new ArrayList<>(locals.keySet());
+  }
+
+  @Override
+  public boolean haveVariable(String key) {
+    return locals.containsKey(key);
+  }
+
+  @Override
+  public SharedMap<String, String> exportVariables() {
+    return locals;
+  }
 
   String[] parameters;
   Shell shell;
   SharedMap<String, String> locals = new SharedMap<>();
   Streams streams;
-  Executive executive;
 
   Stack<Command> pipeChain = new Stack<>();
 
@@ -36,21 +85,61 @@ public class Command implements Closeable {
   }
 
   public Command pipe(Command cmd) {
-    pipeChain.peek().set(1, cmd);
     pipeChain.push(cmd);
     return this;
   }
 
-  public Command set(int stream, Closeable value) {
-    streams.set(stream, value);
-    return this;
-  }
-
+  @Override
   public Command readInputFrom(InputStream is) {
     streams.set(0, is);
     return this;
   }
 
+  @Override
+  public Command remove(Integer key) {
+    streams.remove(key);
+    return this;
+  }
+
+  @Override
+  public Command resetStreams() {
+    streams = new Streams(shell.exportStreams());
+    return this;
+  }
+
+  @Override
+  public Command applyStreams(Streams overlay) {
+    streams.layer(overlay);
+    return this;
+  }
+
+  @Override
+  public Command set(Integer key, Closeable stream) {
+    streams.set(key, stream);
+    return this;
+  }
+
+  @Override
+  public <ANY> ANY get(Integer key) {
+    return streams.get(key);
+  }
+
+  @Override
+  public List<Integer> streams() {
+    return new ArrayList<>(streams.keyList());
+  }
+
+  @Override
+  public boolean haveStream(Integer key) {
+    return streams.hasStream(key);
+  }
+
+  @Override
+  public SharedMap<Integer, Closeable> exportStreams() {
+    return streams.export();
+  }
+
+  @Override
   public Command writeOutputTo(OutputStream os) {
     streams.set(1, os);
     return this;
@@ -62,6 +151,7 @@ public class Command implements Closeable {
     return os;
   }
 
+  @Override
   public Command writeErrorTo(OutputStream os) {
     streams.set(2, os);
     return this;
@@ -73,40 +163,45 @@ public class Command implements Closeable {
     return os;
   }
 
-  public Stack<Command> getPipeChain() {
-    return (Stack<Command>) pipeChain.clone();
-  }
-
-  @Override
-  public void close() throws IOException {
-    if (executive.isAlive()) {
-      //pipe.close(0);
-      //pipe.close(1);
-      //pipe.close(2);
+  public List<String[]> getPipeChain() {
+    List<String[]>out = new ArrayList<>();
+    for (Command c: pipeChain){
+      out.add(c.parameters);
     }
+    return out;
   }
 
   public Command build(String... parameters) {
     return new Command(this, parameters);
   }
 
-  public int getExitValue() {
-    try {
-      return pipeChain.peek().executive.waitFor();
-    }
-    catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public int run() {
-    exec();
-    return shell.status = getExitValue();
+    return shell.status = exec().exitValue();
   }
 
-  public Command exec() {
-    shell.exec(this);
-    return this;
+  public Executive exec() {
+    if (pipeChain.size() > 1) return shell.execPipe(locals, streams, getPipeChain());
+    return shell.exec(locals, streams, pipeChain.get(0).parameters);
+  }
+
+  public int runPipe(Streams streams, List<String[]> commands) {
+    Executive pipe = execPipe();
+    return shell.status = pipe.exitValue();
+  }
+
+  public Executive execPipe() {
+    Streams common_streams = new Streams(streams.get(0), null, streams.get(2));
+    Stack<Command>chain = (Stack<Command>) pipeChain.clone();
+    Stack<Executive>executives = new Stack<>();
+    Command link = chain.remove(0);
+    executives.add(shell.exec(link.locals, common_streams, link.parameters));
+    common_streams.set(0, null);
+    for (Command command: chain){
+      Executive next = shell.exec(command.locals, common_streams, command.parameters);
+      next.readInputFrom(executives.peek().get(0));
+      executives.add(next);
+    }
+    return executives.peek().writeOutputTo(streams.get(1));
   }
 
 }
