@@ -1,5 +1,5 @@
 package box.star.bin.sh.promise;
 
-public interface StandardMain {
+public interface FunctionMain {
   int main(String... parameters);
 }
