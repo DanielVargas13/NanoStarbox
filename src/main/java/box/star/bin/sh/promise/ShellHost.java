@@ -16,18 +16,21 @@ import java.util.Map;
  */
 public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<Shell>, VariableCatalog<Shell> {
   /**
+   * Retrieves the status of the last command executed.
    *
    * @return the exit status of the last command run.
    */
   int getStatus();
 
   /**
+   * Retrieves the shell's current directory member.
    *
-   * @return this ShellHost
+   * @return this shell's current directory
    */
   String getCurrentDirectory();
 
   /**
+   * Sets this shell's current directory member.
    *
    * @param directory the current directory of the environment.
    * @return this ShellHost
@@ -35,6 +38,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Shell setCurrentDirectory(@NotNull String directory);
 
   /**
+   * Calls exec with no locals or streams, using the given parameters, within
+   * the current environment.
    *
    * @param parameters the command and parameters to execute.
    * @return the exit status of the command
@@ -52,6 +57,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int run(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, @NotNull String... parameters);
 
   /**
+   * Calls exec with no locals or streams, using the given parameters; within
+   * the current environment.
    *
    * @param parameters the command and parameters to execute.
    * @return the Executive of the command
