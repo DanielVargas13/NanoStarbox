@@ -189,10 +189,10 @@ public class Command implements VariableCatalog<Command>, StreamCatalog<Command>
     Stack<Command>chain = (Stack<Command>) pipeChain.clone();
     Stack<Executive>executives = new Stack<>();
     Command link = chain.remove(0);
-    executives.add(shell.exec(link.locals, common_streams, link.parameters));
+    executives.add(shell.exec(link.exportVariables(), common_streams, link.parameters));
     common_streams.set(0, null);
     for (Command command: chain){
-      Executive next = shell.exec(command.locals, common_streams, command.parameters);
+      Executive next = shell.exec(command.exportVariables(), common_streams, command.parameters);
       next.readInputFrom(executives.peek().get(0));
       executives.add(next);
     }
