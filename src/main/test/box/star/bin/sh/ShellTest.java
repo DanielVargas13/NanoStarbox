@@ -1,6 +1,6 @@
 package box.star.bin.sh;
 
-import box.star.bin.sh.builtin.unix.Echo;
+import box.star.bin.sh.function.unix.Echo;
 import org.junit.jupiter.api.Test;
 
 class ShellTest {
