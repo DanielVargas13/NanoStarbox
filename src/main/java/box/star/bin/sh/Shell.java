@@ -215,7 +215,7 @@ public class Shell implements ShellHost<Shell, Executive> {
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
     if (haveFunction(parameters[0])) {
-      FactoryFunction f = getFunctionFactory(parameters[0]).createInstance(this, locals);
+      FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
       executive = new Executive(f.exec(parameters));
     } else try {
       Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));

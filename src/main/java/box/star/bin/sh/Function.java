@@ -31,8 +31,8 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
     return null;
   }
 
-  final public FactoryFunction createInstance(Shell shell, SharedMap<String, String> superLocal) {
-    hostAcessOnly("createInstance(shell, superLocal)");
+  final public FactoryFunction createFunction(Shell shell, SharedMap<String, String> superLocal) {
+    hostAcessOnly("createFunction(shell, superLocal)");
     Function instance = clone();
     instance.shell = shell;
     if (superLocal == null) instance.local = new SharedMap<>();
@@ -196,7 +196,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
   }
 
   @Override
-  public boolean match(String name) {
+  public boolean matchName(String name) {
     return false;
   }
 

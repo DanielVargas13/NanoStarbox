@@ -2,8 +2,8 @@ package box.star.bin.sh.promise;
 
 import box.star.bin.sh.SharedMap;
 
-public interface FunctionFactory<Host> {
+public interface FunctionFactory<Host extends ShellHost> {
   String getName();
-  boolean match(String name);
-  FactoryFunction createInstance(Host host, SharedMap<String, String> locals);
+  boolean matchName(String name);
+  FactoryFunction createFunction(Host host, SharedMap<String, String> locals);
 }
