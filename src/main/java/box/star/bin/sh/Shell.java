@@ -1,6 +1,6 @@
 package box.star.bin.sh;
 
-import box.star.bin.sh.promise.Standard;
+import box.star.bin.sh.promise.ShellHost;
 import box.star.bin.sh.promise.FunctionProvider;
 
 import java.io.*;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Nano Starbox Function Shell
  */
-public class Shell implements Standard<Shell, Executive>, FunctionProvider<Shell> {
+public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shell> {
 
   int status;
   SharedMap<String, String> variables;

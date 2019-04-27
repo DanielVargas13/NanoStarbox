@@ -1,12 +1,11 @@
 package box.star.bin.sh.promise;
 
-import box.star.bin.sh.Executive;
 import box.star.bin.sh.SharedMap;
 import box.star.bin.sh.Streams;
 
 import java.util.Map;
 
-public interface Standard<Shell, Executive> extends StandardStreamProvider<Shell>, VariableProvider<Shell> {
+public interface ShellHost<Shell, Executive> extends StreamProvider<Shell>, VariableProvider<Shell> {
   int getStatus();
   String getCurrentDirectory();
   Shell setCurrentDirectory(String directory);
