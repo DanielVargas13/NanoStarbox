@@ -1,14 +1,14 @@
 package box.star.bin.sh;
 
-import box.star.bin.sh.promise.FunctionFactory;
-import box.star.bin.sh.promise.FunctionMain;
-import box.star.bin.sh.promise.FactoryFunction;
-import box.star.bin.sh.promise.ShellHost;
+import box.star.bin.sh.promise.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class Function extends Process implements FunctionMain, FunctionFactory, FactoryFunction, Runnable, Cloneable {
+public class Function extends Process implements FunctionMain, FunctionFactory, FactoryFunction, VariableCatalog<Function>, Runnable, Cloneable {
 
   private String name;
 
@@ -100,6 +100,12 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     }
   }
 
+  private void clientAccessOnly(String context){
+    if (!Thread.currentThread().equals(thread)){
+      throw new RuntimeException(context, new IllegalThreadStateException("this method cannot be accessed from its host."));
+    }
+  }
+
   @Override
   final public OutputStream getOutputStream() {
     hostAccessOnly("getOutputStream");
@@ -167,6 +173,65 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     hostAccessOnly("destroyForcibly");
     destroy();
     return this;
+  }
+
+  @Override
+  public Function applyVariables(Map<String, String> variables) {
+    clientAccessOnly("applyVariables(variables)");
+    local.putAll(variables);
+    return this;
+  }
+
+  @Override
+  public Function clearVariables() {
+    clientAccessOnly("clearVariables");
+    local.clear();
+    return this;
+  }
+
+  @Override
+  public Function resetVariables() {
+    clientAccessOnly("resetVariables");
+    local.clear();
+    return this;
+  }
+
+  @Override
+  public String get(String key) {
+    clientAccessOnly("getVariables");
+    return local.get(key);
+  }
+
+  @Override
+  public Function set(String key, String value) {
+    clientAccessOnly("setVariables");
+    local.put(key, value);
+    return this;
+  }
+
+  @Override
+  public Function remove(String key) {
+    clientAccessOnly("remove(key)");
+    local.remove(key);
+    return this;
+  }
+
+  @Override
+  public List<String> variables() {
+    clientAccessOnly("variables");
+    return new ArrayList<>(local.keySet());
+  }
+
+  @Override
+  public boolean haveVariable(String key) {
+    clientAccessOnly("haveVariable");
+    return local.containsKey(key);
+  }
+
+  @Override
+  public SharedMap<String, String> exportVariables() {
+    clientAccessOnly("exportVariables");
+    return local;
   }
 
   private class Pipe {
