@@ -16,21 +16,21 @@ import java.util.Map;
  */
 public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<Shell>, VariableCatalog<Shell> {
   /**
-   * Retrieves the status of the last command executed.
+   * <p>Retrieves the status of the last command executed.</p>
    *
    * @return the exit status of the last command run.
    */
   int getStatus();
 
   /**
-   * Retrieves the shell's current directory member.
+   * <p>Retrieves the shell's current directory member.</p>
    *
    * @return this shell's current directory
    */
   String getCurrentDirectory();
 
   /**
-   * Sets this shell's current directory member.
+   * <p>Sets this shell's current directory member.</p>
    *
    * @param directory the current directory of the environment.
    * @return this ShellHost
@@ -38,8 +38,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Shell setCurrentDirectory(@NotNull String directory);
 
   /**
-   * Calls exec with no locals or streams, using the given parameters, within
-   * the current environment.
+   * <p>Calls exec with no locals or streams, using the given parameters, within
+   * the current environment.</p>
    *
    * @param parameters the command and parameters to execute.
    * @return the exit status of the command
@@ -47,7 +47,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int run(@NotNull String... parameters);
 
   /**
-   * Calls exec and waits for the result, returning that result.
+   * <p>Calls exec and waits for the result, returning that result.</p>
    *
    * @param locals
    * @param streams
@@ -57,8 +57,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int run(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, @NotNull String... parameters);
 
   /**
-   * Calls exec with no locals or streams, using the given parameters; within
-   * the current environment.
+   * <p>Calls exec with no locals or streams, using the given parameters; within
+   * the current environment.</p>
    *
    * @param parameters the command and parameters to execute.
    * @return the Executive of the command
@@ -66,12 +66,12 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive exec(@NotNull String... parameters);
 
   /**
-   * Executes the function if found, or tries to execute the system command.
+   * <p>Executes the function if found, or tries to execute the system command.</p>
    *
-   * The target-command-name is the first parameter in parameters.
+   * <p>The target-command-name is the first parameter in parameters.</p>
    *
-   * If the target-command-name is: (a): function; then execution is a function or an error.
-   * If the target-command-name is: (b): command; then execution is a system command or an error.
+   * <p>If the target-command-name is: (a): function; then execution is a function or an error.</p>
+   * <p>If the target-command-name is: (b): command; then execution is a system command or an error.</p>
    *
    * @param locals the local process environment.
    * @param streams the stream configuration for this execution.
@@ -81,7 +81,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive exec(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, String... parameters);
 
   /**
-   * Calls execPipe and waits for the result, returning that result.
+   * <p>Calls execPipe and waits for the result, returning that result.</p>
    *
    * @param locals
    * @param streams
@@ -91,13 +91,13 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int runPipe(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, List<String[]>commands);
 
   /**
-   * Executes a list of commands with the given locals and I/O streams.
+   * <p>Executes a list of commands with the given locals and I/O streams.</p>
    *
-   * The first command is connected to the first stream.
-   * The last command is connected to the second stream.
-   * All commands are connected to the error stream.
+   * <p>The first command is connected to the first stream.</p>
+   * <p>The last command is connected to the second stream.</p>
+   * <p>All commands are connected to the error stream.</p>
    *
-   * If streams are null, then the shell's streams will be used in place.
+   * <p>If streams are null, then the shell's streams will be used in place.</p>
    *
    * @param locals
    * @param streams
@@ -107,10 +107,10 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive execPipe(@Nullable SharedMap<String, String> locals, @Nullable Streams streams, List<String[]>commands);
 
   /**
-   * Locates the target-command-name and executes the command with locals
-   * and parameters, returning the command's Executive.
+   * <p>Locates the target-command-name and executes the command with locals
+   * and parameters, returning the command's Executive.</p>
    *
-   * If the command is not found, a RuntimeException is thrown.
+   * <p>If the command is not found, a RuntimeException is thrown.</p>
    *
    * @param locals
    * @param parameters
@@ -119,10 +119,10 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
    Executive execCommand(@Nullable SharedMap<String, String> locals, String... parameters);
 
   /**
-   * Locates the target-function-name and executes the function with locals
-   * and parameters, returning the function's Executive.
+   * <p>Locates the target-function-name and executes the function with locals
+   * and parameters, returning the function's Executive.</p>
    *
-   * If the function is not found, a RuntimeException is thrown.
+   * <p>If the function is not found, a RuntimeException is thrown.</p>
    *
    * @param locals
    * @param parameters
@@ -131,7 +131,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   Executive execFunction(@Nullable SharedMap<String, String> locals, String... parameters);
 
   /**
-   * Creates a new shell and launches the command given within the shell, returning the result.
+   * <p>Creates a new shell and launches the command given within the shell, returning the result.</p>
    *
    * @param parameters
    * @return
@@ -139,8 +139,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int spawn(@NotNull String... parameters);
 
   /**
-   * Creates a new shell with the given environment and launches the
-   * command given within the shell, returning the result.
+   * <p>Creates a new shell with the given environment and launches the
+   * command given within the shell, returning the result.</p>
    *
    * @param variables
    * @param parameters
@@ -149,9 +149,9 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   int spawn(@Nullable Map<String, String> variables, @NotNull String... parameters);
 
   /**
-   * Locates the given file according to this shell's current directory.
+   * <p>Locates the given file according to this shell's current directory.</p>
    *
-   * The file may or may not exist, but a not-existing-file-condition is not an error.
+   * <p>The file may or may not exist, but a not-existing-file-condition is not an error.</p>
    *
    * @param file
    * @return a new Java File object pointing to this file reference.
@@ -159,14 +159,14 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
   File getFile(@NotNull String file);
 
   /**
-   * Get this shell's interpretation of a "new line" character sequence.
+   * <p>Get this shell's interpretation of a "new line" character sequence.</p>
    *
    * @return this shell's String interpretation of a line-ending.
    */
   String getLineSeparator();
 
   /**
-   * Set this shell's interpretation of a "new line" character sequence.
+   * <p>Set this shell's interpretation of a "new line" character sequence.</p>
    *
    * @param separator
    * @return this ShellHost
