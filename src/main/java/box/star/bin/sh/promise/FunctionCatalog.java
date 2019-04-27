@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface FunctionCatalog<HOST> {
-  HOST defineFunction(String name, FunctionFactory<HOST> function);
-  HOST applyFunctions(@Nullable Map<String, FunctionFactory<HOST>> functions);
+  HOST defineFunction(FunctionFactory<HOST> factory);
+  HOST applyFunctions(@Nullable Map<String, FunctionFactory<HOST>> factories);
   HOST clearFunctions();
   HOST removeFunction(String name);
   FunctionFactory<HOST> getFunctionFactory(String name);

@@ -14,7 +14,13 @@ class ShellTest {
   };
 
   @Test void main() {
-    shell.defineFunction("echo", new Function(){
+    shell.defineFunction(new Function(){
+
+      @Override
+      public String getName() {
+        return "echo";
+      }
+
       @Override
       public int main(String[] parameters) {
         List<String> out = new ArrayList<>(Arrays.asList(parameters));
@@ -27,6 +33,7 @@ class ShellTest {
         }
         return 0;
       }
+
     });
     Command starbox = shell.build( "java", "-cp", "jar/NanoStarbox.jar");
     Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");

@@ -49,8 +49,8 @@ public class Shell implements ShellHost<Shell, Executive> {
   }
 
   @Override
-  public Shell applyFunctions(Map<String, FunctionFactory<Shell>> functions) {
-    this.functions.putAll(functions);
+  public Shell applyFunctions(Map<String, FunctionFactory<Shell>> factories) {
+    this.functions.putAll(factories);
     return this;
   }
 
@@ -130,8 +130,8 @@ public class Shell implements ShellHost<Shell, Executive> {
   }
 
   @Override
-  public Shell defineFunction(String name, FunctionFactory<Shell> function) {
-    functions.put(name, function);
+  public Shell defineFunction(FunctionFactory<Shell> factory) {
+    functions.put(factory.getName(), factory);
     return this;
   }
 
