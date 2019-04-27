@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public interface StreamProvider<HOST> {
+public interface StreamCatalog<HOST> {
   HOST writeErrorTo(@Nullable OutputStream os);
   HOST writeOutputTo(@Nullable OutputStream os);
   HOST readInputFrom(@Nullable InputStream is);

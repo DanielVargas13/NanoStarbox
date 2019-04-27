@@ -6,7 +6,7 @@ import box.star.contract.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public interface VariableProvider<HOST> {
+public interface VariableCatalog<HOST> {
   HOST applyVariables(@Nullable Map<String, String> variables);
   HOST clearVariables();
   HOST resetVariables();

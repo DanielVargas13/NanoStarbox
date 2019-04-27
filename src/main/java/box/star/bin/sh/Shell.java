@@ -1,7 +1,8 @@
 package box.star.bin.sh;
 
+import box.star.bin.sh.promise.FactoryFunction;
+import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
-import box.star.bin.sh.promise.FunctionProvider;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import java.util.Map;
 /**
  * Nano Starbox Function Shell
  */
-public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shell> {
+public class Shell implements ShellHost<Shell, Executive> {
 
   int status;
   SharedMap<String, String> variables;
-  SharedMap<String, Function> functions;
+  SharedMap<String, FunctionFactory<Shell>> functions;
   Streams streams;
 
   public int getStatus() {
@@ -48,7 +49,7 @@ public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shel
   }
 
   @Override
-  public Shell applyFunctions(Map<String, Function> functions) {
+  public Shell applyFunctions(Map<String, FunctionFactory<Shell>> functions) {
     this.functions.putAll(functions);
     return this;
   }
@@ -129,7 +130,7 @@ public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shel
   }
 
   @Override
-  public Shell defineFunction(String name, Function function) {
+  public Shell defineFunction(String name, FunctionFactory<Shell> function) {
     functions.put(name, function);
     return this;
   }
@@ -181,12 +182,12 @@ public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shel
   }
 
   @Override
-  public SharedMap<String, Function> exportFunctions() {
+  public SharedMap<String, FunctionFactory<Shell>> exportFunctions() {
     return functions.copy();
   }
 
   @Override
-  public Function getFunction(String name) {
+  public FunctionFactory<Shell> getFunctionFactory(String name) {
     if (haveFunction(name)) return functions.get(name);
     throw new RuntimeException("Function " + name + " is not defined in this scope");
   }
@@ -214,7 +215,7 @@ public class Shell implements ShellHost<Shell, Executive>, FunctionProvider<Shel
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
     if (haveFunction(parameters[0])) {
-      Function f = getFunction(parameters[0]).createInstance(this, locals);
+      FactoryFunction f = getFunctionFactory(parameters[0]).createInstance(this, locals);
       executive = new Executive(f.exec(parameters));
     } else try {
       Process p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));

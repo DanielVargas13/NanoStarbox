@@ -6,7 +6,7 @@ import box.star.contract.Nullable;
 
 import java.util.Map;
 
-public interface ShellHost<Shell, Executive> extends StreamProvider<Shell>, VariableProvider<Shell> {
+public interface ShellHost<Shell, Executive> extends StreamCatalog<Shell>, VariableCatalog<Shell>, FunctionCatalog<Shell> {
   int getStatus();
   String getCurrentDirectory();
   Shell setCurrentDirectory(String directory);

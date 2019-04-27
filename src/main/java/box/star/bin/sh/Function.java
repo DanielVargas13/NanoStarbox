@@ -1,11 +1,15 @@
 package box.star.bin.sh;
 
+import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.FunctionMain;
+import box.star.bin.sh.promise.FactoryFunction;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-public class Function extends Process implements Runnable, Cloneable, FunctionMain {
+public class Function extends Process implements FunctionFactory<Shell>, FactoryFunction, Runnable, Cloneable, FunctionMain {
+
+  private String name;
 
   protected Shell shell;
   protected SharedMap<String, String> local;
@@ -27,7 +31,7 @@ public class Function extends Process implements Runnable, Cloneable, FunctionMa
     return null;
   }
 
-  final Function createInstance(Shell shell, SharedMap<String, String> superLocal) {
+  final public FactoryFunction createInstance(Shell shell, SharedMap<String, String> superLocal) {
     hostAcessOnly("createInstance(shell, superLocal)");
     Function instance = clone();
     instance.shell = shell;
@@ -36,7 +40,7 @@ public class Function extends Process implements Runnable, Cloneable, FunctionMa
     return instance;
   }
 
-  final Function exec(String... parameters) {
+  final public Function exec(String... parameters) {
     hostAcessOnly("exec(String... parameters)");
     this.parameters = parameters;
     p_stdin = new Pipe();
@@ -181,6 +185,16 @@ public class Function extends Process implements Runnable, Cloneable, FunctionMa
       }
       catch (Exception e) {}
     }
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public boolean match(String name) {
+    return false;
   }
 
 }
