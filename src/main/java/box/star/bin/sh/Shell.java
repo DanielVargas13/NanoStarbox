@@ -299,11 +299,17 @@ public class Shell implements ShellHost<Shell> {
   }
 
   public File getFile(String file){
+    File directory;
+    if (System.getProperty("user.dir").equals(getCurrentDirectory())){
+      directory = new File(".");
+    } else {
+      directory = new File(getCurrentDirectory());
+    }
     if (file.startsWith("/") || file.matches("^[A-Zaz]:.*$")) return new File(file);
-    if (file.startsWith("./") || file.startsWith(".\\")) return new File(getCurrentDirectory(), file.substring(2));
-    if (file.startsWith("../") || file.startsWith("..\\")) return new File(getCurrentDirectory(), file.substring(3));
-    if (file.equals(".")) return new File(getCurrentDirectory());
-    return new File(getCurrentDirectory(), file);
+    if (file.startsWith("./") || file.startsWith(".\\")) return new File(directory, file.substring(2));
+    if (file.startsWith("../") || file.startsWith("..\\")) return new File(directory, file.substring(3));
+    if (file.equals(".")) return directory;
+    return new File(directory, file);
   }
 
 }
