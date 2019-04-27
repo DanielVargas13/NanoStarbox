@@ -17,15 +17,16 @@ public class Parameters {
     void postParameterValue(CurrentParameter parameter, String value);
   }
 
-  public static void parse(ParameterHandler parameterHandler, CurrentParameter parameter){
+  public static boolean parse(ParameterHandler parameterHandler, CurrentParameter parameter){
     CurrentParameter currentParameter = new CurrentParameter();
     char[] switches = parameter.value.toCharArray();
     for (int i = 0; i < switches.length; i++) {
       currentParameter.select(i, 0, switches[i]+"", parameter.dataAvailable);
       if (parameterHandler.nextParameter(currentParameter)) {
         continue;
-      }
+      } else return false;
     }
+    return true;
   }
 
   public static void parse(ParameterHandler parameterHandler, String... parameters){
