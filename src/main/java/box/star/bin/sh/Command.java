@@ -184,11 +184,6 @@ public class Command implements VariableCatalog<Command>, StreamCatalog<Command>
     return shell.exec(locals, streams, pipeChain.get(0).parameters);
   }
 
-  public int runPipe(Streams streams, List<String[]> commands) {
-    Executive pipe = execPipe();
-    return shell.status = pipe.exitValue();
-  }
-
   public Executive execPipe() {
     Streams common_streams = new Streams(streams.get(0), null, streams.get(2));
     Stack<Command>chain = (Stack<Command>) pipeChain.clone();
