@@ -3,15 +3,16 @@ package box.star.bin.sh;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.FunctionMain;
 import box.star.bin.sh.promise.FactoryFunction;
+import box.star.bin.sh.promise.ShellHost;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-public class Function extends Process implements FunctionFactory<Shell>, FactoryFunction, Runnable, Cloneable, FunctionMain {
+public class Function extends Process implements FunctionMain, FunctionFactory, FactoryFunction, Runnable, Cloneable {
 
   private String name;
 
-  protected Shell shell;
+  protected ShellHost shell;
   protected SharedMap<String, String> local;
   protected BufferedInputStream stdin;
   protected BufferedOutputStream stdout, stderr;
@@ -23,7 +24,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   protected Function clone() {
-    hostAcessOnly("clone");
+    hostAccessOnly("clone");
     try {
       return (Function) super.clone();
     }
@@ -31,8 +32,8 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
     return null;
   }
 
-  final public FactoryFunction createFunction(Shell shell, SharedMap<String, String> superLocal) {
-    hostAcessOnly("createFunction(shell, superLocal)");
+  final public FactoryFunction createFunction(ShellHost shell, SharedMap<String, String> superLocal) {
+    hostAccessOnly("createFunction(shell, superLocal)");
     Function instance = clone();
     instance.shell = shell;
     if (superLocal == null) instance.local = new SharedMap<>();
@@ -41,7 +42,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
   }
 
   final public Function exec(String... parameters) {
-    hostAcessOnly("exec(String... parameters)");
+    hostAccessOnly("exec(String... parameters)");
     this.parameters = parameters;
     p_stdin = new Pipe();
     p_stdout = new Pipe();
@@ -60,7 +61,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
   @Override
   final public void run() {
     if (running) {
-      hostAcessOnly("run");
+      hostAccessOnly("run");
       return;
     }
     running = true;
@@ -80,7 +81,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public int exitValue() {
-    hostAcessOnly("exitValue");
+    hostAccessOnly("exitValue");
     try { thread.join(); }
     catch (InterruptedException ie) {}
     catch (Exception e) {if (!destroying) throw new RuntimeException(e);}
@@ -89,11 +90,11 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public boolean isAlive() {
-    hostAcessOnly("isAlive() == true");
+    hostAccessOnly("isAlive() == true");
     return thread.isAlive();
   }
 
-  private void hostAcessOnly(String context){
+  private void hostAccessOnly(String context){
     if (Thread.currentThread().equals(thread)){
       throw new RuntimeException(context, new IllegalThreadStateException("this method cannot be accessed from within its own thread."));
     }
@@ -101,31 +102,31 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public OutputStream getOutputStream() {
-    hostAcessOnly("getOutputStream");
+    hostAccessOnly("getOutputStream");
     return new BufferedOutputStream(p_stdin.output);
   }
 
   @Override
   final public InputStream getInputStream() {
-    hostAcessOnly("getInputStream");
+    hostAccessOnly("getInputStream");
     return new BufferedInputStream(p_stdout.input);
   }
   @Override
   final public InputStream getErrorStream() {
-    hostAcessOnly("getErrorStream");
+    hostAccessOnly("getErrorStream");
     return new BufferedInputStream(p_stderr.input);
   }
 
   @Override
   final public int waitFor() throws InterruptedException {
-    hostAcessOnly("waitFor");
+    hostAccessOnly("waitFor");
     thread.join();
     return status;
   }
 
   @Override
   final public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
-    hostAcessOnly("waitFor(timeout, unit)");
+    hostAccessOnly("waitFor(timeout, unit)");
     if (!thread.isAlive()) return true;
     if (timeout <= 0) return false;
 
@@ -148,7 +149,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public void destroy() {
-    hostAcessOnly("destroy");
+    hostAccessOnly("destroy");
     try {
       destroying = true;
       stdin.close();
@@ -163,7 +164,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
 
   @Override
   final public Process destroyForcibly() {
-    hostAcessOnly("destroyForcibly");
+    hostAccessOnly("destroyForcibly");
     destroy();
     return this;
   }
@@ -181,7 +182,7 @@ public class Function extends Process implements FunctionFactory<Shell>, Factory
     }
 
     void close() {
-      hostAcessOnly("close");
+      hostAccessOnly("close");
       try {
         input.close();
         output.close();

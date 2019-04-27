@@ -16,7 +16,7 @@ public class Executive {
   private final Process host;
   private Thread readable, writable, error;
 
-  Executive(Process host) {
+  public Executive(Process host) {
     this.host = host;
   }
 

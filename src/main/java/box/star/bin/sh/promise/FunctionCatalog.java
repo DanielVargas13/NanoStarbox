@@ -6,13 +6,13 @@ import box.star.contract.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public interface FunctionCatalog<HOST> {
-  HOST defineFunction(FunctionFactory<HOST> factory);
-  HOST applyFunctions(@Nullable Map<String, FunctionFactory<HOST>> factories);
-  HOST clearFunctions();
-  HOST removeFunction(String name);
-  FunctionFactory<HOST> getFunctionFactory(String name);
+public interface FunctionCatalog<Host> {
+  Host defineFunction(FunctionFactory factory);
+  Host applyFunctions(@Nullable Map<String, FunctionFactory> factories);
+  Host clearFunctions();
+  Host removeFunction(String name);
+  FunctionFactory getFunctionFactory(String name);
   List<String> functions();
   boolean haveFunction(String key);
-  SharedMap<String, FunctionFactory<HOST>> exportFunctions();
+  SharedMap<String, FunctionFactory> exportFunctions();
 }

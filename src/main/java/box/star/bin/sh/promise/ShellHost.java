@@ -1,12 +1,13 @@
 package box.star.bin.sh.promise;
 
+import box.star.bin.sh.Executive;
 import box.star.bin.sh.SharedMap;
 import box.star.bin.sh.Streams;
 import box.star.contract.Nullable;
 
 import java.util.Map;
 
-public interface ShellHost<Shell, Executive> extends StreamCatalog<Shell>, VariableCatalog<Shell>, FunctionCatalog<Shell> {
+public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<Shell>, VariableCatalog<Shell> {
   int getStatus();
   String getCurrentDirectory();
   Shell setCurrentDirectory(String directory);

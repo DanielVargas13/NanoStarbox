@@ -12,11 +12,11 @@ import java.util.Map;
 /**
  * Nano Starbox Function Shell
  */
-public class Shell implements ShellHost<Shell, Executive> {
+public class Shell implements ShellHost<Shell> {
 
   int status;
   SharedMap<String, String> variables;
-  SharedMap<String, FunctionFactory<Shell>> functions;
+  SharedMap<String, FunctionFactory> functions;
   Streams streams;
 
   public int getStatus() {
@@ -49,7 +49,7 @@ public class Shell implements ShellHost<Shell, Executive> {
   }
 
   @Override
-  public Shell applyFunctions(Map<String, FunctionFactory<Shell>> factories) {
+  public Shell applyFunctions(Map<String, FunctionFactory> factories) {
     this.functions.putAll(factories);
     return this;
   }
@@ -130,7 +130,7 @@ public class Shell implements ShellHost<Shell, Executive> {
   }
 
   @Override
-  public Shell defineFunction(FunctionFactory<Shell> factory) {
+  public Shell defineFunction(FunctionFactory factory) {
     functions.put(factory.getName(), factory);
     return this;
   }
@@ -182,12 +182,12 @@ public class Shell implements ShellHost<Shell, Executive> {
   }
 
   @Override
-  public SharedMap<String, FunctionFactory<Shell>> exportFunctions() {
+  public SharedMap<String, FunctionFactory> exportFunctions() {
     return functions.copy();
   }
 
   @Override
-  public FunctionFactory<Shell> getFunctionFactory(String name) {
+  public FunctionFactory getFunctionFactory(String name) {
     if (haveFunction(name)) return functions.get(name);
     throw new RuntimeException("Function " + name + " is not defined in this scope");
   }
