@@ -55,4 +55,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
 
   File getFile(String file);
 
+  String getLineSeparator();
+  Shell setLineSeparator(String separator);
+
 }

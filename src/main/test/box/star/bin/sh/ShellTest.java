@@ -1,5 +1,6 @@
 package box.star.bin.sh;
 
+import box.star.bin.sh.builtin.Echo;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,27 +13,7 @@ class ShellTest {
   Shell shell = new Shell();
 
   @Test void main() {
-    shell.defineFunction(new Function(){
-
-      @Override
-      public String getName() {
-        return "echo";
-      }
-
-      @Override
-      public int main(String[] parameters) {
-        List<String> out = new ArrayList<>(Arrays.asList(parameters));
-        out.remove(0);
-        try {
-          stdout.write((String.join(" ", out) + "\n").getBytes());
-        }
-        catch (IOException e) {
-          e.printStackTrace();
-        }
-        return 0;
-      }
-
-    });
+    shell.defineFunction(Echo.getFactory());
     Command starbox = shell.build( "java", "-cp", "jar/NanoStarbox.jar");
     Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
     Command echo = shell.build("echo", "hello", "world,", "real", "unix-like", "parameter", "handling");

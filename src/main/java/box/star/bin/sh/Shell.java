@@ -3,6 +3,7 @@ package box.star.bin.sh;
 import box.star.bin.sh.promise.FactoryFunction;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
+import box.star.system.OS;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -310,6 +311,20 @@ public class Shell implements ShellHost<Shell> {
     if (file.startsWith("../") || file.startsWith("..\\")) return new File(directory, file.substring(3));
     if (file.equals(".")) return directory;
     return new File(directory, file);
+  }
+
+  private final static String LINE_SEPARATOR = "LINE_SEPARATOR";
+
+  @Override
+  public String getLineSeparator() {
+    if (haveVariable(LINE_SEPARATOR)) return get(LINE_SEPARATOR);
+    return OS.getConfiguration().getLineSeparator();
+  }
+
+  @Override
+  public Shell setLineSeparator(String separator) {
+    set(LINE_SEPARATOR, separator);
+    return this;
   }
 
 }
