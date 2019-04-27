@@ -47,7 +47,7 @@ public class Echo extends Function {
   public int main(String[] parameters) {
     List<String> out = new ArrayList<>(Arrays.asList(parameters));
     out.remove(0);
-    boolean interpretEscapes = true;
+    boolean interpretEscapes = false;
     String swtch = out.get(0), line = shell.getLineSeparator();
     while (swtch.startsWith("-")){
       if (swtch.equals("-n")) {

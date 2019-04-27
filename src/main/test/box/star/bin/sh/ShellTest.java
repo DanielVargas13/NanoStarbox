@@ -11,7 +11,7 @@ class ShellTest {
     shell.defineFunction(Echo.getFactory());
     Command starbox = shell.build( "java", "-cp", "jar/NanoStarbox.jar");
     Command cat = starbox.build("box.star.bin.cat", "sample/grep-test.txt");
-    Command echo = shell.build("echo", "hello", "world,", "real", "unix\\c-like", "parameter", "handling");
+    Command echo = shell.build("echo", "-e", "hello", "world,", "real", "unix\\c-like", "parameter", "handling");
     Command grep = starbox.build("box.star.bin.grep", "hello");
     echo.pipe(grep).run();
   }
