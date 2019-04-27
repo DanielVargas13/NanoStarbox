@@ -2,7 +2,7 @@ package box.star.bin.sh.promise;
 
 import box.star.bin.sh.SharedMap;
 import box.star.bin.sh.Streams;
-import com.sun.istack.internal.Nullable;
+import box.star.contract.Nullable;
 
 import java.io.Closeable;
 import java.io.InputStream;

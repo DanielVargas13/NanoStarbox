@@ -2,6 +2,7 @@ package box.star.bin.sh.promise;
 
 import box.star.bin.sh.SharedMap;
 import box.star.bin.sh.Streams;
+import box.star.contract.Nullable;
 
 import java.util.Map;
 

@@ -2,7 +2,7 @@ package box.star.bin.sh.promise;
 
 import box.star.bin.sh.Function;
 import box.star.bin.sh.SharedMap;
-import com.sun.istack.internal.Nullable;
+import box.star.contract.Nullable;
 
 import java.util.List;
 import java.util.Map;

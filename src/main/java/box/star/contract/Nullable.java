@@ -1,4 +1,4 @@
-package box.star.bin.sh.promise;
+package box.star.contract;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
