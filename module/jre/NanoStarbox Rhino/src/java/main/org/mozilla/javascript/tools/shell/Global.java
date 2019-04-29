@@ -89,6 +89,7 @@ public class Global extends ImporterTopLevel
         // that these functions are not part of ECMA.
         initStandardObjects(cx, sealedStdLib);
         String[] names = {
+            "loadJavaPath",
             "defineClass",
             "deserialize",
             "doctest",
@@ -174,6 +175,15 @@ public class Global extends ImporterTopLevel
             Object[] args, Function funObj)
     {
         System.gc();
+    }
+
+    public static void loadJavaPath(Context cx, Scriptable thisObj,
+                                          Object[] args, Function funObj) throws Exception {
+        String path = (String) Context.jsToJava(args[0], String.class);
+        File file = new File(path);
+        Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+        method.setAccessible(true);
+        method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{file.toURI().toURL()});
     }
 
 
