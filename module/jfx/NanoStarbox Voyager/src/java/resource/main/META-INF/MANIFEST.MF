@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: NanoStarbox Voyager
+Implementation-Version: 
+Permissions: sandbox
+JavaFX-Version: 8.0
+Class-Path: nano-starbox-core.jar
+Created-By: JavaFX Packager
+Implementation-Vendor: Hypersoft-Systems: USA
+Main-Class: box.star.web.Voyager
+

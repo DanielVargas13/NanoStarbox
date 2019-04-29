@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="NanoStarbox Rhino Debugger:jar">
+    <output-path>$PROJECT_DIR$/src/java/jar</output-path>
+    <root id="archive" name="nano-starbox-rhino-debugger.jar">
+      <element id="module-output" name="NanoStarbox Rhino Debugger" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/java/resource/main/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

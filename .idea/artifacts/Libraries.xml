@@ -1,0 +1,31 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Libraries">
+    <output-path>$PROJECT_DIR$/jar</output-path>
+    <root id="root">
+      <element id="archive" name="nano-starbox-core.jar">
+        <element id="module-output" name="NanoStarbox Core" />
+      </element>
+      <element id="archive" name="nano-starbox-shell.jar">
+        <element id="module-output" name="NanoStarbox Shell" />
+      </element>
+      <element id="archive" name="nano-starbox-rhino.jar">
+        <element id="module-output" name="NanoStarbox Rhino" />
+      </element>
+      <element id="archive" name="nano-starbox-web-server.jar">
+        <element id="module-output" name="NanoStarbox Web Server" />
+      </element>
+      <element id="archive" name="nano-starbox-jfx-voyager.jar">
+        <element id="module-output" name="NanoStarbox Voyager" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/resource/main/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+      <element id="archive" name="nano-starbox-rhino-swing-console.jar">
+        <element id="module-output" name="NanoStarbox Rhino Console" />
+      </element>
+      <element id="archive" name="nano-starbox-rhino-swing-debugger.jar">
+        <element id="module-output" name="NanoStarbox Rhino Debugger" />
+      </element>
+    </root>
+  </artifact>
+</component>

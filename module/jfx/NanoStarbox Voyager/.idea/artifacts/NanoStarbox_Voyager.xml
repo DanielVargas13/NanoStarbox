@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="NanoStarbox Voyager">
+    <output-path>$PROJECT_DIR$/jar</output-path>
+    <root id="archive" name="nano-starbox-jfx-voyager.jar">
+      <element id="module-output" name="NanoStarbox Voyager" />
+      <element id="module-output" name="NanoStarbox Core" />
+    </root>
+  </artifact>
+</component>
