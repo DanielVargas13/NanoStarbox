@@ -91,8 +91,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -100,20 +98,18 @@
               <item name="NanoStarbox Rhino Console" type="b2602c69:ProjectViewProjectNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="NanoStarbox Rhino Console" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NanoStarbox Rhino Console" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../jre/NanoStarbox Rhino" />
-    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.29852942" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
@@ -142,6 +138,7 @@
     <configuration name="JSConsole" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.mozilla.javascript.tools.shell.JSConsole" />
       <module name="NanoStarbox Rhino Console" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../.." />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.mozilla.javascript.tools.shell.*" />
@@ -213,9 +210,7 @@
     <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/SecurityProxy.java" />
     <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/ShellConsole.java" />
     <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/ShellLine.java" />
-    <entry file="jar://$PROJECT_DIR$/jar/nano-starbox-rhino-console.jar!/META-INF/MANIFEST.MF">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="jar://$PROJECT_DIR$/jar/nano-starbox-rhino-console.jar!/META-INF/MANIFEST.MF" />
     <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/JSConsole.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -246,6 +241,7 @@
             <option name="proportions">
               <list>
                 <option value="0.29852942" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>

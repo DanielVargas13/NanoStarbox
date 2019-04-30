@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" filepath="$PROJECT_DIR$/module/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" filepath="$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Shell/src/java/NanoStarbox Shell.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Shell/src/java/NanoStarbox Shell.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" filepath="$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" />
     </modules>

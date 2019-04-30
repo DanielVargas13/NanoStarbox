@@ -8,7 +8,6 @@
     <orderEntry type="module" module-name="NanoStarbox Rhino" />
     <orderEntry type="module" module-name="NanoStarbox Rhino Console" />
     <orderEntry type="module" module-name="NanoStarbox Rhino Debugger" />
-    <orderEntry type="module" module-name="NanoStarbox Shell" />
     <orderEntry type="module" module-name="NanoStarbox Voyager" />
     <orderEntry type="module" module-name="NanoStarbox Web Server" />
   </component>

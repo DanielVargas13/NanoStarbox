@@ -9,7 +9,9 @@ package org.mozilla.javascript;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class reflects Java packages into the JavaScript environment.  We
@@ -111,8 +113,9 @@ public class NativeJavaPackage extends ScriptableObject
                                        boolean createPkg)
     {
         Object cached = super.get(name, start);
-        if (cached != NOT_FOUND)
+        if (cached != NOT_FOUND) {
             return cached;
+        }
         if (negativeCache != null && negativeCache.contains(name)) {
             // Performance optimization: see bug 421071
             return null;

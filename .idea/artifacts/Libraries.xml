@@ -5,9 +5,6 @@
       <element id="archive" name="nano-starbox-core.jar">
         <element id="module-output" name="NanoStarbox Core" />
       </element>
-      <element id="archive" name="nano-starbox-shell.jar">
-        <element id="module-output" name="NanoStarbox Shell" />
-      </element>
       <element id="archive" name="nano-starbox-rhino.jar">
         <element id="module-output" name="NanoStarbox Rhino" />
       </element>

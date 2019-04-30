@@ -1820,7 +1820,7 @@ public class Context
      * in JavaScript.
      * <p>
      * If value is an instance of String, Number, Boolean, Function or
-     * Scriptable, it is returned as it and will be treated as the corresponding
+     * Scriptable, it is returned as is and will be treated as the corresponding
      * JavaScript type of string, number, boolean, function and object.
      * <p>
      * Note that for Number instances during any arithmetic operation in

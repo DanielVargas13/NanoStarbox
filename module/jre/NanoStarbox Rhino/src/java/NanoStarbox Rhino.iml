@@ -12,5 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="NanoStarbox Core" scope="PROVIDED" />
+    <orderEntry type="module" module-name="NanoStarbox Web Server" scope="PROVIDED" />
   </component>
 </module>
