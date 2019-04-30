@@ -17,5 +17,6 @@ Java Swing Kits:
 Java JFX Kits:
 * [NanoStarbox Voyager](module/jfx/NanoStarbox%20Voyager)
 
-The main project builds the jar files in the
-[project's jar directory](jar/).
+The default build method for this IntelliJ IDEA project builds all modules in the [project's jar directory](jar/).
+
+If you need a headless configuration, simply select the Base Modules you need from the jar directory.
