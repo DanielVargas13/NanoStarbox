@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Class-Path: nano-starbox-rhino.jar nano-starbox-rhino-swing-console.ja
- r
+Class-Path: nano-starbox-core.jar nano-starbox-rhino.jar nano-starbox-
+ rhino-swing-console.jar
 Main-Class: org.mozilla.javascript.debugger.Main
 

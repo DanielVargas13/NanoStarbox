@@ -2,93 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="31c5900b-bbc5-4807-bf7f-0d16fcb31558" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../../../.idea/markdown-navigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../.idea/markdown-navigator/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/java/main/box/star/js/Java.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/markdown-navigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/markdown-navigator/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/resource/local/site/main/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/resource/local/site/main/nano-view-test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/resource/local/site/main/static-page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../.idea/artifacts/Libraries.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../.idea/artifacts/Libraries.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../NanoStarbox.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../NanoStarbox.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Core/.idea/NanoStarbox Core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/.idea/NanoStarbox Core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Core/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../NanoStarbox Core/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/NanoStarbox Rhino.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/NanoStarbox Rhino.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/NanoStarbox Rhino.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/NanoStarbox Rhino.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/Context.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/Context.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/NativeJavaPackage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/NativeJavaPackage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/commonjs/module/package.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/Global.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/Global.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/main/org/mozilla/javascript/tools/shell/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/resource/main/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/resource/main/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/java/resource/main/org/mozilla/javascript/tools/resources/Messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/java/resource/main/org/mozilla/javascript/tools/resources/Messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/.idea/NanoStarbox Shell.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/.idea/artifacts/NanoStarbox_Shell_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/NanoStarbox Shell.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/NanoStarbox Shell.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/Executive.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/Executive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/Function.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/Function.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/SharedMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/SharedMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/Shell.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/Shell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/Streams.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/Streams.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/function/unix/Echo.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/function/unix/Echo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/FactoryFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/FactoryFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/FunctionCatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/FunctionCatalog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/FunctionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/FunctionFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/FunctionMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/FunctionMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/ShellHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/ShellHost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/StreamCatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/StreamCatalog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/main/box/star/bin/sh/promise/VariableCatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/bin/sh/promise/VariableCatalog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Shell/src/java/resource/main/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/NanoStarbox Web Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/NanoStarbox Web Server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/artifacts/NanoStarbox_Web_Server_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/artifacts/NanoStarbox_Web_Server_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/RhinoTemplateFiller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/tools/RhinoTemplateFiller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/RhinoWebDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/tools/RhinoWebDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/WebServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/HTTPClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/HTTPClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/HTTPServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/HTTPServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/HTTPService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/HTTPService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/HTTPSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/HTTPSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/IHTTPSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/IHTTPSession.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/content/ContentType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/content/ContentType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/content/Cookie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/content/Cookie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/content/CookieHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/content/CookieHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/request/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/request/Method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/response/BasicAuthenticationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/response/BasicAuthenticationResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/response/ChunkedOutputStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/response/ChunkedOutputStream.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/response/IStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/response/IStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/response/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/response/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/response/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/response/Status.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/sockets/DefaultServerSocketFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/sockets/DefaultServerSocketFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/sockets/SecureServerSocketFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/sockets/SecureServerSocketFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/tempfiles/DefaultTempFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/tempfiles/DefaultTempFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/tempfiles/DefaultTempFileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/tempfiles/DefaultTempFileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/tempfiles/DefaultTempFileManagerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/tempfiles/DefaultTempFileManagerFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/tempfiles/ITempFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/tempfiles/ITempFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/tempfiles/ITempFileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/tempfiles/ITempFileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/threading/DefaultAsyncRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/threading/DefaultAsyncRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/threading/IAsyncRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/threading/IAsyncRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/util/HTTPServiceHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/util/HTTPServiceHost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/util/IFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/util/IFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/util/IFactoryThrowing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/util/IFactoryThrowing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/web/http/util/IHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/main/box/star/net/http/util/IHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/test/box/star/web/README.MD" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/test/box/star/net/README.MD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/test/box/star/web/RhinoWebDriverTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Web Server/src/java/test/box/star/net/RhinoWebDriverTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/artifacts/NanoStarbox_Rhino_Console_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/artifacts/NanoStarbox_Rhino_Console_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NanoStarbox Core/src/java/main/box/star/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -131,7 +47,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/ContextFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8177">
+            <state relative-caret-position="8211">
               <caret line="514" column="25" selection-start-line="514" selection-start-column="25" selection-end-line="514" selection-end-column="25" />
               <folding>
                 <element signature="e#17124#17125#0" expanded="true" />
@@ -189,6 +105,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -200,7 +117,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -449,7 +365,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/java/main/org/mozilla/javascript/ContextFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8177">
+        <state relative-caret-position="8211">
           <caret line="514" column="25" selection-start-line="514" selection-start-column="25" selection-end-line="514" selection-end-column="25" />
           <folding>
             <element signature="e#17124#17125#0" expanded="true" />

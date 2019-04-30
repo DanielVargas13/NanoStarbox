@@ -115,7 +115,7 @@ public class Command {
   }
 
   /**
-   * <p>Fet's the PWD environmenvt variable for this command.</p>
+   * <p>Get's the PWD environment variable for this command.</p>
    *
    * @return
    */
