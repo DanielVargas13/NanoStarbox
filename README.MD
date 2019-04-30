@@ -4,7 +4,7 @@
 
 NanoStarbox is composed of several sub-projects:
 
-* [NanoStarbox Core](module/jre/NanoStarboxA%20Core)
+* [NanoStarbox Core](module/jre/NanoStarbox%20Core)
 * [NanoStarbox Rhino](module/jre/NanoStarbox%20Rhino)
 * [NanoStarbox Web Server](module/jre/NanoStarbox%20Web%20Server)
 
