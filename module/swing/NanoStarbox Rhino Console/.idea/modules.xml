@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" filepath="$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" filepath="$PROJECT_DIR$/../../jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" filepath="$PROJECT_DIR$/../../../jre/NanoStarbox Rhino/src/java/NanoStarbox Rhino.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/NanoStarbox Rhino Console.iml" filepath="$PROJECT_DIR$/.idea/NanoStarbox Rhino Console.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" filepath="$PROJECT_DIR$/../../jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" />
     </modules>

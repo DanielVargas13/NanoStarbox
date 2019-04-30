@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name=": Rhino Swing Debug" type="JarApplication">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/jar/nano-starbox-rhino-swing-debugger.jar" />
+    <option name="WORKING_DIRECTORY" value="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="Libraries" />
+      </option>
+    </method>
+  </configuration>
+</component>

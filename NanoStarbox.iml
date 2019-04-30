@@ -5,10 +5,8 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="NanoStarbox Rhino" />
-    <orderEntry type="module" module-name="NanoStarbox Rhino Console" />
-    <orderEntry type="module" module-name="NanoStarbox Rhino Debugger" />
-    <orderEntry type="module" module-name="NanoStarbox Voyager" />
-    <orderEntry type="module" module-name="NanoStarbox Web Server" />
+    <orderEntry type="module" module-name="NanoStarbox Core" exported="" />
+    <orderEntry type="module" module-name="NanoStarbox Rhino" exported="" />
+    <orderEntry type="module" module-name="NanoStarbox Web Server" exported="" />
   </component>
 </module>

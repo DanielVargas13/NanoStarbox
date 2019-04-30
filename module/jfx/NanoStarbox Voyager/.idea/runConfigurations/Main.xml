@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+    <option name="MAIN_CLASS_NAME" value="box.star.web.Voyager" />
+    <module name="NanoStarbox Voyager" />
+    <option name="PROGRAM_PARAMETERS" value="-s &quot;&lt;html&gt;Hello World&lt;/html&gt;&quot;" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="sample.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
