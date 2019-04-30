@@ -1,4 +1,6 @@
-This project is managed with IntelliJ IDEA.
+#### Hypersoft-Systems: NanoStarbox
+
+[This JDK 1.8 API Level 8 project](LICENSE) is managed with IntelliJ IDEA.
 
 NanoStarbox is composed of several sub-projects:
 
@@ -6,7 +8,7 @@ NanoStarbox is composed of several sub-projects:
 * [NanoStarbox Rhino](module/jre/NanoStarbox%20Rhino)
 * [NanoStarbox Web Server](module/jre/NanoStarbox%20Web%20Server)
 
-Additionally there are support packages for Desktops:
+Additionally there are several provided support packages for Desktops:
 
 Java Swing Kits:
 * [NanoStarbox Rhino Console](module/swing/NanoStarbox%20Rhino%20Console)
