@@ -10,56 +10,58 @@ import java.util.List;
 
 public class Java {
 
-  public static void initObjects(Context cx, Scriptable global, ArchiveLoader loader){
-    new Java(cx, global, loader);
-  }
-
+  private final ClassPathLoader classPathLoader;
   private Scriptable globalObject;
 
-  public Object getKnownPackages() {
-    List<String> packages = (archiveLoader.getOwnPackages());
-    packages.addAll(archiveLoader.getRuntimePackages());
-    return toArray(packages);
+  private Java(Context cx, Scriptable global, ClassPathLoader loader) {
+    this.globalObject = global;
+    this.classPathLoader = loader;
+    Scripting.addObject(global, "Java", this);
   }
 
-  public boolean havePackage(String name) {return archiveLoader.havePackage(name);}
+  public static void initObjects(Context cx, Scriptable global, ClassPathLoader loader) {
+    new Java(cx, global, loader);
+  }
 
   // TODO: regular rhino loading should be working
   //public Object loadClass(String name) throws ClassNotFoundException {return archiveLoader.get(globalObject, name);}
 
-  public Object getKnownSources() {return toArray(archiveLoader.getOwnSources());}
+  public Object getKnownPackages() {
+    List<String> packages = (classPathLoader.getOwnPackages());
+    packages.addAll(classPathLoader.getRuntimePackages());
+    return toArray(packages);
+  }
+
+  public boolean havePackage(String name) {return classPathLoader.havePackage(name);}
+
+  public Object getKnownSources() {return toArray(classPathLoader.getOwnSources());}
 
   public Object getKnownClasses() {
-    List<String> classes =  (archiveLoader.getOwnClasses());
-    classes.addAll(archiveLoader.getRuntimeClasses());
+    List<String> classes = (classPathLoader.getOwnClasses());
+    classes.addAll(classPathLoader.getRuntimeClasses());
     return toArray(classes);
   }
 
   /**
    * Returns true if the class is known.
+   *
    * @param name
    * @return
    */
-  public boolean haveClass(String name) {return archiveLoader.haveClass(name);}
+  public boolean haveClass(String name) {return classPathLoader.haveClass(name);}
 
-  private final ArchiveLoader archiveLoader;
+  public Object toArray(String... strings) { return Scripting.createJavaScriptArray(globalObject, strings); }
 
-  private Java(Context cx, Scriptable global, ArchiveLoader loader){
-    this.globalObject = global;
-    this.archiveLoader = loader;
-    Scripting.addObject(global, "Java", this);
-  }
-
-  public Object toArray(String... strings){ return Scripting.createJavaScriptArray(globalObject, strings); }
-  public Object toArray(Collection arr){
+  public Object toArray(Collection arr) {
     return Scripting.createJavaScriptArray(globalObject, arr);
   }
-  public Object cast(Class<?> cls, Object value){
+
+  public Object cast(Class<?> cls, Object value) {
     return Context.jsToJava(value, cls);
   }
 
   public void loadClassPath(String path) {
-    if (new File(path).exists()) archiveLoader.addURL(path);
+    if (new File(path).exists()) classPathLoader.addURL(path);
     else throw new RuntimeException(new FileNotFoundException(path));
   }
 
@@ -67,8 +69,8 @@ public class Java {
 //    return toArray(archiveLoader.getRuntime());
 //  }
 
-  public Object getClassPath(){
-    return toArray(archiveLoader.getURIs());
+  public Object getClassPath() {
+    return toArray(classPathLoader.getURIs());
   }
 
 }

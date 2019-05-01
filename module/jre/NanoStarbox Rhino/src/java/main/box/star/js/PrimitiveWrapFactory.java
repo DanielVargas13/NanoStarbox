@@ -4,7 +4,9 @@ package box.star.js;/* -*- Mode: java; tab-width: 8; indent-tabs-mode: nil; c-ba
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.WrapFactory;
 
 /**
  * An example WrapFactory that can be used to avoid wrapping of Java types
@@ -25,14 +27,12 @@ import org.mozilla.javascript.*;
 public class PrimitiveWrapFactory extends WrapFactory {
   @Override
   public Object wrap(Context cx, Scriptable scope, Object obj,
-                     Class<?> staticType)
-  {
+                     Class<?> staticType) {
     if (obj instanceof String || obj instanceof Number ||
-        obj instanceof Boolean)
-    {
+        obj instanceof Boolean) {
       return obj;
     } else if (obj instanceof Character) {
-      char[] a = { ((Character)obj).charValue() };
+      char[] a = {((Character) obj).charValue()};
       return new String(a);
     }
     return super.wrap(cx, scope, obj, staticType);

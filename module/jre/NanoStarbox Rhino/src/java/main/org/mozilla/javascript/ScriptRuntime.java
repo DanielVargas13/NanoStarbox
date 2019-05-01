@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import box.star.js.ArchiveLoader;
+import box.star.js.ClassPathLoader;
 import box.star.js.Java;
 import org.mozilla.javascript.ast.FunctionNode;
 import org.mozilla.javascript.v8dtoa.DoubleConversion;
@@ -273,7 +273,7 @@ public class ScriptRuntime {
         return scope;
     }
 
-    private static ArchiveLoader archiveLoader = null;
+    private static ClassPathLoader classPathLoader = null;
 
     public static ScriptableObject initStandardObjects(Context cx,
                                                        ScriptableObject scope,
@@ -281,13 +281,13 @@ public class ScriptRuntime {
     {
         ScriptableObject s = initSafeStandardObjects(cx, scope, sealed);
 
-        if (archiveLoader == null) try {
-            archiveLoader = new ArchiveLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
+        if (classPathLoader == null) try {
+            classPathLoader = new ClassPathLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
         } catch (MalformedURLException ignored) {}
 
-        cx.setApplicationClassLoader(archiveLoader);
+        cx.setApplicationClassLoader(classPathLoader);
 
-        Java.initObjects(cx, scope, archiveLoader);
+        Java.initObjects(cx, scope, classPathLoader);
 
         new LazilyLoadedCtor(s, "Packages",
                 "org.mozilla.javascript.NativeJavaTopPackage", sealed, true);

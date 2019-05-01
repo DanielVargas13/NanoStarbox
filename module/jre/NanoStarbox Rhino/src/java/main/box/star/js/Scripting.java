@@ -2,28 +2,28 @@ package box.star.js;
 
 import org.mozilla.javascript.*;
 
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class Scripting {
 
-  public static void addObject(Scriptable global, String name, Object value){
+  public static void addObject(Scriptable global, String name, Object value) {
     Context cx = Context.enter();
     ScriptRuntime.setObjectProp(global, name,
         Context.javaToJS(value, global), cx);
     Context.exit();
   }
 
-  public static Object createJavaScriptArray(Scriptable global, String... list){
+  public static Object createJavaScriptArray(Scriptable global, String... list) {
     return createJavaScriptArray(global, new ArrayList<>(Arrays.asList(list)));
   }
 
-  public static Object createJavaScriptArray(Scriptable global, Collection<? extends Object> array){
-      Context cx = Context.getCurrentContext();
-      Scriptable jsArray = cx.newArray(global, array.size());
-      Object[] input = new Object[array.size()];
-      array.toArray(input);
+  public static Object createJavaScriptArray(Scriptable global, Collection<? extends Object> array) {
+    Context cx = Context.getCurrentContext();
+    Scriptable jsArray = cx.newArray(global, array.size());
+    Object[] input = new Object[array.size()];
+    array.toArray(input);
 
     for (int i = 0; i < input.length; i++) {
       ScriptableObject.putProperty(jsArray, i, Context.javaToJS(input[i], global));
@@ -36,7 +36,7 @@ public class Scripting {
   }
 
   private static Object importClass(Scriptable global, Class<? extends Object> cls) {
-    Context cx =  Context.getCurrentContext();
+    Context cx = Context.getCurrentContext();
     WrapFactory wrapFactory = cx.getWrapFactory();
     Object newValue = wrapFactory.wrapJavaClass(cx, global, cls);
     return newValue;

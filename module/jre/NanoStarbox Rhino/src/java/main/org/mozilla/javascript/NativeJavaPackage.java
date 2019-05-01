@@ -6,7 +6,7 @@
 
 package org.mozilla.javascript;
 
-import box.star.js.ArchiveLoader;
+import box.star.js.ClassPathLoader;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -161,7 +161,7 @@ public class NativeJavaPackage extends ScriptableObject
             if (createPkg) {
                 NativeJavaPackage pkg;
                 pkg = new NativeJavaPackage(true, className, classLoader);
-                pkg.virtual = ! ((ArchiveLoader)classLoader).havePackage(className);
+                pkg.virtual = ! ((ClassPathLoader)classLoader).havePackage(className);
                 ScriptRuntime.setObjectProtoAndParent(pkg, getParentScope());
                 newValue = pkg;
             } else {
