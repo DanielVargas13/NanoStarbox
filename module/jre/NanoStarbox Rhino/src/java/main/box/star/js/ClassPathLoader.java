@@ -16,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClassPathLoader extends URLClassLoader {
 
-  ClassLoader cacheLoader;
-
   private Context context = new Context();
 
   public ClassPathLoader(URL[] urls, ClassLoader parent) {
