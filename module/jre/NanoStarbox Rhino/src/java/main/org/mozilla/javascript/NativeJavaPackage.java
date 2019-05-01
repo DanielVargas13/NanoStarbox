@@ -11,9 +11,7 @@ import box.star.js.ArchiveLoader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class reflects Java packages into the JavaScript environment.  We
@@ -32,7 +30,7 @@ public class NativeJavaPackage extends ScriptableObject
 {
     static final long serialVersionUID = 7445054382212031523L;
 
-    protected boolean stub;
+    protected boolean virtual;
     NativeJavaPackage(boolean internalUsage, String packageName,
                       ClassLoader classLoader)
     {
@@ -117,14 +115,15 @@ public class NativeJavaPackage extends ScriptableObject
     {
         Object cached = super.get(name, start);
         if (cached != NOT_FOUND) {
-            if (cached instanceof NativeJavaPackage)
-                if (((NativeJavaPackage)cached).stub && classLoader instanceof ArchiveLoader) {
+            if (cached instanceof NativeJavaPackage && ((NativeJavaPackage)cached).virtual) {
+                if (classLoader instanceof ArchiveLoader) {
                     ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
-                    if (archiveLoader.haveClass(name)){
+                    if (archiveLoader.haveClass(name)) {
                         super.delete(name);
                         return getPkgProperty(name, start, createPkg);
                     }
                 }
+            }
             return cached;
         }
         if (negativeCache != null && negativeCache.contains(name)) {
@@ -154,7 +153,7 @@ public class NativeJavaPackage extends ScriptableObject
             if (createPkg) {
                 NativeJavaPackage pkg;
                 pkg = new NativeJavaPackage(true, className, classLoader);
-                pkg.stub = ! ((ArchiveLoader)classLoader).havePackage(className);
+                pkg.virtual = ! ((ArchiveLoader)classLoader).havePackage(className);
                 ScriptRuntime.setObjectProtoAndParent(pkg, getParentScope());
                 newValue = pkg;
             } else {
