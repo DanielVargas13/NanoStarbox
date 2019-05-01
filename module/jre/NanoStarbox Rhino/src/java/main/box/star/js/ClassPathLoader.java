@@ -27,7 +27,7 @@ public class ClassPathLoader extends URLClassLoader {
     this(urls, ClassPathLoader.class.getClassLoader());
   }
 
-  private ClassPathLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
+  public ClassPathLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
     super(urls, parent, factory);
     loadRuntimePackages();
   }
