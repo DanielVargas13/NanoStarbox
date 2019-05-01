@@ -1,4 +1,4 @@
-package box.star.etc;
+package box.star.content;
 
 import java.io.RandomAccessFile;
 

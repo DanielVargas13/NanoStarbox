@@ -1,4 +1,4 @@
-package box.star.system.java;
+package box.star.java;
 
 import java.io.FileDescriptor;
 import java.net.InetAddress;

@@ -1,6 +1,6 @@
 package box.star.net.tools;
 
-import box.star.util.Template;
+import box.star.Template;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;

@@ -8,8 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import box.star.Kit;
-import box.star.etc.ParsedContentType;
+import box.star.Tools;
+import box.star.content.ParsedContentType;
 
 /**
  * @author Attila Szegedi
@@ -67,7 +67,7 @@ public class SourceReader
                 capacityHint = 4096;
             }
 
-            data = Kit.readStream(is, capacityHint);
+            data = Tools.readStream(is, capacityHint);
         } finally {
             if(is != null) {
                 is.close();

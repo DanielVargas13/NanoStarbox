@@ -1,4 +1,4 @@
-package box.star.util;
+package box.star;
 
 import box.star.io.Streams;
 

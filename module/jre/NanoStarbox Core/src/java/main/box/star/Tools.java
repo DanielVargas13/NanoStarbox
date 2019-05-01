@@ -16,7 +16,7 @@ import java.util.Map;
  * Collection of utilities
  */
 
-public class Kit
+public class Tools
 {
     /**
      * Reflection of Throwable.initCause(Throwable) from JDK 1.4
@@ -27,7 +27,7 @@ public class Kit
     static {
         // Are we running on a JDK 1.4 or later system?
         try {
-            Class<?> ThrowableClass = Kit.classOrNull("java.lang.Throwable");
+            Class<?> ThrowableClass = Tools.classOrNull("java.lang.Throwable");
             Class<?>[] signature = { ThrowableClass };
             Throwable_initCause
                 = ThrowableClass.getMethod("initCause", signature);

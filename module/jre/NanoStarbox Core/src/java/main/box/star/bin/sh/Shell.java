@@ -3,7 +3,7 @@ package box.star.bin.sh;
 import box.star.bin.sh.promise.FactoryFunction;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
-import box.star.system.OS;
+import box.star.OS;
 
 import java.io.*;
 import java.util.*;

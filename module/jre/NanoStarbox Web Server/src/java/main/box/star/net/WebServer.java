@@ -4,13 +4,13 @@ import box.star.Command;
 import box.star.chron.ITimerMethod;
 import box.star.chron.Timer;
 import box.star.contract.NotNull;
-import box.star.etc.MimeTypeMap;
-import box.star.etc.MimeTypeReader;
+import box.star.content.MimeTypeMap;
+import box.star.content.MimeTypeReader;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
-import box.star.util.Template;
+import box.star.Template;
 
 import java.io.*;
 import java.util.Date;

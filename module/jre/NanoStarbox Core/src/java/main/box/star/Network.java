@@ -1,4 +1,4 @@
-package box.star.system;
+package box.star;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
