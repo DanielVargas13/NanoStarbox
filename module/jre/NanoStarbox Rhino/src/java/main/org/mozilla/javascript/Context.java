@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import box.star.js.android.Android;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.ScriptNode;
 import org.mozilla.javascript.debug.DebuggableScript;
@@ -410,6 +411,7 @@ public class Context
      */
     public static Context enter()
     {
+        if (Android.isNotLoaded() && Android.isPlatform())return Android.init();
         return enter(null);
     }
 

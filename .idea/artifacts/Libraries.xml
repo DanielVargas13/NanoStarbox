@@ -26,6 +26,7 @@
       <element id="archive" name="nano-starbox-rhino-android-support.jar">
         <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/rhino-android-1.5.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>

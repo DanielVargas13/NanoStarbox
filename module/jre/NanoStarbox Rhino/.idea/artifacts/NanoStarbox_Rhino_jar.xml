@@ -7,6 +7,7 @@
         <element id="file-copy" path="$PROJECT_DIR$/src/java/resource/main/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="NanoStarbox Core" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../dalvik/rhino-android-1.5.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../dalvik/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../dalvik/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
     </root>

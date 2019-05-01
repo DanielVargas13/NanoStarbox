@@ -1,13 +1,20 @@
 package box.star.js.android;
 
+import org.mozilla.javascript.Context;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 public class Android {
 
   private static boolean tryDalvik = true;
   private static Class dalvikClassLoader;
   private static Constructor<ClassLoader> dalvikConstructor;
+
+  public static boolean isNotLoaded(){
+    return dalvikConstructor == null;
+  }
 
   public static boolean isPlatform(){
     if (tryDalvik) {
@@ -24,16 +31,14 @@ public class Android {
     return  dalvikConstructor != null;
   }
 
-  public static ClassLoader getDalvikClassLoader(String path, ClassLoader parent) throws ClassNotFoundException {
-    if (isPlatform()){
-      try { return dalvikConstructor.newInstance(path, parent); }
-      catch (Exception e) { throw new RuntimeException(e); }
-    }
-    throw new ClassNotFoundException("dalvik.system.PathClassLoader");
-  }
-
-  public static File getApplicationCacheDirectory(){
-    return new File(System.getProperty("java.io.tmpdir"));
+  public static Context init() {
+    try {
+      Class rhinoHelper = Class.forName("com.faendir.rhino_android.RhinoAndroidHelper");
+      Constructor<?>  constructor = rhinoHelper.getConstructor();
+      Object rh = constructor.newInstance();
+      Method m = rhinoHelper.getDeclaredMethod("enterContext");
+      return (Context) m.invoke(rh);
+    } catch (Exception e) {throw new RuntimeException(e);}
   }
 
 }
