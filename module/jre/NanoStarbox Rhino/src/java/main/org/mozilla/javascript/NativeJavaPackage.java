@@ -32,6 +32,7 @@ public class NativeJavaPackage extends ScriptableObject
 {
     static final long serialVersionUID = 7445054382212031523L;
 
+    protected boolean stub;
     NativeJavaPackage(boolean internalUsage, String packageName,
                       ClassLoader classLoader)
     {
@@ -116,7 +117,7 @@ public class NativeJavaPackage extends ScriptableObject
     {
         Object cached = super.get(name, start);
         if (cached != NOT_FOUND) {
-            if (cached instanceof NativeJavaPackage && classLoader instanceof ArchiveLoader) {
+            if (((NativeJavaPackage)cached).stub && classLoader instanceof ArchiveLoader) {
                 ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
                 if (archiveLoader.haveClass(name)){
                     super.delete(name);
@@ -152,6 +153,7 @@ public class NativeJavaPackage extends ScriptableObject
             if (createPkg) {
                 NativeJavaPackage pkg;
                 pkg = new NativeJavaPackage(true, className, classLoader);
+                pkg.stub = ! ((ArchiveLoader)classLoader).havePackage(className);
                 ScriptRuntime.setObjectProtoAndParent(pkg, getParentScope());
                 newValue = pkg;
             } else {

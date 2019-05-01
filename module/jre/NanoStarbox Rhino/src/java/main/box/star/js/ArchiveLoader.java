@@ -54,8 +54,17 @@ public class ArchiveLoader extends URLClassLoader {
   // classes: file
   private ConcurrentHashMap<String, String> knownClasses = new ConcurrentHashMap<>();
 
+  private void loadRuntimePackages(){
+    runtimePackages = new ArrayList<>();
+    for (Package p: getRuntime()){
+      runtimePackages.add(p.getName());
+    }
+  }
+
+  private List<String> runtimePackages;
   private ArchiveLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
+    loadRuntimePackages();
   }
 
   public ArchiveLoader(URL[] urls) {
@@ -64,6 +73,7 @@ public class ArchiveLoader extends URLClassLoader {
 
   private ArchiveLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
     super(urls, parent, factory);
+    loadRuntimePackages();
   }
 
   private void addArchiveEntries(ArchiveEntries entries){
@@ -135,14 +145,14 @@ public class ArchiveLoader extends URLClassLoader {
   }
 
   public boolean havePackage(String name) {
-    return knownPackages.containsKey(name);
+    return knownPackages.containsKey(name) || runtimePackages.contains(name);
   }
 
   public boolean haveClass(String name){
     return knownClasses.containsKey(name);
   }
 
-  public List<Package> getRuntime(){
+  private List<Package> getRuntime(){
     return new ArrayList<>(Arrays.asList(this.getPackages()));
   }
 
