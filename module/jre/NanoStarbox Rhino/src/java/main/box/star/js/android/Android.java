@@ -22,11 +22,8 @@ public class Android {
         dalvikClassLoader = Class.forName("dalvik.system.PathClassLoader");
         dalvikConstructor = dalvikClassLoader.getConstructor(String.class, ClassLoader.class);
       }
-      catch (Exception e) {
-        e.printStackTrace();
-      } finally {
-        tryDalvik = false;
-      }
+      catch (Exception ignored) {}
+      finally { tryDalvik = false; }
     }
     return  dalvikConstructor != null;
   }
