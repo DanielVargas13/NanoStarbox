@@ -6,6 +6,8 @@
 
 package org.mozilla.javascript;
 
+import box.star.js.ArchiveLoader;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashSet;
@@ -114,6 +116,13 @@ public class NativeJavaPackage extends ScriptableObject
     {
         Object cached = super.get(name, start);
         if (cached != NOT_FOUND) {
+            if (cached instanceof NativeJavaPackage && classLoader instanceof ArchiveLoader) {
+                ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
+                if (archiveLoader.haveClass(name)){
+                    super.delete(name);
+                    return getPkgProperty(name, start, createPkg);
+                }
+            }
             return cached;
         }
         if (negativeCache != null && negativeCache.contains(name)) {

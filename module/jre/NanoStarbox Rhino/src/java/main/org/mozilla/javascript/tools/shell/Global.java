@@ -79,6 +79,7 @@ public class Global extends ImporterTopLevel
                 public Object run(Context cx)
                 {
                     init(cx);
+                    factory.initApplicationClassLoader(cx.getApplicationClassLoader());
                     return null;
                 }
             });

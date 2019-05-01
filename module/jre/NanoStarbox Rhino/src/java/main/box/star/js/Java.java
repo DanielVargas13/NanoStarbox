@@ -1,45 +1,61 @@
 package box.star.js;
 
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class Java {
 
-  public static void addObject(Scriptable global, String name, Object value){
-    Context cx = Context.enter();
-    ScriptRuntime.setObjectProp(global, name,
-        Context.javaToJS(value, global), cx);
-    Context.exit();
+  public static void initObjects(Context cx, Scriptable global, ArchiveLoader loader){
+    new Java(cx, global, loader);
   }
 
-  private static Object createJavaScriptArray(Scriptable global, String... list){
-    return createJavaScriptArray(global, new ArrayList<>(Arrays.asList(list)));
+  private Scriptable globalObject;
+
+  public Object getKnownPackages() {return toArray(archiveLoader.getKnownPackages());}
+
+  public boolean havePackage(String name) {return archiveLoader.havePackage(name);}
+
+  public Object loadClass(String name) throws ClassNotFoundException {return archiveLoader.get(globalObject, name);}
+
+  public Object getKnownSources() {return toArray(archiveLoader.getKnownSources());}
+
+  public Object getKnownClasses() {return toArray(archiveLoader.getKnownClasses());}
+
+  public boolean haveClass(String name) {return archiveLoader.haveClass(name);}
+
+  private final ArchiveLoader archiveLoader;
+
+  private Java(Context cx, Scriptable global, ArchiveLoader loader){
+    this.globalObject = global;
+    this.archiveLoader = loader;
+    Scripting.addObject(global, "Java", this);
   }
 
-  public static Object createJavaScriptArray(Scriptable global, Collection<? extends Object> array){
-      Context cx = Context.getCurrentContext();
-      Scriptable jsArray = cx.newArray(global, array.size());
-      Object[] input = new Object[array.size()];
-      array.toArray(input);
-
-    for (int i = 0; i < input.length; i++) {
-      ScriptableObject.putProperty(jsArray, i, Context.javaToJS(input[i], global));
-    }
-    return jsArray;
+  public Object toArray(String... strings){ return Scripting.createJavaScriptArray(globalObject, strings); }
+  public Object toArray(Collection arr){
+    return Scripting.createJavaScriptArray(globalObject, arr);
+  }
+  public Object cast(Class<?> cls, Object value){
+    return Context.jsToJava(value, cls);
   }
 
-  private static Object importClass(Scriptable global, String path) throws ClassNotFoundException {
-    return importClass(global, Class.forName(path));
+  public void loadClassPath(String path) {
+    if (new File(path).exists()) archiveLoader.addURL(path);
+    else throw new RuntimeException(new FileNotFoundException(path));
   }
 
-  private static Object importClass(Scriptable global, Class<? extends Object> cls) {
-    Context cx =  Context.getCurrentContext();
-    WrapFactory wrapFactory = cx.getWrapFactory();
-    Object newValue = wrapFactory.wrapJavaClass(cx, global, cls);
-    return newValue;
+//  public Object getRuntime(){
+//    return toArray(archiveLoader.getRuntime());
+//  }
+
+  public Object getClassPath(){
+    return toArray(archiveLoader.getURIs());
   }
 
 }

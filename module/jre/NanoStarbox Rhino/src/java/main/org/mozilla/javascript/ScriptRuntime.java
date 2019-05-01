@@ -6,12 +6,17 @@
 
 package org.mozilla.javascript;
 
+import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import box.star.js.ArchiveLoader;
+import box.star.js.Java;
 import org.mozilla.javascript.ast.FunctionNode;
 import org.mozilla.javascript.v8dtoa.DoubleConversion;
 import org.mozilla.javascript.v8dtoa.FastDtoa;
@@ -268,11 +273,21 @@ public class ScriptRuntime {
         return scope;
     }
 
+    private static ArchiveLoader archiveLoader = null;
+
     public static ScriptableObject initStandardObjects(Context cx,
                                                        ScriptableObject scope,
                                                        boolean sealed)
     {
         ScriptableObject s = initSafeStandardObjects(cx, scope, sealed);
+
+        if (archiveLoader == null) try {
+            archiveLoader = new ArchiveLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
+        } catch (MalformedURLException ignored) {}
+
+        cx.setApplicationClassLoader(archiveLoader);
+
+        Java.initObjects(cx, scope, archiveLoader);
 
         new LazilyLoadedCtor(s, "Packages",
                 "org.mozilla.javascript.NativeJavaTopPackage", sealed, true);

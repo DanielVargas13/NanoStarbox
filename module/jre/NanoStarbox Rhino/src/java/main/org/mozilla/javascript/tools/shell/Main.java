@@ -14,10 +14,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import box.star.Parameter;
-import box.star.js.ArchiveLoader;
-import box.star.js.Scripting;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
 import org.mozilla.javascript.Function;
@@ -161,15 +157,7 @@ public class Main
             fileList.add(null);
         }
         if (!global.initialized) {
-            ArchiveLoader jcl = null;
-            try {
-                shellContextFactory.initApplicationClassLoader(jcl = new ArchiveLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()}));
-            }
-            catch (MalformedURLException ignored) {}
             global.init(shellContextFactory);
-
-            Scripting.initObjects(Context.enter(), global, jcl);
-            Context.exit();
         }
         IProxy iproxy = new IProxy(IProxy.PROCESS_FILES);
         iproxy.args = args;
