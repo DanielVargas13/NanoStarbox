@@ -1,10 +1,10 @@
 package box.star.js;
 
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.WrapFactory;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -17,51 +17,40 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ArchiveLoader extends URLClassLoader {
 
-  public interface EventPort {
-    void onNewDirectory(File uri);
-    void onNewArchive(String uri);
-    void onNewPackage(String uri, String packageName);
-    void onNewClass(String uri, String packageName, String className);
+  public static class Context implements Serializable {
+
+    private static final long serialVersionUID = -6175607046241228282L;
+
+    public List<String> runtimePackages;
+    public List<String> runtimeClasses = new ArrayList<>();
+
+    // file: entries
+    public ConcurrentHashMap<String, ArchiveEntries> archiveEntries = new ConcurrentHashMap<>();
+
+    // package: classes
+    public ConcurrentHashMap<String, String[]> ownPackages = new ConcurrentHashMap<>();
+
+    // classes: file
+    public ConcurrentHashMap<String, String> ownClasses = new ConcurrentHashMap<>();
+
   }
 
-  EventPort eventPort = new EventPort() {
-
-    @Override
-    public void onNewDirectory(File uri) {}
-
-    @Override
-    public void onNewArchive(String uri) {
-    }
-
-    @Override
-    public void onNewPackage(String uri, String packageName) {}
-
-    @Override
-    public void onNewClass(String uri, String packageName, String className) {
-      System.err.println(uri+"?&class="+className);
-    }
-
-  };
-
-//  private ConcurrentHashMap<String, Object> loadedClasses = new ConcurrentHashMap<>();
-
-  // file: entries
-  private ConcurrentHashMap<String, ArchiveEntries> archiveEntries = new ConcurrentHashMap<>();
-
-  // package: classes
-  private ConcurrentHashMap<String, String[]> knownPackages = new ConcurrentHashMap<>();
-
-  // classes: file
-  private ConcurrentHashMap<String, String> knownClasses = new ConcurrentHashMap<>();
+  private Context context = new Context();
 
   private void loadRuntimePackages(){
-    runtimePackages = new ArrayList<>();
-    for (Package p: getRuntime()){
-      runtimePackages.add(p.getName());
-    }
+    context.runtimePackages = new ArrayList<>();
+    for (Package p: getRuntime()) context.runtimePackages.add(p.getName());
   }
 
-  private List<String> runtimePackages;
+  @Override
+  protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    Class v = super.loadClass(name, resolve);
+    if (v != null && ! context.runtimeClasses.contains(name)){
+      context.runtimeClasses.add(name);
+    }
+    return v;
+  }
+
   private ArchiveLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
     loadRuntimePackages();
@@ -71,18 +60,25 @@ public class ArchiveLoader extends URLClassLoader {
     this(urls, ArchiveLoader.class.getClassLoader());
   }
 
+  public List<String> getRuntimeClasses() {
+    return context.runtimeClasses;
+  }
+
+  public List<String> getRuntimePackages() {
+    return context.runtimePackages;
+  }
+
   private ArchiveLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
     super(urls, parent, factory);
     loadRuntimePackages();
   }
 
   private void addArchiveEntries(ArchiveEntries entries){
-    archiveEntries.put(entries.getSource(), entries);
+    context.archiveEntries.put(entries.getSource(), entries);
   }
 
   private void processDirectory(File directory)  {
     if ("META-INF".equals(directory.getName())) return;
-    //eventPort.onNewDirectory(directory);
     for (File file: Objects.requireNonNull(directory.listFiles())){
       if (file.isDirectory()) processDirectory(file);
       else {
@@ -99,18 +95,15 @@ public class ArchiveLoader extends URLClassLoader {
   private void processFile(URL url) {
     String pkgPath = url.getPath();
     super.addURL(url);
-    ArchiveEntries record = archiveEntries.get(pkgPath);
+    ArchiveEntries record = context.archiveEntries.get(pkgPath);
     if (record == null){
-      //eventPort.onNewArchive(pkgPath);
       record = new ArchiveEntries(url);
       addArchiveEntries(record);
       for (String pkgRoot:record.roots.keySet()){
         String[]pkgClasses = record.roots.get(pkgRoot);
-        knownPackages.put(pkgRoot, pkgClasses);
-        //eventPort.onNewPackage(pkgPath, pkgRoot);
+        context.ownPackages.put(pkgRoot, pkgClasses);
         for(String pkgClass:pkgClasses) {
-          knownClasses.put(pkgClass, pkgPath);
-          //eventPort.onNewClass(pkgPath, pkgRoot, pkgClass);
+          context.ownClasses.put(pkgClass, pkgPath);
         }
       }
     }
@@ -132,24 +125,30 @@ public class ArchiveLoader extends URLClassLoader {
     else processFile(url);
   }
 
-  public List<String> getKnownPackages(){
-    return new ArrayList<>(knownPackages.keySet());
+  public List<String> getOwnPackages(){
+    return new ArrayList<>(context.ownPackages.keySet());
   }
 
-  public List<String> getKnownSources(){
-    return new ArrayList<>(archiveEntries.keySet());
+  public List<String> getOwnSources(){
+    return new ArrayList<>(context.archiveEntries.keySet());
   }
 
-  public List<String>getKnownClasses(){
-    return new ArrayList<>(knownClasses.keySet());
+  public List<String> getOwnClasses(){
+    return new ArrayList<>(context.ownClasses.keySet());
   }
 
   public boolean havePackage(String name) {
-    return knownPackages.containsKey(name) || runtimePackages.contains(name);
+    return context.ownPackages.containsKey(name) || context.runtimePackages.contains(name);
   }
 
   public boolean haveClass(String name){
-    return knownClasses.containsKey(name);
+    if (context.ownClasses.containsKey(name) || context.runtimeClasses.contains(name)) return true;
+    Class c = findLoadedClass(name);
+    if (c != null) {
+      context.runtimeClasses.add(name);
+      return true;
+    }
+    return false;
   }
 
   private List<Package> getRuntime(){
@@ -164,7 +163,7 @@ public class ArchiveLoader extends URLClassLoader {
   }
 
   public Object get(Scriptable global, String name) throws ClassNotFoundException {
-    Context cx =  Context.getCurrentContext();
+    org.mozilla.javascript.Context cx =  org.mozilla.javascript.Context.getCurrentContext();
       WrapFactory wrapFactory = cx.getWrapFactory();
       Object newValue = wrapFactory.wrapJavaClass(cx, global, loadClass(name));
       return newValue;

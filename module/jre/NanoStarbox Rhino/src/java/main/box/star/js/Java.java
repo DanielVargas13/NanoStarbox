@@ -5,9 +5,8 @@ import org.mozilla.javascript.Scriptable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class Java {
 
@@ -17,16 +16,30 @@ public class Java {
 
   private Scriptable globalObject;
 
-  public Object getKnownPackages() {return toArray(archiveLoader.getKnownPackages());}
+  public Object getKnownPackages() {
+    List<String> packages = (archiveLoader.getOwnPackages());
+    packages.addAll(archiveLoader.getRuntimePackages());
+    return toArray(packages);
+  }
 
   public boolean havePackage(String name) {return archiveLoader.havePackage(name);}
 
-  public Object loadClass(String name) throws ClassNotFoundException {return archiveLoader.get(globalObject, name);}
+  // TODO: regular rhino loading should be working
+  //public Object loadClass(String name) throws ClassNotFoundException {return archiveLoader.get(globalObject, name);}
 
-  public Object getKnownSources() {return toArray(archiveLoader.getKnownSources());}
+  public Object getKnownSources() {return toArray(archiveLoader.getOwnSources());}
 
-  public Object getKnownClasses() {return toArray(archiveLoader.getKnownClasses());}
+  public Object getKnownClasses() {
+    List<String> classes =  (archiveLoader.getOwnClasses());
+    classes.addAll(archiveLoader.getRuntimeClasses());
+    return toArray(classes);
+  }
 
+  /**
+   * Returns true if the class is known.
+   * @param name
+   * @return
+   */
   public boolean haveClass(String name) {return archiveLoader.haveClass(name);}
 
   private final ArchiveLoader archiveLoader;
