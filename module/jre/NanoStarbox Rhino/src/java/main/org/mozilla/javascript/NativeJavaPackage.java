@@ -116,13 +116,18 @@ public class NativeJavaPackage extends ScriptableObject
         Object cached = super.get(name, start);
         if (cached != NOT_FOUND) {
             if (cached instanceof NativeJavaPackage && ((NativeJavaPackage)cached).virtual) {
-                if (classLoader instanceof ArchiveLoader) {
-                    ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
-                    if (archiveLoader.haveClass(name)) {
-                        super.delete(name);
-                        return getPkgProperty(name, start, createPkg);
-                    }
-                } else { // TRY AGAIN FOR STANDARD STANDARD CLASS LOADERS
+
+               /*
+                    if (classLoader instanceof ArchiveLoader) {
+                        ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
+                        if (archiveLoader.haveClass(name)) {
+                            super.delete(name);
+                            return getPkgProperty(name, start, createPkg);
+                        }
+                    } else
+                */
+
+                { // TRY AGAIN FOR STANDARD STANDARD CLASS LOADERS
                     super.delete(name);
                     return getPkgProperty(name, start, createPkg);
                 }
