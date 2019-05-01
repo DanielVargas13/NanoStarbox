@@ -346,7 +346,7 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public String getLineSeparator() {
     if (haveVariable(LINE_SEPARATOR)) return get(LINE_SEPARATOR);
-    return OS.getConfiguration().getLineSeparator();
+    return OS.getLineSeparator();
   }
 
   @Override

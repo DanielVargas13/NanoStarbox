@@ -1,5 +1,6 @@
 package box.star;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.File;
 import java.util.Locale;
 
@@ -14,15 +15,18 @@ import java.util.Locale;
  */
 public final class OS {
 
-  private static OS instance;
-
+  private OS() throws OperationNotSupportedException {throw new OperationNotSupportedException();}
+  
   private static Kind thisKind;
+  
   private static String
-      lineSeparator,
-      pathSeparator, fileSeparator,
-      userName, userHome;
+      lineSeparator = System.getProperty("line.separator"),
+      pathSeparator = File.pathSeparator,
+      fileSeparator = File.separator,
+      userName,
+      userHome;
 
-  private OS(){
+  static {
 
     String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 
@@ -36,32 +40,17 @@ public final class OS {
       thisKind = Kind.Other;
     }
 
-    lineSeparator = System.getProperty("line.separator");
-    pathSeparator = File.pathSeparator;
-    fileSeparator = File.separator;
-
   }
+  
 
-  public static boolean isWindows() {
-    return getConfiguration().getOperatingSystemKind().equals(Kind.Windows);
-  }
+  public static boolean isWindows() { return thisKind.equals(Kind.Windows); }
 
-  public static boolean isLinux() {
-    return getConfiguration().getOperatingSystemKind().equals(Kind.Linux);
-  }
+  public static boolean isLinux() { return thisKind.equals(Kind.Linux); }
 
-  public static boolean isMacOS() {
-    return getConfiguration().getOperatingSystemKind().equals(Kind.MacOS);
-  }
+  public static boolean isMacOS() { return thisKind.equals(Kind.MacOS); }
 
-  public static boolean isOtherOperatingSystem() {
-    return getConfiguration().getOperatingSystemKind().equals(Kind.Other);
-  }
+  public static boolean isOtherOperatingSystem() { return thisKind.equals(Kind.Other); }
 
-  public static OS getConfiguration(){
-    if (instance == null) instance = new OS();
-    return instance;
-  }
 
   /**
    * detect the operating system from the os.name System property and cache
@@ -69,15 +58,15 @@ public final class OS {
    *
    * @returns - the operating system detected
    */
-  public Kind getOperatingSystemKind() {
+  public static Kind getOperatingSystemKind() {
     return thisKind;
   }
 
-  public String getLineSeparator(){
+  public static String getLineSeparator(){
     return lineSeparator;
   }
 
-  public String getPathSeparator(){
+  public static String getPathSeparator(){
     return pathSeparator;
   }
 
@@ -96,7 +85,9 @@ public final class OS {
   /**
    * types of Operating Systems
    */
-  public enum Kind {
-    Windows, MacOS, Linux, Other
-  }
+
+}
+
+enum Kind {
+  Windows, MacOS, Linux, Other
 }
