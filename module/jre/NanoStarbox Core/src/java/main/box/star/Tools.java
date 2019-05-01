@@ -6,18 +6,43 @@
 
 package box.star;
 
+import box.star.contract.NotNull;
+import box.star.contract.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Collection of utilities
  */
 
-public class Tools
-{
+public class Tools {
+
+
+    @NotNull public static <T> T makeNotNull(@Nullable T test, @NotNull T notNull){
+        return ((test == null)? notNull : test);
+    }
+
+    @NotNull public static List<String> toStringList(Object... items){
+        List<String> out = new ArrayList<>();
+        for (Object o:items)
+            if (o instanceof String) out.add((String) o);
+            else out.add(o.toString());
+        return out;
+    }
+
+    @NotNull public static <T> List<T> toList(@NotNull T[] items){
+        return toList(Arrays.asList(items));
+    }
+
+    @NotNull public static <T> List<T> toList(@NotNull Collection<T> collection){
+        return new ArrayList<>(collection);
+    }
+
     /**
      * Reflection of Throwable.initCause(Throwable) from JDK 1.4
      * or nul if it is not available.
