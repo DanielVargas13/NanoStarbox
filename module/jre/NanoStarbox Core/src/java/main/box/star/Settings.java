@@ -1,11 +1,7 @@
-package box.star.content;
-
-import box.star.Tools;
-import box.star.json.JSONObject;
+package box.star;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Settings implements Serializable {
@@ -14,9 +10,7 @@ public class Settings implements Serializable {
 
   private ConcurrentHashMap<Enum, Serializable> map;
 
-  private void init(){
-    map = new ConcurrentHashMap<>();
-  }
+  private void init(){ map = new ConcurrentHashMap<>(); }
 
   {
     init();

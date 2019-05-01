@@ -1,5 +1,6 @@
 package box.star.content;
 
+import box.star.Settings;
 import org.junit.jupiter.api.Test;
 
 import static box.star.content.SettingsTest.Configuration.*;
