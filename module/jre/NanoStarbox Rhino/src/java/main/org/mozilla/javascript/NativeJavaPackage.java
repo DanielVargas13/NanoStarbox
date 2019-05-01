@@ -117,13 +117,14 @@ public class NativeJavaPackage extends ScriptableObject
     {
         Object cached = super.get(name, start);
         if (cached != NOT_FOUND) {
-            if (((NativeJavaPackage)cached).stub && classLoader instanceof ArchiveLoader) {
-                ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
-                if (archiveLoader.haveClass(name)){
-                    super.delete(name);
-                    return getPkgProperty(name, start, createPkg);
+            if (cached instanceof NativeJavaPackage)
+                if (((NativeJavaPackage)cached).stub && classLoader instanceof ArchiveLoader) {
+                    ArchiveLoader archiveLoader = (ArchiveLoader) classLoader;
+                    if (archiveLoader.haveClass(name)){
+                        super.delete(name);
+                        return getPkgProperty(name, start, createPkg);
+                    }
                 }
-            }
             return cached;
         }
         if (negativeCache != null && negativeCache.contains(name)) {
