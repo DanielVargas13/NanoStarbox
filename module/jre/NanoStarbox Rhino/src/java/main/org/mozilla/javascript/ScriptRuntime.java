@@ -281,12 +281,14 @@ public class ScriptRuntime {
     {
         ScriptableObject s = initSafeStandardObjects(cx, scope, sealed);
 
-        if (classPathLoader == null) try {
-            classPathLoader = new ClassPathLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
-        } catch (MalformedURLException ignored) {}
+        URL[] urls = new URL[]{ClassPathLoader.toURL(System.getProperty("user.dir"))};
+
+        ClassLoader classLoader = cx.getApplicationClassLoader();
+
+        if (classLoader == null) classPathLoader = new ClassPathLoader(urls);
+        if (classPathLoader == null) classPathLoader = new ClassPathLoader(urls, classLoader);
 
         cx.setApplicationClassLoader(classPathLoader);
-
         Java.initObjects(cx, scope, classPathLoader);
 
         new LazilyLoadedCtor(s, "Packages",

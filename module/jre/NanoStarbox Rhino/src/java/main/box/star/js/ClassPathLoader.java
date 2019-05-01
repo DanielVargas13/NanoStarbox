@@ -1,5 +1,7 @@
 package box.star.js;
 
+import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.WrapFactory;
 
@@ -14,9 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClassPathLoader extends URLClassLoader {
 
+  ClassLoader cacheLoader;
+
   private Context context = new Context();
 
-  private ClassPathLoader(URL[] urls, ClassLoader parent) {
+  public ClassPathLoader(URL[] urls, ClassLoader parent) {
     super(urls, parent);
     loadRuntimePackages();
   }
@@ -37,11 +41,17 @@ public class ClassPathLoader extends URLClassLoader {
 
   @Override
   protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-    Class v = super.loadClass(name, resolve);
+
+    Class v;
+
+    v = super.loadClass(name, resolve);
+
     if (v != null && !context.runtimeClasses.contains(name)) {
       context.runtimeClasses.add(name);
     }
+
     return v;
+
   }
 
   public List<String> getRuntimeClasses() {
@@ -56,7 +66,18 @@ public class ClassPathLoader extends URLClassLoader {
     context.tableEntries.put(entries.getSource(), entries);
   }
 
-  private URL toURL(URI uri){
+  @Nullable
+  public static URL toURL(@NotNull String uri){
+    return toURL(new File(uri));
+  }
+
+  @Nullable
+  public static URL toURL(@NotNull File file){
+    return toURL(file.toURI());
+  }
+
+  @Nullable
+  public static URL toURL(URI uri){
     try{
       return uri.toURL();
     }
