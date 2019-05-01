@@ -122,6 +122,9 @@ public class NativeJavaPackage extends ScriptableObject
                         super.delete(name);
                         return getPkgProperty(name, start, createPkg);
                     }
+                } else { // TRY AGAIN FOR STANDARD STANDARD CLASS LOADERS
+                    super.delete(name);
+                    return getPkgProperty(name, start, createPkg);
                 }
             }
             return cached;
