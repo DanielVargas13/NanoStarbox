@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Simple XML 2.7.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/module/jre/Simple XML/simple-xml-2.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/module/jre/Simple XML/simple-xml-javadoc-2.7.1.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/module/jre/Simple XML/simple-xml-source-2.7.1.jar!/src" />
+    </SOURCES>
+  </library>
+</component>

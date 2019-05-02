@@ -1,2 +1,3 @@
 Manifest-Version: 1.0
+Class-Path: nano-starbox-jna.jar nano-starbox-simple-xml.jar
 
