@@ -20,6 +20,7 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
   }
 
   private String name;
+
   public Configuration(String name){this.name = name;}
 
   public String toString(){return this.name;}
