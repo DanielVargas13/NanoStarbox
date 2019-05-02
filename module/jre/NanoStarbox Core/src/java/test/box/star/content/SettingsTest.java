@@ -1,6 +1,6 @@
 package box.star.content;
 
-import box.star.Settings;
+import box.star.state.Settings;
 import org.junit.jupiter.api.Test;
 
 import static box.star.content.SettingsTest.Configuration.*;
@@ -12,7 +12,7 @@ class SettingsTest {
     HOST_NAME, HOST_IP, HOST_PORT
   }
 
-  Settings appSettings = new Settings();
+  Settings appSettings = new Settings(SettingsTest.class.getSimpleName());
 
   @Test void main(){
     appSettings.set(HOST_NAME, "localhost");

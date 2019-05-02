@@ -26,14 +26,14 @@ public class WebServer extends HTTPServer {
 
     Stack<String> staticIndexFiles;
 
-    configuration.put("mimeTypeMap", new MimeTypeMap());
-    configuration.put("staticIndexFiles", staticIndexFiles = new Stack<>());
-    configuration.put("mimeTypeReaders", new Stack<>());
-    configuration.put("templateCache", new Hashtable<>());
-    configuration.put("mimeTypeDriverTable", new Hashtable<>());
-    configuration.put("templateFillerTable", new Hashtable<>());
+    configuration.set("mimeTypeMap", new MimeTypeMap());
+    configuration.set("staticIndexFiles", staticIndexFiles = new Stack<>());
+    configuration.set("mimeTypeReaders", new Stack<>());
+    configuration.set("templateCache", new Hashtable<>());
+    configuration.set("mimeTypeDriverTable", new Hashtable<>());
+    configuration.set("templateFillerTable", new Hashtable<>());
 
-    configuration.put("documentRoot", new File("."));
+    configuration.set("documentRoot", new File("."));
 
     // this field is public...
     staticIndexFiles.add("index.html");
@@ -148,8 +148,8 @@ public class WebServer extends HTTPServer {
   }
 
   public void start(String hostname, int port) throws IOException {
-    configuration.put(HOST_KEY, hostname);
-    configuration.put(PORT_KEY, port);
+    configuration.set(HOST_KEY, hostname);
+    configuration.set(PORT_KEY, port);
     start();
   }
 
@@ -164,7 +164,7 @@ public class WebServer extends HTTPServer {
   public void setDocumentRoot(File documentRoot) {
     if (this.wasStarted())
       throw new IllegalStateException("cannot change the web-server-document-root after starting the service");
-    configuration.put("documentRoot", documentRoot);
+    configuration.set("documentRoot", documentRoot);
   }
 
   public boolean blacklistRequest(String uri, File file, String mimeType, IHTTPSession session) {

@@ -1,10 +1,13 @@
-package box.star;
+package box.star.state;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Settings implements Serializable {
+public class Settings extends Configuration<Enum, Serializable> implements Serializable {
 
   private static final long serialVersionUID = -1068114640999220388L;
 
@@ -16,13 +19,20 @@ public class Settings implements Serializable {
     init();
   }
 
-  public Settings(){}
+  private String name;
+  public Settings(String name){super(name);}
+
+  public String toString(){return this.name;}
 
   public void set(Enum k, Serializable v){ map.put(k, v); }
 
   public <ANY> ANY get(Enum k){ return (ANY) map.get(k); }
 
   public int size() {return map.size();}
+
+  public void addAll(Map<Enum, Serializable> map){
+    for (Enum k:map.keySet()) this.map.put(k, map.get(k));
+  }
 
   public boolean isEmpty() {return map.isEmpty();}
 
@@ -34,7 +44,7 @@ public class Settings implements Serializable {
 
   public void clear() {map.clear();}
 
-  public ConcurrentHashMap.KeySetView<Enum, Serializable> keySet() {return map.keySet();}
+  public List<Enum> keySet() {return new ArrayList<>(map.keySet());}
 
   public Collection<Serializable> values() {return map.values();}
 

@@ -412,7 +412,7 @@ public abstract class HTTPServer {
   }
 
   public String getHost() {
-    return configuration.getString(HOST_KEY);
+    return configuration.get(HOST_KEY);
   }
 
   public IFactory<ITempFileManager> getTempFileManagerFactory() {
@@ -511,9 +511,9 @@ public abstract class HTTPServer {
     this.myServerSocket = this.getServerSocketFactory().create();
     this.myServerSocket.setReuseAddress(true);
 
-    HTTPService httpService = createServerRunnable(configuration.getInt(SOCKET_TIMEOUT_KEY));
+    HTTPService httpService = createServerRunnable(configuration.get(SOCKET_TIMEOUT_KEY));
     this.myThread = new Thread(httpService);
-    this.myThread.setDaemon(configuration.getBoolean(DAEMON_KEY));
+    this.myThread.setDaemon(configuration.get(DAEMON_KEY));
     this.myThread.setName("HTTPServer Run Listener");
     this.myThread.start();
     while (!httpService.hasBoundSocketConnection() && httpService.getSocketBindingException() == null) {
@@ -732,19 +732,20 @@ public abstract class HTTPServer {
     return newUri;
   }
 
-  public static class ServiceConfiguration extends Configuration {
+  public static class ServiceConfiguration extends Configuration<String, Serializable> {
     private static final long serialVersionUID = 1978528942625555272L;
 
     public ServiceConfiguration() {
-      this.put(HOST_KEY, "localhost");
-      this.put(PORT_KEY, 8080);
-      this.put(DAEMON_KEY, true);
+      super(ServiceConfiguration.class.getSimpleName());
+      this.set(HOST_KEY, "localhost");
+      this.set(PORT_KEY, 8080);
+      this.set(DAEMON_KEY, true);
       /**
        * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
        * This is required as the Keep-Alive HTTP connections would otherwise block
        * the socket reading thread forever (or as long the browser is open).
        */
-      this.put(SOCKET_TIMEOUT_KEY, 80000);
+      this.set(SOCKET_TIMEOUT_KEY, 80000);
     }
   }
 
