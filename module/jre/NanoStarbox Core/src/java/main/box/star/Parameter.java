@@ -2,33 +2,39 @@ package box.star;
 
 public class Parameter {
 
-  public interface Parser { boolean acceptParameter(State parameter); }
+  // Not instantiable.
+  private Parameter(){}
 
-  public static class State {
-    String[] source;
-    public int id, subid; public String value;
-    public String type;
-    public boolean plus;
-    private boolean dataAvailable, split;
-    private void select(int id, int subid, String value, boolean dataAvailable){
-      this.id = id; this.subid = subid; this.value = value;
-      this.dataAvailable = dataAvailable;
-      this.split = false;
+  public interface Parser {
+
+    boolean parseReference(Reference parameter);
+
+    class Reference {
+      private String[] source;
+      public int index, subIndex; public String value;
+      public boolean plus;
+      private boolean dataAvailable, split;
+      private void select(int index, int subIndex, String value, boolean dataAvailable){
+        this.index = index; this.subIndex = subIndex; this.value = value;
+        this.dataAvailable = dataAvailable;
+        this.split = false;
+      }
     }
+
   }
 
   static String trim(String input){
     return input.replaceAll("^\\s+", "").replaceAll("\\s+$", "");
   }
 
-  public static String getParameterValue(State parameter){
-    String thisParameter = parameter.source[parameter.id];
+  public static String getNextParameterValue(Parser.Reference parameter){
+    String thisParameter = parameter.source[parameter.index];
     if (parameter.split) return trim(thisParameter.substring(parameter.value.length()+1));
     if (thisParameter.matches("^.+: *.*") || thisParameter.matches("^.+= *.*")){
       return trim(splitValue(thisParameter)[1]);
     }
     if (!parameter.dataAvailable) throw new RuntimeException("subscript out of range for request");
-    return parameter.source[++parameter.id];
+    return parameter.source[++parameter.index];
   }
 
   static String[] splitValue(String input){
@@ -47,33 +53,33 @@ public class Parameter {
   }
 
   public static void parse(Parser parser, String... parameters){
-    State currentParameter = new State();
+    Parser.Reference currentParameter = new Parser.Reference();
     currentParameter.source = parameters;
-    for (currentParameter.id = 0; currentParameter.id < parameters.length; currentParameter.id++) {
-      int i = currentParameter.id;
+    for (currentParameter.index = 0; currentParameter.index < parameters.length; currentParameter.index++) {
+      int i = currentParameter.index;
       currentParameter.select(i, 0, parameters[i], i+1 < parameters.length);
       if (currentParameter.value.matches("^.+: *.*") || currentParameter.value.matches("^.+= *.*")){
         currentParameter.value = splitValue(currentParameter.value)[0];
         currentParameter.split = true;
-        if (parser.acceptParameter(currentParameter)) continue; else break;
+        if (parser.parseReference(currentParameter)) continue; else break;
       }
-      if (parser.acceptParameter(currentParameter)) continue; else break;
+      if (parser.parseReference(currentParameter)) continue; else break;
     }
   }
 
-  public static void parse(Parser parser, State parameter){
-    State currentParameter = new State();
+  public static void parse(Parser parser, Parser.Reference parameter){
+    Parser.Reference currentParameter = new Parser.Reference();
     currentParameter.source = parameter.source;
     char[] switches = parameter.value.substring(1).toCharArray();
     char type = parameter.value.charAt(0);
     if (type == '+') currentParameter.plus = true;
-    for (currentParameter.subid = 0; currentParameter.subid < switches.length; currentParameter.subid++) {
-      int i = currentParameter.subid;
-      currentParameter.select(parameter.id, i, String.valueOf(type)+switches[i], parameter.dataAvailable);
-      if (parser.acceptParameter(currentParameter)) continue;
+    for (currentParameter.subIndex = 0; currentParameter.subIndex < switches.length; currentParameter.subIndex++) {
+      int i = currentParameter.subIndex;
+      currentParameter.select(parameter.index, i, String.valueOf(type)+switches[i], parameter.dataAvailable);
+      if (parser.parseReference(currentParameter)) continue;
       else return;
     }
-    parameter.id = currentParameter.id;
+    parameter.index = currentParameter.index;
   }
 
 }

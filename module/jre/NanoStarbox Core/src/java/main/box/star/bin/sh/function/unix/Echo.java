@@ -49,7 +49,7 @@ public class Echo extends Function implements Parameter.Parser {
   List<String> parameterList;
 
   @Override
-  public boolean acceptParameter(Parameter.State parameter) {
+  public boolean parseReference(Reference parameter) {
     if (parameter.value.equals(getName())) {
       parameterList.remove(0);
       return true;
