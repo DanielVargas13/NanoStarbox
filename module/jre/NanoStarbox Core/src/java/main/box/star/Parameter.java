@@ -61,7 +61,7 @@ public class Parameter {
     }
   }
 
-  public static boolean parse(Parser parser, State parameter){
+  public static void parse(Parser parser, State parameter){
     State currentParameter = new State();
     currentParameter.source = parameter.source;
     char[] switches = parameter.value.substring(1).toCharArray();
@@ -71,10 +71,9 @@ public class Parameter {
       int i = currentParameter.subid;
       currentParameter.select(parameter.id, i, String.valueOf(type)+switches[i], parameter.dataAvailable);
       if (parser.acceptParameter(currentParameter)) continue;
-      else return false;
+      else return;
     }
     parameter.id = currentParameter.id;
-    return true;
   }
 
 }
