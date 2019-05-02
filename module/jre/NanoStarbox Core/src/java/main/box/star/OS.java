@@ -85,9 +85,9 @@ public final class OS {
   /**
    * types of Operating Systems
    */
+  public enum Kind {
+    Windows, MacOS, Linux, Other
+  }
 
 }
 
-enum Kind {
-  Windows, MacOS, Linux, Other
-}
