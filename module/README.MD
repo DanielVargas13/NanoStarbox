@@ -8,8 +8,5 @@ package kits for different operating systems.
 
 Additionally there are two optional support kits in this directory.
 
-* JNA FFI Kit in [jna](jna/)
-* Rhino Android Kit in [dalvik](dalvik/)
-
 These libraries are optional but will be included for distribution through
 the default project build process.

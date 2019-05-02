@@ -23,16 +23,16 @@
       <element id="archive" name="nano-starbox-rhino-swing-debugger.jar">
         <element id="module-output" name="NanoStarbox Rhino Debugger" />
       </element>
-      <element id="archive" name="nano-starbox-rhino-android-support.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/dalvik/rhino-android-1.5.jar" path-in-jar="/" />
-      </element>
       <element id="archive" name="nano-starbox-jna.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jna/jna-4.5.2.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/jna-4.5.2.jar" path-in-jar="/" />
       </element>
       <element id="archive" name="nano-starbox-simple-xml.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/Simple XML/simple-xml-2.7.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/simple-xml-2.7.1.jar" path-in-jar="/" />
+      </element>
+      <element id="archive" name="nano-starbox-rhino-android-support.jar">
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Rhino/src/java/lib/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Rhino/src/java/lib/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Rhino/src/java/lib/rhino-android-1.5.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>

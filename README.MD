@@ -17,12 +17,6 @@ Java [Swing Kits](module/swing/):
 Java [JFX Kits](module/jfx/):
 * [NanoStarbox Voyager](module/jfx/NanoStarbox%20Voyager)
 
-And Miscellaneous Core support Kits:
-* [JNA](module/jna/)
-* [Simple XML](module/jre/Simple%20XML/)
-
-Core support kits are "recommended" addons.
-
 Each kit and base-module is configured for independent usage with IntelliJ IDEA however, the filing-structure must remain in tact for this automatic code dependency feature to remain operational.
 
 The default build method for this IntelliJ IDEA project builds all modules in the [project's jar directory](jar/).
