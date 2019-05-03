@@ -141,4 +141,9 @@ public class SourceReader
         } catch (Exception e){throw new RuntimeException(e);}
     }
 
+    public static InputStream getRuntimeFileOrUrlInputStream(String path){
+        try /* open-stream throwing runtime exceptions with closure */ {
+          return getFileOrUrlInputStream(path);
+        } catch (Exception e){throw new RuntimeException(e);}
+    }
 }

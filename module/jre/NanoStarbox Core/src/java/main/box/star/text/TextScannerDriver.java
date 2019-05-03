@@ -1,5 +1,5 @@
 package box.star.text;
 
-public interface TextScannerMethodManager {
+public interface TextScannerDriver {
   boolean continueScanning(StringBuilder input, TextScannerContext textScanner);
 }

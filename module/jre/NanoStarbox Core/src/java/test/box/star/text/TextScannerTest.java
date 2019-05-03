@@ -3,11 +3,13 @@ package box.star.text;
 import box.star.io.Streams;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
 
-  TextScanner x = new TextScanner(Streams.getFileText("src/java/resource/mixed-content-page.html"));
+  TextScanner x = new TextScanner(new File("src/java/resource/mixed-content-page.html"));
 
   @Test
   void start(){
