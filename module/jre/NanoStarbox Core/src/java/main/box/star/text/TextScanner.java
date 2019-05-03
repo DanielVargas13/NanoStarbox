@@ -2,7 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.Nullable;
-import box.star.io.SourceReader;
+import box.star.io.SourceConnector;
 
 import java.io.*;
 import java.net.URI;
@@ -73,13 +73,13 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   public TextScanner(URL source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.toString()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
   }
   public TextScanner(URI source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.toString()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
   }
   public TextScanner(File source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.getPath()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.getPath()));
   }
 
   /**
