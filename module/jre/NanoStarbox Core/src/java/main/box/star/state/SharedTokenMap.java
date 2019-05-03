@@ -1,6 +1,6 @@
 package box.star.state;
 
-import box.star.tag.TokenGenerator;
+import box.star.token.TokenGenerator;
 
 import java.util.concurrent.ConcurrentHashMap;
 

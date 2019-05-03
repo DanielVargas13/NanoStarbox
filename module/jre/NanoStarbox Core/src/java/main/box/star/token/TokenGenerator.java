@@ -1,4 +1,4 @@
-package box.star.tag;
+package box.star.token;
 
 import java.io.Serializable;
 import java.util.Random;
