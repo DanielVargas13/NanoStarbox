@@ -65,6 +65,15 @@ public class Streams {
     return cl.getResourceAsStream(path);
   }
 
+  public static String getFileText(String path) {
+    try {
+      return readWholeString(new FileInputStream(path));
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static String getResourceText(String path) {
     try {
       return readWholeString(getResourceAsStream(path));
