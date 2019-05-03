@@ -22,25 +22,6 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     return false;
   }
 
-  public class TextScannerRangeMap {
-    public final int start, end;
-    public TextScannerRangeMap(int start, int end){
-      this.start = normalizeRangeValue(start); this.end = normalizeRangeValue(end);
-    }
-    public boolean match(char character) {
-      return character < start || character > end;
-    }
-    public char[] compile(){
-      return selectCharList(this);
-    }
-    public char[] merge(char[] list){
-      return mergeCharLists(list, compile());
-    }
-    public char[] filter(char[] list){
-      return filterCharList(list, compile());
-    }
-  }
-
   public static char[] filterCharList(char[] source, char[] filter){
     List<Character> build = new ArrayList<>(source.length);
     for (char c:source){
