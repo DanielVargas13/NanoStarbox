@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Serializable Pattern Matcher with Label
  */
-public class TextPattern implements Serializable, TextScannerControl {
+public class TextPattern implements Serializable, TextScannerTaskManager {
 
   private static final long serialVersionUID = 6063966247343433103L;
 
@@ -57,19 +57,8 @@ public class TextPattern implements Serializable, TextScannerControl {
    * @param textScanner
    * @return
    */
-  public boolean continueScanning(StringBuilder input, TextPatternControlPort textScanner){
+  public boolean continueScanning(StringBuilder input, TextScannerServicePort textScanner){
     return true;
-  }
-
-  public static interface TextPatternControlPort {
-    RuntimeException syntaxError(String message, Throwable causedBy);
-    RuntimeException syntaxError(String message);
-    boolean hasNext();
-    boolean end();
-    long index();
-    long line();
-    long column();
-    String sourceLabel();
   }
 
 }

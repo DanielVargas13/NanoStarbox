@@ -6,7 +6,7 @@ import box.star.contract.Nullable;
 import java.io.*;
 import java.util.Iterator;
 
-public class TextScanner implements Iterable<Character>, TextPattern.TextPatternControlPort {
+public class TextScanner implements Iterable<Character>, TextScannerServicePort {
 
   private ExceptionMarshal exceptionMarshal = new ExceptionMarshal();
 
@@ -307,104 +307,189 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
   public String scanCeiling(int ceiling){ return scanRange(0, Math.min(ceiling, '\uffff')); }
   public String scanControl(){ return scanCeiling(' '); }
 
+//  /**
+//   * Return the characters up to the next close quote character.
+//   * Backslash processing is done. The formal JSON format does not
+//   * allow strings in single quotes, but an implementation is allowed to
+//   * accept them.
+//   * @param quote The quoting character, either
+//   *      <code>"</code>&nbsp;<small>(double quote)</small> or
+//   *      <code>'</code>&nbsp;<small>(single quote)</small>.
+//   * @return      A String.
+//   * @throws TextScannerSyntaxError Unterminated string.
+//   */
+//  public String scanQuotedString(char quote) throws TextScannerSyntaxError {
+//    char c;
+//    StringBuilder sb = new StringBuilder();
+//    for (;;) {
+//      c = this.next();
+//      switch (c) {
+//        case 0:
+//        case '\n':
+//        case '\r':
+//          throw this.syntaxError("Unterminated string");
+//        case '\\':
+//          c = this.next();
+//          switch (c) {
+//            case 'b':
+//              sb.append('\b');
+//              break;
+//            case 't':
+//              sb.append('\t');
+//              break;
+//            case 'n':
+//              sb.append('\n');
+//              break;
+//            case 'f':
+//              sb.append('\f');
+//              break;
+//            case 'r':
+//              sb.append('\r');
+//              break;
+//            case 'u':
+//              try {
+//                sb.append((char)Integer.parseInt(this.select(4), 16));
+//              } catch (NumberFormatException e) {
+//                throw this.syntaxError("Illegal escape.", e);
+//              }
+//              break;
+//            case '"':
+//            case '\'':
+//            case '\\':
+//            case '/':
+//              sb.append(c);
+//              break;
+//            default:
+//              throw this.syntaxError("Illegal escape.");
+//          }
+//          break;
+//        default:
+//          if (c == quote) {
+//            return sb.toString();
+//          }
+//          sb.append(c);
+//      }
+//    }
+//  }
+
+//  /**
+//   * Get the text up but not including the specified delimiter match
+//   * or the specified TextPattern delimiter escape sequence or the end of the text stream, whichever comes first.
+//   * @param delimiter A character delimiter TextPattern.
+//   * @return A string.
+//   * @throws TextScannerException Thrown if there is an error while searching
+//   *  for the delimiter
+//   */
+//  public String scanField(TextPattern delimiter) throws TextScannerException {
+//    String c;
+//    StringBuilder sb = new StringBuilder();
+//    for (;;) {
+//      c = this.next() + "";
+//      if (delimiter.match(c) || ! delimiter.continueScanning(sb, this)) {
+//        if (c.indexOf(0) != 0) {
+//          this.back();
+//        }
+//        return sb.toString();
+//      }
+//      sb.append(c);
+//    }
+//  }
+//
+//  /**
+//   * Scan characters until the TextPattern matches the next char.
+//   * If the TextPattern declines to continue scanning, the operation will be aborted.
+//   *
+//   * @param control A single-character TextPattern.
+//   * @return The text up to but not including delimiter, or an empty string if matching fails or is aborted.
+//   *
+//   * @throws TextScannerException
+//   */
+//  public String scanSeek(TextPattern control) throws TextScannerException {
+//    char c;
+//    StringBuilder scanned = new StringBuilder();
+//    try {
+//      long startIndex = this.index;
+//      long startCharacter = this.column;
+//      long startLine = this.line;
+//      this.reader.mark(1000000);
+//      do {
+//        c = this.next();
+//        if (this.index > startIndex)
+//          if (! control.continueScanning(scanned, this)) c = 0;
+//        if (c == 0) {
+//          // in some readers, reset() may throw an exception if
+//          // the remaining portion of the input is greater than
+//          // the mark size (1,000,000 above).
+//          this.reader.reset();
+//          this.index = startIndex;
+//          this.column = startCharacter;
+//          this.line = startLine;
+//          return "";
+//        }
+//        scanned.append(c);
+//      } while (! control.match(String.valueOf(c)) );
+//      scanned.setLength(scanned.length() - 1);
+//      this.reader.mark(1);
+//    } catch (IOException exception) {
+//      throw exceptionMarshal.raiseException(exception);
+//    }
+//    this.back();
+//    return scanned.toString();
+//  }
+//
+//
+//  /**
+//   * Scans text until pattern matches the input buffer.
+//   * if the TextPattern declines to continue scanning, the current buffer is returned.
+//   *
+//   * if the text stream ends before the match succeeds a syntax error will be thrown.
+//   *
+//   * @param  textPattern use: {@link TextPattern}
+//   *
+//   * @return the matched text
+//   * @throws TextScannerSyntaxError
+//   */
+//  public String scanMatch(TextPattern textPattern) throws TextScannerSyntaxError {
+//    char c; int length = 0;
+//    StringBuilder scanned = new StringBuilder();
+//    do {
+//      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+textPattern.getLabel()+"'");
+//      scanned.append(c); ++length;
+//      if (textPattern.match(scanned.subSequence(0, length))) break;
+//    } while (textPattern.continueScanning(scanned, this));
+//    return scanned.toString();
+//  }
+
   /**
-   * Return the characters up to the next close quote character.
-   * Backslash processing is done. The formal JSON format does not
-   * allow strings in single quotes, but an implementation is allowed to
-   * accept them.
-   * @param quote The quoting character, either
-   *      <code>"</code>&nbsp;<small>(double quote)</small> or
-   *      <code>'</code>&nbsp;<small>(single quote)</small>.
-   * @return      A String.
-   * @throws TextScannerSyntaxError Unterminated string.
+   * Scans text until the TextScannerControl signals task complete.
+   *
+   * if the text stream ends before the control returns a syntax error will be thrown.
+   * if the controller signals early exit with a control character match, scanning will stop, and the next
+   * stream token will be the break signal (control character matched).
+   *
+   * @param control the scan controller to use.
+   * @return the scanned text
+   * @throws TextScannerSyntaxError
    */
-  public String scanQuotedString(char quote) throws TextScannerSyntaxError {
+  public String scan(TextScannerPort control) throws TextScannerSyntaxError {
     char c;
-    StringBuilder sb = new StringBuilder();
-    for (;;) {
-      c = this.next();
-      switch (c) {
-        case 0:
-        case '\n':
-        case '\r':
-          throw this.syntaxError("Unterminated string");
-        case '\\':
-          c = this.next();
-          switch (c) {
-            case 'b':
-              sb.append('\b');
-              break;
-            case 't':
-              sb.append('\t');
-              break;
-            case 'n':
-              sb.append('\n');
-              break;
-            case 'f':
-              sb.append('\f');
-              break;
-            case 'r':
-              sb.append('\r');
-              break;
-            case 'u':
-              try {
-                sb.append((char)Integer.parseInt(this.select(4), 16));
-              } catch (NumberFormatException e) {
-                throw this.syntaxError("Illegal escape.", e);
-              }
-              break;
-            case '"':
-            case '\'':
-            case '\\':
-            case '/':
-              sb.append(c);
-              break;
-            default:
-              throw this.syntaxError("Illegal escape.");
-          }
-          break;
-        default:
-          if (c == quote) {
-            return sb.toString();
-          }
-          sb.append(c);
-      }
-    }
+    StringBuilder scanned = new StringBuilder();
+    do {
+      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
+      if (control.matchBreak(c)){ this.back(); break; }
+      scanned.append(c);
+    } while (control.continueScanning(scanned, this));
+    return scanned.toString();
   }
 
   /**
-   * Get the text up but not including the specified delimiter match
-   * or the specified TextPattern delimiter escape sequence or the end of the text stream, whichever comes first.
-   * @param delimiter A character delimiter TextPattern.
-   * @return A string.
-   * @throws TextScannerException Thrown if there is an error while searching
-   *  for the delimiter
-   */
-  public String scanField(TextPattern delimiter) throws TextScannerException {
-    String c;
-    StringBuilder sb = new StringBuilder();
-    for (;;) {
-      c = this.next() + "";
-      if (delimiter.match(c) || ! delimiter.continueScanning(sb, this)) {
-        if (c.indexOf(0) != 0) {
-          this.back();
-        }
-        return sb.toString();
-      }
-      sb.append(c);
-    }
-  }
-
-  /**
-   * Scan characters until the TextPattern matches the next char.
-   * If the TextPattern declines to continue scanning, the operation will be aborted.
+   * Works like scan, but restores the stream and returns nothing if the operation fails.
    *
-   * @param control A single-character TextPattern.
-   * @return The text up to but not including delimiter, or an empty string if matching fails or is aborted.
-   *
-   * @throws TextScannerException
+   * @param control
+   * @return the text up to but not including the control break.
+   * @throws TextScannerException if an IOException occurs
    */
-  public String scanSeek(TextPattern control) throws TextScannerException {
+  public String seek(TextScannerPort control) throws TextScannerException {
     char c;
     StringBuilder scanned = new StringBuilder();
     try {
@@ -427,56 +512,13 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
           return "";
         }
         scanned.append(c);
-      } while (! control.match(String.valueOf(c)) );
+      } while (! control.matchBreak(c) );
       scanned.setLength(scanned.length() - 1);
       this.reader.mark(1);
     } catch (IOException exception) {
       throw exceptionMarshal.raiseException(exception);
     }
     this.back();
-    return scanned.toString();
-  }
-
-
-  /**
-   * Scans text until pattern matches the input buffer.
-   * if the TextPattern declines to continue scanning, the current buffer is returned.
-   *
-   * if the text stream ends before the match succeeds a syntax error will be thrown.
-   *
-   * @param  textPattern use: {@link TextPattern}
-   *
-   * @return the matched text
-   * @throws TextScannerSyntaxError
-   */
-  public String scanMatch(TextPattern textPattern) throws TextScannerSyntaxError {
-    char c; int length = 0;
-    StringBuilder scanned = new StringBuilder();
-    do {
-      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+textPattern.getLabel()+"'");
-      scanned.append(c); ++length;
-      if (textPattern.match(scanned.subSequence(0, length))) break;
-    } while (textPattern.continueScanning(scanned, this));
-    return scanned.toString();
-  }
-
-  /**
-   * Scans text until the TextScannerControl signals task complete.
-   *
-   * if the text stream ends before the control returns a syntax error will be thrown.
-   *
-   * @param expectation string description for error
-   * @param control the scan controller to use.
-   * @return the scanned text
-   * @throws TextScannerSyntaxError
-   */
-  public String scan(String expectation, TextScannerControl control) throws TextScannerSyntaxError {
-    char c; int length = 0;
-    StringBuilder scanned = new StringBuilder();
-    do {
-      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+expectation+"'");
-      scanned.append(c); ++length;
-    } while (control.continueScanning(scanned, this));
     return scanned.toString();
   }
 
