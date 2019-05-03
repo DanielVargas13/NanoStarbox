@@ -13,10 +13,8 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
   
   private ConcurrentHashMap<K, V> map;
 
-  private void init(){ map = new ConcurrentHashMap<>(); }
-
-  {
-    init();
+  protected void init(){
+    map = new ConcurrentHashMap<>();
   }
 
   private String name;
@@ -47,10 +45,14 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
 
   public List<K> keyList() {return new ArrayList<K>(map.keySet());}
 
-  public Collection<V> values() {return map.values();}
+  public List<V> valueList() {return new ArrayList<>(map.values());}
 
   public V putIfAbsent(K key, V value) {return map.putIfAbsent(key, value);}
 
   public V getOrDefault(K key, V defaultValue) {return map.getOrDefault(key, defaultValue);}
+
+  {
+    init();
+  }
 
 }

@@ -106,9 +106,9 @@ public class Voyager extends Application {
     }
 
     @Override
-    public boolean acceptParameter(Parameter.State currentParameter) {
+    public boolean parseReference(Reference currentParameter) {
       if ("-s".equals(currentParameter.value)) {
-        source = Parameter.getParameterValue(currentParameter);
+        source = Parameter.getNextParameterValue(currentParameter);
         return true;
       }
       if ("-h".equals(currentParameter.value)) {return allowRiskySSL = true;}
