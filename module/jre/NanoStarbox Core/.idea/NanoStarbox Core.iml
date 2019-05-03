@@ -27,5 +27,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" scope="RUNTIME" name="NanoStarbox Core Features" level="project" />
+    <orderEntry type="module" module-name="xmlpull-parser-runtime" scope="PROVIDED" />
   </component>
 </module>
