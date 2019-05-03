@@ -12,20 +12,32 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
   private ExceptionMarshal exceptionMarshal = new ExceptionMarshal();
 
+  public static int atLeastZero(int val){ return (val < 0)?0:val; }
+  public static int atMostCharMax(int val){ return (val > '\uffff')?'\uffff':val; }
+  public static int normalizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
+
   public static boolean charListContains(char search, char[] range){
     for (char c: range)
       if (search == c) return true;
     return false;
   }
 
-  public class TextScannerValueRange implements TextScannerDelimiterMatcher {
+  public class TextScannerRangeMap {
     public final int start, end;
-    public TextScannerValueRange(int start, int end){
-      this.start = start; this.end = Math.max(end, 256);
+    public TextScannerRangeMap(int start, int end){
+      this.start = normalizeRangeValue(start); this.end = normalizeRangeValue(end);
     }
-    @Override
-    public boolean matchBreak(char character) {
+    public boolean match(char character) {
       return character < start || character > end;
+    }
+    public char[] compile(){
+      return selectCharList(this);
+    }
+    public char[] merge(char[] list){
+      return mergeCharLists(list, compile());
+    }
+    public char[] filter(char[] list){
+      return filterCharList(list, compile());
     }
   }
 
@@ -47,7 +59,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     return out;
   }
 
-  public static char[] selectCharList(TextScannerValueRange range){
+  public static char[] selectCharList(TextScannerRangeMap range){
     List<Character> list = new ArrayList<>(range.end - range.start);
     for (int i = range.start; i <= range.end; i++) list.add((char)i);
     Character[] out = new Character[list.size()];
