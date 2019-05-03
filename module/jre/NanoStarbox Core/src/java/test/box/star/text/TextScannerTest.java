@@ -1,6 +1,5 @@
 package box.star.text;
 
-import box.star.io.Streams;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -17,8 +16,8 @@ class TextScannerTest {
     result = x.scan(new TextScanner.Method("doctype"){
       char[] controlTerms = new char[]{'>'};
       {
-        this.max = 0;
-        this.eatEscapes = true;
+        this.bufferLimit = 0;
+        this.performBackslashControl = true;
       }
       @Override
       public boolean matchBoundary(char character) {
