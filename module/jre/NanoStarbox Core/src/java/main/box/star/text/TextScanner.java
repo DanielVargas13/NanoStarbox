@@ -322,6 +322,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
         if (matched && scanMethod.performBackslashControl && lookbehind == '\\');
         else {
           if (! scanMethod.boundaryCeption) this.back();
+          else scanned.append(c);
           break;
         }
       }
