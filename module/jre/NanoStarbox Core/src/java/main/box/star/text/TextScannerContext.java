@@ -1,6 +1,6 @@
 package box.star.text;
 
-public interface TextScannerServicePort {
+public interface TextScannerContext {
   RuntimeException syntaxError(String message, Throwable causedBy);
   RuntimeException syntaxError(String message);
   boolean hasNext();

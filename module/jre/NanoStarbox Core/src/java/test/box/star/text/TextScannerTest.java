@@ -12,7 +12,7 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.scan(new TextScannerMethod("doctype"){
+    result = x.scan(new TextScanner.Method("doctype"){
       char[] controlTerms = new char[]{'>'};
       {
         this.max = 0;

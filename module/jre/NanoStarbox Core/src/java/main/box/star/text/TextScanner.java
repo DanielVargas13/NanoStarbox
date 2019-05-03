@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TextScanner implements Iterable<Character>, TextScannerServicePort {
+public class TextScanner implements Iterable<Character>, TextScannerContext {
 
   private final static int UBER_MAX = '\uffff';
 
@@ -42,7 +42,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     return out;
   }
 
-  public static char[] selectCharList(TextScannerRangeMap range){
+  public static char[] selectCharList(RangeMap range){
     List<Character> list = new ArrayList<>(range.end - range.start);
     for (int i = range.start; i <= range.end; i++) list.add((char)i);
     Character[] out = new Character[list.size()];
@@ -145,10 +145,10 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Back up one character. This provides a sort of lookahead capability,
    * so that you can test for a digit or letter before attempting to parse
    * the next number or identifier.
-   * @throws TextScannerException Thrown if trying to step back more than 1 step
+   * @throws Exception Thrown if trying to step back more than 1 step
    *  or if already at the start of the string
    */
-  protected void back() throws TextScannerException {
+  protected void back() throws Exception {
     if (this.usePrevious || this.index <= 0) {
       throw raiseException("Stepping back two steps is not supported");
     }
@@ -184,10 +184,10 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Determine if the next character is a match with a specified character.
    *
    * @return true if not yet at the end of the source.
-   * @throws TextScannerException thrown if there is an error stepping forward
+   * @throws Exception thrown if there is an error stepping forward
    *  or backward while checking for more data.
    */
-  public boolean hasNext() throws TextScannerException {
+  public boolean hasNext() throws Exception {
     if(this.usePrevious) {
       return true;
     }
@@ -213,9 +213,9 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Get the next character in the source string.
    *
    * @return The next character, or 0 if past the end of the source string.
-   * @throws TextScannerException Thrown if there is an error reading the source string.
+   * @throws Exception Thrown if there is an error reading the source string.
    */
-  public char scanNext() throws TextScannerException {
+  public char scanNext() throws Exception {
     int c;
     if (this.usePrevious) {
       this.usePrevious = false;
@@ -265,9 +265,9 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * character.
    * @param c The character to match.
    * @return The character.
-   * @throws TextScannerException if the character does not match.
+   * @throws Exception if the character does not match.
    */
-  public char scanExact(char c) throws TextScannerException {
+  public char scanExact(char c) throws Exception {
     char n = this.scanNext();
     if (n != c) {
       if(n > 0) {
@@ -283,11 +283,11 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    *
    * @param n     The number of characters to take.
    * @return      A string of n characters.
-   * @throws TextScannerException
+   * @throws Exception
    *   Substring bounds error if there are not
    *   n characters remaining in the source string.
    */
-  public String scanLength(int n) throws TextScannerException {
+  public String scanLength(int n) throws Exception {
     if (n == 0) {
       return "";
     }
@@ -480,14 +480,14 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Scans text until the TextScannerControl signals task complete.
    *
    * if the text stream ends before the control returns a syntax error will be thrown.
-   * if the controller signals early exit with a control character match or 1 based position equality with {@link TextScannerMethod#max}, scanning will stop, and the next
+   * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#max}, scanning will stop, and the next
    * stream token will be the current token.
    *
    * @param control the scan controller to use.
    * @return the scanned text
-   * @throws TextScannerSyntaxError
+   * @throws SyntaxError
    */
-  public String scan(TextScannerMethod control) throws TextScannerSyntaxError {
+  public String scan(Method control) throws SyntaxError {
     char c; int i = 0;
     StringBuilder scanned = new StringBuilder();
     do {
@@ -504,9 +504,9 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    *
    * @param control
    * @return the text up to but not including the control break.
-   * @throws TextScannerException if an IOException occurs
+   * @throws Exception if an IOException occurs
    */
-  public String seek(TextScannerMethod control) throws TextScannerException {
+  public String seek(Method control) throws Exception {
     char c = 0;
     StringBuilder scanned = new StringBuilder();
     try {
@@ -539,15 +539,15 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     return scanned.toString();
   }
 
-  public TextScannerException raiseException(String message, Throwable exception){
+  public Exception raiseException(String message, Throwable exception){
     return exceptionMarshal.raiseException(message, exception);
   }
 
-  public TextScannerException raiseException(String message){
+  public Exception raiseException(String message){
     return exceptionMarshal.raiseException(message);
   }
 
-  public TextScannerException raiseException(Throwable exception){
+  public Exception raiseException(Throwable exception){
     return exceptionMarshal.raiseException(exception);
   }
 
@@ -557,7 +557,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * @param message The error message.
    * @return  A SourceProcessorException object, suitable for throwing
    */
-  public TextScannerSyntaxError syntaxError(String message) {
+  public SyntaxError syntaxError(String message) {
     return exceptionMarshal.raiseSyntaxError(message + this.toTraceString());
   }
 
@@ -568,7 +568,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * @param causedBy The throwable that caused the error.
    * @return  A SourceProcessorException object, suitable for throwing
    */
-  public TextScannerSyntaxError syntaxError(String message, Throwable causedBy) {
+  public SyntaxError syntaxError(String message, Throwable causedBy) {
     return exceptionMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
   }
 
@@ -604,34 +604,34 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
   public static class ExceptionMarshal {
 
-    public TextScannerException raiseException(String message) {
-      return new TextScannerException(message);
+    public Exception raiseException(String message) {
+      return new Exception(message);
     }
-    public TextScannerException raiseException(Throwable causedBy){
-      return new TextScannerException(causedBy);
+    public Exception raiseException(Throwable causedBy){
+      return new Exception(causedBy);
     }
-    public TextScannerException raiseException(String message, Throwable causedBy){
-      return new TextScannerException(message, causedBy);
+    public Exception raiseException(String message, Throwable causedBy){
+      return new Exception(message, causedBy);
     }
 
-    public TextScannerSyntaxError raiseSyntaxError(String message, Throwable causedBy) {
-      return new TextScannerSyntaxError(message, causedBy);
+    public SyntaxError raiseSyntaxError(String message, Throwable causedBy) {
+      return new SyntaxError(message, causedBy);
     }
-    public TextScannerSyntaxError raiseSyntaxError(String message){
-      return new TextScannerSyntaxError(message);
+    public SyntaxError raiseSyntaxError(String message){
+      return new SyntaxError(message);
     }
 
   }
 
   public static final class ASCII{
 
-    public final static char[] MAP_WHITE_SPACE = new TextScannerRangeMap.Assembler(9, 13).merge(20).compile();
-    public final static char[] MAP_LETTERS = new TextScannerRangeMap.Assembler(65, 90).merge(97, 122).compile();
-    public final static char[] MAP_NUMBERS = new TextScannerRangeMap(48, 57).compile();
-    public final static char[] MAP_CONTROL = new TextScannerRangeMap.Assembler(0, 32).filter(MAP_WHITE_SPACE).compile();
-    public final static char[] MAP_EXTENDED = new TextScannerRangeMap(127, UBER_MAX).compile();
+    public final static char[] MAP_WHITE_SPACE = new RangeMap.Assembler(9, 13).merge(20).compile();
+    public final static char[] MAP_LETTERS = new RangeMap.Assembler(65, 90).merge(97, 122).compile();
+    public final static char[] MAP_NUMBERS = new RangeMap(48, 57).compile();
+    public final static char[] MAP_CONTROL = new RangeMap.Assembler(0, 32).filter(MAP_WHITE_SPACE).compile();
+    public final static char[] MAP_EXTENDED = new RangeMap(127, UBER_MAX).compile();
 
-    public final static char[] MAP_SYMBOLS = new TextScannerRangeMap.Assembler(33, 47)
+    public final static char[] MAP_SYMBOLS = new RangeMap.Assembler(33, 47)
         .merge(58, 64)
         .merge(91, 96)
         .merge(123, 126)
@@ -639,4 +639,182 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
   }
 
+  public static class RangeMap {
+
+    public final int start, end;
+    public RangeMap(int start, int end){
+      this.start = normalizeRangeValue(start); this.end = normalizeRangeValue(end);
+    }
+    public boolean match(char character) {
+      return character < start || character > end;
+    }
+    public char[] compile(){
+      return selectCharList(this);
+    }
+
+    public static class Assembler {
+      List<Character> chars = new ArrayList<>();
+      public Assembler(RangeMap map){
+        this(map.compile());
+      }
+      public Assembler(char... map){
+        this.merge(map);
+      }
+      public Assembler(int start, int end){
+        merge(new RangeMap(start, end));
+      }
+      public Assembler(int... integer){
+        for (int i:integer) chars.add((char) normalizeRangeValue(i));
+      }
+      public Assembler merge(int... integer){
+        for (int i:integer) chars.add((char) normalizeRangeValue(i));
+        return this;
+      }
+      public Assembler merge(int start, int end){
+        return merge(new RangeMap(start, end));
+      }
+      public Assembler merge(RangeMap map){
+        return merge(map.compile());
+      }
+      public Assembler merge(char... map){
+        for (char c: map) chars.add(c);
+        return this;
+      }
+      public Assembler filter(int... integer){
+        for (int i:integer) chars.remove((char) normalizeRangeValue(i));
+        return this;
+      }
+      public Assembler filter(int start, int end){
+        return filter(new RangeMap(start, end));
+      }
+      public Assembler filter(RangeMap map){
+        return filter(map.compile());
+      }
+      public Assembler filter(char... map){
+        for (char c: map) chars.remove(c);
+        return this;
+      }
+
+      char[] compile(){
+        return toString().toCharArray();
+      }
+
+      @Override
+      public String toString() {
+        Character[] out = new Character[chars.size()];
+        chars.toArray(out);
+        return out.toString();
+      }
+
+    }
+
+  }
+
+  public static class Method implements TextScannerMethodManager, BoundaryControl {
+
+    private static final String undefined = "undefined";
+
+    protected int max = 0;
+
+    private final String expectation;
+
+    public Method(){this(null);}
+    public Method(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
+    @Override public boolean continueScanning(StringBuilder input, TextScannerContext textScanner) { return true; }
+    @Override public boolean matchBoundary(char character) { return character != 0; }
+    public String getExpectation() { return expectation; }
+
+  }
+
+  public static interface BoundaryControl {
+    boolean matchBoundary(char character);
+  }
+
+  /**
+   * The JSONException is thrown by the JSON.org classes when things are amiss.
+   *
+   * @author JSON.org
+   * @version 2015-12-09
+   */
+  public static class Exception extends RuntimeException {
+      /** Serialization ID */
+      private static final long serialVersionUID = 0;
+
+      /**
+       * Constructs a JSONException with an explanatory message.
+       *
+       * @param message
+       *            Detail about the reason for the exception.
+       */
+      public Exception(final String message) {
+          super(message);
+      }
+
+      /**
+       * Constructs a JSONException with an explanatory message and cause.
+       *
+       * @param message
+       *            Detail about the reason for the exception.
+       * @param cause
+       *            The cause.
+       */
+      public Exception(final String message, final Throwable cause) {
+          super(message, cause);
+      }
+
+      /**
+       * Constructs a new JSONException with the specified cause.
+       *
+       * @param cause
+       *            The cause.
+       */
+      public Exception(final Throwable cause) {
+          super(cause.getMessage(), cause);
+      }
+
+  }
+
+  /**
+   * The JSONException is thrown by the JSON.org classes when things are amiss.
+   *
+   * @author JSON.org
+   * @version 2015-12-09
+   */
+  public static class SyntaxError extends RuntimeException {
+      /** Serialization ID */
+      private static final long serialVersionUID = 0;
+
+      /**
+       * Constructs a JSONException with an explanatory message.
+       *
+       * @param message
+       *            Detail about the reason for the exception.
+       */
+      public SyntaxError(final String message) {
+          super(message);
+      }
+
+      /**
+       * Constructs a JSONException with an explanatory message and cause.
+       *
+       * @param message
+       *            Detail about the reason for the exception.
+       * @param cause
+       *            The cause.
+       */
+      public SyntaxError(final String message, final Throwable cause) {
+          super(message, cause);
+      }
+
+      /**
+       * Constructs a new JSONException with the specified cause.
+       *
+       * @param cause
+       *            The cause.
+       */
+      public SyntaxError(final Throwable cause) {
+          super(cause.getMessage(), cause);
+      }
+
+  }
 }
