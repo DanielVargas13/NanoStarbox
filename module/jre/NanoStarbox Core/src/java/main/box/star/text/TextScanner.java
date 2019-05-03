@@ -18,7 +18,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   public static int atMostCharMax(int val){ return (val > UBER_MAX)?'\uffff':val; }
   public static int normalizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
 
-  public static boolean charListContains(char search, char[] range){
+  public static boolean charMapContains(char[] range, char search){
     for (char c: range)
       if (search == c) return true;
     return false;
@@ -27,7 +27,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   public static char[] filterCharList(char[] source, char[] filter){
     List<Character> build = new ArrayList<>(source.length);
     for (char c:source){
-      if (charListContains(c, filter)) continue;
+      if (charMapContains(filter, c)) continue;
       build.add(c);
     }
     Character[] out = new Character[build.size()];
@@ -483,30 +483,42 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#max}, scanning will stop, and the next
    * stream token will be the current token.
    *
-   * @param control the scan controller to use.
+   * @param scanMethod the scan controller to use.
    * @return the scanned text
    * @throws SyntaxError
    */
-  public String scan(Method control) throws SyntaxError {
+  public String scan(Method scanMethod) throws SyntaxError {
     char c; int i = 0;
+    char lookbehind = 0;
+    boolean backslash = false, matched = false;
     StringBuilder scanned = new StringBuilder();
     do {
-      if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
-      ++i;
-      if (control.max == i || control.matchBoundary(c)){ this.back(); break; }
-      scanned.append(c);
-    } while (control.continueScanning(scanned, this));
+      if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+scanMethod+"'");
+      if (c == '\\') backslash = ! backslash;
+      if (scanMethod.max == ++i || (matched = scanMethod.matchBoundary(c))){
+        if (matched && scanMethod.eatEscapes && lookbehind == '\\');
+        else {
+          if (! scanMethod.acceptBoundary ) this.back();
+          break;
+        }
+      }
+      if (lookbehind == '\\') {
+        if (matched) scanned.setLength(scanned.length() - 1);
+        backslash = false;
+      }
+      scanned.append(lookbehind = c);
+    } while (scanMethod.continueScanning(scanned, this));
     return scanned.toString();
   }
 
   /**
    * Works like scan, but restores the stream and returns nothing if the operation fails.
    *
-   * @param control
+   * @param seekMethod
    * @return the text up to but not including the control break.
    * @throws Exception if an IOException occurs
    */
-  public String seek(Method control) throws Exception {
+  public String seek(Method seekMethod) throws Exception {
     char c = 0;
     StringBuilder scanned = new StringBuilder();
     try {
@@ -514,11 +526,12 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       long startCharacter = this.column;
       long startLine = this.line;
       this.reader.mark(1000000);
-      int i = 0;
+      int i = 0; boolean backslash = false, matched = false; char lookBehind = 0;
       do {
         c = this.scanNext();
-        ++i;
-        if (control.max == i || control.matchBoundary(c)) c = 0;
+        if (c == '\\') backslash = ! backslash;
+        if (seekMethod.max == ++i) c = 0;
+        if ((matched = seekMethod.matchBoundary(c)) && (seekMethod.eatEscapes?! backslash:true)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -530,12 +543,18 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
           scanned.setLength(0);
           return "";
         }
-        scanned.append(c);
-      } while (control.continueScanning(scanned, this));
-      scanned.setLength(scanned.length() - 1);
+        if (lookBehind == '\\') {
+          if (matched) scanned.setLength(scanned.length() - 1);
+          backslash = false;
+        }
+        scanned.append(lookBehind = c);
+      } while (seekMethod.continueScanning(scanned, this));
       this.reader.mark(1);
     } catch (IOException exception) { throw raiseException(exception); }
-    this.back();
+    if (! seekMethod.acceptBoundary) {
+      scanned.setLength(scanned.length() - 1);
+      this.back();
+    }
     return scanned.toString();
   }
 
@@ -715,6 +734,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     private static final String undefined = "undefined";
 
     protected int max = 0;
+    protected boolean acceptBoundary, eatEscapes;
 
     private final String expectation;
 
@@ -722,7 +742,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     public Method(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
     @Override public boolean continueScanning(StringBuilder input, TextScannerContext textScanner) { return true; }
     @Override public boolean matchBoundary(char character) { return character != 0; }
-    public String getExpectation() { return expectation; }
+    @Override public String toString() { return expectation; }
 
   }
 

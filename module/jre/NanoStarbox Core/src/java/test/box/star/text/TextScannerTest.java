@@ -16,10 +16,11 @@ class TextScannerTest {
       char[] controlTerms = new char[]{'>'};
       {
         this.max = 0;
+        this.eatEscapes = true;
       }
       @Override
       public boolean matchBoundary(char character) {
-        return TextScanner.charListContains(character, controlTerms);
+        return TextScanner.charMapContains(controlTerms, character);
       }
     });
     System.err.println(result + x.scanExact('>'));
