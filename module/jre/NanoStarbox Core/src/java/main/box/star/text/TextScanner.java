@@ -491,7 +491,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     do {
       if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
       ++i;
-      if (control.max == i || control.matchBreak(c)){ this.back(); scanned.setLength(0); break; }
+      if (control.max == i || control.matchBreak(c)){ this.back(); break; }
       scanned.append(c);
     } while (control.continueScanning(scanned, this));
     return scanned.toString();

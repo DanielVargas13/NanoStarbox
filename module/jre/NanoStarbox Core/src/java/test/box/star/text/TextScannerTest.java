@@ -15,7 +15,7 @@ class TextScannerTest {
     result = x.scan(new TextScannerPort("doctype"){
       char[] controlTerms = new char[]{'>'};
       {
-        this.max = 6;
+        this.max = 0;
       }
       @Override
       public boolean matchBreak(char character) {
