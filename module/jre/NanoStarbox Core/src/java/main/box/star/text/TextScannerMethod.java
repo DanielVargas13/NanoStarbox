@@ -3,7 +3,7 @@ package box.star.text;
 import box.star.Tools;
 import box.star.contract.Nullable;
 
-public class TextScannerPort implements TextScannerTaskManager, TextScannerDelimiterMatcher {
+public class TextScannerMethod implements TextScannerTaskManager, TextScannerBoundaryFilter {
 
   private static final String undefined = "undefined";
 
@@ -11,10 +11,10 @@ public class TextScannerPort implements TextScannerTaskManager, TextScannerDelim
 
   private final String expectation;
 
-  public TextScannerPort(){this(null);}
-  public TextScannerPort(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
+  public TextScannerMethod(){this(null);}
+  public TextScannerMethod(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
   @Override public boolean continueScanning(StringBuilder input, TextScannerServicePort textScanner) { return true; }
-  @Override public boolean matchBreak(char character) { return character != 0; }
+  @Override public boolean matchBoundary(char character) { return character != 0; }
   public String getExpectation() { return expectation; }
 
 }

@@ -12,13 +12,13 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.scan(new TextScannerPort("doctype"){
+    result = x.scan(new TextScannerMethod("doctype"){
       char[] controlTerms = new char[]{'>'};
       {
         this.max = 0;
       }
       @Override
-      public boolean matchBreak(char character) {
+      public boolean matchBoundary(char character) {
         return TextScanner.charListContains(character, controlTerms);
       }
     });

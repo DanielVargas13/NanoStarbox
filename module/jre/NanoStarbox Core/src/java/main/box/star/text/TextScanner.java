@@ -10,10 +10,12 @@ import java.util.List;
 
 public class TextScanner implements Iterable<Character>, TextScannerServicePort {
 
+  private final static int UBER_MAX = '\uffff';
+
   private ExceptionMarshal exceptionMarshal = new ExceptionMarshal();
 
   public static int atLeastZero(int val){ return (val < 0)?0:val; }
-  public static int atMostCharMax(int val){ return (val > '\uffff')?'\uffff':val; }
+  public static int atMostCharMax(int val){ return (val > UBER_MAX)?'\uffff':val; }
   public static int normalizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
 
   public static boolean charListContains(char search, char[] range){
@@ -148,7 +150,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    */
   protected void back() throws TextScannerException {
     if (this.usePrevious || this.index <= 0) {
-      throw exceptionMarshal.raiseException("Stepping back two steps is not supported");
+      throw raiseException("Stepping back two steps is not supported");
     }
     this.decrementIndexes();
     this.usePrevious = true;
@@ -192,7 +194,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     try {
       this.reader.mark(1);
     } catch (IOException e) {
-      throw exceptionMarshal.raiseException("Unable to preserve stream position", e);
+      throw raiseException("Unable to preserve stream position", e);
     }
     try {
       // -1 is EOF, but next() can not consume the null character '\0'
@@ -202,7 +204,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       }
       this.reader.reset();
     } catch (IOException e) {
-      throw exceptionMarshal.raiseException("Unable to read the next character from the stream", e);
+      throw raiseException("Unable to read the next character from the stream", e);
     }
     return true;
   }
@@ -222,7 +224,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       try {
         c = this.reader.read();
       } catch (IOException exception) {
-        throw exceptionMarshal.raiseException(exception);
+        throw raiseException(exception);
       }
     }
     if (c <= 0) { // End of stream
@@ -318,8 +320,8 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     }
   }
 
-  public String scanFloor(int floor){ return scanRange(floor, '\uffff'); }
-  public String scanCeiling(int ceiling){ return scanRange(0, Math.min(ceiling, '\uffff')); }
+  public String scanFloor(int floor){ return scanRange(floor, UBER_MAX); }
+  public String scanCeiling(int ceiling){ return scanRange(0, Math.min(ceiling, UBER_MAX)); }
 
 //  /**
 //   * Return the characters up to the next close quote character.
@@ -478,20 +480,20 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Scans text until the TextScannerControl signals task complete.
    *
    * if the text stream ends before the control returns a syntax error will be thrown.
-   * if the controller signals early exit with a control character match or 1 based position equality with {@link TextScannerPort#max}, scanning will stop, and the next
+   * if the controller signals early exit with a control character match or 1 based position equality with {@link TextScannerMethod#max}, scanning will stop, and the next
    * stream token will be the current token.
    *
    * @param control the scan controller to use.
    * @return the scanned text
    * @throws TextScannerSyntaxError
    */
-  public String scan(TextScannerPort control) throws TextScannerSyntaxError {
+  public String scan(TextScannerMethod control) throws TextScannerSyntaxError {
     char c; int i = 0;
     StringBuilder scanned = new StringBuilder();
     do {
       if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
       ++i;
-      if (control.max == i || control.matchBreak(c)){ this.back(); break; }
+      if (control.max == i || control.matchBoundary(c)){ this.back(); break; }
       scanned.append(c);
     } while (control.continueScanning(scanned, this));
     return scanned.toString();
@@ -504,8 +506,8 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * @return the text up to but not including the control break.
    * @throws TextScannerException if an IOException occurs
    */
-  public String seek(TextScannerPort control) throws TextScannerException {
-    char c;
+  public String seek(TextScannerMethod control) throws TextScannerException {
+    char c = 0;
     StringBuilder scanned = new StringBuilder();
     try {
       long startIndex = this.index;
@@ -516,7 +518,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       do {
         c = this.scanNext();
         ++i;
-        if (control.max == i || control.matchBreak(c)) c = 0;
+        if (control.max == i || control.matchBoundary(c)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -532,11 +534,21 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       } while (control.continueScanning(scanned, this));
       scanned.setLength(scanned.length() - 1);
       this.reader.mark(1);
-    } catch (IOException exception) {
-      throw exceptionMarshal.raiseException(exception);
-    }
+    } catch (IOException exception) { throw raiseException(exception); }
     this.back();
     return scanned.toString();
+  }
+
+  public TextScannerException raiseException(String message, Throwable exception){
+    return exceptionMarshal.raiseException(message, exception);
+  }
+
+  public TextScannerException raiseException(String message){
+    return exceptionMarshal.raiseException(message);
+  }
+
+  public TextScannerException raiseException(Throwable exception){
+    return exceptionMarshal.raiseException(exception);
   }
 
   /**
@@ -563,10 +575,10 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
   /**
    * Make a printable string of this SourceProcessor.
    *
-   * @return " at source character-position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
+   * @return " location: source character-position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
    */
   public String toTraceString() {
-    String source = " at " + Tools.makeNotNull(sourceLabel, "source") + " character-position: ";
+    String source = "; location: " + Tools.makeNotNull(sourceLabel, "source") + " character-position: ";
     return source + this.index + " = {line: " + this.line + ", column: " + this.column + "}";
   }
 
@@ -608,6 +620,22 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     public TextScannerSyntaxError raiseSyntaxError(String message){
       return new TextScannerSyntaxError(message);
     }
+
+  }
+
+  public static final class ASCII{
+
+    public final static char[] MAP_WHITE_SPACE = new TextScannerRangeMap.Assembler(9, 13).merge(20).compile();
+    public final static char[] MAP_LETTERS = new TextScannerRangeMap.Assembler(65, 90).merge(97, 122).compile();
+    public final static char[] MAP_NUMBERS = new TextScannerRangeMap(48, 57).compile();
+    public final static char[] MAP_CONTROL = new TextScannerRangeMap.Assembler(0, 32).filter(MAP_WHITE_SPACE).compile();
+    public final static char[] MAP_EXTENDED = new TextScannerRangeMap(127, UBER_MAX).compile();
+
+    public final static char[] MAP_SYMBOLS = new TextScannerRangeMap.Assembler(33, 47)
+        .merge(58, 64)
+        .merge(91, 96)
+        .merge(123, 126)
+        .compile();
 
   }
 
