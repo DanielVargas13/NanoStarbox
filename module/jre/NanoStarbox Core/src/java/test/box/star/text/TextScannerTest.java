@@ -3,8 +3,6 @@ package box.star.text;
 import box.star.io.Streams;
 import org.junit.jupiter.api.Test;
 
-import java.util.regex.Pattern;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
@@ -14,14 +12,17 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.seek(new TextScannerPort("doctype"){
+    result = x.scan(new TextScannerPort("doctype"){
       char[] controlTerms = new char[]{'>'};
+      {
+        this.max = 6;
+      }
       @Override
       public boolean matchBreak(char character) {
         return TextScanner.charListContains(character, controlTerms);
       }
     });
-    System.err.println(result + x.expect('>'));
+    System.err.println(result + x.scanExact('>'));
   }
 
 

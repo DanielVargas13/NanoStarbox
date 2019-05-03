@@ -7,6 +7,8 @@ public class TextScannerPort implements TextScannerTaskManager, TextScannerDelim
 
   private static final String undefined = "undefined";
 
+  protected int max = 0;
+
   private final String expectation;
 
   public TextScannerPort(){this(null);}

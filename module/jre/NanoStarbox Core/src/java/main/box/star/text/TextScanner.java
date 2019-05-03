@@ -146,7 +146,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * @throws TextScannerException Thrown if trying to step back more than 1 step
    *  or if already at the start of the string
    */
-  public void back() throws TextScannerException {
+  protected void back() throws TextScannerException {
     if (this.usePrevious || this.index <= 0) {
       throw exceptionMarshal.raiseException("Stepping back two steps is not supported");
     }
@@ -208,28 +208,12 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
   }
 
   /**
-   * Determine if the next character is the specified character.
-   *
-   * This is not an efficient method. You should use a switch statement to process
-   * the stream units. This method is included for processing floating point numbers.
-   *
-   * @param character
-   * @return
-   */
-  public boolean hasNext(char character){
-    if (! hasNext() ) return false;
-    boolean result = next() == character;
-    back();
-    return result;
-  }
-
-  /**
    * Get the next character in the source string.
    *
    * @return The next character, or 0 if past the end of the source string.
    * @throws TextScannerException Thrown if there is an error reading the source string.
    */
-  public char next() throws TextScannerException {
+  public char scanNext() throws TextScannerException {
     int c;
     if (this.usePrevious) {
       this.usePrevious = false;
@@ -281,14 +265,13 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * @return The character.
    * @throws TextScannerException if the character does not match.
    */
-  public char expect(char c) throws TextScannerException {
-    char n = this.next();
+  public char scanExact(char c) throws TextScannerException {
+    char n = this.scanNext();
     if (n != c) {
       if(n > 0) {
-        throw this.syntaxError("Expected '" + c + "' and instead saw '" +
-            n + "'");
+        throw this.syntaxError("Failure while seeking exact: '"+c+"'; current-value: '"+n+"'");
       }
-      throw this.syntaxError("Expected '" + c + "' and instead saw ''");
+      throw this.syntaxError("Failure while seeking exact: '" + c + "'; current-value: ''");
     }
     return n;
   }
@@ -302,7 +285,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    *   Substring bounds error if there are not
    *   n characters remaining in the source string.
    */
-  public String select(int n) throws TextScannerException {
+  public String scanLength(int n) throws TextScannerException {
     if (n == 0) {
       return "";
     }
@@ -311,7 +294,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     int pos = 0;
 
     while (pos < n) {
-      chars[pos] = this.next();
+      chars[pos] = this.scanNext();
       if (this.end()) {
         throw this.syntaxError("Substring bounds error");
       }
@@ -322,9 +305,10 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
   public String scanRange(int floor, int ceiling){
     StringBuilder sb = new StringBuilder();
+    int f = normalizeRangeValue(floor), m = normalizeRangeValue(ceiling);
     for (;;) {
-      char c = this.next();
-      if (c == 0 || c < floor || c > ceiling) {
+      char c = this.scanNext();
+      if (c == 0 || c < f || c > m) {
         if (c != 0) {
           this.back();
         }
@@ -336,7 +320,6 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
   public String scanFloor(int floor){ return scanRange(floor, '\uffff'); }
   public String scanCeiling(int ceiling){ return scanRange(0, Math.min(ceiling, '\uffff')); }
-  public String scanControl(){ return scanCeiling(' '); }
 
 //  /**
 //   * Return the characters up to the next close quote character.
@@ -495,19 +478,20 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
    * Scans text until the TextScannerControl signals task complete.
    *
    * if the text stream ends before the control returns a syntax error will be thrown.
-   * if the controller signals early exit with a control character match, scanning will stop, and the next
-   * stream token will be the break signal (control character matched).
+   * if the controller signals early exit with a control character match or 1 based position equality with {@link TextScannerPort#max}, scanning will stop, and the next
+   * stream token will be the current token.
    *
    * @param control the scan controller to use.
    * @return the scanned text
    * @throws TextScannerSyntaxError
    */
   public String scan(TextScannerPort control) throws TextScannerSyntaxError {
-    char c;
+    char c; int i = 0;
     StringBuilder scanned = new StringBuilder();
     do {
-      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
-      if (control.matchBreak(c)){ this.back(); scanned.setLength(0); break; }
+      if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
+      ++i;
+      if (control.max == i || control.matchBreak(c)){ this.back(); scanned.setLength(0); break; }
       scanned.append(c);
     } while (control.continueScanning(scanned, this));
     return scanned.toString();
@@ -528,9 +512,11 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       long startCharacter = this.column;
       long startLine = this.line;
       this.reader.mark(1000000);
+      int i = 0;
       do {
-        c = this.next();
-        if (control.matchBreak(c)) c = 0;
+        c = this.scanNext();
+        ++i;
+        if (control.max == i || control.matchBreak(c)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -595,7 +581,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
 
       @Override
       public Character next() {
-        return host.next();
+        return host.scanNext();
       }
     };
   }
