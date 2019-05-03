@@ -3,7 +3,6 @@ package box.star.text;
 import box.star.Tools;
 import box.star.contract.Nullable;
 import box.star.io.SourceReader;
-import box.star.io.Streams;
 
 import java.io.*;
 import java.net.URI;
@@ -28,26 +27,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     return false;
   }
 
-  public static char[] filterCharList(char[] source, char[] filter){
-    List<Character> build = new ArrayList<>(source.length);
-    for (char c:source){
-      if (charMapContains(filter, c)) continue;
-      build.add(c);
-    }
-    Character[] out = new Character[build.size()];
-    return out.toString().toCharArray();
-  }
-
-  public static char[] mergeCharLists(char[] a, char[] b){
-    int i = 0;
-    char[] out = new char[a.length + b.length];
-    for(char c:a) out[i++] = c;
-    for(char c:b) out[i++] = c;
-    return out;
-  }
-
-  public static char[] selectCharList(RangeMap range){
-    List<Character> list = new ArrayList<>(range.end - range.start);
+  public static char[] buildRangeMap(RangeMap range){
+    List<Character> list = new ArrayList<>(normalizeRangeValue(range.end) - normalizeRangeValue(range.start));
     for (int i = range.start; i <= range.end; i++) list.add((char)i);
     Character[] out = new Character[list.size()];
     return out.toString().toCharArray();
@@ -319,21 +300,6 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     return new String(chars);
   }
 
-  public String scanRange(int floor, int ceiling){
-    StringBuilder sb = new StringBuilder();
-    int f = normalizeRangeValue(floor), m = normalizeRangeValue(ceiling);
-    for (;;) {
-      char c = this.scanNext();
-      if (c == 0 || c < f || c > m) {
-        if (c != 0) {
-          this.back();
-        }
-        return sb.toString().trim();
-      }
-      sb.append(c);
-    }
-  }
-
   /**
    * Scans text until the TextScannerControl signals task complete.
    *
@@ -526,7 +492,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       return character < start || character > end;
     }
     public char[] compile(){
-      return selectCharList(this);
+      return buildRangeMap(this);
     }
 
     public static class Assembler {
