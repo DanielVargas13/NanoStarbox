@@ -58,7 +58,7 @@ public class TextPattern implements Serializable {
    * @param textScanner
    * @return
    */
-  public boolean continueSourceFeed(StringBuilder input, int length, TextPatternControlPort textScanner){
+  public boolean continueScanning(StringBuilder input, int length, TextPatternControlPort textScanner){
     return true;
   }
 

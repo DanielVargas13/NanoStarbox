@@ -5,7 +5,6 @@ import box.star.contract.Nullable;
 
 import java.io.*;
 import java.util.Iterator;
-import java.util.Locale;
 
 public class TextScanner implements Iterable<Character>, TextPattern.TextPatternControlPort {
 
@@ -290,20 +289,6 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
     return new String(chars);
   }
 
-  public String scanCharacterMatch(String javaRegularExpression){
-    StringBuilder sb = new StringBuilder();
-    for (;;) {
-      char c = this.next();
-      if (c == 0 || ! String.valueOf(c).matches(javaRegularExpression)) {
-        if (c != 0) {
-          this.back();
-        }
-        return sb.toString().trim();
-      }
-      sb.append(c);
-    }
-  }
-
   public String scanRange(int floor, int ceiling){
     StringBuilder sb = new StringBuilder();
     for (;;) {
@@ -400,7 +385,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
     StringBuilder sb = new StringBuilder();
     for (;;) {
       c = this.next() + "";
-      if (delimiter.match(c) || ! delimiter.continueSourceFeed(sb, sb.length(), this)) {
+      if (delimiter.match(c) || ! delimiter.continueScanning(sb, sb.length(), this)) {
         if (c.indexOf(0) != 0) {
           this.back();
         }
@@ -412,7 +397,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
 
   /**
    * Scan characters until the TextPattern matches the next char.
-   * If the TextPattern declines to continue source feed, the operation will be aborted.
+   * If the TextPattern declines to continue scanning, the operation will be aborted.
    *
    * @param control A single-character TextPattern.
    * @return The text up to but not including delimiter, or an empty string if matching fails or is aborted.
@@ -430,7 +415,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
       do {
         c = this.next();
         if (this.index > startIndex)
-          if (! control.continueSourceFeed(scanned, scanned.length(), this)) c = 0;
+          if (! control.continueScanning(scanned, scanned.length(), this)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -453,24 +438,9 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
   }
 
 
-  public String scanSeek(String find, boolean caseMatch) throws TextScannerSyntaxError {
-    char c; int fl = find.length(), sl = 0;
-    StringBuilder scanned = new StringBuilder();
-    do {
-      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+find+"'");
-      scanned.append(c);
-      if ((++sl) >= fl){
-        String slice = scanned.substring(sl - fl);
-        if (caseMatch && slice.equals(find)) break;
-        else if (slice.toLowerCase(Locale.ENGLISH).equals(find.toLowerCase(Locale.ENGLISH))) break;
-      }
-    } while (true);
-    return scanned.substring(0, sl - fl);
-  }
-
   /**
    * Scans text until pattern matches the input buffer.
-   * if the TextPattern declines to continue source feed, the current buffer is returned.
+   * if the TextPattern declines to continue scanning, the current buffer is returned.
    *
    * if the text stream ends before the match succeeds a syntax error will be thrown.
    *
@@ -479,14 +449,14 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
    * @return the matched text
    * @throws TextScannerSyntaxError
    */
-  public String scanTextPattern(TextPattern textPattern) throws TextScannerSyntaxError {
+  public String scanMatch(TextPattern textPattern) throws TextScannerSyntaxError {
     char c; int length = 0;
     StringBuilder scanned = new StringBuilder();
     do {
       if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+textPattern.getLabel()+"'");
       scanned.append(c); ++length;
       if (textPattern.match(scanned.subSequence(0, length))) break;
-    } while (textPattern.continueSourceFeed(scanned, length, this));
+    } while (textPattern.continueScanning(scanned, length, this));
     return scanned.toString();
   }
 
