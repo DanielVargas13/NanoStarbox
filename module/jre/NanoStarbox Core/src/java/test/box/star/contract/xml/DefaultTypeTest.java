@@ -1,9 +1,8 @@
 package box.star.contract.xml;
 
 import box.star.contract.xml.core.Persister;
+//
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 

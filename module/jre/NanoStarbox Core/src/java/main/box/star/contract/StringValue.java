@@ -1,3 +1,5 @@
 package box.star.contract;
 
-public interface StringValue {}
+public interface StringValue {
+  String toString();
+}
