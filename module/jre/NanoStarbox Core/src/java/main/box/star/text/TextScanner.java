@@ -269,9 +269,9 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     char n = this.scanNext();
     if (n != c) {
       if(n > 0) {
-        throw this.syntaxError("Failure while seeking exact: '"+c+"'; current-value: '"+n+"'");
+        throw this.syntaxError("Failure while scanning: '"+c+"'; current-value: '"+n+"'");
       }
-      throw this.syntaxError("Failure while seeking exact: '" + c + "'; current-value: ''");
+      throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: ''");
     }
     return n;
   }
@@ -563,11 +563,11 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
   /**
    * Make a printable string of this SourceProcessor.
    *
-   * @return " at source character-position: {@link #index} = {column: {@link #column}, line: {@link #line}}"
+   * @return " at source character-position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
    */
   public String toTraceString() {
     String source = " at " + Tools.makeNotNull(sourceLabel, "source") + " character-position: ";
-    return source + this.index + " = {column: " + this.column + ", line: " + this.line + "}";
+    return source + this.index + " = {line: " + this.line + ", column: " + this.column + "}";
   }
 
   @Override
