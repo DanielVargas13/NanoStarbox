@@ -7,6 +7,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * http://simple.sourceforge.net/download/stream/doc/tutorial/tutorial.php
+ *
+ */
 class DefaultTypeTest {
 
   @Root
@@ -39,7 +43,6 @@ class DefaultTypeTest {
   @Test void main() throws Exception {
     Serializer serializer = new Persister();
     Example example = new Example("Example message", 123);
-    File result = new File("example.xml");
 
     serializer.write(example, System.err);
   }
