@@ -374,7 +374,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
 
   /**
    * Get the text up but not including the specified delimiter match
-   * or the specified TextPattern delimiter escape sequence, whichever comes first.
+   * or the specified TextPattern delimiter escape sequence or the end of the text stream, whichever comes first.
    * @param delimiter A character delimiter TextPattern.
    * @return A string.
    * @throws TextScannerException Thrown if there is an error while searching
