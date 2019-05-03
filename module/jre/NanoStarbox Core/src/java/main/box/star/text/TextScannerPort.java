@@ -1,11 +1,18 @@
 package box.star.text;
 
-public class TextScannerPort<EXPECT> implements TextScannerTaskManager, TextScannerDelimiterMatcher {
+import box.star.Tools;
+import box.star.contract.Nullable;
 
-  private final EXPECT expectation;
-  public TextScannerPort(EXPECT expectation){ this.expectation = expectation; }
+public class TextScannerPort implements TextScannerTaskManager, TextScannerDelimiterMatcher {
+
+  private static final String undefined = "undefined";
+
+  private final String expectation;
+
+  public TextScannerPort(){this(null);}
+  public TextScannerPort(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
   @Override public boolean continueScanning(StringBuilder input, TextScannerServicePort textScanner) { return true; }
   @Override public boolean matchBreak(char character) { return character != 0; }
-  public String getExpectation() { return String.valueOf(expectation); }
+  public String getExpectation() { return expectation; }
 
 }

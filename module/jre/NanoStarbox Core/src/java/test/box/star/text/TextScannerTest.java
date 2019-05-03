@@ -14,7 +14,7 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.seek(new TextScannerPort<String>("doctype"){
+    result = x.seek(new TextScannerPort("doctype"){
       char[] controlTerms = new char[]{'>'};
       @Override
       public boolean matchBreak(char character) {

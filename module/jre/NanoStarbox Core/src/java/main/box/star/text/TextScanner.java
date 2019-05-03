@@ -476,7 +476,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     StringBuilder scanned = new StringBuilder();
     do {
       if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+control.getExpectation()+"'");
-      if (control.matchBreak(c)){ this.back(); break; }
+      if (control.matchBreak(c)){ this.back(); scanned.setLength(0); break; }
       scanned.append(c);
     } while (control.continueScanning(scanned, this));
     return scanned.toString();
@@ -499,8 +499,7 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
       this.reader.mark(1000000);
       do {
         c = this.next();
-        if (this.index > startIndex)
-          if (! control.continueScanning(scanned, this)) c = 0;
+        if (control.matchBreak(c)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -509,10 +508,11 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
           this.index = startIndex;
           this.column = startCharacter;
           this.line = startLine;
+          scanned.setLength(0);
           return "";
         }
         scanned.append(c);
-      } while (! control.matchBreak(c) );
+      } while (control.continueScanning(scanned, this));
       scanned.setLength(scanned.length() - 1);
       this.reader.mark(1);
     } catch (IOException exception) {
