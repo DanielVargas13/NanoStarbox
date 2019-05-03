@@ -304,7 +304,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    * Scans text until the TextScannerControl signals task complete.
    *
    * if the text stream ends before the control returns a syntax error will be thrown.
-   * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#max}, scanning will stop, and the next
+   * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#bufferLimit}, scanning will stop, and the next
    * stream token will be the current token.
    *
    * @param scanMethod the scan controller to use.
@@ -315,14 +315,14 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     char c; int i = 0;
     char lookbehind = 0;
     boolean backslash = false, matched = false;
-    StringBuilder scanned = new StringBuilder();
+    StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
       if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+scanMethod+"'");
       if (c == '\\') backslash = ! backslash;
-      if (scanMethod.max == ++i || (matched = scanMethod.matchBoundary(c))){
-        if (matched && scanMethod.eatEscapes && lookbehind == '\\');
+      if (scanMethod.bufferLimit == ++i || (matched = scanMethod.matchBoundary(c))){
+        if (matched && scanMethod.performBackslashControl && lookbehind == '\\');
         else {
-          if (! scanMethod.acceptBoundary ) this.back();
+          if (! scanMethod.boundaryCeption) this.back();
           break;
         }
       }
@@ -344,7 +344,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    */
   public String seek(Method seekMethod) throws Exception {
     char c = 0;
-    StringBuilder scanned = new StringBuilder();
+    StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
     try {
       long startIndex = this.index;
       long startCharacter = this.column;
@@ -354,8 +354,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       do {
         c = this.scanNext();
         if (c == '\\') backslash = ! backslash;
-        if (seekMethod.max == ++i) c = 0;
-        if ((matched = seekMethod.matchBoundary(c)) && (seekMethod.eatEscapes?! backslash:true)) c = 0;
+        if (seekMethod.bufferLimit == ++i) c = 0;
+        if ((matched = seekMethod.matchBoundary(c)) && (seekMethod.performBackslashControl ?! backslash:true)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -375,7 +375,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       } while (seekMethod.continueScanning(scanned, this));
       this.reader.mark(1);
     } catch (IOException exception) { throw raiseException(exception); }
-    if (! seekMethod.acceptBoundary) {
+    if (! seekMethod.boundaryCeption) {
       scanned.setLength(scanned.length() - 1);
       this.back();
     }
@@ -558,16 +558,16 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
 
-    protected int max = 0;
-    protected boolean acceptBoundary, eatEscapes;
-    protected final String expectation;
+    protected int bufferLimit = 0;
+    protected boolean boundaryCeption, performBackslashControl;
+    protected final String claim;
 
     public Method(){this(null);}
-    public Method(@Nullable Object expectation){ this.expectation = String.valueOf(Tools.makeNotNull(expectation, undefined)); }
+    public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     @Override public boolean continueScanning(StringBuilder input, TextScannerContext textScanner) { return true; }
     @Override public boolean matchBoundary(char character) { return character != 0; }
-    @Override public String toString() { return expectation; }
+    @Override public String toString() { return claim; }
 
     @Override
     protected Object clone() {
