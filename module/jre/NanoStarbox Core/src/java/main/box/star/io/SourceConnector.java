@@ -15,7 +15,7 @@ import box.star.content.ParsedContentType;
  * @author Attila Szegedi
  * @version $Id: SourceReader.java,v 1.2 2010/02/15 19:31:17 szegedia%freemail.hu Exp $
  */
-public class SourceReader
+public class SourceConnector
 {
     public static URL toUrl(String path) {
         // Assume path is URL if it contains a colon and there are at least

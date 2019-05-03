@@ -2,7 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.Nullable;
-import box.star.io.SourceReader;
+import box.star.io.SourceConnector;
 
 import java.io.*;
 import java.net.URI;
@@ -13,13 +13,12 @@ import java.util.List;
 
 public class TextScanner implements Iterable<Character>, TextScannerContext {
 
-  private final static int UBER_MAX = '\uffff';
-
+  public final static int CHAR_MAX = '\uffff';
   private ExceptionMarshal exceptionMarshal = new ExceptionMarshal();
 
   public static int atLeastZero(int val){ return (val < 0)?0:val; }
-  public static int atMostCharMax(int val){ return (val > UBER_MAX)?'\uffff':val; }
-  public static int normalizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
+  public static int atMostCharMax(int val){ return (val > CHAR_MAX)?'\uffff':val; }
+  public static int sanitizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
 
   public static boolean charMapContains(char[] range, char search){
     for (char c: range)
@@ -28,7 +27,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   public static char[] buildRangeMap(RangeMap range){
-    List<Character> list = new ArrayList<>(normalizeRangeValue(range.end) - normalizeRangeValue(range.start));
+    List<Character> list = new ArrayList<>(sanitizeRangeValue(range.end) - sanitizeRangeValue(range.start));
     for (int i = range.start; i <= range.end; i++) list.add((char)i);
     Character[] out = new Character[list.size()];
     return out.toString().toCharArray();
@@ -54,7 +53,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   private String sourceLabel;
 
   /**
-   * Construct a SourceProcessor from a Reader. The caller must close the Reader.
+   * Construct a TextScanner from a Reader. The caller must close the Reader.
    *
    * @param sourceLabel a label for this text processor such as a file or url.
    * @param reader     A reader.
@@ -74,17 +73,17 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   public TextScanner(URL source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.toString()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
   }
   public TextScanner(URI source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.toString()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
   }
   public TextScanner(File source) {
-    this(source.getPath(), SourceReader.getRuntimeFileOrUrlInputStream(source.getPath()));
+    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.getPath()));
   }
 
   /**
-   * Construct a SourceProcessor from an InputStream. The caller must close the input stream.
+   * Construct a TextScanner from an InputStream. The caller must close the input stream.
    *
    * @param inputStream The source.
    */
@@ -93,7 +92,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   /**
-   * Construct a SourceProcessor from an InputStream. The caller must close the input stream.
+   * Construct a TextScanner from an InputStream. The caller must close the input stream.
    *
    * @param sourceLabel The label for the source.
    * @param inputStream The source.
@@ -103,7 +102,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   /**
-   * Construct a SourceProcessor from a string.
+   * Construct a TextScanner from a string.
    *
    * @param source     A source string.
    */
@@ -112,7 +111,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   /**
-   * Construct a SourceProcessor from a string.
+   * Construct a TextScanner from a string.
    *
    * @param source     A source string.
    */
@@ -395,28 +394,28 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   /**
-   * Make a SourceProcessorException to signal a syntax error.
+   * Make a TextScannerException to signal a syntax error.
    *
    * @param message The error message.
-   * @return  A SourceProcessorException object, suitable for throwing
+   * @return  A TextScannerException object, suitable for throwing
    */
   public SyntaxError syntaxError(String message) {
     return exceptionMarshal.raiseSyntaxError(message + this.toTraceString());
   }
 
   /**
-   * Make a SourceProcessorException to signal a syntax error.
+   * Make a TextScannerException to signal a syntax error.
    *
    * @param message The error message.
    * @param causedBy The throwable that caused the error.
-   * @return  A SourceProcessorException object, suitable for throwing
+   * @return  A TextScannerException object, suitable for throwing
    */
   public SyntaxError syntaxError(String message, Throwable causedBy) {
     return exceptionMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
   }
 
   /**
-   * Make a printable string of this SourceProcessor.
+   * Make a printable string of this TextScanner.
    *
    * @return " location: source character-position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
    */
@@ -472,7 +471,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     public final static char[] MAP_LETTERS = new RangeMap.Assembler(65, 90).merge(97, 122).compile();
     public final static char[] MAP_NUMBERS = new RangeMap(48, 57).compile();
     public final static char[] MAP_CONTROL = new RangeMap.Assembler(0, 32).filter(MAP_WHITE_SPACE).compile();
-    public final static char[] MAP_EXTENDED = new RangeMap(127, UBER_MAX).compile();
+    public final static char[] MAP_EXTENDED = new RangeMap(127, CHAR_MAX).compile();
 
     public final static char[] MAP_SYMBOLS = new RangeMap.Assembler(33, 47)
         .merge(58, 64)
@@ -486,7 +485,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
 
     public final int start, end;
     public RangeMap(int start, int end){
-      this.start = normalizeRangeValue(start); this.end = normalizeRangeValue(end);
+      this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
     }
     public boolean match(char character) {
       return character < start || character > end;
@@ -507,10 +506,10 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
         merge(new RangeMap(start, end));
       }
       public Assembler(int... integer){
-        for (int i:integer) chars.add((char) normalizeRangeValue(i));
+        for (int i:integer) chars.add((char) sanitizeRangeValue(i));
       }
       public Assembler merge(int... integer){
-        for (int i:integer) chars.add((char) normalizeRangeValue(i));
+        for (int i:integer) chars.add((char) sanitizeRangeValue(i));
         return this;
       }
       public Assembler merge(int start, int end){
@@ -524,7 +523,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
         return this;
       }
       public Assembler filter(int... integer){
-        for (int i:integer) chars.remove((char) normalizeRangeValue(i));
+        for (int i:integer) chars.remove((char) sanitizeRangeValue(i));
         return this;
       }
       public Assembler filter(int start, int end){
