@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Serializable Pattern Matcher with Label
  */
-public class TextPattern implements Serializable {
+public class TextPattern implements Serializable, TextScannerControl {
 
   private static final long serialVersionUID = 6063966247343433103L;
 
@@ -54,11 +54,10 @@ public class TextPattern implements Serializable {
   /**
    * Provides a way to throw custom syntax errors for match failure.
    * @param input
-   * @param length
    * @param textScanner
    * @return
    */
-  public boolean continueScanning(StringBuilder input, int length, TextPatternControlPort textScanner){
+  public boolean continueScanning(StringBuilder input, TextPatternControlPort textScanner){
     return true;
   }
 

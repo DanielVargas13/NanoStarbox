@@ -385,7 +385,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
     StringBuilder sb = new StringBuilder();
     for (;;) {
       c = this.next() + "";
-      if (delimiter.match(c) || ! delimiter.continueScanning(sb, sb.length(), this)) {
+      if (delimiter.match(c) || ! delimiter.continueScanning(sb, this)) {
         if (c.indexOf(0) != 0) {
           this.back();
         }
@@ -415,7 +415,7 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
       do {
         c = this.next();
         if (this.index > startIndex)
-          if (! control.continueScanning(scanned, scanned.length(), this)) c = 0;
+          if (! control.continueScanning(scanned, this)) c = 0;
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -456,7 +456,27 @@ public class TextScanner implements Iterable<Character>, TextPattern.TextPattern
       if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+textPattern.getLabel()+"'");
       scanned.append(c); ++length;
       if (textPattern.match(scanned.subSequence(0, length))) break;
-    } while (textPattern.continueScanning(scanned, length, this));
+    } while (textPattern.continueScanning(scanned, this));
+    return scanned.toString();
+  }
+
+  /**
+   * Scans text until the TextScannerControl signals task complete.
+   *
+   * if the text stream ends before the control returns a syntax error will be thrown.
+   *
+   * @param expectation string description for error
+   * @param control the scan controller to use.
+   * @return the scanned text
+   * @throws TextScannerSyntaxError
+   */
+  public String scan(String expectation, TextScannerControl control) throws TextScannerSyntaxError {
+    char c; int length = 0;
+    StringBuilder scanned = new StringBuilder();
+    do {
+      if ((c = this.next()) == 0) throw this.syntaxError("Expected '"+expectation+"'");
+      scanned.append(c); ++length;
+    } while (control.continueScanning(scanned, this));
     return scanned.toString();
   }
 
