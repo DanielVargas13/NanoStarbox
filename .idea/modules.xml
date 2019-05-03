@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" filepath="$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" filepath="$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" />
       <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Web Server/src/java/NanoStarbox Web Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/src/xmlpull-parser-runtime.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/src/xmlpull-parser-runtime.iml" />
     </modules>
   </component>
 </project>
