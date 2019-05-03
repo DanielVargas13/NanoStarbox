@@ -4,7 +4,9 @@ import box.star.Tools;
 import box.star.contract.Nullable;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TextScanner implements Iterable<Character>, TextScannerServicePort {
 
@@ -14,6 +16,42 @@ public class TextScanner implements Iterable<Character>, TextScannerServicePort 
     for (char c: range)
       if (search == c) return true;
     return false;
+  }
+
+  public class TextScannerValueRange implements TextScannerDelimiterMatcher {
+    public final int start, end;
+    public TextScannerValueRange(int start, int end){
+      this.start = start; this.end = Math.max(end, 256);
+    }
+    @Override
+    public boolean matchBreak(char character) {
+      return character < start || character > end;
+    }
+  }
+
+  public static char[] filterCharList(char[] source, char[] filter){
+    List<Character> build = new ArrayList<>(source.length);
+    for (char c:source){
+      if (charListContains(c, filter)) continue;
+      build.add(c);
+    }
+    Character[] out = new Character[build.size()];
+    return out.toString().toCharArray();
+  }
+
+  public static char[] mergeCharLists(char[] a, char[] b){
+    int i = 0;
+    char[] out = new char[a.length + b.length];
+    for(char c:a) out[i++] = c;
+    for(char c:b) out[i++] = c;
+    return out;
+  }
+
+  public static char[] selectCharList(TextScannerValueRange range){
+    List<Character> list = new ArrayList<>(range.end - range.start);
+    for (int i = range.start; i <= range.end; i++) list.add((char)i);
+    Character[] out = new Character[list.size()];
+    return out.toString().toCharArray();
   }
 
   /** current read character position on the current line. */
