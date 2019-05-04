@@ -312,27 +312,19 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    */
   public String scan(Method scanMethod) throws SyntaxError {
     char c; int i = 0;
-    char lookbehind = 0;
-    boolean backslash = false, matched = false;
     StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
       if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+scanMethod+"'");
-      if (c == '\\') backslash = ! backslash;
-      if (scanMethod.bufferLimit == ++i || (matched = scanMethod.matchBoundary(c))){
-        if (matched && scanMethod.performBackslashControl && lookbehind == '\\');
-        else {
-          if (! scanMethod.boundaryCeption) this.back();
-          else scanned.append(c);
-          break;
-        }
+      else if (scanMethod.bufferLimit == ++i) throw raiseException("Buffer overflow: "+scanMethod);
+      if (scanMethod.matchBoundary(c)) {
+        if (scanMethod.boundaryCeption) scanned.append(c);
+        break;
       }
-      if (lookbehind == '\\') {
-        if (matched) scanned.setLength(scanned.length() - 1);
-        backslash = false;
-      }
-      scanned.append(lookbehind = c);
+      scanned.append(c);
     } while (scanMethod.continueScanning(scanned, this));
+    if (! scanMethod.boundaryCeption) this.back();
     return scanned.toString();
+
   }
 
   /**
@@ -350,12 +342,14 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       long startCharacter = this.column;
       long startLine = this.line;
       this.reader.mark(1000000);
-      int i = 0; boolean backslash = false, matched = false; char lookBehind = 0;
+      int i = 0;
       do {
         c = this.scanNext();
-        if (c == '\\') backslash = ! backslash;
         if (seekMethod.bufferLimit == ++i) c = 0;
-        if ((matched = seekMethod.matchBoundary(c)) && (seekMethod.performBackslashControl ?! backslash:true)) c = 0;
+        else if (seekMethod.matchBoundary(c)) {
+          if (seekMethod.boundaryCeption) scanned.append(c);
+          break;
+        }
         if (c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
@@ -367,18 +361,11 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
           scanned.setLength(0);
           return "";
         }
-        if (lookBehind == '\\') {
-          if (matched) scanned.setLength(scanned.length() - 1);
-          backslash = false;
-        }
-        scanned.append(lookBehind = c);
+        scanned.append(c);
       } while (seekMethod.continueScanning(scanned, this));
       this.reader.mark(1);
     } catch (IOException exception) { throw raiseException(exception); }
-    if (! seekMethod.boundaryCeption) {
-      scanned.setLength(scanned.length() - 1);
-      this.back();
-    }
+    if (! seekMethod.boundaryCeption) this.back();
     return scanned.toString();
   }
 
