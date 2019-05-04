@@ -316,13 +316,14 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     do {
       if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+scanMethod+"'");
       else if (scanMethod.bufferLimit == ++i) throw raiseException("Buffer overflow: "+scanMethod);
-      if (scanMethod.matchBoundary(c)) {
-        if (scanMethod.boundaryCeption) scanned.append(c);
-        break;
-      }
       scanned.append(c);
+      if (scanMethod.matchBoundary(c)) break;
     } while (scanMethod.continueScanning(scanned, this));
-    if (! scanMethod.boundaryCeption) this.back();
+    if (scanMethod.boundaryCeption);
+    else {
+      this.back();
+      scanned.setLength(scanned.length() - 1);
+    }
     return scanned.toString();
 
   }
@@ -345,12 +346,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       int i = 0;
       do {
         c = this.scanNext();
-        if (seekMethod.bufferLimit == ++i) c = 0;
-        else if (seekMethod.matchBoundary(c)) {
-          if (seekMethod.boundaryCeption) scanned.append(c);
-          break;
-        }
-        if (c == 0) {
+        if (seekMethod.bufferLimit == ++i || c == 0) {
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
           // the mark size (1,000,000 above).
@@ -360,12 +356,18 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
           this.line = startLine;
           scanned.setLength(0);
           return "";
+        } else {
+          scanned.append(c);
+          if (seekMethod.matchBoundary(c)) break;
         }
-        scanned.append(c);
       } while (seekMethod.continueScanning(scanned, this));
       this.reader.mark(1);
     } catch (IOException exception) { throw raiseException(exception); }
-    if (! seekMethod.boundaryCeption) this.back();
+    if (seekMethod.boundaryCeption);
+    else {
+      this.back();
+      scanned.setLength(scanned.length() - 1);
+    }
     return scanned.toString();
   }
 
