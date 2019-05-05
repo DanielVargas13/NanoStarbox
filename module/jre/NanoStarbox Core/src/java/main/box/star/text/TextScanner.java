@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TextScanner implements Iterable<Character>, TextScannerContext {
+public class TextScanner implements Iterable<Character>, TextScannerMethodContext, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
-  private ExceptionMarshal exceptionMarshal = new ExceptionMarshal();
+  private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
+  private boolean backslashModeActive;
 
   public static int atLeastZero(int val){ return (val < 0)?0:val; }
   public static int atMostCharMax(int val){ return (val > CHAR_MAX)?'\uffff':val; }
   public static int sanitizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
 
-  public static boolean charMapContains(char[] range, char search){
+  public static boolean charMapContains(char search, char[] range){
     for (char c: range)
       if (search == c) return true;
     return false;
@@ -49,7 +50,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   private boolean usePrevious;
   /** the number of characters read in the previous line. */
   private long characterPreviousLine;
-
+  private boolean closeReader, closed;
   private String sourceLabel;
 
   /**
@@ -74,12 +75,15 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
 
   public TextScanner(URL source) {
     this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
+    this.closeReader = true;
   }
   public TextScanner(URI source) {
     this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
+    this.closeReader = true;
   }
   public TextScanner(File source) {
     this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.getPath()));
+    this.closeReader = true;
   }
 
   /**
@@ -144,7 +148,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    */
   protected void back() throws Exception {
     if (this.usePrevious || this.index <= 0) {
-      throw raiseException("Stepping back two steps is not supported");
+      throw new Exception("Stepping back two steps is not supported");
     }
     this.decrementIndexes();
     this.usePrevious = true;
@@ -158,8 +162,10 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     this.index--;
     if(this.previous=='\r' || this.previous == '\n') {
       this.line--;
-      this.column =this.characterPreviousLine ;
+      this.column = this.characterPreviousLine ;
     } else if(this.column > 0){
+      if (this.previous == '\\') this.backslashModeActive = ! this.backslashModeActive;
+      else this.backslashModeActive = false;
       this.column--;
     }
   }
@@ -188,7 +194,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     try {
       this.reader.mark(1);
     } catch (IOException e) {
-      throw raiseException("Unable to preserve stream position", e);
+      throw new Exception("Unable to preserve stream position", e);
     }
     try {
       // -1 is EOF, but next() can not consume the null character '\0'
@@ -198,7 +204,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       }
       this.reader.reset();
     } catch (IOException e) {
-      throw raiseException("Unable to read the next character from the stream", e);
+      throw new Exception("Unable to read the next character from the stream", e);
     }
     return true;
   }
@@ -218,17 +224,20 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
       try {
         c = this.reader.read();
       } catch (IOException exception) {
-        throw raiseException(exception);
+        throw new Exception(exception);
       }
     }
     if (c <= 0) { // End of stream
       this.eof = true;
+      close();
       return 0;
     }
     this.incrementIndexes(c);
     this.previous = (char) c;
     return this.previous;
   }
+
+  public boolean haveEscapeWarrant(){ return (previous == ASCII.BACKSLASH) && this.backslashModeActive; }
 
   /**
    * Increments the internal indexes according to the previous character
@@ -249,6 +258,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
         }
         this.column =0;
       } else {
+        if (c == '\\') this.backslashModeActive = ! this.backslashModeActive;
+        else this.backslashModeActive = false;
         this.column++;
       }
     }
@@ -265,9 +276,9 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     char n = this.scanNext();
     if (n != c) {
       if(n > 0) {
-        throw this.syntaxError("Failure while scanning: '"+c+"'; current-value: '"+n+"'");
+        throw this.claimSyntaxError("Failure while scanning: '"+c+"'; current-value: '"+n+"'");
       }
-      throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: ''");
+      throw this.claimSyntaxError("Failure while scanning: '" + c + "'; current-value: ''");
     }
     return n;
   }
@@ -285,14 +296,12 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     if (n == 0) {
       return "";
     }
-
     char[] chars = new char[n];
     int pos = 0;
-
     while (pos < n) {
       chars[pos] = this.scanNext();
       if (this.end()) {
-        throw this.syntaxError("Substring bounds error");
+        throw this.claimSyntaxError("Substring bounds error");
       }
       pos += 1;
     }
@@ -310,22 +319,28 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    * @return the scanned text
    * @throws SyntaxError
    */
-  public String scan(Method scanMethod) throws SyntaxError {
+  public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
     char c; int i = 0;
+    scanMethod.beginScanning(this, parameters);
     StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
-      if ((c = this.scanNext()) == 0) throw this.syntaxError("Expected '"+scanMethod+"'");
-      else if (scanMethod.bufferLimit == ++i) throw raiseException("Buffer overflow: "+scanMethod);
+      if ((c = this.scanNext()) == 0){
+        if (scanMethod.eofCeption) break;
+        throw claimSyntaxError("Expected '"+scanMethod+"'");
+      }
+      if (scanMethod.bufferLimit == ++i){
+        if (scanMethod.bufferLimitCeption) break;
+        throw new Exception("Buffer overflow: "+scanMethod);
+      }
       scanned.append(c);
-      if (scanMethod.matchBoundary(c)) break;
-    } while (scanMethod.continueScanning(scanned, this));
+      if (scanMethod.matchBoundary(this, c)) break;
+    } while (scanMethod.continueScanning(this, scanned));
     if (scanMethod.boundaryCeption);
     else {
       this.back();
       scanned.setLength(scanned.length() - 1);
     }
-    return scanned.toString();
-
+    return scanMethod.returnScanned(this, scanned);
   }
 
   /**
@@ -335,18 +350,24 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    * @return the text up to but not including the control break.
    * @throws Exception if an IOException occurs
    */
-  public String seek(Method seekMethod) throws Exception {
+  public String seek(Method seekMethod, Object... parameters) throws Exception {
     char c = 0;
+    seekMethod.beginScanning(this, parameters);
     StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
     try {
       long startIndex = this.index;
       long startCharacter = this.column;
       long startLine = this.line;
+      boolean escapeFlag = this.backslashModeActive;
       this.reader.mark(1000000);
       int i = 0;
+      boolean bufferLimitReached;
       do {
         c = this.scanNext();
-        if (seekMethod.bufferLimit == ++i || c == 0) {
+        bufferLimitReached = seekMethod.bufferLimit == ++i;
+        if (bufferLimitReached || c == 0) {
+          if (bufferLimitReached && seekMethod.bufferLimitCeption) break;
+          if (seekMethod.eofCeption) break;
           // in some readers, reset() may throw an exception if
           // the remaining portion of the input is greater than
           // the mark size (1,000,000 above).
@@ -354,43 +375,32 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
           this.index = startIndex;
           this.column = startCharacter;
           this.line = startLine;
+          this.backslashModeActive = escapeFlag;
           scanned.setLength(0);
           return "";
         } else {
           scanned.append(c);
-          if (seekMethod.matchBoundary(c)) break;
+          if (seekMethod.matchBoundary(this, c)) break;
         }
-      } while (seekMethod.continueScanning(scanned, this));
+      } while (seekMethod.continueScanning(this, scanned));
       this.reader.mark(1);
-    } catch (IOException exception) { throw raiseException(exception); }
+    } catch (IOException exception) { throw new Exception(exception); }
     if (seekMethod.boundaryCeption);
     else {
       this.back();
       scanned.setLength(scanned.length() - 1);
     }
-    return scanned.toString();
+    return seekMethod.returnScanned(this, scanned);
   }
-
-  public Exception raiseException(String message, Throwable exception){
-    return exceptionMarshal.raiseException(message, exception);
-  }
-
-  public Exception raiseException(String message){
-    return exceptionMarshal.raiseException(message);
-  }
-
-  public Exception raiseException(Throwable exception){
-    return exceptionMarshal.raiseException(exception);
-  }
-
+  
   /**
    * Make a TextScannerException to signal a syntax error.
    *
    * @param message The error message.
    * @return  A TextScannerException object, suitable for throwing
    */
-  public SyntaxError syntaxError(String message) {
-    return exceptionMarshal.raiseSyntaxError(message + this.toTraceString());
+  public SyntaxError claimSyntaxError(String message) {
+    return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString());
   }
 
   /**
@@ -400,8 +410,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
    * @param causedBy The throwable that caused the error.
    * @return  A TextScannerException object, suitable for throwing
    */
-  public SyntaxError syntaxError(String message, Throwable causedBy) {
-    return exceptionMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
+  public SyntaxError claimSyntaxError(String message, Throwable causedBy) {
+    return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
   }
 
   /**
@@ -430,21 +440,19 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
     };
   }
 
-  void setExceptionMarshal(ExceptionMarshal marshal){
-    this.exceptionMarshal = marshal;
+  void setSyntaxErrorMarshal(SyntaxErrorMarshal marshal){
+    this.syntaxErrorMarshal = marshal;
   }
 
-  public static class ExceptionMarshal {
+  @Override
+  public void close() {
+    if (closeReader) try /* close stream ignoring exceptions with final closure */ {
+      reader.close();
+      closed = true;
+    } catch (IOException ignored){}
+  }
 
-    public Exception raiseException(String message) {
-      return new Exception(message);
-    }
-    public Exception raiseException(Throwable causedBy){
-      return new Exception(causedBy);
-    }
-    public Exception raiseException(String message, Throwable causedBy){
-      return new Exception(message, causedBy);
-    }
+  public static class SyntaxErrorMarshal {
 
     public SyntaxError raiseSyntaxError(String message, Throwable causedBy) {
       return new SyntaxError(message, causedBy);
@@ -456,6 +464,15 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
   }
 
   public static final class ASCII{
+
+    public final static char NULL_CHARACTER = 0;
+
+    public final static char META_DOCUMENT_TAG_START = '<';
+    public final static char META_DOCUMENT_TAG_END = '>';
+
+    public final static char BACKSLASH = '\\';
+    public final static char SINGLE_QUOTE = '\'';
+    public final static char DOUBLE_QUOTE = '"';
 
     public final static char[] MAP_WHITE_SPACE = new RangeMap.Assembler(9, 13).merge(20).compile();
     public final static char[] MAP_LETTERS = new RangeMap.Assembler(65, 90).merge(97, 122).compile();
@@ -523,11 +540,13 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
         return filter(map.compile());
       }
       public Assembler filter(char... map){
-        for (char c: map) chars.remove(c);
+        for (int i = 0; i < chars.size(); i++) {
+          if (TextScanner.charMapContains(chars.get(i), map)) chars.remove(i);
+        }
         return this;
       }
 
-      char[] compile(){
+      public char[] compile(){
         return toString().toCharArray();
       }
 
@@ -542,20 +561,28 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
 
   }
 
-  public static class Method implements TextScannerDriver, CharacterBoundaryControl, Serializable, Cloneable {
+  public static class Method implements TextScannerMethodDriver, CharacterBoundaryControl, Serializable, Cloneable {
 
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
 
     protected int bufferLimit = 0;
-    protected boolean boundaryCeption, performBackslashControl;
+    protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected final String claim;
 
     public Method(){this(null);}
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
-    @Override public boolean continueScanning(StringBuilder input, TextScannerContext textScanner) { return true; }
-    @Override public boolean matchBoundary(char character) { return character != 0; }
+    @Override
+    public void beginScanning(TextScannerMethodContext context, Object[] parameters) {}
+
+    @Override
+    public String returnScanned(TextScanner scanner, StringBuilder scanned) {
+      return scanned.toString();
+    }
+
+    @Override public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) { return true; }
+    @Override public boolean matchBoundary(TextScannerMethodContext context, char character) { return character == 0; }
     @Override public String toString() { return claim; }
 
     @Override
@@ -655,7 +682,13 @@ public class TextScanner implements Iterable<Character>, TextScannerContext {
 
   }
 
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
+  }
+  
   public static interface CharacterBoundaryControl {
-    boolean matchBoundary(char character);
+    boolean matchBoundary(TextScannerMethodContext context, char character);
   }
 }

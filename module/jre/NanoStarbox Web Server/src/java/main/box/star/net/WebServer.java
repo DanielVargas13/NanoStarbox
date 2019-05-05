@@ -29,7 +29,6 @@ public class WebServer extends HTTPServer {
     configuration.set("mimeTypeMap", new MimeTypeMap());
     configuration.set("staticIndexFiles", staticIndexFiles = new Stack<>());
     configuration.set("mimeTypeReaders", new Stack<>());
-    configuration.set("templateCache", new Hashtable<>());
     configuration.set("mimeTypeDriverTable", new Hashtable<>());
     configuration.set("templateFillerTable", new Hashtable<>());
 
@@ -82,27 +81,8 @@ public class WebServer extends HTTPServer {
     return (Stack<MimeTypeReader>) configuration.get("mimeTypeReaders");
   }
 
-  public Hashtable<File, Template> getTemplateCache() {
-    return (Hashtable<File, Template>) configuration.get("templateCache");
-  }
-
   public void addStaticIndexFile(String filename) {
     getStaticIndexFiles().push(filename);
-  }
-
-  public boolean isTemplateMimeType(String mimeType) {
-    return getTemplateFillerTable().containsKey(mimeType);
-  }
-
-  public Template getTemplate(File source) {
-    Hashtable<File, Template> templateCache = getTemplateCache();
-    if (templateCache.containsKey(source)) {
-      return templateCache.get(source);
-    } else {
-      Template data;
-      templateCache.put(source, data = new Template(source));
-      return data;
-    }
   }
 
   @Override
@@ -137,14 +117,6 @@ public class WebServer extends HTTPServer {
       return;
     }
     mimeTypeDriverTable.put(mimeType, driver);
-  }
-
-  private Hashtable<String, Template.Filler> getTemplateFillerTable() {
-    return (Hashtable<String, Template.Filler>) configuration.get("templateFillerTable");
-  }
-
-  public final void registerTemplateFiller(String mimeType, Template.Filler filler) {
-    getTemplateFillerTable().put(mimeType, filler);
   }
 
   public void start(String hostname, int port) throws IOException {
@@ -282,14 +254,6 @@ public class WebServer extends HTTPServer {
 
     Response magic = getMimeTypeResponse(file, mimeType, query);
     if (magic != null) return magic;
-
-    if (isTemplateMimeType(mimeType)) {
-      Hashtable<String, Template.Filler> table = getTemplateFillerTable();
-      Template.Filler filler = table.get(mimeType);
-      if (filler == null) return staticFileResponse(file, mimeType, query);
-      Template template = getTemplate(file);
-      return stringResponse(Status.OK, mimeType, template.fill(filler));
-    }
 
     return staticFileResponse(file, mimeType, query);
 

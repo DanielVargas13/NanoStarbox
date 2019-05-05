@@ -29,7 +29,6 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
     addGlobalObject("server", server);
     server.addStaticIndexFile("index.js");
     server.registerMimeTypeDriver(RHINO_DRIVER_KEY, this);
-    server.registerTemplateFiller(HTTPServer.MIME_HTML, new RhinoTemplateFiller(this));
   }
 
   public static void createInstance(WebServer ws) {
