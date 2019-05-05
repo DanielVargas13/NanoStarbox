@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
@@ -23,7 +22,7 @@ public class DocumentBuilderTest {
         boundaryCeption = true;
       }
       @Override
-      public boolean matchBoundary(char character) {
+      public boolean exitMethod(char character) {
         if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
         if (character == META_DOCUMENT_TAG_END) return true;
         return false;
@@ -36,7 +35,7 @@ public class DocumentBuilderTest {
         boundaryCeption = true;
       }
       @Override
-      public boolean matchBoundary(char character) {
+      public boolean exitMethod(char character) {
         if (haveEscapeWarrant() || matchQuote(character)) return false;
         return character == META_DOCUMENT_TAG_END;
       }
@@ -76,14 +75,14 @@ public class DocumentBuilderTest {
   static class ContentScannerMethod extends TextScanner.Method {
     public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
     @Override
-    public boolean matchBoundary(char character) {
+    public boolean exitMethod(char character) {
       return character == META_DOCUMENT_TAG_START;
     }
   }
 
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
-  TextScanner.FindStringMethod endTag = new TextScanner.FindStringMethod().EscapeQuotes().AnyCase();
+  TextScanner.Method.FindString endTag = new TextScanner.Method.FindString().EscapeQuotes().AnyCase();
 
   @Test
   void main() {

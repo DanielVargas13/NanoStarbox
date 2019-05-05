@@ -13,7 +13,7 @@ import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
 
-public class TextScanner implements Iterable<Character>, TextScannerContext, Closeable {
+public class TextScanner implements Iterable<Character>, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
@@ -32,7 +32,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     return false;
   }
 
-  private static char[] buildRangeMap(RangeMap range){
+  private static char[] buildRangeMap(CharacterClass.RangeMap range){
     StringBuilder out = new StringBuilder();
     for(int i = range.start; i <= range.end; i++)out.append((char)i);
     return out.toString().toCharArray();
@@ -337,7 +337,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
         throw new Exception("Buffer overflow: "+scanMethod);
       }
       scanned.append(c);
-      if (scanMethod.matchBoundary(c)) break;
+      if (scanMethod.exitMethod(c)) break;
     } while (scanMethod.continueScanning(scanned));
     if (scanMethod.boundaryCeption);
     else {
@@ -345,12 +345,19 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
       scanned.setLength(scanned.length() - 1);
     }
     scanMethod.methodScanner = null;
-    return scanMethod.returnScanned(this, scanned);
+    return scanMethod.computeMethodCall(this, scanned);
   }
 
   private void startMethod(Method method, Object... parameters){
+    if (method.methodScanner != null) throw new Exception(new OperationNotSupportedException("method instance already running"));
     method.method_initialize(this);
-    method.beginScanning(parameters);
+    method.startMethod(parameters);
+  }
+
+  private boolean seeking;
+
+  public boolean isSeeking() {
+    return seeking;
   }
 
   /**
@@ -361,6 +368,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
    * @throws Exception if an IOException occurs
    */
   public String seek(Method seekMethod, Object... parameters) throws Exception {
+    if (seeking) throw new Exception(new OperationNotSupportedException("scanner is already in seek mode"));
+    seeking = true;
     char c = 0;
     startMethod(seekMethod, parameters);
     StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
@@ -390,7 +399,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
           return "";
         } else {
           scanned.append(c);
-          if (seekMethod.matchBoundary(c)) break;
+          if (seekMethod.exitMethod(c)) break;
         }
       } while (seekMethod.continueScanning(scanned));
       this.reader.mark(1);
@@ -401,7 +410,8 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
       scanned.setLength(scanned.length() - 1);
     }
     seekMethod.methodScanner = null;
-    return seekMethod.returnScanned(this, scanned);
+    seeking = false;
+    return seekMethod.computeMethodCall(this, scanned);
   }
   
   /**
@@ -488,33 +498,15 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     public final static char[] MAP = new CharacterClass(0, CHAR_MAX).assemble();
     public final static char[] MAP_WHITE_SPACE = new CharacterClass(9, 13).merge(' ').assemble();
     public final static char[] MAP_LETTERS = new CharacterClass(65, 90).merge(97, 122).assemble();
-    public final static char[] MAP_NUMBERS = new RangeMap(48, 57).compile();
+    public final static char[] MAP_NUMBERS = new CharacterClass.RangeMap(48, 57).compile();
     public final static char[] MAP_CONTROL = new CharacterClass(0, 31).filter(MAP_WHITE_SPACE).assemble();
-    public final static char[] MAP_EXTENDED = new RangeMap(127, CHAR_MAX).compile();
+    public final static char[] MAP_EXTENDED = new CharacterClass.RangeMap(127, CHAR_MAX).compile();
 
     public final static char[] MAP_SYMBOLS = new CharacterClass(33, 47)
         .merge(58, 64)
         .merge(91, 96)
         .merge(123, 126)
         .assemble();
-  }
-
-  private static class RangeMap {
-
-    public final int start, end;
-
-    private RangeMap(int start, int end){
-      this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
-    }
-
-    public boolean match(char character) {
-      return character >= start || character <= end;
-    }
-
-    public char[] compile(){
-      return buildRangeMap(this);
-    }
-
   }
 
   public static class Method implements TextScannerMethod, Serializable, Cloneable {
@@ -526,7 +518,48 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     private char methodQuote;
     private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
-    private TextScannerContext methodScanner;
+
+    public SyntaxErrorMarshal getSyntaxErrorMarshal() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.getSyntaxErrorMarshal();
+    }
+
+    public char scanNext() throws Exception {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.scanNext();
+    }
+
+    public char scanExact(char c) throws Exception {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.scanExact(c);
+    }
+
+    public String scanLength(int n) throws Exception {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.scanLength(n);
+    }
+
+    public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.scan(scanMethod, parameters);
+    }
+
+    public boolean isSeeking() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.isSeeking();
+    }
+
+    public String seek(Method seekMethod, Object... parameters) throws Exception {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.seek(seekMethod, parameters);
+    }
+
+    public void close() {
+      if (methodScanner == null) return;
+      methodScanner.close();
+    }
+
+    private TextScanner methodScanner;
 
     // implementation prep
     private void method_initialize(TextScanner textScanner){
@@ -581,15 +614,15 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     @Override
-    public void beginScanning(Object[] parameters) {}
+    public void startMethod(Object[] parameters) {}
 
     @Override
-    public String returnScanned(TextScanner scanner, StringBuilder scanned) {
+    public String computeMethodCall(TextScanner scanner, StringBuilder scanned) {
       return scanned.toString();
     }
 
     @Override public boolean continueScanning(StringBuilder input) { return true; }
-    @Override public boolean matchBoundary(char character) { return character == 0; }
+    @Override public boolean exitMethod(char character) { return character == 0; }
     @Override public String toString() { return claim; }
 
     @Override
@@ -620,12 +653,12 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
 
     public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
       if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
-      return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
+      return getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
     }
 
     public RuntimeException claimSyntaxError(String message) {
       if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
-      return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message);
+      return getSyntaxErrorMarshal().raiseSyntaxError(message);
     }
 
     public boolean hasNext() {
@@ -663,6 +696,83 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
       return methodScanner.sourceLabel();
     }
 
+    public static class FindString extends Method {
+
+      protected String comparisonClaim;
+      protected boolean checkMatch, caseSensitive = true;
+      protected char quote, finalMatchCharacter;
+      protected int findLength, sourceLength;
+      protected boolean handleQuoting = false;
+      protected Locale locale = Locale.ENGLISH;
+
+      public FindString EscapeQuotes(){
+        handleQuoting = true;
+        return this;
+      }
+
+      public FindString AnyCase(){
+        caseSensitive = false;
+        return this;
+      }
+
+      public FindString AnyCase(Locale locale){
+        this.locale = locale;
+        caseSensitive = false;
+        return this;
+      }
+
+      @Override
+      public void startMethod(Object... parameters) {
+        claim = String.valueOf(parameters[0]);
+        findLength = claim.length();
+        checkMatch = false;
+        boundaryCeption = true;
+        if (! caseSensitive) {
+          comparisonClaim = claim.toLowerCase(locale);
+          finalMatchCharacter = comparisonClaim.charAt(claim.length() - 1);
+        } else {
+          finalMatchCharacter = claim.charAt(claim.length() - 1);
+        }
+        sourceLength = 0;
+        quote = NULL_CHARACTER;
+      }
+      boolean quoting(){
+        return quote != NULL_CHARACTER;
+      }
+      @Override
+      public boolean continueScanning(StringBuilder input) {
+        if (checkMatch) {
+          String match = input.substring(Math.max(0, sourceLength - findLength));
+          // IF this matches STOP scanning by returning false.
+          if (caseSensitive) { if (match.equals(claim)) return false; }
+          else if (match.toLowerCase(locale).equals(comparisonClaim)) return false;
+        }
+        return true;
+      }
+
+      @Override
+      public boolean exitMethod(char character) {
+
+        // since this is a string-match-operation, every branch returns false.
+        final boolean matchBoundary = false;
+
+        if (handleQuoting){
+          // handle escapes
+          if (haveEscapeWarrant()) return matchBoundary;
+          // handle quoting
+          if (matchQuote(character)) return matchBoundary;
+        }
+
+        sourceLength++;
+        if (! caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
+        // activate matching if this is the last character to match and our buffer is large enough.
+        checkMatch = (character == finalMatchCharacter) && (sourceLength >= findLength);
+
+        return matchBoundary;
+
+      }
+
+    }
   }
 
   /**
@@ -758,88 +868,6 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     close();
     super.finalize();
   }
-  
-  public static interface CharacterBoundaryControl {
-    boolean matchBoundary(char character);
-  }
-
-  public static class FindStringMethod extends Method {
-
-    protected String comparisonClaim;
-    protected boolean checkMatch, caseSensitive = true;
-    protected char quote, finalMatchCharacter;
-    protected int findLength, sourceLength;
-    protected boolean handleQuoting = false;
-    protected Locale locale = Locale.ENGLISH;
-
-    public FindStringMethod EscapeQuotes(){
-      handleQuoting = true;
-      return this;
-    }
-
-    public FindStringMethod AnyCase(){
-      caseSensitive = false;
-      return this;
-    }
-
-    public FindStringMethod AnyCase(Locale locale){
-      this.locale = locale;
-      caseSensitive = false;
-      return this;
-    }
-
-    @Override
-    public void beginScanning(Object... parameters) {
-      claim = String.valueOf(parameters[0]);
-      findLength = claim.length();
-      checkMatch = false;
-      boundaryCeption = true;
-      if (! caseSensitive) {
-        comparisonClaim = claim.toLowerCase(locale);
-        finalMatchCharacter = comparisonClaim.charAt(claim.length() - 1);
-      } else {
-        finalMatchCharacter = claim.charAt(claim.length() - 1);
-      }
-      sourceLength = 0;
-      quote = NULL_CHARACTER;
-    }
-    boolean quoting(){
-      return quote != NULL_CHARACTER;
-    }
-    @Override
-    public boolean continueScanning(StringBuilder input) {
-      if (checkMatch) {
-        String match = input.substring(Math.max(0, sourceLength - findLength));
-        // IF this matches STOP scanning by returning false.
-        if (caseSensitive) { if (match.equals(claim)) return false; }
-        else if (match.toLowerCase(locale).equals(comparisonClaim)) return false;
-      }
-      return true;
-    }
-
-    @Override
-    public boolean matchBoundary(char character) {
-
-      // since this is a string-match-operation, every branch returns false.
-      final boolean matchBoundary = false;
-
-      if (handleQuoting){
-        // handle escapes
-        if (haveEscapeWarrant()) return matchBoundary;
-        // handle quoting
-        if (matchQuote(character)) return matchBoundary;
-      }
-
-      sourceLength++;
-      if (! caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
-      // activate matching if this is the last character to match and our buffer is large enough.
-      checkMatch = (character == finalMatchCharacter) && (sourceLength >= findLength);
-
-      return matchBoundary;
-
-    }
-
-  }
 
   public static class CharacterClass implements Serializable {
     private static final long serialVersionUID = 8454376662352328447L;
@@ -911,5 +939,22 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
       return chars.indexOf(character+"") != -1;
     }
 
+    private static class RangeMap {
+
+      public final int start, end;
+
+      private RangeMap(int start, int end){
+        this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
+      }
+
+      public boolean match(char character) {
+        return character >= start || character <= end;
+      }
+
+      public char[] compile(){
+        return buildRangeMap(this);
+      }
+
+    }
   }
 }
