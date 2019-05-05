@@ -1,7 +1,6 @@
 package box.star.text;
 
 import box.star.Tools;
-import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.SourceConnector;
 import box.star.state.SuperTokenMap;
@@ -344,7 +343,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
   }
 
   private void startMethod(Method method, Object... parameters){
-    method.initialize_call();
+    method.method_initialize();
     method.beginScanning(this, parameters);
   }
 
@@ -516,19 +515,21 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
 
-    private SuperTokenMap<Serializable> tokenMap;
+    // implementation managed
+    private char methodQuote;
+    private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
 
-    protected char quote;
+    // implementation prep
+    private void method_initialize(){
+      methodQuote = NULL_CHARACTER;
+      methodTokenMap = new SuperTokenMap();
+      methodContext = new Stack<>();
+    }
+
     protected int bufferLimit = 0;
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected String claim;
-
-    private void initialize_call(){
-      quote = NULL_CHARACTER;
-      tokenMap = new SuperTokenMap();
-      methodContext = new Stack<>();
-    }
 
     /**
      * Enters a sub-context.
@@ -541,7 +542,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
      * @see #exitSubContext(TextScannerSafeContext, String)
      */
     protected String enterSubContext(TextScannerSafeContext context, Serializable subContext){
-      String token = tokenMap.put(subContext);
+      String token = methodTokenMap.put(subContext);
       methodContext.push(token);
       return token;
     }
@@ -560,8 +561,8 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     protected <ANY extends Serializable> ANY exitSubContext(TextScannerSafeContext context, String token){
       if (methodContext.peek().equals(token)){
         methodContext.pop();
-        ANY v = (ANY) tokenMap.get(token);
-        tokenMap.eraseToken(token);
+        ANY v = (ANY) methodTokenMap.get(token);
+        methodTokenMap.eraseToken(token);
         return v;
       } else{
         throw context.claimSyntaxError("trying to exit wrong sub-context");
@@ -591,19 +592,19 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     }
 
     public boolean isQuoting(){
-      return quote != NULL_CHARACTER;
+      return methodQuote != NULL_CHARACTER;
     }
 
     public boolean matchQuote(char character){
       // handle quoting
       if (isQuoting()){
         // deactivate quoting if applicable
-        if (character == quote) quote = NULL_CHARACTER;
+        if (character == methodQuote) methodQuote = NULL_CHARACTER;
         return true;
       }
       // activate quoting if applicable
       if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
-        quote = character;
+        methodQuote = character;
         return true;
       }
       return false;
