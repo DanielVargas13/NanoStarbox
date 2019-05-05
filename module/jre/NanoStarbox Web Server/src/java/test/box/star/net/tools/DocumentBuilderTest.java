@@ -113,7 +113,6 @@ public class DocumentBuilderTest {
       if (dt.equals("serve")){
         textScanner.seek(endTag, "</serve>", false);
         out.print("<!-- Template Data Goes Here -->");
-        textScanner.scan(documentTag);
       } else {
         out.print(dt);
       }

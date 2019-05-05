@@ -706,6 +706,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       finalMatchCharacter = claim.charAt(claim.length() - 1);
       findLength = claim.length();
       checkMatch = false;
+      boundaryCeption = true;
       caseSensitive = (parameters.length > 1) && (boolean) parameters[1];
       if (! caseSensitive) comparisonClaim = claim.toLowerCase(Locale.ENGLISH);
       sourceLength = 0;
