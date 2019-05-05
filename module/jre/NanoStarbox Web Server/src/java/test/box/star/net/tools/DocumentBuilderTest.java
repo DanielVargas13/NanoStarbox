@@ -40,57 +40,8 @@ public class DocumentBuilderTest {
     }
 
     @Override
-    public String toString() {
-      return source + attributes;
-    }
+    public String toString() { return source + attributes; }
 
-  }
-
-  static class TextEndingMatch extends TextScanner.Method {
-    private String find;
-    char quote;
-    @Override
-    public void beginScanning(TextScannerMethodContext context, Object... parameters) {
-      find = String.valueOf(parameters[0]);
-      quote = 0;
-    }
-    @Override
-    public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) {
-      // return true if not in a quote and we found the requested text at the ending.
-      return ! (quote == 0 && input.toString().endsWith(find));
-    }
-    @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
-
-      if (context.haveEscapeWarrant()) return false;
-
-      switch (quote){
-        case SINGLE_QUOTE:{
-          if (character == SINGLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        case DOUBLE_QUOTE:{
-          if (character == DOUBLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        default:{
-          if (character == DOUBLE_QUOTE){
-            quote = DOUBLE_QUOTE;
-            return false;
-          }
-          if (character == SINGLE_QUOTE){
-            quote = SINGLE_QUOTE;
-            return false;
-          }
-          return false;
-        }
-      }
-    }
-
-    @Override
-    public String toString() {
-      return find;
-    }
   }
 
   static class ContentScannerMethod extends TextScanner.Method {
@@ -152,7 +103,7 @@ public class DocumentBuilderTest {
 
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
-  TextEndingMatch textEndingMatch = new TextEndingMatch();
+  TextScanner.FindUnquotedStringMethod endTag = new TextScanner.FindUnquotedStringMethod();
   @Test
   void main() {
     PrintStream out = System.out;
@@ -160,7 +111,7 @@ public class DocumentBuilderTest {
       out.print(textScanner.seek(documentContent));
       DocumentTag dt = new DocumentTag(textScanner);
       if (dt.equals("serve")){
-        textScanner.seek(textEndingMatch, "</serve>");
+        textScanner.seek(endTag, "</serve>", false);
         out.print("<!-- Template Data Goes Here -->");
         textScanner.scan(documentTag);
       } else {
