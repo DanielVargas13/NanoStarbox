@@ -549,6 +549,10 @@ public class TextScanner implements Iterable<Character>, Closeable {
         .assemble();
   }
 
+  /**
+   * Text Scanner Method Implementation
+   *
+   */
   public static class Method implements TextScannerMethod, Serializable, Cloneable {
 
     private static final long serialVersionUID = -7389459770461075270L;
