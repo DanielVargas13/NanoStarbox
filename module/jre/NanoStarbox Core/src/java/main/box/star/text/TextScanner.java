@@ -560,7 +560,9 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     protected <ANY extends Serializable> ANY exitSubContext(TextScannerSafeContext context, String token){
       if (methodContext.peek().equals(token)){
         methodContext.pop();
-        return (ANY) tokenMap.get(token);
+        ANY v = (ANY) tokenMap.get(token);
+        tokenMap.eraseToken(token);
+        return v;
       } else{
         throw context.claimSyntaxError("trying to exit wrong sub-context");
       }
