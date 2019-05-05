@@ -1,8 +1,11 @@
 package box.star.text;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 public final class Char {
+
+  public final static int CHAR_MAX = '\uffff';
 
   public final static char NULL_CHARACTER = 0;
 
@@ -13,24 +16,16 @@ public final class Char {
   public final static char SINGLE_QUOTE = '\'';
   public final static char DOUBLE_QUOTE = '"';
 
-  public final static int CHAR_MAX = '\uffff';
-  public final static char[] MAP = new MapAssembler(0, CHAR_MAX).assemble();
-  public final static char[] MAP_WHITE_SPACE = new MapAssembler(9, 13).merge(' ').assemble();
-  public final static char[] MAP_LETTERS = new MapAssembler(65, 90).merge(97, 122).assemble();
+  public final static char[] MAP = new MapAssembler(0, CHAR_MAX).toArray();
+  public final static char[] MAP_WHITE_SPACE = new MapAssembler(9, 13).merge(' ').toArray();
+  public final static char[] MAP_LETTERS = new MapAssembler(65, 90).merge(97, 122).toArray();
   public final static char[] MAP_NUMBERS = new MapAssembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_CONTROL = new MapAssembler(0, 31).filter(MAP_WHITE_SPACE).assemble();
+  public final static char[] MAP_CONTROL = new MapAssembler(0, 31).filter(MAP_WHITE_SPACE).toArray();
   public final static char[] MAP_EXTENDED = new MapAssembler.RangeMap(127, CHAR_MAX).compile();
-
-  public final static char[] MAP_SYMBOLS = new MapAssembler(33, 47)
-      .merge(58, 64)
-      .merge(91, 96)
-      .merge(123, 126)
-      .assemble();
+  public final static char[] MAP_SYMBOLS = new MapAssembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 126).toArray();
 
   public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
-
   public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? '\uffff' : val; }
-
   public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
 
   public static boolean charMapContains(char search, char[] range) {
@@ -44,8 +39,19 @@ public final class Char {
     return out.toString().toCharArray();
   }
 
-  public static class MapAssembler implements Serializable {
+  public static class MapAssembler implements Serializable, Iterable<Character> {
+
     private static final long serialVersionUID = 8454376662352328447L;
+
+    @Override public Iterator<Character> iterator() {
+      final char[] data = this.toArray();
+      return new Iterator<Character>() {
+        int i = 0;
+        @Override public boolean hasNext() { return i < data.length; }
+        @Override public Character next() { return data[i++]; }
+      };
+    }
+
     StringBuilder chars = new StringBuilder();
 
     public MapAssembler(RangeMap map) {
@@ -56,16 +62,14 @@ public final class Char {
       merge(map);
     }
 
-    public MapAssembler(int start, int end) {
-      merge(new RangeMap(start, end));
-    }
+    public MapAssembler(int start, int end) { merge(new RangeMap(start, end)); }
 
     public MapAssembler(int... integer) {
       merge(integer);
     }
 
     public MapAssembler merge(int... integer) {
-      char[] current = assemble();
+      char[] current = toArray();
       for (int i : integer) {
         char c = (char) sanitizeRangeValue(i);
         if (!charMapContains(c, current)) chars.append(c);
@@ -82,7 +86,7 @@ public final class Char {
     }
 
     public MapAssembler merge(char... map) {
-      char[] current = assemble();
+      char[] current = toArray();
       for (char c : map) if (!charMapContains(c, current)) chars.append(c);
       return this;
     }
@@ -113,7 +117,7 @@ public final class Char {
       return this;
     }
 
-    public char[] assemble() {
+    public char[] toArray() {
       return chars.toString().toCharArray();
     }
 
@@ -127,22 +131,18 @@ public final class Char {
     }
 
     private static class RangeMap {
-
       public final int start, end;
-
       RangeMap(int start, int end) {
         this.start = sanitizeRangeValue(start);
         this.end = sanitizeRangeValue(end);
       }
-
       public boolean match(char character) {
         return character >= start || character <= end;
       }
-
       public char[] compile() {
         return buildRangeMap(this);
       }
-
     }
+
   }
 }

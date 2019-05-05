@@ -110,7 +110,7 @@ public class DocumentBuilderTest {
   }
 
   void CharacterClassAssembly(){
-    char[] map = new Char.MapAssembler(9, 13).merge(' ').assemble();
+    char[] map = new Char.MapAssembler(9, 13).merge(' ').toArray();
     assert(Arrays.equals(map, MAP_WHITE_SPACE));
     assert(Arrays.equals(new char[]{9,10,11,12,13,32}, MAP_WHITE_SPACE));
   }
