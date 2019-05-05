@@ -786,10 +786,15 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public static class MatchString extends Method {
 
-      private final int minimumLength;
+      private int sourceLength, minimumLength, maximumLength;
       Pattern pattern;
       private boolean checkMatch, matchStart;
-      private int sourceLength;
+
+      public MatchString MatchStart(int maximumLength){
+        if (maximumLength < minimumLength) throw new IllegalArgumentException("maximum length is less than minimum length");
+        this.maximumLength = maximumLength;
+        return MatchStart();
+      }
 
       public MatchString MatchStart(){
         matchStart = true;
@@ -816,7 +821,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
       @Override
       public boolean continueScanning(StringBuilder input) {
         if (checkMatch) {
-          String match = (matchStart)?input.substring(0):input.substring(Math.max(0, sourceLength - minimumLength));
+          String match;
+          if (matchStart){
+            match = (maximumLength > 0)?input.substring(0, maximumLength):input.substring(0);
+          } else {
+            match = input.substring(Math.max(0, sourceLength - minimumLength));
+          }
           if (pattern.matcher(match).matches()) return false;
           else if (matchStart) {
             popErrorLocation();
