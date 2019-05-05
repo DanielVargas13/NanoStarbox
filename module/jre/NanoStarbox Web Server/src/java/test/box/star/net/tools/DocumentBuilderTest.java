@@ -40,68 +40,12 @@ public class DocumentBuilderTest {
     }
 
     @Override
-    public String toString() {
-      return source + attributes;
-    }
+    public String toString() { return source + attributes; }
 
-  }
-
-  static class TextEndingMatch extends TextScanner.Method {
-    private String find;
-    char quote, lastCharacter;
-    boolean checkMatch;
-    int length;
-    @Override
-    public void beginScanning(TextScannerMethodContext context, Object... parameters) {
-      find = String.valueOf(parameters[0]);
-      lastCharacter = find.charAt(find.length() - 1);
-      length = find.length();
-      quote = 0;
-      checkMatch = false;
-    }
-    @Override
-    public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) {
-      if (checkMatch && input.length() >= length) return ! (quote == 0 && input.toString().endsWith(find));
-      return true;
-    }
-    @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
-
-      if (context.haveEscapeWarrant()) return false;
-
-      switch (quote){
-        case SINGLE_QUOTE:{
-          if (character == SINGLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        case DOUBLE_QUOTE:{
-          if (character == DOUBLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        default:{
-          if (character == DOUBLE_QUOTE){
-            quote = DOUBLE_QUOTE;
-            return false;
-          }
-          if (character == SINGLE_QUOTE){
-            quote = SINGLE_QUOTE;
-            return false;
-          }
-          if (character == lastCharacter) checkMatch = true;
-          else checkMatch = false;
-          return false;
-        }
-      }
-    }
-
-    @Override
-    public String toString() {
-      return find;
-    }
   }
 
   static class ContentScannerMethod extends TextScanner.Method {
-    public ContentScannerMethod() { super("start of document tag"); }
+    public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
       return character == META_DOCUMENT_TAG_START;
@@ -110,7 +54,7 @@ public class DocumentBuilderTest {
   static class TagScannerMethod extends TextScanner.Method {
     char[] WHITE_SPACE = new char[]{9, 10, 11, 12, 13, ' '};
     public TagScannerMethod() {
-      super("end of document element header");
+      super(META_DOCUMENT_TAG_END);
       boundaryCeption = true;
     }
     @Override
@@ -159,7 +103,7 @@ public class DocumentBuilderTest {
 
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
-  TextEndingMatch textEndingMatch = new TextEndingMatch();
+  TextScanner.FindUnquotedStringMethod endTag = new TextScanner.FindUnquotedStringMethod();
   @Test
   void main() {
     PrintStream out = System.out;
@@ -167,7 +111,7 @@ public class DocumentBuilderTest {
       out.print(textScanner.seek(documentContent));
       DocumentTag dt = new DocumentTag(textScanner);
       if (dt.equals("serve")){
-        textScanner.seek(textEndingMatch, "</serve>");
+        textScanner.seek(endTag, "</serve>", false);
         out.print("<!-- Template Data Goes Here -->");
         textScanner.scan(documentTag);
       } else {

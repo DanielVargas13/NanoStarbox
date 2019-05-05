@@ -10,6 +10,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import static box.star.text.TextScanner.ASCII.*;
 
 public class TextScanner implements Iterable<Character>, TextScannerMethodContext, Closeable {
 
@@ -229,7 +232,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     }
     if (c <= 0) { // End of stream
       this.eof = true;
-      close();
+      //close();
       return 0;
     }
     this.incrementIndexes(c);
@@ -568,7 +571,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
 
     protected int bufferLimit = 0;
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
-    protected final String claim;
+    protected String claim;
 
     public Method(){this(null);}
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
@@ -690,5 +693,67 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
   
   public static interface CharacterBoundaryControl {
     boolean matchBoundary(TextScannerMethodContext context, char character);
+  }
+
+  public static class FindUnquotedStringMethod extends Method {
+    protected String comparisonClaim;
+    protected boolean checkMatch, caseSensitive;
+    protected char quote, finalMatchCharacter;
+    protected int findLength, sourceLength;
+    @Override
+    public void beginScanning(TextScannerMethodContext context, Object... parameters) {
+      claim = String.valueOf(parameters[0]);
+      finalMatchCharacter = claim.charAt(claim.length() - 1);
+      findLength = claim.length();
+      checkMatch = false;
+      caseSensitive = (parameters.length > 1) && (boolean) parameters[1];
+      if (! caseSensitive) comparisonClaim = claim.toLowerCase(Locale.ENGLISH);
+      sourceLength = 0;
+      quote = NULL_CHARACTER;
+    }
+    boolean quoting(){
+      return quote != NULL_CHARACTER;
+    }
+    @Override
+    public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) {
+      if (checkMatch) {
+        String match = input.substring(Math.max(0, sourceLength - findLength));
+        // IF this matches STOP scanning by returning false.
+        if (caseSensitive) { if (match.endsWith(claim)) return false; }
+        else if (match.toLowerCase(Locale.ENGLISH).equals(comparisonClaim)) return false;
+      }
+      return true;
+    }
+    @Override
+    public boolean matchBoundary(TextScannerMethodContext context, char character) {
+
+      sourceLength++;
+
+      // since this is a string-match-operation, every branch returns false.
+      final boolean matchBoundary = false;
+
+      // handle escapes
+      if (context.haveEscapeWarrant()) return matchBoundary;
+
+      // handle quoting
+      if (quoting()){
+        // deactivate quoting if applicable
+        if (character == quote) quote = NULL_CHARACTER;
+        return matchBoundary;
+      }
+
+      // activate quoting if applicable
+      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
+        quote = character;
+        return matchBoundary;
+      }
+
+      // activate matching if this is the last character to match and our buffer is large enough.
+      checkMatch = (character == finalMatchCharacter) && sourceLength >= findLength;
+
+      return matchBoundary;
+
+    }
+
   }
 }
