@@ -51,6 +51,7 @@ public class DocumentBuilderTest {
       return character == META_DOCUMENT_TAG_START;
     }
   }
+
   static class TagScannerMethod extends TextScanner.Method {
     char[] WHITE_SPACE = new char[]{9, 10, 11, 12, 13, ' '};
     public TagScannerMethod() {
@@ -59,7 +60,7 @@ public class DocumentBuilderTest {
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-      return (TextScanner.charMapContains(character, WHITE_SPACE)) || (character == META_DOCUMENT_TAG_END);
+      return (character == META_DOCUMENT_TAG_END) || (TextScanner.charMapContains(character, WHITE_SPACE));
     }
   }
   static class AttributeScannerMethod extends TextScanner.Method {
@@ -69,8 +70,7 @@ public class DocumentBuilderTest {
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-      if (context.haveEscapeWarrant()) return false;
-      if (matchQuote(character)) return false;
+      if (context.haveEscapeWarrant() || matchQuote(character)) return false;
       return character == META_DOCUMENT_TAG_END;
     }
   }
@@ -78,6 +78,7 @@ public class DocumentBuilderTest {
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
   TextScanner.FindUnquotedStringMethod endTag = new TextScanner.FindUnquotedStringMethod();
+
   @Test
   void main() {
     PrintStream out = System.out;
@@ -94,4 +95,8 @@ public class DocumentBuilderTest {
     }
   }
 
+  @Test void map(){
+    char[] map = new TextScanner.RangeMap.Assembler(9, 13).merge(20).compile();
+    for (int c:map) System.out.println(Integer.valueOf(c));
+  }
 }
