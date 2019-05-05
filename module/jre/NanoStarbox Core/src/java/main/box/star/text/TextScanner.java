@@ -492,16 +492,18 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
         .assemble();
   }
 
-  public static class RangeMap {
+  private static class RangeMap {
 
     public final int start, end;
-    public RangeMap(int start, int end){
+
+    private RangeMap(int start, int end){
       this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
     }
 
     public boolean match(char character) {
-      return character < start || character > end;
+      return character >= start || character <= end;
     }
+
     public char[] compile(){
       return buildRangeMap(this);
     }
@@ -707,15 +709,13 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       if (checkMatch) {
         String match = input.substring(Math.max(0, sourceLength - findLength));
         // IF this matches STOP scanning by returning false.
-        if (caseSensitive) { if (match.endsWith(claim)) return false; }
+        if (caseSensitive) { if (match.equals(claim)) return false; }
         else if (match.toLowerCase(locale).equals(comparisonClaim)) return false;
       }
       return true;
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-
-      sourceLength++;
 
       // since this is a string-match-operation, every branch returns false.
       final boolean matchBoundary = false;
@@ -728,7 +728,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       }
 
       // activate matching if this is the last character to match and our buffer is large enough.
-      checkMatch = (character == finalMatchCharacter) && sourceLength >= findLength;
+      checkMatch = (character == finalMatchCharacter) && (sourceLength++ >= findLength);
 
       return matchBoundary;
 
@@ -736,7 +736,8 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
 
   }
 
-  public static class CharacterClass {
+  public static class CharacterClass implements Serializable {
+    private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
     public CharacterClass(RangeMap map){
       this(map.compile());
@@ -799,6 +800,10 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     @Override
     public String toString() {
       return chars.toString();
+    }
+
+    public boolean match(char character){
+      return chars.indexOf(character+"") != -1;
     }
 
   }
