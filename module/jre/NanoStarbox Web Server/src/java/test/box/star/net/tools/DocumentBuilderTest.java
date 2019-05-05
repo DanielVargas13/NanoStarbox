@@ -63,41 +63,15 @@ public class DocumentBuilderTest {
     }
   }
   static class AttributeScannerMethod extends TextScanner.Method {
-
-    char quote;
-    @Override public void beginScanning(TextScannerMethodContext context, Object... parameters) { quote = NULL_CHARACTER; }
-
     public AttributeScannerMethod() {
       super("attribute scanner");
       boundaryCeption = true;
     }
-
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-
       if (context.haveEscapeWarrant()) return false;
-
-      switch (quote){
-        case SINGLE_QUOTE:{
-          if (character == SINGLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        case DOUBLE_QUOTE:{
-          if (character == DOUBLE_QUOTE) quote = NULL_CHARACTER;
-          return false;
-        }
-        default:{
-          if (character == DOUBLE_QUOTE){
-            quote = DOUBLE_QUOTE;
-            return false;
-          }
-          if (character == SINGLE_QUOTE){
-            quote = SINGLE_QUOTE;
-            return false;
-          }
-          return character == META_DOCUMENT_TAG_END;
-        }
-      }
+      if (matchQuote(character)) return false;
+      return character == META_DOCUMENT_TAG_END;
     }
   }
 

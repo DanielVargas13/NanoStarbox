@@ -324,7 +324,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
    */
   public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
     char c; int i = 0;
-    scanMethod.beginScanning(this, parameters);
+    startMethod(scanMethod, parameters);
     StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
       if ((c = this.scanNext()) == 0){
@@ -346,6 +346,11 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     return scanMethod.returnScanned(this, scanned);
   }
 
+  private void startMethod(Method method, Object... parameters){
+    method.reset_quoting();
+    method.beginScanning(this, parameters);
+  }
+
   /**
    * Works like scan, but restores the stream and returns nothing if the operation fails.
    *
@@ -355,7 +360,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
    */
   public String seek(Method seekMethod, Object... parameters) throws Exception {
     char c = 0;
-    seekMethod.beginScanning(this, parameters);
+    startMethod(seekMethod, parameters);
     StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
     try {
       long startIndex = this.index;
@@ -569,9 +574,14 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
 
+    protected char quote;
     protected int bufferLimit = 0;
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected String claim;
+
+    private void reset_quoting(){
+      quote = NULL_CHARACTER;
+    }
 
     public Method(){this(null);}
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
@@ -593,6 +603,25 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       try /* bake-cookies ignoring exceptions with final closure */ {
         return super.clone();
       } catch (CloneNotSupportedException fatal){throw new RuntimeException(fatal);}
+    }
+
+    public boolean isQuoting(){
+      return quote != NULL_CHARACTER;
+    }
+
+    public boolean matchQuote(char character){
+      // handle quoting
+      if (isQuoting()){
+        // deactivate quoting if applicable
+        if (character == quote) quote = NULL_CHARACTER;
+        return true;
+      }
+      // activate quoting if applicable
+      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
+        quote = character;
+        return true;
+      }
+      return false;
     }
 
   }
@@ -735,19 +764,8 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
 
       // handle escapes
       if (context.haveEscapeWarrant()) return matchBoundary;
-
       // handle quoting
-      if (quoting()){
-        // deactivate quoting if applicable
-        if (character == quote) quote = NULL_CHARACTER;
-        return matchBoundary;
-      }
-
-      // activate quoting if applicable
-      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
-        quote = character;
-        return matchBoundary;
-      }
+      if (matchQuote(character)) return matchBoundary;
 
       // activate matching if this is the last character to match and our buffer is large enough.
       checkMatch = (character == finalMatchCharacter) && sourceLength >= findLength;
