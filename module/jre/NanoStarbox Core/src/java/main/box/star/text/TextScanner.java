@@ -343,7 +343,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
       if ((c = this.scanNext()) == 0) {
-        if (scanMethod.eofCeption) break;
+        if (scanMethod.endOfSourceCeption) break;
         throw syntaxError("Expected '" + scanMethod + "'");
       }
       if (scanMethod.bufferLimit == ++i) {
@@ -400,7 +400,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
         bufferLimitReached = seekMethod.bufferLimit == ++i;
         if (bufferLimitReached || c == 0) {
           if (bufferLimitReached && seekMethod.bufferLimitCeption) break;
-          if (seekMethod.eofCeption) break;
+          if (seekMethod.endOfSourceCeption) break;
           throw new IllegalStateException();
         } else {
           scanned.append(c);
@@ -506,7 +506,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     private static final String undefined = "undefined";
     // user managed
     protected int bufferLimit = 0;
-    protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
+    protected boolean boundaryCeption, endOfSourceCeption, bufferLimitCeption;
     protected String claim;
     TextScanner methodScanner;
     // implementation managed
@@ -524,9 +524,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return this;
     }
 
-    public Method EOFCeption(){
+    public Method EndOfSourceCeption(){
       if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
-      this.eofCeption = true;
+      this.endOfSourceCeption = true;
       return this;
     }
     public Method BufferLimitCeption(){
