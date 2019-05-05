@@ -19,6 +19,10 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
   private boolean backslashModeActive;
 
+  public SyntaxErrorMarshal getSyntaxErrorMarshal() {
+    return syntaxErrorMarshal;
+  }
+
   public static int atLeastZero(int val){ return (val < 0)?0:val; }
   public static int atMostCharMax(int val){ return (val > CHAR_MAX)?'\uffff':val; }
   public static int sanitizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
@@ -525,13 +529,13 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
 
     public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
       try /*  throwing runtime exceptions */ {
-        return methodScanner.claimSyntaxError(message, causedBy);
+        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
     public RuntimeException claimSyntaxError(String message) {
       try /*  throwing runtime exceptions */ {
-        return methodScanner.claimSyntaxError(message);
+        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message);
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
@@ -623,7 +627,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
         methodTokenMap.eraseToken(token);
         return v;
       } else{
-        throw methodScanner.claimSyntaxError("trying to exit wrong sub-context");
+        throw methodScanner.getSyntaxErrorMarshal().raiseSyntaxError("trying to exit wrong sub-context");
       }
     }
 

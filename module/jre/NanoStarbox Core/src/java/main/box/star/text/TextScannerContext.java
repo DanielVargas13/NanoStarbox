@@ -5,8 +5,7 @@ package box.star.text;
  * a text scanner method.
  */
 public interface TextScannerContext {
-  RuntimeException claimSyntaxError(String message, Throwable causedBy);
-  RuntimeException claimSyntaxError(String message);
+  TextScanner.SyntaxErrorMarshal getSyntaxErrorMarshal();
   boolean hasNext();
   /**
    * Detects if the scanner has found a backslash-warrant at this position.
