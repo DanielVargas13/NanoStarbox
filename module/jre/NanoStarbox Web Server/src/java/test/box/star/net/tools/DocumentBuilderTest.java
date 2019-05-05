@@ -74,6 +74,7 @@ public class DocumentBuilderTest {
 
   static class ContentScannerMethod extends TextScanner.Method {
     public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
+
     @Override
     public boolean exitMethod(char character) {
       return character == META_DOCUMENT_TAG_START;
