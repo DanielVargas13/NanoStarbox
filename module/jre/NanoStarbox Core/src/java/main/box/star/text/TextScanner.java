@@ -7,9 +7,7 @@ import box.star.io.SourceConnector;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import static box.star.text.TextScanner.ASCII.*;
@@ -30,7 +28,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     return false;
   }
 
-  public static char[] buildRangeMap(RangeMap range){
+  private static char[] buildRangeMap(RangeMap range){
     StringBuilder out = new StringBuilder();
     for(int i = range.start; i <= range.end; i++)out.append((char)i);
     return out.toString().toCharArray();
@@ -481,18 +479,17 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     public final static char SINGLE_QUOTE = '\'';
     public final static char DOUBLE_QUOTE = '"';
 
-    public final static char[] MAP_WHITE_SPACE = new RangeMap.Assembler(9, 13).merge(20).compile();
-    public final static char[] MAP_LETTERS = new RangeMap.Assembler(65, 90).merge(97, 122).compile();
+    public final static char[] MAP_WHITE_SPACE = new CharacterClass(9, 13).merge(20).assemble();
+    public final static char[] MAP_LETTERS = new CharacterClass(65, 90).merge(97, 122).assemble();
     public final static char[] MAP_NUMBERS = new RangeMap(48, 57).compile();
-    public final static char[] MAP_CONTROL = new RangeMap.Assembler(0, 32).filter(MAP_WHITE_SPACE).compile();
+    public final static char[] MAP_CONTROL = new CharacterClass(0, 32).filter(MAP_WHITE_SPACE).assemble();
     public final static char[] MAP_EXTENDED = new RangeMap(127, CHAR_MAX).compile();
 
-    public final static char[] MAP_SYMBOLS = new RangeMap.Assembler(33, 47)
+    public final static char[] MAP_SYMBOLS = new CharacterClass(33, 47)
         .merge(58, 64)
         .merge(91, 96)
         .merge(123, 126)
-        .compile();
-
+        .assemble();
   }
 
   public static class RangeMap {
@@ -501,73 +498,12 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     public RangeMap(int start, int end){
       this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
     }
+
     public boolean match(char character) {
       return character < start || character > end;
     }
     public char[] compile(){
       return buildRangeMap(this);
-    }
-
-    public static class Assembler {
-      StringBuilder chars = new StringBuilder();
-      public Assembler(RangeMap map){
-        this(map.compile());
-      }
-      public Assembler(char... map){
-        this.merge(map);
-      }
-      public Assembler(int start, int end){
-        merge(new RangeMap(start, end));
-      }
-      public Assembler(int... integer){
-        for (int i:integer) chars.append((char) sanitizeRangeValue(i));
-      }
-      public Assembler merge(int... integer){
-        for (int i:integer) chars.append((char) sanitizeRangeValue(i));
-        return this;
-      }
-      public Assembler merge(int start, int end){
-        return merge(new RangeMap(start, end));
-      }
-      public Assembler merge(RangeMap map){
-        return merge(map.compile());
-      }
-      public Assembler merge(char... map){
-        for (char c: map) chars.append(c);
-        return this;
-      }
-      public Assembler filter(int... integer){
-        StringBuilder map = new StringBuilder();
-        for (int i : integer) map.append((char) i);
-        char[] chars = map.toString().toCharArray();
-        filter(chars);
-        return this;
-      }
-      public Assembler filter(int start, int end){
-        return filter(new RangeMap(start, end));
-      }
-      public Assembler filter(RangeMap map){
-        return filter(map.compile());
-      }
-      public Assembler filter(char... map){
-        StringBuilder filter = new StringBuilder();
-        for (char c: filter.toString().toCharArray()){
-          if (charMapContains(c, map)) continue;
-          filter.append(c);
-        }
-        this.chars = filter;
-        return this;
-      }
-
-      public char[] compile(){
-        return chars.toString().toCharArray();
-      }
-
-      @Override
-      public String toString() {
-        return chars.toString();
-      }
-
     }
 
   }
@@ -775,6 +711,73 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
 
       return matchBoundary;
 
+    }
+
+  }
+
+  public static class CharacterClass {
+    StringBuilder chars = new StringBuilder();
+    public CharacterClass(RangeMap map){
+      this(map.compile());
+    }
+    public CharacterClass(char... map){
+      merge(map);
+    }
+    public CharacterClass(int start, int end){
+      merge(new RangeMap(start, end));
+    }
+    public CharacterClass(int... integer){
+      merge(integer);
+    }
+    public CharacterClass merge(int... integer){
+      char[] current = assemble();
+      for (int i:integer) {
+        char c = (char)sanitizeRangeValue(i);
+        if (! charMapContains(c, current)) chars.append(c);
+      }
+      return this;
+    }
+    public CharacterClass merge(int start, int end){
+      return merge(new RangeMap(start, end));
+    }
+    public CharacterClass merge(RangeMap map){
+      return merge(map.compile());
+    }
+    public CharacterClass merge(char... map){
+      char[] current = assemble();
+      for (char c: map) if (! charMapContains(c, current)) chars.append(c);
+      return this;
+    }
+    public CharacterClass filter(int... integer){
+      StringBuilder map = new StringBuilder();
+      for (int i : integer) map.append((char) i);
+      char[] chars = map.toString().toCharArray();
+      filter(chars);
+      return this;
+    }
+    public CharacterClass filter(int start, int end){
+      return filter(new RangeMap(start, end));
+    }
+    public CharacterClass filter(RangeMap map){
+      return filter(map.compile());
+    }
+    public CharacterClass filter(char... map){
+      StringBuilder filter = new StringBuilder();
+      for (char c: filter.toString().toCharArray()){
+        if (charMapContains(c, map)) continue;
+        filter.append(c);
+      }
+      this.chars = filter;
+      return this;
+    }
+
+    public char[] assemble(){
+      return chars.toString().toCharArray();
+    }
+
+    @Override
+    public String toString() {
+      return chars.toString();
     }
 
   }

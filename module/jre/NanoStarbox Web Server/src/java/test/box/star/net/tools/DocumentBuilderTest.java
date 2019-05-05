@@ -53,14 +53,13 @@ public class DocumentBuilderTest {
   }
 
   static class TagScannerMethod extends TextScanner.Method {
-    char[] WHITE_SPACE = new char[]{9, 10, 11, 12, 13, ' '};
     public TagScannerMethod() {
       super(META_DOCUMENT_TAG_END);
       boundaryCeption = true;
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-      return (character == META_DOCUMENT_TAG_END) || (TextScanner.charMapContains(character, WHITE_SPACE));
+      return (character == META_DOCUMENT_TAG_END) || (TextScanner.charMapContains(character, MAP_WHITE_SPACE));
     }
   }
   static class AttributeScannerMethod extends TextScanner.Method {
@@ -96,7 +95,7 @@ public class DocumentBuilderTest {
   }
 
   @Test void map(){
-    char[] map = new TextScanner.RangeMap.Assembler(9, 13).merge(20).compile();
+    char[] map = new TextScanner.CharacterClass(9, 13).merge(20).assemble();
     for (int c:map) System.out.println(Integer.valueOf(c));
   }
 }
