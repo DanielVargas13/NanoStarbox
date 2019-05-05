@@ -786,7 +786,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public static class MatchString extends Method {
 
-      private final int findLength;
+      private final int minimumLength;
       Pattern pattern;
       private boolean checkMatch, matchStart;
       private int sourceLength;
@@ -796,12 +796,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
         return this;
       }
 
-      public MatchString(String claim, int length, String pattern) {
-        this(claim, length, pattern, 0);
+      public MatchString(String claim, int minimumLength, String pattern) {
+        this(claim, minimumLength, pattern, 0);
       }
-      public MatchString(String claim, int length, String pattern, int flags) {
+      public MatchString(String claim, int minimumLength, String pattern, int flags) {
         super(claim);
-        this.findLength = length;
+        this.minimumLength = minimumLength;
         this.pattern = Pattern.compile(pattern, flags);
       }
 
@@ -816,7 +816,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       @Override
       public boolean continueScanning(StringBuilder input) {
         if (checkMatch) {
-          String match = input.substring(Math.max(0, sourceLength - findLength));
+          String match = input.substring(Math.max(0, sourceLength - minimumLength));
           if (pattern.matcher(match).matches()) return false;
           else if (matchStart) {
             popErrorLocation();
@@ -829,7 +829,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       @Override
       public boolean exitMethod(char character) {
         sourceLength++;
-        checkMatch = (sourceLength >= findLength);
+        checkMatch = (sourceLength >= minimumLength);
         return false;
       }
     }
@@ -837,9 +837,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   /**
-   * The JSONException is thrown by the JSON.org classes when things are amiss.
+   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
    *
-   * @author JSON.org
+   * @author Hypersoft-Systems: USA
    * @version 2015-12-09
    */
   public static class Exception extends RuntimeException {
@@ -847,7 +847,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       private static final long serialVersionUID = 0;
 
       /**
-       * Constructs a JSONException with an explanatory message.
+       * Constructs a TextScanner.Exception with an explanatory message.
        *
        * @param message
        *            Detail about the reason for the exception.
@@ -857,7 +857,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       /**
-       * Constructs a JSONException with an explanatory message and cause.
+       * Constructs a TextScanner.Exception with an explanatory message and cause.
        *
        * @param message
        *            Detail about the reason for the exception.
@@ -869,7 +869,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       /**
-       * Constructs a new JSONException with the specified cause.
+       * Constructs a new TextScanner.Exception with the specified cause.
        *
        * @param cause
        *            The cause.
@@ -881,9 +881,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   /**
-   * The JSONException is thrown by the JSON.org classes when things are amiss.
+   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
    *
-   * @author JSON.org
+   * @author Hypersoft-Systems: USA
    * @version 2015-12-09
    */
   public static class SyntaxError extends Exception {
@@ -891,7 +891,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       private static final long serialVersionUID = 0;
 
       /**
-       * Constructs a JSONException with an explanatory message.
+       * Constructs a TextScanner.Exception with an explanatory message.
        *
        * @param message
        *            Detail about the reason for the exception.
@@ -901,7 +901,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       /**
-       * Constructs a JSONException with an explanatory message and cause.
+       * Constructs a TextScanner.Exception with an explanatory message and cause.
        *
        * @param message
        *            Detail about the reason for the exception.
@@ -913,7 +913,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       /**
-       * Constructs a new JSONException with the specified cause.
+       * Constructs a new TextScanner.Exception with the specified cause.
        *
        * @param cause
        *            The cause.
