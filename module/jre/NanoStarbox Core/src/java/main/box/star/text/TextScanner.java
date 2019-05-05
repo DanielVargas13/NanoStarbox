@@ -526,61 +526,6 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
     private char methodQuote;
     private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
-
-    public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public RuntimeException claimSyntaxError(String message) {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message);
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public boolean hasNext() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.hasNext();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public boolean haveEscapeWarrant() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.haveEscapeWarrant();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public boolean end() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.end();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public long index() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.index();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public long line() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.line();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public long column() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.column();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
-    public String sourceLabel() {
-      try /*  throwing runtime exceptions */ {
-        return methodScanner.sourceLabel();
-      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
-    }
-
     private TextScannerContext methodScanner;
 
     // implementation prep
@@ -591,6 +536,7 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
       methodScanner = textScanner;
     }
 
+    // user managed
     protected int bufferLimit = 0;
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected String claim;
@@ -670,6 +616,51 @@ public class TextScanner implements Iterable<Character>, TextScannerContext, Clo
         return true;
       }
       return false;
+    }
+
+    public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
+    }
+
+    public RuntimeException claimSyntaxError(String message) {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message);
+    }
+
+    public boolean hasNext() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.hasNext();
+    }
+
+    public boolean haveEscapeWarrant() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.haveEscapeWarrant();
+    }
+
+    public boolean end() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.end();
+    }
+
+    public long index() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.index();
+    }
+
+    public long line() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.line();
+    }
+
+    public long column() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.column();
+    }
+
+    public String sourceLabel() {
+      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      return methodScanner.sourceLabel();
     }
 
   }
