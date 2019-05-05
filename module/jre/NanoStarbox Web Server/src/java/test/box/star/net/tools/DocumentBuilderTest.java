@@ -5,21 +5,51 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
 
 public class DocumentBuilderTest {
 
-  static TagScannerMethod documentTag = new TagScannerMethod();
-  static AttributeScannerMethod attributeMethod = new AttributeScannerMethod();
-  static class DocumentTag {
+  static PrintStream out = System.out;
+  static PrintStream  err = System.err;
+
+  static class DocumentTagReader {
+
+    static class TagScannerMethod extends TextScanner.Method {
+      public TagScannerMethod() {
+        super(META_DOCUMENT_TAG_END);
+        boundaryCeption = true;
+      }
+      @Override
+      public boolean matchBoundary(char character) {
+        if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
+        if (character == META_DOCUMENT_TAG_END) return true;
+        return false;
+      }
+    }
+
+    static class AttributeScannerMethod extends TextScanner.Method {
+      public AttributeScannerMethod() {
+        super("attribute scanner");
+        boundaryCeption = true;
+      }
+      @Override
+      public boolean matchBoundary(char character) {
+        if (haveEscapeWarrant() || matchQuote(character)) return false;
+        return character == META_DOCUMENT_TAG_END;
+      }
+    }
+
+    static TagScannerMethod documentTag = new TagScannerMethod();
+    static AttributeScannerMethod attributeMethod = new AttributeScannerMethod();
 
     String source;
     String attributes;
     String tagName, cmpName;
 
-    public DocumentTag(TextScanner source) {
+    public DocumentTagReader(TextScanner source) {
       this.source = source.scan(documentTag);
       if (this.source.endsWith(">")) this.attributes = "";
       else this.attributes = source.scan(attributeMethod);
@@ -27,7 +57,7 @@ public class DocumentBuilderTest {
       this.cmpName = this.tagName.trim().toLowerCase(Locale.ENGLISH);
     }
 
-    boolean isAnEndTagFor(DocumentTag root){
+    boolean isAnEndTagFor(DocumentTagReader root){
       String cmpName = root.cmpName;
       return this.cmpName.substring(1).equals(cmpName);
     }
@@ -51,52 +81,36 @@ public class DocumentBuilderTest {
     }
   }
 
-  static class TagScannerMethod extends TextScanner.Method {
-    public TagScannerMethod() {
-      super(META_DOCUMENT_TAG_END);
-      boundaryCeption = true;
-    }
-    @Override
-    public boolean matchBoundary(char character) {
-      if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
-      if (character == META_DOCUMENT_TAG_END) return true;
-      return false;
-    }
-  }
-  static class AttributeScannerMethod extends TextScanner.Method {
-    public AttributeScannerMethod() {
-      super("attribute scanner");
-      boundaryCeption = true;
-    }
-    @Override
-    public boolean matchBoundary(char character) {
-      if (haveEscapeWarrant() || matchQuote(character)) return false;
-      return character == META_DOCUMENT_TAG_END;
-    }
-  }
-
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
   TextScanner.FindStringMethod endTag = new TextScanner.FindStringMethod().EscapeQuotes().AnyCase();
 
   @Test
   void main() {
-    PrintStream out = System.out;
+
+    // Test class assembly
+    CharacterClassAssembly();
+
+    // Test document scanning
     while (textScanner.hasNext()){
       out.print(textScanner.seek(documentContent));
-      DocumentTag dt = new DocumentTag(textScanner);
+      DocumentTagReader dt = new DocumentTagReader(textScanner);
       if (dt.equals("serve")){
         textScanner.seek(endTag, "</serve>");
         out.print("<!-- Template Data Goes Here -->");
       } else {
         out.print(dt);
       }
-      out.flush();
     }
+
+    out.flush();
+
   }
 
-  @Test void map(){
-    char[] map = new TextScanner.CharacterClass(9, 13).merge(20).assemble();
-    for (int c:MAP_WHITE_SPACE) System.out.println(Integer.valueOf(c));
+  void CharacterClassAssembly(){
+    char[] map = new TextScanner.CharacterClass(9, 13).merge(' ').assemble();
+    assert(Arrays.equals(map, MAP_WHITE_SPACE));
+    assert(Arrays.equals(new char[]{9,10,11,12,13,32}, MAP_WHITE_SPACE));
   }
+
 }
