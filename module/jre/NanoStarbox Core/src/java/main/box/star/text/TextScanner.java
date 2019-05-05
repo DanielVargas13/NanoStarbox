@@ -763,7 +763,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     }
     public CharacterClass filter(char... map){
       StringBuilder filter = new StringBuilder();
-      for (char c: filter.toString().toCharArray()){
+      for (char c: chars.toString().toCharArray()){
         if (charMapContains(c, map)) continue;
         filter.append(c);
       }
