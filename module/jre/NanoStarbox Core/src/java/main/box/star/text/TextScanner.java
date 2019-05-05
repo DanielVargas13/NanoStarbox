@@ -854,7 +854,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       public MatchString MatchStart(int maximumLength) {
-        if (maximumLength != 0) throw new Exception("maximum length already set", new OperationNotSupportedException());
+        if (maximumLength != 0 || methodScanner != null) throw new Exception("maximum length already set", new OperationNotSupportedException());
         if (maximumLength < minimumLength)
           throw new IllegalArgumentException("maximum length is less than minimum length");
         this.maximumLength = maximumLength;
@@ -862,7 +862,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       public MatchString MatchStart() {
-        if (matchStart) throw new Exception("match start configuration already set", new OperationNotSupportedException());
+        if (matchStart || methodScanner != null) throw new Exception("match start configuration already set", new OperationNotSupportedException());
         matchStart = true;
         return this;
       }
@@ -878,6 +878,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
       @Override
       public boolean continueScanning(StringBuilder input) {
+        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
         if (checkMatch) {
           String match;
           if (matchStart) match = (maximumLength > 0) ? input.substring(0, maximumLength) : input.substring(0);
@@ -893,6 +894,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
       @Override
       public boolean exitMethod(char character) {
+        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
         sourceLength++;
         checkMatch = (sourceLength >= minimumLength);
         return false;
