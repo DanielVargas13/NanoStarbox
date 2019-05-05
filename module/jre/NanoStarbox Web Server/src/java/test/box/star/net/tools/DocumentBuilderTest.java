@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DocumentBuilderTest {
 
@@ -74,7 +75,6 @@ public class DocumentBuilderTest {
 
   static class ContentScannerMethod extends TextScanner.Method {
     public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
-
     @Override
     public boolean exitMethod(char character) {
       return character == META_DOCUMENT_TAG_START;
@@ -90,6 +90,7 @@ public class DocumentBuilderTest {
 
     // Test class assembly
     CharacterClassAssembly();
+    MatchString();
 
     // Test document scanning
     while (textScanner.hasNext()){
@@ -113,4 +114,10 @@ public class DocumentBuilderTest {
     assert(Arrays.equals(new char[]{9,10,11,12,13,32}, MAP_WHITE_SPACE));
   }
 
+  void MatchString(){
+    TextScanner fsmTextScanner = new TextScanner("hello world again");
+    String scan = fsmTextScanner.scan(new TextScanner.Method.MatchString("hello world", 11, "hello world").MatchStart());
+    assertEquals("hello world", scan);
+    fsmTextScanner.close();
+  }
 }
