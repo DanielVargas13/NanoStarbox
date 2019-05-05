@@ -8,19 +8,17 @@ public interface TextScannerMethod extends TextScanner.CharacterBoundaryControl 
   /**
    * Called by the TextScanner to signal that a new method call is beginning.
    *
-   * @param context The safe use interface for context information.
    * @param parameters the parameters given by the caller.
    */
-  void beginScanning(TextScannerSafeContext context, Object... parameters);
+  void beginScanning(Object... parameters);
 
   /**
    * Signals whether or not the process should continue reading input.
    *
-   * @param context The safe use interface for context information.
    * @param input The string buffer.
    * @return true if the TextScanner should read more input.
    */
-  boolean continueScanning(TextScannerSafeContext context, StringBuilder input);
+  boolean continueScanning(StringBuilder input);
 
   /**
    * Extended Operations Option

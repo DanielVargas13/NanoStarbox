@@ -332,8 +332,8 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
         throw new Exception("Buffer overflow: "+scanMethod);
       }
       scanned.append(c);
-      if (scanMethod.matchBoundary(this, c)) break;
-    } while (scanMethod.continueScanning(this, scanned));
+      if (scanMethod.matchBoundary(c)) break;
+    } while (scanMethod.continueScanning(scanned));
     if (scanMethod.boundaryCeption);
     else {
       this.back();
@@ -343,8 +343,8 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
   }
 
   private void startMethod(Method method, Object... parameters){
-    method.method_initialize();
-    method.beginScanning(this, parameters);
+    method.method_initialize(this);
+    method.beginScanning(parameters);
   }
 
   /**
@@ -384,9 +384,9 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
           return "";
         } else {
           scanned.append(c);
-          if (seekMethod.matchBoundary(this, c)) break;
+          if (seekMethod.matchBoundary(c)) break;
         }
-      } while (seekMethod.continueScanning(this, scanned));
+      } while (seekMethod.continueScanning(scanned));
       this.reader.mark(1);
     } catch (IOException exception) { throw new Exception(exception); }
     if (seekMethod.boundaryCeption);
@@ -520,11 +520,32 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
 
+    public RuntimeException claimSyntaxError(String message, Throwable causedBy) {return methodScanner.claimSyntaxError(message, causedBy);}
+
+    public RuntimeException claimSyntaxError(String message) {return methodScanner.claimSyntaxError(message);}
+
+    public boolean hasNext() {return methodScanner.hasNext();}
+
+    public boolean haveEscapeWarrant() {return methodScanner.haveEscapeWarrant();}
+
+    public boolean end() {return methodScanner.end();}
+
+    public long index() {return methodScanner.index();}
+
+    public long line() {return methodScanner.line();}
+
+    public long column() {return methodScanner.column();}
+
+    public String sourceLabel() {return methodScanner.sourceLabel();}
+
+    private TextScannerSafeContext methodScanner;
+
     // implementation prep
-    private void method_initialize(){
+    private void method_initialize(TextScanner textScanner){
       methodQuote = NULL_CHARACTER;
       methodTokenMap = new SuperTokenMap();
       methodContext = new Stack<>();
+      methodScanner = textScanner;
     }
 
     protected int bufferLimit = 0;
@@ -536,36 +557,34 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
      *
      * Virtual Stack Recursion Guardian.
      *
-     * @param context The TextScanner context.
      * @param subContext the private data to associate with this token.
      * @return a context token.
-     * @see #exitSubContext(TextScannerSafeContext, String)
+     * @see #exitSubContext(String)
      */
-    protected String enterSubContext(TextScannerSafeContext context, Serializable subContext){
+    protected String enterSubContext(Serializable subContext){
       String token = methodTokenMap.put(subContext);
       methodContext.push(token);
       return token;
     }
 
     /**
-     * Exits a sub-context as created by {@link #enterSubContext(TextScannerSafeContext, Serializable)}
+     * Exits a sub-context as created by {@link #enterSubContext(Serializable)}
      *
      * Virtual Stack Recursion Guardian.
      *
-     * @param context the TextScanner Context
      * @param token the sub-context to exit
      * @param <ANY> the user format.
      * @return the user data.
-     * @see #enterSubContext(TextScannerSafeContext, Serializable)
+     * @see #enterSubContext(Serializable)
      */
-    protected <ANY extends Serializable> ANY exitSubContext(TextScannerSafeContext context, String token){
+    protected <ANY extends Serializable> ANY exitSubContext(String token){
       if (methodContext.peek().equals(token)){
         methodContext.pop();
         ANY v = (ANY) methodTokenMap.get(token);
         methodTokenMap.eraseToken(token);
         return v;
       } else{
-        throw context.claimSyntaxError("trying to exit wrong sub-context");
+        throw methodScanner.claimSyntaxError("trying to exit wrong sub-context");
       }
     }
 
@@ -573,15 +592,15 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     @Override
-    public void beginScanning(TextScannerSafeContext context, Object[] parameters) {}
+    public void beginScanning(Object[] parameters) {}
 
     @Override
     public String returnScanned(TextScanner scanner, StringBuilder scanned) {
       return scanned.toString();
     }
 
-    @Override public boolean continueScanning(TextScannerSafeContext context, StringBuilder input) { return true; }
-    @Override public boolean matchBoundary(TextScannerSafeContext context, char character) { return character == 0; }
+    @Override public boolean continueScanning(StringBuilder input) { return true; }
+    @Override public boolean matchBoundary(char character) { return character == 0; }
     @Override public String toString() { return claim; }
 
     @Override
@@ -707,7 +726,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
   }
   
   public static interface CharacterBoundaryControl {
-    boolean matchBoundary(TextScannerSafeContext context, char character);
+    boolean matchBoundary(char character);
   }
 
   public static class FindStringMethod extends Method {
@@ -736,7 +755,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     }
 
     @Override
-    public void beginScanning(TextScannerSafeContext context, Object... parameters) {
+    public void beginScanning(Object... parameters) {
       claim = String.valueOf(parameters[0]);
       findLength = claim.length();
       checkMatch = false;
@@ -754,7 +773,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       return quote != NULL_CHARACTER;
     }
     @Override
-    public boolean continueScanning(TextScannerSafeContext context, StringBuilder input) {
+    public boolean continueScanning(StringBuilder input) {
       if (checkMatch) {
         String match = input.substring(Math.max(0, sourceLength - findLength));
         // IF this matches STOP scanning by returning false.
@@ -765,14 +784,14 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     }
 
     @Override
-    public boolean matchBoundary(TextScannerSafeContext context, char character) {
+    public boolean matchBoundary(char character) {
 
       // since this is a string-match-operation, every branch returns false.
       final boolean matchBoundary = false;
 
       if (handleQuoting){
         // handle escapes
-        if (context.haveEscapeWarrant()) return matchBoundary;
+        if (haveEscapeWarrant()) return matchBoundary;
         // handle quoting
         if (matchQuote(character)) return matchBoundary;
       }
