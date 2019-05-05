@@ -5,6 +5,7 @@ import box.star.contract.Nullable;
 import box.star.io.SourceConnector;
 import box.star.state.SuperTokenMap;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -339,6 +340,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       this.back();
       scanned.setLength(scanned.length() - 1);
     }
+    scanMethod.methodScanner = null;
     return scanMethod.returnScanned(this, scanned);
   }
 
@@ -394,6 +396,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       this.back();
       scanned.setLength(scanned.length() - 1);
     }
+    seekMethod.methodScanner = null;
     return seekMethod.returnScanned(this, scanned);
   }
   
@@ -520,23 +523,59 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
 
-    public RuntimeException claimSyntaxError(String message, Throwable causedBy) {return methodScanner.claimSyntaxError(message, causedBy);}
+    public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.claimSyntaxError(message, causedBy);
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public RuntimeException claimSyntaxError(String message) {return methodScanner.claimSyntaxError(message);}
+    public RuntimeException claimSyntaxError(String message) {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.claimSyntaxError(message);
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public boolean hasNext() {return methodScanner.hasNext();}
+    public boolean hasNext() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.hasNext();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public boolean haveEscapeWarrant() {return methodScanner.haveEscapeWarrant();}
+    public boolean haveEscapeWarrant() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.haveEscapeWarrant();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public boolean end() {return methodScanner.end();}
+    public boolean end() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.end();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public long index() {return methodScanner.index();}
+    public long index() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.index();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public long line() {return methodScanner.line();}
+    public long line() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.line();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public long column() {return methodScanner.column();}
+    public long column() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.column();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
-    public String sourceLabel() {return methodScanner.sourceLabel();}
+    public String sourceLabel() {
+      try /*  throwing runtime exceptions */ {
+        return methodScanner.sourceLabel();
+      } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
+    }
 
     private TextScannerSafeContext methodScanner;
 
