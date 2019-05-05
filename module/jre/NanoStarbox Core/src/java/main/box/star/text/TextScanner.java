@@ -13,11 +13,15 @@ import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
 
-public class TextScanner implements Iterable<Character>, TextScannerSafeContext, Closeable {
+public class TextScanner implements Iterable<Character>, TextScannerContext, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
   private boolean backslashModeActive;
+
+  public SyntaxErrorMarshal getSyntaxErrorMarshal() {
+    return syntaxErrorMarshal;
+  }
 
   public static int atLeastZero(int val){ return (val < 0)?0:val; }
   public static int atMostCharMax(int val){ return (val > CHAR_MAX)?'\uffff':val; }
@@ -525,13 +529,13 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
 
     public RuntimeException claimSyntaxError(String message, Throwable causedBy) {
       try /*  throwing runtime exceptions */ {
-        return methodScanner.claimSyntaxError(message, causedBy);
+        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message, causedBy);
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
     public RuntimeException claimSyntaxError(String message) {
       try /*  throwing runtime exceptions */ {
-        return methodScanner.claimSyntaxError(message);
+        return methodScanner.getSyntaxErrorMarshal().raiseSyntaxError(message);
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
@@ -577,7 +581,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
-    private TextScannerSafeContext methodScanner;
+    private TextScannerContext methodScanner;
 
     // implementation prep
     private void method_initialize(TextScanner textScanner){
@@ -623,7 +627,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
         methodTokenMap.eraseToken(token);
         return v;
       } else{
-        throw methodScanner.claimSyntaxError("trying to exit wrong sub-context");
+        throw methodScanner.getSyntaxErrorMarshal().raiseSyntaxError("trying to exit wrong sub-context");
       }
     }
 

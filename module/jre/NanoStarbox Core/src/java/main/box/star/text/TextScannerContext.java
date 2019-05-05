@@ -4,9 +4,8 @@ package box.star.text;
  * This context hosts all the methods that are safe for access from within
  * a text scanner method.
  */
-public interface TextScannerSafeContext {
-  RuntimeException claimSyntaxError(String message, Throwable causedBy);
-  RuntimeException claimSyntaxError(String message);
+public interface TextScannerContext {
+  TextScanner.SyntaxErrorMarshal getSyntaxErrorMarshal();
   boolean hasNext();
   /**
    * Detects if the scanner has found a backslash-warrant at this position.
