@@ -48,16 +48,21 @@ public class DocumentBuilderTest {
 
   static class TextEndingMatch extends TextScanner.Method {
     private String find;
-    char quote;
+    char quote, lastCharacter;
+    boolean checkMatch;
+    int length;
     @Override
     public void beginScanning(TextScannerMethodContext context, Object... parameters) {
       find = String.valueOf(parameters[0]);
+      lastCharacter = find.charAt(find.length() - 1);
+      length = find.length();
       quote = 0;
+      checkMatch = false;
     }
     @Override
     public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) {
-      // return true if not in a quote and we found the requested text at the ending.
-      return ! (quote == 0 && input.toString().endsWith(find));
+      if (checkMatch && input.length() >= length) return ! (quote == 0 && input.toString().endsWith(find));
+      return true;
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
@@ -82,6 +87,8 @@ public class DocumentBuilderTest {
             quote = SINGLE_QUOTE;
             return false;
           }
+          if (character == lastCharacter) checkMatch = true;
+          else checkMatch = false;
           return false;
         }
       }
