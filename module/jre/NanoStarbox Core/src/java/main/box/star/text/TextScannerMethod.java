@@ -3,14 +3,14 @@ package box.star.text;
 /**
  * This interface hosts the text scanner method core operating functions.
  */
-public interface TextScannerMethod extends TextScanner.CharacterBoundaryControl {
+public interface TextScannerMethod {
 
   /**
    * Called by the TextScanner to signal that a new method call is beginning.
    *
    * @param parameters the parameters given by the caller.
    */
-  void beginScanning(Object... parameters);
+  void startMethod(Object... parameters);
 
   /**
    * Signals whether or not the process should continue reading input.
@@ -35,6 +35,14 @@ public interface TextScannerMethod extends TextScanner.CharacterBoundaryControl 
    * @param scanned the input buffer.
    * @return the scanned data as a string.
    */
-  String returnScanned(TextScanner scanner, StringBuilder scanned);
+  String computeMethodCall(TextScanner scanner, StringBuilder scanned);
+
+  /**
+   * Return true to break processing on this character.
+   *
+   * @param character
+   * @return false to continue processing.
+   */
+  boolean exitMethod(char character);
 
 }
