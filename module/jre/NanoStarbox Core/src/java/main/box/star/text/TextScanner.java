@@ -381,11 +381,22 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   /**
-   * Works like scan, but restores the stream and returns nothing if the operation fails.
+   * <p>Works like {@link #scan(Method, Object...)}, but restores the stream and
+   * returns nothing if the operation fails.</p>
+   * <br>
+   * <p>seek cannot be called recursively, but can be called concurrently with 
+   * scan methods.</p>
+   * <br>
+   * <p>Use the {@link #isSeeking()} method to determine if you should scan or
+   * seek from within a nested method call.</p>
    *
-   * @param seekMethod
+   * @param seekMethod the Method to use
    * @return the text up to but not including the control break.
-   * @throws Exception if an IOException occurs
+   * @throws Exception if an {@link java.io.IOException} occurs
+   * @see #scanExact(char)
+   * @see #scanNext()
+   * @see #scanLength(int)
+   * @see #scan(Method, Object...)
    */
   public String seek(Method seekMethod, Object... parameters) throws Exception {
     if (seeking) throw new Exception(new OperationNotSupportedException("scanner is already in seek mode"));
@@ -449,10 +460,10 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   /**
-   * Make a TextScannerException to signal a syntax error.
+   * Make a TextScanner.Exception to signal a syntax error.
    *
    * @param message The error message.
-   * @return A TextScannerException object, suitable for throwing
+   * @return A TextScanner.Exception object, suitable for throwing
    */
   public SyntaxError syntaxError(String message) {
     return new SyntaxError(message + toTraceString());
