@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static box.star.text.TextScanner.ASCII.*;
 
@@ -17,6 +18,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
+  {
+    syntaxErrorMarshal.scanner = this;
+  }
   private boolean backslashModeActive;
 
   public SyntaxErrorMarshal getSyntaxErrorMarshal() {
@@ -116,6 +120,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
    */
   public TextScanner(String source) {
     this(source.getClass().getName(), new StringReader(source));
+    this.closeReader = true;
   }
 
   /**
@@ -396,6 +401,8 @@ public class TextScanner implements Iterable<Character>, Closeable {
           this.line = startLine;
           this.backslashModeActive = escapeFlag;
           scanned.setLength(0);
+          seeking = false;
+          seekMethod.methodScanner = null;
           return "";
         } else {
           scanned.append(c);
@@ -438,10 +445,10 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Make a printable string of this TextScanner.
    *
-   * @return " location: source character-position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
+   * @return " at source: position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
    */
   public String toTraceString() {
-    String source = "; location: " + Tools.makeNotNull(sourceLabel, "source") + " character-position: ";
+    String source = " at " + Tools.makeNotNull(sourceLabel, "source") + ": position: ";
     return source + this.index + " = {line: " + this.line + ", column: " + this.column + "}";
   }
 
@@ -462,6 +469,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   void setSyntaxErrorMarshal(SyntaxErrorMarshal marshal){
+    marshal.scanner = this;
     this.syntaxErrorMarshal = marshal;
   }
 
@@ -474,12 +482,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
   public static class SyntaxErrorMarshal {
-
+    private TextScanner scanner;
     public SyntaxError raiseSyntaxError(String message, Throwable causedBy) {
-      return new SyntaxError(message, causedBy);
+      return new SyntaxError(message+scanner.toTraceString(), causedBy);
     }
     public SyntaxError raiseSyntaxError(String message){
-      return new SyntaxError(message);
+      return new SyntaxError(message+scanner.toTraceString());
     }
 
   }
@@ -513,6 +521,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
+    private long index, line, column;
 
     // implementation managed
     private char methodQuote;
@@ -559,7 +568,19 @@ public class TextScanner implements Iterable<Character>, Closeable {
       methodScanner.close();
     }
 
-    private TextScanner methodScanner;
+    TextScanner methodScanner;
+
+    protected void saveErrorLocation(){
+      index = index();
+      line = line();
+      column = column();
+    }
+
+    protected void popErrorLocation(){
+      methodScanner.line = line;
+      methodScanner.index = index;
+      methodScanner.column = column;
+    }
 
     // implementation prep
     private void method_initialize(TextScanner textScanner){
@@ -688,9 +709,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public static class FindString extends Method {
 
+      public FindString() { super(); }
+      public FindString(Object claim) { super(claim); }
+
       protected String comparisonClaim;
       protected boolean checkMatch, caseSensitive = true;
-      protected char quote, finalMatchCharacter;
+      protected char[] finalMatchCharacter;
       protected int findLength, sourceLength;
       protected boolean handleQuoting = false;
       protected Locale locale = Locale.ENGLISH;
@@ -716,18 +740,15 @@ public class TextScanner implements Iterable<Character>, Closeable {
         claim = String.valueOf(parameters[0]);
         findLength = claim.length();
         checkMatch = false;
+        finalMatchCharacter = new char[1];
         boundaryCeption = true;
         if (! caseSensitive) {
           comparisonClaim = claim.toLowerCase(locale);
-          finalMatchCharacter = comparisonClaim.charAt(claim.length() - 1);
+          finalMatchCharacter[0] = comparisonClaim.charAt(claim.length() - 1);
         } else {
-          finalMatchCharacter = claim.charAt(claim.length() - 1);
+          finalMatchCharacter[0] = claim.charAt(claim.length() - 1);
         }
         sourceLength = 0;
-        quote = NULL_CHARACTER;
-      }
-      boolean quoting(){
-        return quote != NULL_CHARACTER;
       }
       @Override
       public boolean continueScanning(StringBuilder input) {
@@ -756,13 +777,64 @@ public class TextScanner implements Iterable<Character>, Closeable {
         sourceLength++;
         if (! caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
         // activate matching if this is the last character to match and our buffer is large enough.
-        checkMatch = (character == finalMatchCharacter) && (sourceLength >= findLength);
-
+        checkMatch = (charMapContains(character, finalMatchCharacter)) && (sourceLength >= findLength);
         return matchBoundary;
 
       }
 
     }
+
+    public static class MatchString extends Method {
+
+      private final int findLength;
+      Pattern pattern;
+      private boolean checkMatch, matchStart;
+      private int sourceLength;
+
+      public MatchString MatchStart(){
+        matchStart = true;
+        return this;
+      }
+
+      public MatchString(String claim, int length, String pattern) {
+        this(claim, length, pattern, 0);
+      }
+      public MatchString(String claim, int length, String pattern, int flags) {
+        super(claim);
+        this.findLength = length;
+        this.pattern = Pattern.compile(pattern, flags);
+      }
+
+      @Override
+      public void startMethod(Object... parameters) {
+        checkMatch = false;
+        boundaryCeption = true;
+        sourceLength = 0;
+        if (matchStart) saveErrorLocation();
+      }
+
+      @Override
+      public boolean continueScanning(StringBuilder input) {
+        if (checkMatch) {
+          String match = input.substring(Math.max(0, sourceLength - findLength));
+          if (pattern.matcher(match).matches()) return false;
+          else if (matchStart) {
+            popErrorLocation();
+            throw getSyntaxErrorMarshal().raiseSyntaxError("Expected: " + this + "; Found: `" + input.charAt(0)+"'");
+          };
+        }
+        return true;
+      }
+
+      @Override
+      public boolean exitMethod(char character) {
+        sourceLength++;
+        if (matchStart) checkMatch = (sourceLength == findLength);
+        else checkMatch = (sourceLength >= findLength);
+        return false;
+      }
+    }
+
   }
 
   /**
