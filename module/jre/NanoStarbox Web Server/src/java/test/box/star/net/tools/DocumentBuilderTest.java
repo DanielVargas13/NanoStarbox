@@ -116,7 +116,7 @@ public class DocumentBuilderTest {
 
   void MatchString(){
     TextScanner fsmTextScanner = new TextScanner("hello world again");
-    String scan = fsmTextScanner.seek(new TextScanner.Method.MatchString("hello world", 11, "hello world").MatchStart());
+    String scan = fsmTextScanner.seek(new TextScanner.Method.MatchString("hello world").MatchStart());
     assertEquals("hello world", scan);
     fsmTextScanner.close();
   }

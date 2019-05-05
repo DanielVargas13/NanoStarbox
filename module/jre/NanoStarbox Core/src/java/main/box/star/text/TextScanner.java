@@ -887,7 +887,10 @@ public class TextScanner implements Iterable<Character>, Closeable {
         if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
         if (checkMatch) {
           String match;
-          if (matchStart) match = (maximumLength > 0) ? input.substring(0, maximumLength) : input.substring(0);
+          if (matchStart) {
+            match = (maximumLength > 0 && sourceLength >= maximumLength) ?
+                input.substring(0, maximumLength) : input.substring(0);
+          }
           else match = input.substring(Math.max(0, sourceLength - minimumLength));
           if (pattern.matcher(match).matches()) return false;
           else if (matchStart && !isSeeking()) {
