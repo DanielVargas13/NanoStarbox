@@ -827,6 +827,22 @@ public class TextScanner implements Iterable<Character>, Closeable {
       private int sourceLength, minimumLength, maximumLength;
       private boolean checkMatch, matchStart;
 
+      public MatchString(String pattern){
+        this(pattern, pattern.length(), pattern);
+      }
+
+      public MatchString(String pattern, int flags){
+        this(pattern, pattern.length(), pattern, flags);
+      }
+
+      public MatchString(int minimumLength, String pattern){
+        this(pattern, minimumLength, pattern);
+      }
+
+      public MatchString(int minimumLength, String pattern, int flags){
+        this(pattern, minimumLength, pattern, flags);
+      }
+
       public MatchString(String claim, int minimumLength, String pattern) {
         this(claim, minimumLength, pattern, 0);
       }
@@ -838,6 +854,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       public MatchString MatchStart(int maximumLength) {
+        if (maximumLength != 0) throw new Exception("maximum length already set", new OperationNotSupportedException());
         if (maximumLength < minimumLength)
           throw new IllegalArgumentException("maximum length is less than minimum length");
         this.maximumLength = maximumLength;
@@ -845,12 +862,14 @@ public class TextScanner implements Iterable<Character>, Closeable {
       }
 
       public MatchString MatchStart() {
+        if (matchStart) throw new Exception("match start configuration already set", new OperationNotSupportedException());
         matchStart = true;
         return this;
       }
 
       @Override
       public void startMethod(Object... parameters) {
+        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
         checkMatch = false;
         boundaryCeption = true;
         sourceLength = 0;
