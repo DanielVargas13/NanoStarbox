@@ -23,7 +23,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * Reader for the input.
    */
   private final Reader reader;
-  private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
   private boolean backslashModeActive;
   /**
    * current read character position on the current line.
@@ -57,9 +56,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
   private String sourceLabel;
   private boolean seeking;
 
-  {
-    syntaxErrorMarshal.scanner = this;
-  }
   /**
    * Construct a TextScanner from a Reader. The caller must close the Reader.
    *
@@ -146,14 +142,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return out.toString().toCharArray();
   }
 
-  public SyntaxErrorMarshal getSyntaxErrorMarshal() {
-    return syntaxErrorMarshal;
-  }
-
-  void setSyntaxErrorMarshal(SyntaxErrorMarshal marshal) {
-    marshal.scanner = this;
-    this.syntaxErrorMarshal = marshal;
-  }
 
   public String sourceLabel() {
     return sourceLabel;
@@ -313,9 +301,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
     char n = this.scanNext();
     if (n != c) {
       if (n > 0) {
-        throw this.claimSyntaxError("Failure while scanning: '" + c + "'; current-value: '" + n + "'");
+        throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: '" + n + "'");
       }
-      throw this.claimSyntaxError("Failure while scanning: '" + c + "'; current-value: ''");
+      throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: ''");
     }
     return n;
   }
@@ -337,7 +325,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     while (pos < n) {
       chars[pos] = this.scanNext();
       if (this.end()) {
-        throw this.claimSyntaxError("Substring bounds error");
+        throw this.syntaxError("Substring bounds error");
       }
       pos += 1;
     }
@@ -363,7 +351,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     do {
       if ((c = this.scanNext()) == 0) {
         if (scanMethod.eofCeption) break;
-        throw claimSyntaxError("Expected '" + scanMethod + "'");
+        throw syntaxError("Expected '" + scanMethod + "'");
       }
       if (scanMethod.bufferLimit == ++i) {
         if (scanMethod.bufferLimitCeption) break;
@@ -455,19 +443,8 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * @param message The error message.
    * @return A TextScannerException object, suitable for throwing
    */
-  public SyntaxError claimSyntaxError(String message) {
-    return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString());
-  }
-
-  /**
-   * Make a TextScannerException to signal a syntax error.
-   *
-   * @param message  The error message.
-   * @param causedBy The throwable that caused the error.
-   * @return A TextScannerException object, suitable for throwing
-   */
-  public SyntaxError claimSyntaxError(String message, Throwable causedBy) {
-    return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
+  public SyntaxError syntaxError(String message) {
+    return new SyntaxError(message + toTraceString());
   }
 
   /**
@@ -511,19 +488,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     super.finalize();
   }
 
-  public static class SyntaxErrorMarshal {
-    private TextScanner scanner;
-
-    public SyntaxError raiseSyntaxError(String message, Throwable causedBy) {
-      return new SyntaxError(message + scanner.toTraceString(), causedBy);
-    }
-
-    public SyntaxError raiseSyntaxError(String message) {
-      return new SyntaxError(message + scanner.toTraceString());
-    }
-
-  }
-
   public static final class ASCII {
 
     public final static char NULL_CHARACTER = 0;
@@ -557,6 +521,22 @@ public class TextScanner implements Iterable<Character>, Closeable {
    */
   public static class Method implements TextScannerMethod, Serializable, Cloneable {
 
+    long backup_index, backup_line, backup_column;
+
+    protected void saveErrorLocation() {
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
+      backup_index = index();
+      backup_line = line();
+      backup_column = column();
+    }
+
+    protected void popErrorLocation() {
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
+      methodScanner.line = backup_line;
+      methodScanner.index = backup_index;
+      methodScanner.column = backup_column;
+    }
+
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
     // user managed
@@ -564,7 +544,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected String claim;
     TextScanner methodScanner;
-    private long index, line, column;
     // implementation managed
     private char methodQuote;
     private SuperTokenMap<Serializable> methodTokenMap;
@@ -574,38 +553,55 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public Method(@Nullable Object claim) { this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
-    final public SyntaxErrorMarshal getSyntaxErrorMarshal() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
-      return methodScanner.getSyntaxErrorMarshal();
+    public Method BoundaryCeption(){
+      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
+      this.boundaryCeption = true;
+      return this;
+    }
+
+    public Method EOFCeption(){
+      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
+      this.eofCeption = true;
+      return this;
+    }
+    public Method BufferLimitCeption(){
+      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
+      this.bufferLimitCeption = true;
+      return this;
+    }
+
+    public SyntaxError syntaxError(String message){
+      popErrorLocation();
+      return methodScanner.syntaxError(message);
     }
 
     final public char scanNext() throws Exception {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.scanNext();
     }
 
     final public char scanExact(char c) throws Exception {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.scanExact(c);
     }
 
     final public String scanLength(int n) throws Exception {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.scanLength(n);
     }
 
     final public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.scan(scanMethod, parameters);
     }
 
     final public boolean isSeeking() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.isSeeking();
     }
 
     final public String seek(Method seekMethod, Object... parameters) throws Exception {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.seek(seekMethod, parameters);
     }
 
@@ -614,24 +610,13 @@ public class TextScanner implements Iterable<Character>, Closeable {
       methodScanner.close();
     }
 
-    protected void saveErrorLocation() {
-      index = index();
-      line = line();
-      column = column();
-    }
-
-    protected void popErrorLocation() {
-      methodScanner.line = line;
-      methodScanner.index = index;
-      methodScanner.column = column;
-    }
-
     // implementation prep
     private void method_initialize(TextScanner textScanner) {
       methodQuote = NULL_CHARACTER;
       methodTokenMap = new SuperTokenMap();
       methodContext = new Stack<>();
       methodScanner = textScanner;
+      saveErrorLocation();
     }
 
     /**
@@ -666,7 +651,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
         methodTokenMap.eraseToken(token);
         return v;
       } else {
-        throw methodScanner.getSyntaxErrorMarshal().raiseSyntaxError("trying to exit wrong sub-context");
+        throw syntaxError("trying to exit wrong sub-context");
       }
     }
 
@@ -715,37 +700,37 @@ public class TextScanner implements Iterable<Character>, Closeable {
     }
 
     final public boolean hasNext() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.hasNext();
     }
 
     final public boolean haveEscapeWarrant() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.haveEscapeWarrant();
     }
 
     final public boolean end() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.end();
     }
 
     final public long index() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.index();
     }
 
     final public long line() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.line();
     }
 
     final public long column() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.column();
     }
 
     final public String sourceLabel() {
-      if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
       return methodScanner.sourceLabel();
     }
 
@@ -895,7 +880,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
           if (pattern.matcher(match).matches()) return false;
           else if (matchStart && !isSeeking()) {
             popErrorLocation();
-            throw getSyntaxErrorMarshal().raiseSyntaxError("Expected: " + this + "; Found: `" + input.charAt(0) + "'");
+            throw syntaxError("Expected: " + this + "; Found: `" + input.charAt(0) + "'");
           }
         }
         return true;
@@ -911,6 +896,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     }
 
   }
+
 
   /**
    * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
