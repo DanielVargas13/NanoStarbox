@@ -11,7 +11,7 @@ public interface TextScannerMethodDriver {
    * @param context The safe use interface for context information.
    * @param parameters the parameters given by the caller.
    */
-  void beginScanning(TextScannerMethodContext context, Object... parameters);
+  void beginScanning(TextScannerSafeContext context, Object... parameters);
 
   /**
    * Signals whether or not the process should continue reading input.
@@ -20,7 +20,7 @@ public interface TextScannerMethodDriver {
    * @param input The string buffer.
    * @return true if the TextScanner should read more input.
    */
-  boolean continueScanning(TextScannerMethodContext context, StringBuilder input);
+  boolean continueScanning(TextScannerSafeContext context, StringBuilder input);
 
   /**
    * Extended Operations Option

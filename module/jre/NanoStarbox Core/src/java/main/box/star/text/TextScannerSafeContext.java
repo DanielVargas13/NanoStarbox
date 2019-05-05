@@ -4,7 +4,7 @@ package box.star.text;
  * This context hosts all the methods that are safe for access from within
  * a text scanner method.
  */
-public interface TextScannerMethodContext {
+public interface TextScannerSafeContext {
   RuntimeException claimSyntaxError(String message, Throwable causedBy);
   RuntimeException claimSyntaxError(String message);
   boolean hasNext();

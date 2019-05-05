@@ -12,7 +12,7 @@ import java.util.Locale;
 
 import static box.star.text.TextScanner.ASCII.*;
 
-public class TextScanner implements Iterable<Character>, TextScannerMethodContext, Closeable {
+public class TextScanner implements Iterable<Character>, TextScannerSafeContext, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
@@ -528,15 +528,15 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     @Override
-    public void beginScanning(TextScannerMethodContext context, Object[] parameters) {}
+    public void beginScanning(TextScannerSafeContext context, Object[] parameters) {}
 
     @Override
     public String returnScanned(TextScanner scanner, StringBuilder scanned) {
       return scanned.toString();
     }
 
-    @Override public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) { return true; }
-    @Override public boolean matchBoundary(TextScannerMethodContext context, char character) { return character == 0; }
+    @Override public boolean continueScanning(TextScannerSafeContext context, StringBuilder input) { return true; }
+    @Override public boolean matchBoundary(TextScannerSafeContext context, char character) { return character == 0; }
     @Override public String toString() { return claim; }
 
     @Override
@@ -662,7 +662,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
   }
   
   public static interface CharacterBoundaryControl {
-    boolean matchBoundary(TextScannerMethodContext context, char character);
+    boolean matchBoundary(TextScannerSafeContext context, char character);
   }
 
   public static class FindStringMethod extends Method {
@@ -691,7 +691,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     }
 
     @Override
-    public void beginScanning(TextScannerMethodContext context, Object... parameters) {
+    public void beginScanning(TextScannerSafeContext context, Object... parameters) {
       claim = String.valueOf(parameters[0]);
       finalMatchCharacter = claim.charAt(claim.length() - 1);
       findLength = claim.length();
@@ -705,7 +705,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       return quote != NULL_CHARACTER;
     }
     @Override
-    public boolean continueScanning(TextScannerMethodContext context, StringBuilder input) {
+    public boolean continueScanning(TextScannerSafeContext context, StringBuilder input) {
       if (checkMatch) {
         String match = input.substring(Math.max(0, sourceLength - findLength));
         // IF this matches STOP scanning by returning false.
@@ -715,7 +715,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       return true;
     }
     @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
+    public boolean matchBoundary(TextScannerSafeContext context, char character) {
 
       // since this is a string-match-operation, every branch returns false.
       final boolean matchBoundary = false;

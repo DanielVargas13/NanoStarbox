@@ -1,7 +1,7 @@
 package box.star.net.tools;
 
 import box.star.text.TextScanner;
-import box.star.text.TextScannerMethodContext;
+import box.star.text.TextScannerSafeContext;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -47,7 +47,7 @@ public class DocumentBuilderTest {
   static class ContentScannerMethod extends TextScanner.Method {
     public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
     @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
+    public boolean matchBoundary(TextScannerSafeContext context, char character) {
       return character == META_DOCUMENT_TAG_START;
     }
   }
@@ -58,7 +58,7 @@ public class DocumentBuilderTest {
       boundaryCeption = true;
     }
     @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
+    public boolean matchBoundary(TextScannerSafeContext context, char character) {
       if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
       if (character == META_DOCUMENT_TAG_END) return true;
       return false;
@@ -70,7 +70,7 @@ public class DocumentBuilderTest {
       boundaryCeption = true;
     }
     @Override
-    public boolean matchBoundary(TextScannerMethodContext context, char character) {
+    public boolean matchBoundary(TextScannerSafeContext context, char character) {
       if (context.haveEscapeWarrant() || matchQuote(character)) return false;
       return character == META_DOCUMENT_TAG_END;
     }
