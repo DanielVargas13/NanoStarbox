@@ -829,8 +829,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       @Override
       public boolean exitMethod(char character) {
         sourceLength++;
-        if (matchStart) checkMatch = (sourceLength == findLength);
-        else checkMatch = (sourceLength >= findLength);
+        checkMatch = (sourceLength >= findLength);
         return false;
       }
     }
