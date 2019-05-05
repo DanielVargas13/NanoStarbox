@@ -699,7 +699,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return methodQuote != NULL_CHARACTER;
     }
 
-    final public boolean matchQuote(char character) {
+    final public boolean quotedText(char character) {
       // handle quoting
       if (isQuoting()) {
         // deactivate quoting if applicable
@@ -814,7 +814,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
           // handle escapes
           if (haveEscapeWarrant()) return matchBoundary;
           // handle quoting
-          if (matchQuote(character)) return matchBoundary;
+          if (quotedText(character)) return matchBoundary;
         }
 
         sourceLength++;

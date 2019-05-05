@@ -37,7 +37,7 @@ public class DocumentBuilderTest {
       }
       @Override
       public boolean exitMethod(char character) {
-        if (haveEscapeWarrant() || matchQuote(character)) return false;
+        if (haveEscapeWarrant() || quotedText(character)) return false;
         return character == META_DOCUMENT_TAG_END;
       }
     }
@@ -116,7 +116,7 @@ public class DocumentBuilderTest {
 
   void MatchString(){
     TextScanner fsmTextScanner = new TextScanner("hello world again");
-    String scan = fsmTextScanner.seek(new TextScanner.Method.MatchString("hello world").MatchStart());
+    String scan = fsmTextScanner.scan(new TextScanner.Method.MatchString("hello world").MatchStart());
     assertEquals("hello world", scan);
     fsmTextScanner.close();
   }
