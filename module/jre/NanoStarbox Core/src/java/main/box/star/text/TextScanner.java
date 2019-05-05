@@ -816,7 +816,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       @Override
       public boolean continueScanning(StringBuilder input) {
         if (checkMatch) {
-          String match = input.substring(Math.max(0, sourceLength - minimumLength));
+          String match = (matchStart)?input.substring(0):input.substring(Math.max(0, sourceLength - minimumLength));
           if (pattern.matcher(match).matches()) return false;
           else if (matchStart) {
             popErrorLocation();
