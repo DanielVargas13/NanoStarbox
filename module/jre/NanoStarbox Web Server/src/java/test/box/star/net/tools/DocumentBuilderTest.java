@@ -90,8 +90,8 @@ public class DocumentBuilderTest {
   void main() {
 
     // Test class assembly
-    CharacterClassAssembly();
-    MatchString();
+    CharacterMapAssembly();
+    MatchStringStart();
 
     // Test document scanning
     while (textScanner.hasNext()){
@@ -109,13 +109,13 @@ public class DocumentBuilderTest {
 
   }
 
-  void CharacterClassAssembly(){
+  void CharacterMapAssembly(){
     char[] map = new Char.MapAssembler(9, 13).merge(' ').toArray();
     assert(Arrays.equals(map, MAP_WHITE_SPACE));
     assert(Arrays.equals(new char[]{9,10,11,12,13,32}, MAP_WHITE_SPACE));
   }
 
-  void MatchString(){
+  void MatchStringStart(){
     TextScanner fsmTextScanner = new TextScanner("hello world again");
     String scan = fsmTextScanner.scan(new TextScanner.Method.MatchString("hello world").MatchStart());
     assertEquals("hello world", scan);

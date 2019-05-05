@@ -2,19 +2,20 @@ package box.star.state;
 
 import box.star.text.token.TokenGenerator;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class SuperTokenMap<T> implements MapProvider<String, T> {
+public class SuperTokenMap<V> implements MapFactory<Serializable, V> {
 
   protected int[] tokenFormat;
 
   protected TokenGenerator tokenGenerator = new TokenGenerator();
-  protected Map<String, T> map;
+  protected Map<Serializable, V> map;
 
   @Override
-  public Map<String, T> createMap() {
-    return new Hashtable<String, T>();
+  public Map<Serializable, V> createMap() {
+    return new Hashtable<Serializable, V>();
   }
 
   public SuperTokenMap(int... lengths){
@@ -34,18 +35,18 @@ public class SuperTokenMap<T> implements MapProvider<String, T> {
     return token;
   }
 
-  synchronized public String put(T value){
+  synchronized public String put(V value){
     String token = getNextToken();
     map.put(token, value);
     return token;
   }
 
-  public void set(String key, T value){
+  public void set(Serializable key, V value){
     if ( ! map.containsKey(key) ) throw new RuntimeException(new IllegalAccessException("trying to set foreign key data"));
     map.put(key, value);
   }
 
-  public T get(String token){ return map.get(token); }
+  public V get(String token){ return map.get(token); }
 
   public void eraseToken(String token){ map.remove(token); }
 
