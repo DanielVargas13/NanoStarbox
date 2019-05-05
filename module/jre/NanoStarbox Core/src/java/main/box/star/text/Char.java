@@ -145,4 +145,7 @@ public final class Char {
     }
 
   }
+
+  private Char(){}
+
 }
