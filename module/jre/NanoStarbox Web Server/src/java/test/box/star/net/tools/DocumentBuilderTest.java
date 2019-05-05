@@ -45,7 +45,7 @@ public class DocumentBuilderTest {
   }
 
   static class ContentScannerMethod extends TextScanner.Method {
-    public ContentScannerMethod() { super("start of document tag"); }
+    public ContentScannerMethod() { super(META_DOCUMENT_TAG_START); }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
       return character == META_DOCUMENT_TAG_START;
@@ -54,7 +54,7 @@ public class DocumentBuilderTest {
   static class TagScannerMethod extends TextScanner.Method {
     char[] WHITE_SPACE = new char[]{9, 10, 11, 12, 13, ' '};
     public TagScannerMethod() {
-      super("end of document element header");
+      super(META_DOCUMENT_TAG_END);
       boundaryCeption = true;
     }
     @Override
