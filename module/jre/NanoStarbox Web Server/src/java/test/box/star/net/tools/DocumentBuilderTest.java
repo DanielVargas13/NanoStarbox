@@ -59,7 +59,9 @@ public class DocumentBuilderTest {
     }
     @Override
     public boolean matchBoundary(TextScannerMethodContext context, char character) {
-      return (character == META_DOCUMENT_TAG_END) || (TextScanner.charMapContains(character, MAP_WHITE_SPACE));
+      if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
+      if (character == META_DOCUMENT_TAG_END) return true;
+      return false;
     }
   }
   static class AttributeScannerMethod extends TextScanner.Method {
@@ -76,7 +78,7 @@ public class DocumentBuilderTest {
 
   TextScanner textScanner = new TextScanner(new File("src/java/resource/local/mixed-content-page.html"));
   ContentScannerMethod documentContent = new ContentScannerMethod();
-  TextScanner.FindUnquotedStringMethod endTag = new TextScanner.FindUnquotedStringMethod();
+  TextScanner.FindStringMethod endTag = new TextScanner.FindStringMethod().EscapeQuotes().AnyCase();
 
   @Test
   void main() {
@@ -85,7 +87,7 @@ public class DocumentBuilderTest {
       out.print(textScanner.seek(documentContent));
       DocumentTag dt = new DocumentTag(textScanner);
       if (dt.equals("serve")){
-        textScanner.seek(endTag, "</serve>", false);
+        textScanner.seek(endTag, "</serve>");
         out.print("<!-- Template Data Goes Here -->");
       } else {
         out.print(dt);
@@ -96,6 +98,6 @@ public class DocumentBuilderTest {
 
   @Test void map(){
     char[] map = new TextScanner.CharacterClass(9, 13).merge(20).assemble();
-    for (int c:map) System.out.println(Integer.valueOf(c));
+    for (int c:MAP_WHITE_SPACE) System.out.println(Integer.valueOf(c));
   }
 }
