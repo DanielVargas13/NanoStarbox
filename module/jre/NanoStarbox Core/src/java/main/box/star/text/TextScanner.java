@@ -697,7 +697,10 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       findLength = claim.length();
       checkMatch = false;
       boundaryCeption = true;
-      if (! caseSensitive) comparisonClaim = claim.toLowerCase(locale);
+      if (! caseSensitive) {
+        comparisonClaim = claim.toLowerCase(locale);
+        finalMatchCharacter = comparisonClaim.charAt(claim.length() - 1);
+      }
       sourceLength = 0;
       quote = NULL_CHARACTER;
     }
@@ -728,6 +731,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       }
 
       sourceLength++;
+      if (! caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
       // activate matching if this is the last character to match and our buffer is large enough.
       checkMatch = (character == finalMatchCharacter) && (sourceLength >= findLength);
 
