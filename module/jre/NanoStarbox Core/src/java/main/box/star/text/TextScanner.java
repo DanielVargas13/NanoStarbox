@@ -727,8 +727,9 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
         if (matchQuote(character)) return matchBoundary;
       }
 
+      sourceLength++;
       // activate matching if this is the last character to match and our buffer is large enough.
-      checkMatch = (character == finalMatchCharacter) && (sourceLength++ >= findLength);
+      checkMatch = (character == finalMatchCharacter) && (sourceLength >= findLength);
 
       return matchBoundary;
 
