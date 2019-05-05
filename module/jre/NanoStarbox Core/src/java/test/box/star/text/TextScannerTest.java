@@ -20,8 +20,8 @@ class TextScannerTest {
         this.bufferLimit = 0;
       }
       @Override
-      public boolean matchBoundary(TextScannerSafeContext context, char character) {
-        if (context.haveEscapeWarrant()) return false;
+      public boolean matchBoundary(char character) {
+        if (haveEscapeWarrant()) return false;
         return TextScanner.charMapContains(character, controlTerms);
       }
     });
