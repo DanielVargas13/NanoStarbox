@@ -13,7 +13,7 @@ import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
 
-public class TextScanner implements Iterable<Character>, TextScannerSafeContext, Closeable {
+public class TextScanner implements Iterable<Character>, TextScannerContext, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
   private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
@@ -577,7 +577,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       } catch (Exception e){throw new RuntimeException(new OperationNotSupportedException());}
     }
 
-    private TextScannerSafeContext methodScanner;
+    private TextScannerContext methodScanner;
 
     // implementation prep
     private void method_initialize(TextScanner textScanner){
