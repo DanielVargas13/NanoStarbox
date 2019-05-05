@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static box.star.text.TextScanner.ASCII.META_DOCUMENT_TAG_END;
+import static box.star.text.Char.META_DOCUMENT_TAG_END;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
@@ -22,7 +22,7 @@ class TextScannerTest {
       @Override
       public boolean exitMethod(char character) {
         if (haveEscapeWarrant()) return false;
-        return TextScanner.charMapContains(character, controlTerms);
+        return Char.charMapContains(character, controlTerms);
       }
     });
     System.err.println(result + x.scanExact(META_DOCUMENT_TAG_END));

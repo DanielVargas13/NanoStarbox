@@ -1,5 +1,6 @@
 package box.star.net.tools;
 
+import box.star.text.Char;
 import box.star.text.TextScanner;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.*;
 
-import static box.star.text.TextScanner.ASCII.*;
+import static box.star.text.Char.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DocumentBuilderTest {
@@ -24,7 +25,7 @@ public class DocumentBuilderTest {
       }
       @Override
       public boolean exitMethod(char character) {
-        if (TextScanner.charMapContains(character, MAP_WHITE_SPACE)) return true;
+        if (charMapContains(character, MAP_WHITE_SPACE)) return true;
         if (character == META_DOCUMENT_TAG_END) return true;
         return false;
       }
@@ -109,7 +110,7 @@ public class DocumentBuilderTest {
   }
 
   void CharacterClassAssembly(){
-    char[] map = new TextScanner.CharacterClass(9, 13).merge(' ').assemble();
+    char[] map = new Char.MapAssembler(9, 13).merge(' ').assemble();
     assert(Arrays.equals(map, MAP_WHITE_SPACE));
     assert(Arrays.equals(new char[]{9,10,11,12,13,32}, MAP_WHITE_SPACE));
   }

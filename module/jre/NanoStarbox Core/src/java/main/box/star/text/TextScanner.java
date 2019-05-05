@@ -14,11 +14,10 @@ import java.util.Locale;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-import static box.star.text.TextScanner.ASCII.*;
+import static box.star.text.Char.*;
 
 public class TextScanner implements Iterable<Character>, Closeable {
 
-  public final static int CHAR_MAX = '\uffff';
   /**
    * Reader for the input.
    */
@@ -123,23 +122,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
    */
   public TextScanner(String sourceLabel, String source) {
     this(sourceLabel, new StringReader(source));
-  }
-
-  public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
-
-  public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? '\uffff' : val; }
-
-  public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
-
-  public static boolean charMapContains(char search, char[] range) {
-    for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
-    return false;
-  }
-
-  private static char[] buildRangeMap(CharacterClass.RangeMap range) {
-    StringBuilder out = new StringBuilder();
-    for (int i = range.start; i <= range.end; i++) out.append((char) i);
-    return out.toString().toCharArray();
   }
 
 
@@ -260,7 +242,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return this.previous;
   }
 
-  public boolean haveEscapeWarrant() { return (previous == ASCII.BACKSLASH) && this.backslashModeActive; }
+  public boolean haveEscapeWarrant() { return (previous == Char.BACKSLASH) && this.backslashModeActive; }
 
   /**
    * Increments the internal indexes according to the previous character
@@ -510,31 +492,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     super.finalize();
   }
 
-  public static final class ASCII {
-
-    public final static char NULL_CHARACTER = 0;
-
-    public final static char META_DOCUMENT_TAG_START = '<';
-    public final static char META_DOCUMENT_TAG_END = '>';
-
-    public final static char BACKSLASH = '\\';
-    public final static char SINGLE_QUOTE = '\'';
-    public final static char DOUBLE_QUOTE = '"';
-
-    public final static char[] MAP = new CharacterClass(0, CHAR_MAX).assemble();
-    public final static char[] MAP_WHITE_SPACE = new CharacterClass(9, 13).merge(' ').assemble();
-    public final static char[] MAP_LETTERS = new CharacterClass(65, 90).merge(97, 122).assemble();
-    public final static char[] MAP_NUMBERS = new CharacterClass.RangeMap(48, 57).compile();
-    public final static char[] MAP_CONTROL = new CharacterClass(0, 31).filter(MAP_WHITE_SPACE).assemble();
-    public final static char[] MAP_EXTENDED = new CharacterClass.RangeMap(127, CHAR_MAX).compile();
-
-    public final static char[] MAP_SYMBOLS = new CharacterClass(33, 47)
-        .merge(58, 64)
-        .merge(91, 96)
-        .merge(123, 126)
-        .assemble();
-  }
-
   /**
    * Text Scanner Method Implementation
    *
@@ -544,20 +501,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
   public static class Method implements TextScannerMethod, Serializable, Cloneable {
 
     long backup_index, backup_line, backup_column;
-
-    protected void saveErrorLocation() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      backup_index = index();
-      backup_line = line();
-      backup_column = column();
-    }
-
-    protected void popErrorLocation() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      methodScanner.line = backup_line;
-      methodScanner.index = backup_index;
-      methodScanner.column = backup_column;
-    }
 
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
@@ -592,7 +535,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return this;
     }
 
-    public SyntaxError syntaxError(String message){
+    final public SyntaxError syntaxError(String message){
       popErrorLocation();
       return methodScanner.syntaxError(message);
     }
@@ -633,12 +576,26 @@ public class TextScanner implements Iterable<Character>, Closeable {
     }
 
     // implementation prep
-    private void method_initialize(TextScanner textScanner) {
+    void method_initialize(TextScanner textScanner) {
       methodQuote = NULL_CHARACTER;
       methodTokenMap = new SuperTokenMap();
       methodContext = new Stack<>();
       methodScanner = textScanner;
       saveErrorLocation();
+    }
+
+    void saveErrorLocation() {
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
+      backup_index = index();
+      backup_line = line();
+      backup_column = column();
+    }
+
+    void popErrorLocation() {
+      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
+      methodScanner.line = backup_line;
+      methodScanner.index = backup_index;
+      methodScanner.column = backup_column;
     }
 
     /**
@@ -920,189 +877,4 @@ public class TextScanner implements Iterable<Character>, Closeable {
   }
 
 
-  /**
-   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-   *
-   * @author Hypersoft-Systems: USA
-   * @version 2015-12-09
-   */
-  public static class Exception extends RuntimeException {
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 0;
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message.
-     *
-     * @param message Detail about the reason for the exception.
-     */
-    public Exception(final String message) {
-      super(message);
-    }
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message and cause.
-     *
-     * @param message Detail about the reason for the exception.
-     * @param cause   The cause.
-     */
-    public Exception(final String message, final Throwable cause) {
-      super(message, cause);
-    }
-
-    /**
-     * Constructs a new TextScanner.Exception with the specified cause.
-     *
-     * @param cause The cause.
-     */
-    public Exception(final Throwable cause) {
-      super(cause.getMessage(), cause);
-    }
-
-  }
-
-  /**
-   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-   *
-   * @author Hypersoft-Systems: USA
-   * @version 2015-12-09
-   */
-  public static class SyntaxError extends Exception {
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 0;
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message.
-     *
-     * @param message Detail about the reason for the exception.
-     */
-    public SyntaxError(final String message) {
-      super(message);
-    }
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message and cause.
-     *
-     * @param message Detail about the reason for the exception.
-     * @param cause   The cause.
-     */
-    public SyntaxError(final String message, final Throwable cause) {
-      super(message, cause);
-    }
-
-    /**
-     * Constructs a new TextScanner.Exception with the specified cause.
-     *
-     * @param cause The cause.
-     */
-    public SyntaxError(final Throwable cause) {
-      super(cause.getMessage(), cause);
-    }
-
-  }
-
-  public static class CharacterClass implements Serializable {
-    private static final long serialVersionUID = 8454376662352328447L;
-    StringBuilder chars = new StringBuilder();
-
-    public CharacterClass(RangeMap map) {
-      this(map.compile());
-    }
-
-    public CharacterClass(char... map) {
-      merge(map);
-    }
-
-    public CharacterClass(int start, int end) {
-      merge(new RangeMap(start, end));
-    }
-
-    public CharacterClass(int... integer) {
-      merge(integer);
-    }
-
-    public CharacterClass merge(int... integer) {
-      char[] current = assemble();
-      for (int i : integer) {
-        char c = (char) sanitizeRangeValue(i);
-        if (!charMapContains(c, current)) chars.append(c);
-      }
-      return this;
-    }
-
-    public CharacterClass merge(int start, int end) {
-      return merge(new RangeMap(start, end));
-    }
-
-    public CharacterClass merge(RangeMap map) {
-      return merge(map.compile());
-    }
-
-    public CharacterClass merge(char... map) {
-      char[] current = assemble();
-      for (char c : map) if (!charMapContains(c, current)) chars.append(c);
-      return this;
-    }
-
-    public CharacterClass filter(int... integer) {
-      StringBuilder map = new StringBuilder();
-      for (int i : integer) map.append((char) i);
-      char[] chars = map.toString().toCharArray();
-      filter(chars);
-      return this;
-    }
-
-    public CharacterClass filter(int start, int end) {
-      return filter(new RangeMap(start, end));
-    }
-
-    public CharacterClass filter(RangeMap map) {
-      return filter(map.compile());
-    }
-
-    public CharacterClass filter(char... map) {
-      StringBuilder filter = new StringBuilder();
-      for (char c : chars.toString().toCharArray()) {
-        if (charMapContains(c, map)) continue;
-        filter.append(c);
-      }
-      this.chars = filter;
-      return this;
-    }
-
-    public char[] assemble() {
-      return chars.toString().toCharArray();
-    }
-
-    @Override
-    public String toString() {
-      return chars.toString();
-    }
-
-    public boolean match(char character) {
-      return chars.indexOf(character + "") != -1;
-    }
-
-    private static class RangeMap {
-
-      public final int start, end;
-
-      private RangeMap(int start, int end) {
-        this.start = sanitizeRangeValue(start);
-        this.end = sanitizeRangeValue(end);
-      }
-
-      public boolean match(char character) {
-        return character >= start || character <= end;
-      }
-
-      public char[] compile() {
-        return buildRangeMap(this);
-      }
-
-    }
-  }
 }
