@@ -510,7 +510,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
 
   }
 
-  public static class Method implements TextScannerMethodDriver, CharacterBoundaryControl, Serializable, Cloneable {
+  public static class Method implements TextScannerMethod, Serializable, Cloneable {
 
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";

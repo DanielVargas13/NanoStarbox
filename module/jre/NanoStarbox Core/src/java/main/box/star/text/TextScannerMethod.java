@@ -3,7 +3,7 @@ package box.star.text;
 /**
  * This interface hosts the text scanner method core operating functions.
  */
-public interface TextScannerMethodDriver {
+public interface TextScannerMethod extends TextScanner.CharacterBoundaryControl {
 
   /**
    * Called by the TextScanner to signal that a new method call is beginning.
