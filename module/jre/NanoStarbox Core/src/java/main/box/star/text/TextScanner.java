@@ -1,14 +1,15 @@
 package box.star.text;
 
 import box.star.Tools;
+import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.SourceConnector;
+import box.star.state.SuperTokenMap;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 
 import static box.star.text.TextScanner.ASCII.*;
 
@@ -343,7 +344,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
   }
 
   private void startMethod(Method method, Object... parameters){
-    method.reset_quoting();
+    method.initialize_call();
     method.beginScanning(this, parameters);
   }
 
@@ -515,13 +516,54 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
 
+    private SuperTokenMap<Serializable> tokenMap;
+    private Stack<String> methodContext;
+
     protected char quote;
     protected int bufferLimit = 0;
     protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
     protected String claim;
 
-    private void reset_quoting(){
+    private void initialize_call(){
       quote = NULL_CHARACTER;
+      tokenMap = new SuperTokenMap();
+      methodContext = new Stack<>();
+    }
+
+    /**
+     * Enters a sub-context.
+     *
+     * Virtual Stack Recursion Guardian.
+     *
+     * @param context The TextScanner context.
+     * @param subContext the private data to associate with this token.
+     * @return a context token.
+     * @see #exitSubContext(TextScannerSafeContext, String)
+     */
+    protected String enterSubContext(TextScannerSafeContext context, Serializable subContext){
+      String token = tokenMap.put(subContext);
+      methodContext.push(token);
+      return token;
+    }
+
+    /**
+     * Exits a sub-context as created by {@link #enterSubContext(TextScannerSafeContext, Serializable)}
+     *
+     * Virtual Stack Recursion Guardian.
+     *
+     * @param context the TextScanner Context
+     * @param token the sub-context to exit
+     * @param <ANY> the user format.
+     * @return the user data.
+     * @see #enterSubContext(TextScannerSafeContext, Serializable)
+     */
+    protected <ANY extends Serializable> ANY exitSubContext(TextScannerSafeContext context, String token){
+      if (methodContext.peek().equals(token)){
+        methodContext.pop();
+        return (ANY) tokenMap.get(token);
+      } else{
+        throw context.claimSyntaxError("trying to exit wrong sub-context");
+      }
     }
 
     public Method(){this(null);}
@@ -693,13 +735,14 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
     @Override
     public void beginScanning(TextScannerSafeContext context, Object... parameters) {
       claim = String.valueOf(parameters[0]);
-      finalMatchCharacter = claim.charAt(claim.length() - 1);
       findLength = claim.length();
       checkMatch = false;
       boundaryCeption = true;
       if (! caseSensitive) {
         comparisonClaim = claim.toLowerCase(locale);
         finalMatchCharacter = comparisonClaim.charAt(claim.length() - 1);
+      } else {
+        finalMatchCharacter = claim.charAt(claim.length() - 1);
       }
       sourceLength = 0;
       quote = NULL_CHARACTER;
@@ -717,6 +760,7 @@ public class TextScanner implements Iterable<Character>, TextScannerSafeContext,
       }
       return true;
     }
+
     @Override
     public boolean matchBoundary(TextScannerSafeContext context, char character) {
 
