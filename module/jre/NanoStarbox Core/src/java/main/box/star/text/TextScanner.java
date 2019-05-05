@@ -31,9 +31,8 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
   }
 
   public static char[] buildRangeMap(RangeMap range){
-    List<Character> list = new ArrayList<>(sanitizeRangeValue(range.end) - sanitizeRangeValue(range.start));
-    for (int i = range.start; i <= range.end; i++) list.add((char)i);
-    Character[] out = new Character[list.size()];
+    StringBuilder out = new StringBuilder();
+    for(int i = range.start; i <= range.end; i++)out.append((char)i);
     return out.toString().toCharArray();
   }
 
@@ -510,7 +509,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     }
 
     public static class Assembler {
-      List<Character> chars = new ArrayList<>();
+      StringBuilder chars = new StringBuilder();
       public Assembler(RangeMap map){
         this(map.compile());
       }
@@ -521,10 +520,10 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
         merge(new RangeMap(start, end));
       }
       public Assembler(int... integer){
-        for (int i:integer) chars.add((char) sanitizeRangeValue(i));
+        for (int i:integer) chars.append((char) sanitizeRangeValue(i));
       }
       public Assembler merge(int... integer){
-        for (int i:integer) chars.add((char) sanitizeRangeValue(i));
+        for (int i:integer) chars.append((char) sanitizeRangeValue(i));
         return this;
       }
       public Assembler merge(int start, int end){
@@ -534,11 +533,14 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
         return merge(map.compile());
       }
       public Assembler merge(char... map){
-        for (char c: map) chars.add(c);
+        for (char c: map) chars.append(c);
         return this;
       }
       public Assembler filter(int... integer){
-        for (int i:integer) chars.remove((char) sanitizeRangeValue(i));
+        StringBuilder map = new StringBuilder();
+        for (int i : integer) map.append((char) i);
+        char[] chars = map.toString().toCharArray();
+        filter(chars);
         return this;
       }
       public Assembler filter(int start, int end){
@@ -548,21 +550,22 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
         return filter(map.compile());
       }
       public Assembler filter(char... map){
-        for (int i = 0; i < chars.size(); i++) {
-          if (TextScanner.charMapContains(chars.get(i), map)) chars.remove(i);
+        StringBuilder filter = new StringBuilder();
+        for (char c: filter.toString().toCharArray()){
+          if (charMapContains(c, map)) continue;
+          filter.append(c);
         }
+        this.chars = filter;
         return this;
       }
 
       public char[] compile(){
-        return toString().toCharArray();
+        return chars.toString().toCharArray();
       }
 
       @Override
       public String toString() {
-        Character[] out = new Character[chars.size()];
-        chars.toArray(out);
-        return out.toString();
+        return chars.toString();
       }
 
     }
