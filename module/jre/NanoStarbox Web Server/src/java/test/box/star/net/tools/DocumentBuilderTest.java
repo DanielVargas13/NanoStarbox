@@ -91,7 +91,10 @@ public class DocumentBuilderTest {
 
     // Test class assembly
     CharacterMapAssembly();
+
+    // Test matching
     MatchStringStart();
+    MatchStringEnd();
 
     // Test document scanning
     while (textScanner.hasNext()){
@@ -121,4 +124,12 @@ public class DocumentBuilderTest {
     assertEquals("hello world", scan);
     fsmTextScanner.close();
   }
+
+  void MatchStringEnd(){
+    TextScanner fsmTextScanner = new TextScanner("again hello world");
+    String scan = fsmTextScanner.scan(new TextScanner.Method.MatchString("hello world"));
+    assertEquals("again hello world", scan);
+    fsmTextScanner.close();
+  }
+
 }
