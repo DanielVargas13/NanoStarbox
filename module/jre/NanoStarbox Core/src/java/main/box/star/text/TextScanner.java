@@ -415,7 +415,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
         }
       } while (seekMethod.continueScanning(scanned));
       success = true;
-      this.reader.mark(1);
     }
     catch (IllegalStateException signal){}
     finally {
@@ -434,6 +433,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
         seekMethod.methodScanner = null;
         return "";
       } else {
+        try /*  ignoring exceptions */ {
+          this.reader.mark(1);
+        } catch (IOException ignored){}
         if (seekMethod.boundaryCeption) ;
         else {
           this.back();
