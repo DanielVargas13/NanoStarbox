@@ -552,6 +552,8 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Text Scanner Method Implementation
    *
+   * Creates a method for scanning text.
+   *
    */
   public static class Method implements TextScannerMethod, Serializable, Cloneable {
 
