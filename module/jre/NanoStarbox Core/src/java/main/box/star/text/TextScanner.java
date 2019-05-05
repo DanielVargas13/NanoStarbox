@@ -9,7 +9,9 @@ import javax.naming.OperationNotSupportedException;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import static box.star.text.TextScanner.ASCII.*;
@@ -17,55 +19,52 @@ import static box.star.text.TextScanner.ASCII.*;
 public class TextScanner implements Iterable<Character>, Closeable {
 
   public final static int CHAR_MAX = '\uffff';
-  private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
-  {
-    syntaxErrorMarshal.scanner = this;
-  }
-  private boolean backslashModeActive;
-
-  public SyntaxErrorMarshal getSyntaxErrorMarshal() {
-    return syntaxErrorMarshal;
-  }
-
-  public static int atLeastZero(int val){ return (val < 0)?0:val; }
-  public static int atMostCharMax(int val){ return (val > CHAR_MAX)?'\uffff':val; }
-  public static int sanitizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
-
-  public static boolean charMapContains(char search, char[] range){
-    for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
-    return false;
-  }
-
-  private static char[] buildRangeMap(CharacterClass.RangeMap range){
-    StringBuilder out = new StringBuilder();
-    for(int i = range.start; i <= range.end; i++)out.append((char)i);
-    return out.toString().toCharArray();
-  }
-
-  /** current read character position on the current line. */
-  private long column;
-  /** flag to indicate if the end of the input has been found. */
-  private boolean eof;
-  /** current read index of the input. */
-  private long index;
-  /** current line of the input. */
-  private long line;
-  /** previous character read from the input. */
-  private char previous;
-  /** Reader for the input. */
+  /**
+   * Reader for the input.
+   */
   private final Reader reader;
-  /** flag to indicate that a previous character was requested. */
+  private SyntaxErrorMarshal syntaxErrorMarshal = new SyntaxErrorMarshal();
+  private boolean backslashModeActive;
+  /**
+   * current read character position on the current line.
+   */
+  private long column;
+  /**
+   * flag to indicate if the end of the input has been found.
+   */
+  private boolean eof;
+  /**
+   * current read index of the input.
+   */
+  private long index;
+  /**
+   * current line of the input.
+   */
+  private long line;
+  /**
+   * previous character read from the input.
+   */
+  private char previous;
+  /**
+   * flag to indicate that a previous character was requested.
+   */
   private boolean usePrevious;
-  /** the number of characters read in the previous line. */
+  /**
+   * the number of characters read in the previous line.
+   */
   private long characterPreviousLine;
   private boolean closeReader, closed;
   private String sourceLabel;
+  private boolean seeking;
 
+  {
+    syntaxErrorMarshal.scanner = this;
+  }
   /**
    * Construct a TextScanner from a Reader. The caller must close the Reader.
    *
    * @param sourceLabel a label for this text processor such as a file or url.
-   * @param reader     A reader.
+   * @param reader      A reader.
    */
   public TextScanner(@Nullable String sourceLabel, Reader reader) {
     this.sourceLabel = sourceLabel;
@@ -80,7 +79,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     this.characterPreviousLine = 0;
     this.line = 1;
   }
-
   public TextScanner(URL source) {
     this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
     this.closeReader = true;
@@ -93,7 +91,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.getPath()));
     this.closeReader = true;
   }
-
   /**
    * Construct a TextScanner from an InputStream. The caller must close the input stream.
    *
@@ -116,7 +113,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Construct a TextScanner from a string.
    *
-   * @param source     A source string.
+   * @param source A source string.
    */
   public TextScanner(String source) {
     this(source.getClass().getName(), new StringReader(source));
@@ -126,10 +123,36 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Construct a TextScanner from a string.
    *
-   * @param source     A source string.
+   * @param source A source string.
    */
   public TextScanner(String sourceLabel, String source) {
     this(sourceLabel, new StringReader(source));
+  }
+
+  public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
+
+  public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? '\uffff' : val; }
+
+  public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
+
+  public static boolean charMapContains(char search, char[] range) {
+    for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
+    return false;
+  }
+
+  private static char[] buildRangeMap(CharacterClass.RangeMap range) {
+    StringBuilder out = new StringBuilder();
+    for (int i = range.start; i <= range.end; i++) out.append((char) i);
+    return out.toString().toCharArray();
+  }
+
+  public SyntaxErrorMarshal getSyntaxErrorMarshal() {
+    return syntaxErrorMarshal;
+  }
+
+  void setSyntaxErrorMarshal(SyntaxErrorMarshal marshal) {
+    marshal.scanner = this;
+    this.syntaxErrorMarshal = marshal;
   }
 
   public String sourceLabel() {
@@ -152,8 +175,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * Back up one character. This provides a sort of lookahead capability,
    * so that you can test for a digit or letter before attempting to parse
    * the next number or identifier.
+   *
    * @throws Exception Thrown if trying to step back more than 1 step
-   *  or if already at the start of the string
+   *                   or if already at the start of the string
    */
   protected void back() throws Exception {
     if (this.usePrevious || this.index <= 0) {
@@ -169,11 +193,11 @@ public class TextScanner implements Iterable<Character>, Closeable {
    */
   private void decrementIndexes() {
     this.index--;
-    if(this.previous=='\r' || this.previous == '\n') {
+    if (this.previous == '\r' || this.previous == '\n') {
       this.line--;
-      this.column = this.characterPreviousLine ;
-    } else if(this.column > 0){
-      if (this.previous == '\\') this.backslashModeActive = ! this.backslashModeActive;
+      this.column = this.characterPreviousLine;
+    } else if (this.column > 0) {
+      if (this.previous == '\\') this.backslashModeActive = !this.backslashModeActive;
       else this.backslashModeActive = false;
       this.column--;
     }
@@ -188,31 +212,32 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return this.eof && !this.usePrevious;
   }
 
-
   /**
    * Determine if the next character is a match with a specified character.
    *
    * @return true if not yet at the end of the source.
    * @throws Exception thrown if there is an error stepping forward
-   *  or backward while checking for more data.
+   *                   or backward while checking for more data.
    */
   public boolean hasNext() throws Exception {
-    if(this.usePrevious) {
+    if (this.usePrevious) {
       return true;
     }
     try {
       this.reader.mark(1);
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       throw new Exception("Unable to preserve stream position", e);
     }
     try {
       // -1 is EOF, but next() can not consume the null character '\0'
-      if(this.reader.read() <= 0) {
+      if (this.reader.read() <= 0) {
         this.eof = true;
         return false;
       }
       this.reader.reset();
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       throw new Exception("Unable to read the next character from the stream", e);
     }
     return true;
@@ -232,7 +257,8 @@ public class TextScanner implements Iterable<Character>, Closeable {
     } else {
       try {
         c = this.reader.read();
-      } catch (IOException exception) {
+      }
+      catch (IOException exception) {
         throw new Exception(exception);
       }
     }
@@ -246,28 +272,29 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return this.previous;
   }
 
-  public boolean haveEscapeWarrant(){ return (previous == ASCII.BACKSLASH) && this.backslashModeActive; }
+  public boolean haveEscapeWarrant() { return (previous == ASCII.BACKSLASH) && this.backslashModeActive; }
 
   /**
    * Increments the internal indexes according to the previous character
    * read and the character passed as the current character.
+   *
    * @param c the current character read.
    */
   private void incrementIndexes(int c) {
-    if(c > 0) {
+    if (c > 0) {
       this.index++;
-      if(c=='\r') {
+      if (c == '\r') {
         this.line++;
         this.characterPreviousLine = this.column;
-        this.column =0;
-      }else if (c=='\n') {
-        if(this.previous != '\r') {
+        this.column = 0;
+      } else if (c == '\n') {
+        if (this.previous != '\r') {
           this.line++;
           this.characterPreviousLine = this.column;
         }
-        this.column =0;
+        this.column = 0;
       } else {
-        if (c == '\\') this.backslashModeActive = ! this.backslashModeActive;
+        if (c == '\\') this.backslashModeActive = !this.backslashModeActive;
         else this.backslashModeActive = false;
         this.column++;
       }
@@ -277,6 +304,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Consume the next character, and check that it matches a specified
    * character.
+   *
    * @param c The character to match.
    * @return The character.
    * @throws Exception if the character does not match.
@@ -284,8 +312,8 @@ public class TextScanner implements Iterable<Character>, Closeable {
   public char scanExact(char c) throws Exception {
     char n = this.scanNext();
     if (n != c) {
-      if(n > 0) {
-        throw this.claimSyntaxError("Failure while scanning: '"+c+"'; current-value: '"+n+"'");
+      if (n > 0) {
+        throw this.claimSyntaxError("Failure while scanning: '" + c + "'; current-value: '" + n + "'");
       }
       throw this.claimSyntaxError("Failure while scanning: '" + c + "'; current-value: ''");
     }
@@ -295,11 +323,10 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Get the next n characters.
    *
-   * @param n     The number of characters to take.
-   * @return      A string of n characters.
-   * @throws Exception
-   *   Substring bounds error if there are not
-   *   n characters remaining in the source string.
+   * @param n The number of characters to take.
+   * @return A string of n characters.
+   * @throws Exception Substring bounds error if there are not
+   *                   n characters remaining in the source string.
    */
   public String scanLength(int n) throws Exception {
     if (n == 0) {
@@ -319,7 +346,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
   /**
    * Scans text until the TextScannerControl signals task complete.
-   *
+   * <p>
    * if the text stream ends before the control returns a syntax error will be thrown.
    * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#bufferLimit}, scanning will stop, and the next
    * stream token will be the current token.
@@ -329,22 +356,23 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * @throws SyntaxError
    */
   public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
-    char c; int i = 0;
+    char c;
+    int i = 0;
     startMethod(scanMethod, parameters);
     StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
     do {
-      if ((c = this.scanNext()) == 0){
+      if ((c = this.scanNext()) == 0) {
         if (scanMethod.eofCeption) break;
-        throw claimSyntaxError("Expected '"+scanMethod+"'");
+        throw claimSyntaxError("Expected '" + scanMethod + "'");
       }
-      if (scanMethod.bufferLimit == ++i){
+      if (scanMethod.bufferLimit == ++i) {
         if (scanMethod.bufferLimitCeption) break;
-        throw new Exception("Buffer overflow: "+scanMethod);
+        throw new Exception("Buffer overflow: " + scanMethod);
       }
       scanned.append(c);
       if (scanMethod.exitMethod(c)) break;
     } while (scanMethod.continueScanning(scanned));
-    if (scanMethod.boundaryCeption);
+    if (scanMethod.boundaryCeption) ;
     else {
       this.back();
       scanned.setLength(scanned.length() - 1);
@@ -353,13 +381,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return scanMethod.computeMethodCall(this, scanned);
   }
 
-  private void startMethod(Method method, Object... parameters){
-    if (method.methodScanner != null) throw new Exception(new OperationNotSupportedException("method instance already running"));
+  private void startMethod(Method method, Object... parameters) {
+    if (method.methodScanner != null)
+      throw new Exception(new OperationNotSupportedException("method instance already running"));
     method.method_initialize(this);
     method.startMethod(parameters);
   }
-
-  private boolean seeking;
 
   public boolean isSeeking() {
     return seeking;
@@ -410,8 +437,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
         }
       } while (seekMethod.continueScanning(scanned));
       this.reader.mark(1);
-    } catch (IOException exception) { throw new Exception(exception); }
-    if (seekMethod.boundaryCeption);
+    }
+    catch (IOException exception) { throw new Exception(exception); }
+    if (seekMethod.boundaryCeption) ;
     else {
       this.back();
       scanned.setLength(scanned.length() - 1);
@@ -420,12 +448,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
     seeking = false;
     return seekMethod.computeMethodCall(this, scanned);
   }
-  
+
   /**
    * Make a TextScannerException to signal a syntax error.
    *
    * @param message The error message.
-   * @return  A TextScannerException object, suitable for throwing
+   * @return A TextScannerException object, suitable for throwing
    */
   public SyntaxError claimSyntaxError(String message) {
     return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString());
@@ -434,9 +462,9 @@ public class TextScanner implements Iterable<Character>, Closeable {
   /**
    * Make a TextScannerException to signal a syntax error.
    *
-   * @param message The error message.
+   * @param message  The error message.
    * @param causedBy The throwable that caused the error.
-   * @return  A TextScannerException object, suitable for throwing
+   * @return A TextScannerException object, suitable for throwing
    */
   public SyntaxError claimSyntaxError(String message, Throwable causedBy) {
     return syntaxErrorMarshal.raiseSyntaxError(message + this.toTraceString(), causedBy);
@@ -468,26 +496,30 @@ public class TextScanner implements Iterable<Character>, Closeable {
     };
   }
 
-  void setSyntaxErrorMarshal(SyntaxErrorMarshal marshal){
-    marshal.scanner = this;
-    this.syntaxErrorMarshal = marshal;
-  }
-
   @Override
   public void close() {
     if (closeReader) try /* close stream ignoring exceptions with final closure */ {
       reader.close();
       closed = true;
-    } catch (IOException ignored){}
+    }
+    catch (IOException ignored) {}
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
   }
 
   public static class SyntaxErrorMarshal {
     private TextScanner scanner;
+
     public SyntaxError raiseSyntaxError(String message, Throwable causedBy) {
-      return new SyntaxError(message+scanner.toTraceString(), causedBy);
+      return new SyntaxError(message + scanner.toTraceString(), causedBy);
     }
-    public SyntaxError raiseSyntaxError(String message){
-      return new SyntaxError(message+scanner.toTraceString());
+
+    public SyntaxError raiseSyntaxError(String message) {
+      return new SyntaxError(message + scanner.toTraceString());
     }
 
   }
@@ -521,12 +553,20 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     private static final long serialVersionUID = -7389459770461075270L;
     private static final String undefined = "undefined";
+    // user managed
+    protected int bufferLimit = 0;
+    protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
+    protected String claim;
+    TextScanner methodScanner;
     private long index, line, column;
-
     // implementation managed
     private char methodQuote;
     private SuperTokenMap<Serializable> methodTokenMap;
     private Stack<String> methodContext;
+
+    public Method() {this(null);}
+
+    public Method(@Nullable Object claim) { this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     final public SyntaxErrorMarshal getSyntaxErrorMarshal() {
       if (methodScanner == null) throw new RuntimeException(new OperationNotSupportedException());
@@ -568,43 +608,36 @@ public class TextScanner implements Iterable<Character>, Closeable {
       methodScanner.close();
     }
 
-    TextScanner methodScanner;
-
-    protected void saveErrorLocation(){
+    protected void saveErrorLocation() {
       index = index();
       line = line();
       column = column();
     }
 
-    protected void popErrorLocation(){
+    protected void popErrorLocation() {
       methodScanner.line = line;
       methodScanner.index = index;
       methodScanner.column = column;
     }
 
     // implementation prep
-    private void method_initialize(TextScanner textScanner){
+    private void method_initialize(TextScanner textScanner) {
       methodQuote = NULL_CHARACTER;
       methodTokenMap = new SuperTokenMap();
       methodContext = new Stack<>();
       methodScanner = textScanner;
     }
 
-    // user managed
-    protected int bufferLimit = 0;
-    protected boolean boundaryCeption, eofCeption, bufferLimitCeption;
-    protected String claim;
-
     /**
      * Enters a sub-context.
-     *
+     * <p>
      * Virtual Stack Recursion Guardian.
      *
      * @param subContext the private data to associate with this token.
      * @return a context token.
      * @see #exitSubContext(String)
      */
-    final protected String enterSubContext(Serializable subContext){
+    final protected String enterSubContext(Serializable subContext) {
       String token = methodTokenMap.put(subContext);
       methodContext.push(token);
       return token;
@@ -612,7 +645,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     /**
      * Exits a sub-context as created by {@link #enterSubContext(Serializable)}
-     *
+     * <p>
      * Virtual Stack Recursion Guardian.
      *
      * @param token the sub-context to exit
@@ -620,19 +653,16 @@ public class TextScanner implements Iterable<Character>, Closeable {
      * @return the user data.
      * @see #enterSubContext(Serializable)
      */
-    final protected <ANY extends Serializable> ANY exitSubContext(String token){
-      if (methodContext.peek().equals(token)){
+    final protected <ANY extends Serializable> ANY exitSubContext(String token) {
+      if (methodContext.peek().equals(token)) {
         methodContext.pop();
         ANY v = (ANY) methodTokenMap.get(token);
         methodTokenMap.eraseToken(token);
         return v;
-      } else{
+      } else {
         throw methodScanner.getSyntaxErrorMarshal().raiseSyntaxError("trying to exit wrong sub-context");
       }
     }
-
-    public Method(){this(null);}
-    public Method(@Nullable Object claim){ this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
 
     @Override
     public void startMethod(Object[] parameters) {}
@@ -642,30 +672,36 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return scanned.toString();
     }
 
-    @Override public boolean continueScanning(StringBuilder input) { return true; }
-    @Override public boolean exitMethod(char character) { return character == 0; }
-    @Override public String toString() { return claim; }
+    @Override
+    public boolean continueScanning(StringBuilder input) { return true; }
+
+    @Override
+    public boolean exitMethod(char character) { return character == 0; }
+
+    @Override
+    public String toString() { return claim; }
 
     @Override
     protected Object clone() {
       try /* bake-cookies ignoring exceptions with final closure */ {
         return super.clone();
-      } catch (CloneNotSupportedException fatal){throw new RuntimeException(fatal);}
+      }
+      catch (CloneNotSupportedException fatal) {throw new RuntimeException(fatal);}
     }
 
-    final public boolean isQuoting(){
+    final public boolean isQuoting() {
       return methodQuote != NULL_CHARACTER;
     }
 
-    final public boolean matchQuote(char character){
+    final public boolean matchQuote(char character) {
       // handle quoting
-      if (isQuoting()){
+      if (isQuoting()) {
         // deactivate quoting if applicable
         if (character == methodQuote) methodQuote = NULL_CHARACTER;
         return true;
       }
       // activate quoting if applicable
-      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
+      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE) {
         methodQuote = character;
         return true;
       }
@@ -709,27 +745,26 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public static class FindString extends Method {
 
-      public FindString() { super(); }
-      public FindString(Object claim) { super(claim); }
-
       protected String comparisonClaim;
       protected boolean checkMatch, caseSensitive = true;
       protected char[] finalMatchCharacter;
       protected int findLength, sourceLength;
       protected boolean handleQuoting = false;
       protected Locale locale = Locale.ENGLISH;
+      public FindString() { super(); }
+      public FindString(Object claim) { super(claim); }
 
-      public FindString EscapeQuotes(){
+      public FindString EscapeQuotes() {
         handleQuoting = true;
         return this;
       }
 
-      public FindString AnyCase(){
+      public FindString AnyCase() {
         caseSensitive = false;
         return this;
       }
 
-      public FindString AnyCase(Locale locale){
+      public FindString AnyCase(Locale locale) {
         this.locale = locale;
         caseSensitive = false;
         return this;
@@ -742,7 +777,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
         checkMatch = false;
         finalMatchCharacter = new char[1];
         boundaryCeption = true;
-        if (! caseSensitive) {
+        if (!caseSensitive) {
           comparisonClaim = claim.toLowerCase(locale);
           finalMatchCharacter[0] = comparisonClaim.charAt(claim.length() - 1);
         } else {
@@ -750,13 +785,15 @@ public class TextScanner implements Iterable<Character>, Closeable {
         }
         sourceLength = 0;
       }
+
       @Override
       public boolean continueScanning(StringBuilder input) {
         if (checkMatch) {
           String match = input.substring(Math.max(0, sourceLength - findLength));
           // IF this matches STOP scanning by returning false.
-          if (caseSensitive) { if (match.equals(claim)) return false; }
-          else if (match.toLowerCase(locale).equals(comparisonClaim)) return false;
+          if (caseSensitive) {
+            return !match.equals(claim);
+          } else return !match.toLowerCase(locale).equals(comparisonClaim);
         }
         return true;
       }
@@ -767,7 +804,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
         // since this is a string-match-operation, every branch returns false.
         final boolean matchBoundary = false;
 
-        if (handleQuoting){
+        if (handleQuoting) {
           // handle escapes
           if (haveEscapeWarrant()) return matchBoundary;
           // handle quoting
@@ -775,7 +812,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
         }
 
         sourceLength++;
-        if (! caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
+        if (!caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
         // activate matching if this is the last character to match and our buffer is large enough.
         checkMatch = (charMapContains(character, finalMatchCharacter)) && (sourceLength >= findLength);
         return matchBoundary;
@@ -786,28 +823,30 @@ public class TextScanner implements Iterable<Character>, Closeable {
 
     public static class MatchString extends Method {
 
-      private int sourceLength, minimumLength, maximumLength;
       Pattern pattern;
+      private int sourceLength, minimumLength, maximumLength;
       private boolean checkMatch, matchStart;
-
-      public MatchString MatchStart(int maximumLength){
-        if (maximumLength < minimumLength) throw new IllegalArgumentException("maximum length is less than minimum length");
-        this.maximumLength = maximumLength;
-        return MatchStart();
-      }
-
-      public MatchString MatchStart(){
-        matchStart = true;
-        return this;
-      }
 
       public MatchString(String claim, int minimumLength, String pattern) {
         this(claim, minimumLength, pattern, 0);
       }
+
       public MatchString(String claim, int minimumLength, String pattern, int flags) {
         super(claim);
         this.minimumLength = minimumLength;
         this.pattern = Pattern.compile(pattern, flags);
+      }
+
+      public MatchString MatchStart(int maximumLength) {
+        if (maximumLength < minimumLength)
+          throw new IllegalArgumentException("maximum length is less than minimum length");
+        this.maximumLength = maximumLength;
+        return MatchStart();
+      }
+
+      public MatchString MatchStart() {
+        matchStart = true;
+        return this;
       }
 
       @Override
@@ -822,16 +861,13 @@ public class TextScanner implements Iterable<Character>, Closeable {
       public boolean continueScanning(StringBuilder input) {
         if (checkMatch) {
           String match;
-          if (matchStart){
-            match = (maximumLength > 0)?input.substring(0, maximumLength):input.substring(0);
-          } else {
-            match = input.substring(Math.max(0, sourceLength - minimumLength));
-          }
+          if (matchStart) match = (maximumLength > 0) ? input.substring(0, maximumLength) : input.substring(0);
+          else match = input.substring(Math.max(0, sourceLength - minimumLength));
           if (pattern.matcher(match).matches()) return false;
-          else if (matchStart) {
+          else if (matchStart && !isSeeking()) {
             popErrorLocation();
-            throw getSyntaxErrorMarshal().raiseSyntaxError("Expected: " + this + "; Found: `" + input.charAt(0)+"'");
-          };
+            throw getSyntaxErrorMarshal().raiseSyntaxError("Expected: " + this + "; Found: `" + input.charAt(0) + "'");
+          }
         }
         return true;
       }
@@ -853,40 +889,38 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * @version 2015-12-09
    */
   public static class Exception extends RuntimeException {
-      /** Serialization ID */
-      private static final long serialVersionUID = 0;
+    /**
+     * Serialization ID
+     */
+    private static final long serialVersionUID = 0;
 
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message.
-       *
-       * @param message
-       *            Detail about the reason for the exception.
-       */
-      public Exception(final String message) {
-          super(message);
-      }
+    /**
+     * Constructs a TextScanner.Exception with an explanatory message.
+     *
+     * @param message Detail about the reason for the exception.
+     */
+    public Exception(final String message) {
+      super(message);
+    }
 
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message and cause.
-       *
-       * @param message
-       *            Detail about the reason for the exception.
-       * @param cause
-       *            The cause.
-       */
-      public Exception(final String message, final Throwable cause) {
-          super(message, cause);
-      }
+    /**
+     * Constructs a TextScanner.Exception with an explanatory message and cause.
+     *
+     * @param message Detail about the reason for the exception.
+     * @param cause   The cause.
+     */
+    public Exception(final String message, final Throwable cause) {
+      super(message, cause);
+    }
 
-      /**
-       * Constructs a new TextScanner.Exception with the specified cause.
-       *
-       * @param cause
-       *            The cause.
-       */
-      public Exception(final Throwable cause) {
-          super(cause.getMessage(), cause);
-      }
+    /**
+     * Constructs a new TextScanner.Exception with the specified cause.
+     *
+     * @param cause The cause.
+     */
+    public Exception(final Throwable cause) {
+      super(cause.getMessage(), cause);
+    }
 
   }
 
@@ -897,99 +931,103 @@ public class TextScanner implements Iterable<Character>, Closeable {
    * @version 2015-12-09
    */
   public static class SyntaxError extends Exception {
-      /** Serialization ID */
-      private static final long serialVersionUID = 0;
+    /**
+     * Serialization ID
+     */
+    private static final long serialVersionUID = 0;
 
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message.
-       *
-       * @param message
-       *            Detail about the reason for the exception.
-       */
-      public SyntaxError(final String message) {
-          super(message);
-      }
+    /**
+     * Constructs a TextScanner.Exception with an explanatory message.
+     *
+     * @param message Detail about the reason for the exception.
+     */
+    public SyntaxError(final String message) {
+      super(message);
+    }
 
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message and cause.
-       *
-       * @param message
-       *            Detail about the reason for the exception.
-       * @param cause
-       *            The cause.
-       */
-      public SyntaxError(final String message, final Throwable cause) {
-          super(message, cause);
-      }
+    /**
+     * Constructs a TextScanner.Exception with an explanatory message and cause.
+     *
+     * @param message Detail about the reason for the exception.
+     * @param cause   The cause.
+     */
+    public SyntaxError(final String message, final Throwable cause) {
+      super(message, cause);
+    }
 
-      /**
-       * Constructs a new TextScanner.Exception with the specified cause.
-       *
-       * @param cause
-       *            The cause.
-       */
-      public SyntaxError(final Throwable cause) {
-          super(cause.getMessage(), cause);
-      }
+    /**
+     * Constructs a new TextScanner.Exception with the specified cause.
+     *
+     * @param cause The cause.
+     */
+    public SyntaxError(final Throwable cause) {
+      super(cause.getMessage(), cause);
+    }
 
-  }
-
-  @Override
-  protected void finalize() throws Throwable {
-    close();
-    super.finalize();
   }
 
   public static class CharacterClass implements Serializable {
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
-    public CharacterClass(RangeMap map){
+
+    public CharacterClass(RangeMap map) {
       this(map.compile());
     }
-    public CharacterClass(char... map){
+
+    public CharacterClass(char... map) {
       merge(map);
     }
-    public CharacterClass(int start, int end){
+
+    public CharacterClass(int start, int end) {
       merge(new RangeMap(start, end));
     }
-    public CharacterClass(int... integer){
+
+    public CharacterClass(int... integer) {
       merge(integer);
     }
-    public CharacterClass merge(int... integer){
+
+    public CharacterClass merge(int... integer) {
       char[] current = assemble();
-      for (int i:integer) {
-        char c = (char)sanitizeRangeValue(i);
-        if (! charMapContains(c, current)) chars.append(c);
+      for (int i : integer) {
+        char c = (char) sanitizeRangeValue(i);
+        if (!charMapContains(c, current)) chars.append(c);
       }
       return this;
     }
-    public CharacterClass merge(int start, int end){
+
+    public CharacterClass merge(int start, int end) {
       return merge(new RangeMap(start, end));
     }
-    public CharacterClass merge(RangeMap map){
+
+    public CharacterClass merge(RangeMap map) {
       return merge(map.compile());
     }
-    public CharacterClass merge(char... map){
+
+    public CharacterClass merge(char... map) {
       char[] current = assemble();
-      for (char c: map) if (! charMapContains(c, current)) chars.append(c);
+      for (char c : map) if (!charMapContains(c, current)) chars.append(c);
       return this;
     }
-    public CharacterClass filter(int... integer){
+
+    public CharacterClass filter(int... integer) {
       StringBuilder map = new StringBuilder();
       for (int i : integer) map.append((char) i);
       char[] chars = map.toString().toCharArray();
       filter(chars);
       return this;
     }
-    public CharacterClass filter(int start, int end){
+
+    public CharacterClass filter(int start, int end) {
       return filter(new RangeMap(start, end));
     }
-    public CharacterClass filter(RangeMap map){
+
+    public CharacterClass filter(RangeMap map) {
       return filter(map.compile());
     }
-    public CharacterClass filter(char... map){
+
+    public CharacterClass filter(char... map) {
       StringBuilder filter = new StringBuilder();
-      for (char c: chars.toString().toCharArray()){
+      for (char c : chars.toString().toCharArray()) {
         if (charMapContains(c, map)) continue;
         filter.append(c);
       }
@@ -997,7 +1035,7 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return this;
     }
 
-    public char[] assemble(){
+    public char[] assemble() {
       return chars.toString().toCharArray();
     }
 
@@ -1006,23 +1044,24 @@ public class TextScanner implements Iterable<Character>, Closeable {
       return chars.toString();
     }
 
-    public boolean match(char character){
-      return chars.indexOf(character+"") != -1;
+    public boolean match(char character) {
+      return chars.indexOf(character + "") != -1;
     }
 
     private static class RangeMap {
 
       public final int start, end;
 
-      private RangeMap(int start, int end){
-        this.start = sanitizeRangeValue(start); this.end = sanitizeRangeValue(end);
+      private RangeMap(int start, int end) {
+        this.start = sanitizeRangeValue(start);
+        this.end = sanitizeRangeValue(end);
       }
 
       public boolean match(char character) {
         return character >= start || character <= end;
       }
 
-      public char[] compile(){
+      public char[] compile() {
         return buildRangeMap(this);
       }
 
