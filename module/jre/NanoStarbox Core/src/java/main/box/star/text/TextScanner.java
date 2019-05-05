@@ -23,8 +23,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
   public static int sanitizeRangeValue(int val){ return atLeastZero(atMostCharMax(val));}
 
   public static boolean charMapContains(char search, char[] range){
-    for (char c: range)
-      if (search == c) return true;
+    for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
     return false;
   }
 
@@ -468,7 +467,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
 
   }
 
-  public static final class ASCII{
+  public static final class ASCII {
 
     public final static char NULL_CHARACTER = 0;
 
@@ -479,10 +478,11 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     public final static char SINGLE_QUOTE = '\'';
     public final static char DOUBLE_QUOTE = '"';
 
-    public final static char[] MAP_WHITE_SPACE = new CharacterClass(9, 13).merge(20).assemble();
+    public final static char[] MAP = new CharacterClass(0, CHAR_MAX).assemble();
+    public final static char[] MAP_WHITE_SPACE = new CharacterClass(9, 13).merge(' ').assemble();
     public final static char[] MAP_LETTERS = new CharacterClass(65, 90).merge(97, 122).assemble();
     public final static char[] MAP_NUMBERS = new RangeMap(48, 57).compile();
-    public final static char[] MAP_CONTROL = new CharacterClass(0, 32).filter(MAP_WHITE_SPACE).assemble();
+    public final static char[] MAP_CONTROL = new CharacterClass(0, 31).filter(MAP_WHITE_SPACE).assemble();
     public final static char[] MAP_EXTENDED = new RangeMap(127, CHAR_MAX).compile();
 
     public final static char[] MAP_SYMBOLS = new CharacterClass(33, 47)
@@ -663,11 +663,31 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
     boolean matchBoundary(TextScannerMethodContext context, char character);
   }
 
-  public static class FindUnquotedStringMethod extends Method {
+  public static class FindStringMethod extends Method {
+
     protected String comparisonClaim;
-    protected boolean checkMatch, caseSensitive;
+    protected boolean checkMatch, caseSensitive = true;
     protected char quote, finalMatchCharacter;
     protected int findLength, sourceLength;
+    protected boolean handleQuoting = false;
+    protected Locale locale = Locale.ENGLISH;
+
+    public FindStringMethod EscapeQuotes(){
+      handleQuoting = true;
+      return this;
+    }
+
+    public FindStringMethod AnyCase(){
+      caseSensitive = false;
+      return this;
+    }
+
+    public FindStringMethod AnyCase(Locale locale){
+      this.locale = locale;
+      caseSensitive = false;
+      return this;
+    }
+
     @Override
     public void beginScanning(TextScannerMethodContext context, Object... parameters) {
       claim = String.valueOf(parameters[0]);
@@ -675,8 +695,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       findLength = claim.length();
       checkMatch = false;
       boundaryCeption = true;
-      caseSensitive = (parameters.length > 1) && (boolean) parameters[1];
-      if (! caseSensitive) comparisonClaim = claim.toLowerCase(Locale.ENGLISH);
+      if (! caseSensitive) comparisonClaim = claim.toLowerCase(locale);
       sourceLength = 0;
       quote = NULL_CHARACTER;
     }
@@ -689,7 +708,7 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
         String match = input.substring(Math.max(0, sourceLength - findLength));
         // IF this matches STOP scanning by returning false.
         if (caseSensitive) { if (match.endsWith(claim)) return false; }
-        else if (match.toLowerCase(Locale.ENGLISH).equals(comparisonClaim)) return false;
+        else if (match.toLowerCase(locale).equals(comparisonClaim)) return false;
       }
       return true;
     }
@@ -701,10 +720,12 @@ public class TextScanner implements Iterable<Character>, TextScannerMethodContex
       // since this is a string-match-operation, every branch returns false.
       final boolean matchBoundary = false;
 
-      // handle escapes
-      if (context.haveEscapeWarrant()) return matchBoundary;
-      // handle quoting
-      if (matchQuote(character)) return matchBoundary;
+      if (handleQuoting){
+        // handle escapes
+        if (context.haveEscapeWarrant()) return matchBoundary;
+        // handle quoting
+        if (matchQuote(character)) return matchBoundary;
+      }
 
       // activate matching if this is the last character to match and our buffer is large enough.
       checkMatch = (character == finalMatchCharacter) && sourceLength >= findLength;
