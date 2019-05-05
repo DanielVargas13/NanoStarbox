@@ -332,6 +332,17 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return new String(chars);
   }
 
+  private void startMethod(Method method, Object... parameters) {
+    if (method.methodScanner != null)
+      throw new Exception(new OperationNotSupportedException("method instance already running"));
+    method.method_initialize(this);
+    method.startMethod(parameters);
+  }
+
+  public boolean isSeeking() {
+    return seeking;
+  }
+
   /**
    * Scans text until the TextScannerControl signals task complete.
    * <p>
@@ -369,17 +380,6 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return scanMethod.computeMethodCall(this, scanned);
   }
 
-  private void startMethod(Method method, Object... parameters) {
-    if (method.methodScanner != null)
-      throw new Exception(new OperationNotSupportedException("method instance already running"));
-    method.method_initialize(this);
-    method.startMethod(parameters);
-  }
-
-  public boolean isSeeking() {
-    return seeking;
-  }
-
   /**
    * Works like scan, but restores the stream and returns nothing if the operation fails.
    *
@@ -393,11 +393,12 @@ public class TextScanner implements Iterable<Character>, Closeable {
     char c = 0;
     startMethod(seekMethod, parameters);
     StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
+    boolean success = false;
+    long startIndex = this.index;
+    long startCharacter = this.column;
+    long startLine = this.line;
+    boolean escapeFlag = this.backslashModeActive;
     try {
-      long startIndex = this.index;
-      long startCharacter = this.column;
-      long startLine = this.line;
-      boolean escapeFlag = this.backslashModeActive;
       this.reader.mark(1000000);
       int i = 0;
       boolean bufferLimitReached;
@@ -407,34 +408,42 @@ public class TextScanner implements Iterable<Character>, Closeable {
         if (bufferLimitReached || c == 0) {
           if (bufferLimitReached && seekMethod.bufferLimitCeption) break;
           if (seekMethod.eofCeption) break;
-          // in some readers, reset() may throw an exception if
-          // the remaining portion of the input is greater than
-          // the mark size (1,000,000 above).
-          this.reader.reset();
-          this.index = startIndex;
-          this.column = startCharacter;
-          this.line = startLine;
-          this.backslashModeActive = escapeFlag;
-          scanned.setLength(0);
-          seeking = false;
-          seekMethod.methodScanner = null;
-          return "";
+          throw new IllegalStateException();
         } else {
           scanned.append(c);
           if (seekMethod.exitMethod(c)) break;
         }
       } while (seekMethod.continueScanning(scanned));
+      success = true;
       this.reader.mark(1);
     }
-    catch (IOException exception) { throw new Exception(exception); }
-    if (seekMethod.boundaryCeption) ;
-    else {
-      this.back();
-      scanned.setLength(scanned.length() - 1);
+    catch (IllegalStateException signal){}
+    finally {
+      if (success == false){
+        // in some readers, reset() may throw an exception if
+        // the remaining portion of the input is greater than
+        // the mark size (1,000,000 above).
+        try { this.reader.reset(); }
+        catch (IOException e) { throw new Exception(e); }
+        this.index = startIndex;
+        this.column = startCharacter;
+        this.line = startLine;
+        this.backslashModeActive = escapeFlag;
+        scanned.setLength(0);
+        seeking = false;
+        seekMethod.methodScanner = null;
+        return "";
+      } else {
+        if (seekMethod.boundaryCeption) ;
+        else {
+          this.back();
+          scanned.setLength(scanned.length() - 1);
+        }
+        seekMethod.methodScanner = null;
+        seeking = false;
+        return seekMethod.computeMethodCall(this, scanned);
+      }
     }
-    seekMethod.methodScanner = null;
-    seeking = false;
-    return seekMethod.computeMethodCall(this, scanned);
   }
 
   /**
