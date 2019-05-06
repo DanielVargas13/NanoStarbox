@@ -456,7 +456,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    */
   @Override
   public Exception syntaxError(String message) {
-    return new Exception(message + this.toString());
+    return new SyntaxError(message + this.toString());
   }
 
   /**
@@ -468,7 +468,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    */
   @Override
   public Exception syntaxError(String message, Throwable causedBy) {
-    return new Exception(message + this.toString(), causedBy);
+    return new SyntaxError(message + this.toString(), causedBy);
   }
 
   /**
