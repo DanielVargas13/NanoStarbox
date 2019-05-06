@@ -1,17 +1,16 @@
 package box.star.text;
 
 import box.star.contract.NotNull;
-import box.star.json.JSONException;
 
 public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
   /**
    * Determine if the source string still contains characters that next()
    * can consume.
    * @return true if not yet at the end of the source.
-   * @throws JSONException thrown if there is an error stepping forward
+   * @throws Exception thrown if there is an error stepping forward
    *  or backward while checking for more data.
    */
-  boolean haveNext() throws JSONException;
+  boolean haveNext() throws Exception;
 
   /**
    * Checks if the end of the input has been reached.
@@ -23,16 +22,16 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
   /**
    * Go back one step.
    *
-   * @throws JSONException
+   * @throws Exception
    */
-  void back() throws JSONException;
+  void back() throws Exception;
 
   /**
    * Get the next character
    * @return
-   * @throws JSONException
+   * @throws Exception
    */
-  char next() throws JSONException;
+  char next() throws Exception;
 
   /**
    * Read the given source or throw an error.
@@ -53,10 +52,10 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
    * characters or the end of line, whichever comes first.
    * @param delimiters A set of delimiter characters.
    * @return A string, trimmed.
-   * @throws JSONException Thrown if there is an error while searching
+   * @throws Exception Thrown if there is an error while searching
    *  for the delimiter
    */
-  @NotNull String scanField(char... delimiters) throws JSONException;
+  @NotNull String scanField(char... delimiters) throws Exception;
 
   /**
    * Skip characters until the next character is the requested character.
@@ -64,10 +63,10 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
    * @param sequence A character or character sequence to match.
    * @return The requested character, or zero if the requested character
    * is not found.
-   * @throws JSONException Thrown if there is an error while searching
+   * @throws Exception Thrown if there is an error while searching
    *  for the to character
    */
-  //String scanField(char... sequence) throws JSONException;
+  //String scanField(char... sequence) throws Exception;
 
   /**
    * Return the characters up to the next close quote character.
@@ -78,9 +77,9 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
    *      <code>"</code>&nbsp;<small>(double quote)</small> or
    *      <code>'</code>&nbsp;<small>(single quote)</small>.
    * @return      A String.
-   * @throws JSONException Unterminated string.
+   * @throws Exception Unterminated string.
    */
-  @NotNull String scanQuote(char quote, boolean multiLine) throws JSONException;
+  @NotNull String scanQuote(char quote, boolean multiLine) throws Exception;
 
   @NotNull String readLineWhiteSpace();
   @NotNull String readWhiteSpace();
@@ -95,19 +94,19 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
   @NotNull String start(@NotNull VirtualTextScannerMethod<ROOT> method, Object... parameters);
 
   /**
-   * Make a JSONException to signal a syntax error.
+   * Make a Exception to signal a syntax error.
    *
    * @param message The error message.
-   * @return  A JSONException object, suitable for throwing
+   * @return  A Exception object, suitable for throwing
    */
   Exception syntaxError(@NotNull String message);
 
   /**
-   * Make a JSONException to signal a syntax error.
+   * Make a Exception to signal a syntax error.
    *
    * @param message The error message.
    * @param causedBy The throwable that caused the error.
-   * @return  A JSONException object, suitable for throwing
+   * @return  A Exception object, suitable for throwing
    */
   Exception syntaxError(@NotNull String message, @NotNull Throwable causedBy);
   boolean quotedText(char character);

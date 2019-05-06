@@ -397,7 +397,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     char methodQuote;
 
     @Override
-    protected SerializableState clone() {
+    public SerializableState clone() {
       try /*  throwing runtime exceptions with closure */ {
         return (SerializableState)super.clone();
       } catch (CloneNotSupportedException e){throw new RuntimeException(e);}
