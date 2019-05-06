@@ -28,7 +28,7 @@ public final class Char {
   public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? '\uffff' : val; }
   public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
 
-  public static boolean charMapContains(char search, char[] range) {
+  public static boolean mapContains(char search, char[] range) {
     for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
     return false;
   }
@@ -72,7 +72,7 @@ public final class Char {
       char[] current = toArray();
       for (int i : integer) {
         char c = (char) sanitizeRangeValue(i);
-        if (!charMapContains(c, current)) chars.append(c);
+        if (!mapContains(c, current)) chars.append(c);
       }
       return this;
     }
@@ -87,7 +87,7 @@ public final class Char {
 
     public MapAssembler merge(char... map) {
       char[] current = toArray();
-      for (char c : map) if (!charMapContains(c, current)) chars.append(c);
+      for (char c : map) if (!mapContains(c, current)) chars.append(c);
       return this;
     }
 
@@ -110,7 +110,7 @@ public final class Char {
     public MapAssembler filter(char... map) {
       StringBuilder filter = new StringBuilder();
       for (char c : chars.toString().toCharArray()) {
-        if (charMapContains(c, map)) continue;
+        if (mapContains(c, map)) continue;
         filter.append(c);
       }
       this.chars = filter;
@@ -144,6 +144,25 @@ public final class Char {
       }
     }
 
+  }
+
+  /**
+   * Get the hex value of a character (base16).
+   * @param c A character between '0' and '9' or between 'A' and 'F' or
+   * between 'a' and 'f'.
+   * @return  An int between 0 and 15, or -1 if c was not a hex digit.
+   */
+  public static int dehexchar(char c) {
+    if (c >= '0' && c <= '9') {
+      return c - '0';
+    }
+    if (c >= 'A' && c <= 'F') {
+      return c - ('A' - 10);
+    }
+    if (c >= 'a' && c <= 'f') {
+      return c - ('a' - 10);
+    }
+    return -1;
   }
 
   private Char(){}

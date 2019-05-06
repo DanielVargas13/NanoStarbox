@@ -1,10 +1,12 @@
 package box.star.text;
 
+import box.star.contract.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 import static box.star.text.Char.META_DOCUMENT_TAG_END;
+import static box.star.text.Char.mapContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
@@ -14,18 +16,22 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.scan(new TextScanner.Method("doctype"){
+    result = x.start(new TextScanner.Method<TextScanner>(){
       char[] controlTerms = new char[]{META_DOCUMENT_TAG_END};
-      {
-        this.bufferLimit = 0;
-      }
+      /**
+       * Return true to break processing on this character.
+       *
+       * @param scanner
+       * @param character
+       * @return false to continue processing.
+       */
       @Override
-      public boolean exitMethod(char character) {
-        if (haveEscapeWarrant()) return false;
-        return Char.charMapContains(character, controlTerms);
+      public boolean terminator(@NotNull TextScanner scanner, char character) {
+        if (super.terminator(scanner, character)) return true;
+        return mapContains(character, controlTerms);
       }
     });
-    System.err.println(result + x.scanExact(META_DOCUMENT_TAG_END));
+    System.out.println(result);
   }
 
 

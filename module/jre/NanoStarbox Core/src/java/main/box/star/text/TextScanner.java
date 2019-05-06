@@ -1,176 +1,70 @@
 package box.star.text;
 
-import box.star.Tools;
-import box.star.contract.Nullable;
-import box.star.io.SourceConnector;
-import box.star.state.SuperTokenMap;
+import box.star.contract.NotNull;
+import box.star.io.Streams;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Stack;
-import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
 
-public class TextScanner implements Iterable<Character>, Closeable {
+public class TextScanner implements VirtualTextScanner<TextScanner> {
 
-  /**
-   * Reader for the input.
-   */
-  private final Reader reader;
-  private boolean backslashModeActive;
-  /**
-   * current read character position on the current line.
-   */
-  private long column;
-  /**
-   * flag to indicate if the end of the input has been found.
-   */
-  private boolean eof;
-  /**
-   * current read index of the input.
-   */
-  private long index;
-  /**
-   * current line of the input.
-   */
-  private long line;
-  /**
-   * previous character read from the input.
-   */
-  private char previous;
-  /**
-   * flag to indicate that a previous character was requested.
-   */
-  private boolean usePrevious;
-  /**
-   * the number of characters read in the previous line.
-   */
-  private long characterPreviousLine;
-  private boolean closeReader, closed;
-  private String sourceLabel;
-  private boolean seeking;
+  /** Reader for the input. */
+  protected Reader reader;
+  protected SerializableState state = new SerializableState();
 
-  /**
-   * Construct a TextScanner from a Reader. The caller must close the Reader.
-   *
-   * @param sourceLabel a label for this text processor such as a file or url.
-   * @param reader      A reader.
-   */
-  public TextScanner(@Nullable String sourceLabel, Reader reader) {
-    this.sourceLabel = sourceLabel;
-    this.reader = reader.markSupported()
-        ? reader
-        : new BufferedReader(reader);
-    this.eof = false;
-    this.usePrevious = false;
-    this.previous = 0;
-    this.index = 0;
-    this.column = 1;
-    this.characterPreviousLine = 0;
-    this.line = 1;
+  public TextScanner(@NotNull String path, @NotNull Reader reader) {
+    this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
+    state.eof = false;
+    state.usePrevious = false;
+    state.previous = 0;
+    state.index = 0;
+    state.character = 1;
+    state.characterPreviousLine = 0;
+    state.line = 1;
+    state.path = path;
   }
-  public TextScanner(URL source) {
-    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
-    this.closeReader = true;
+
+  public TextScanner(@NotNull String path, @NotNull InputStream inputStream) {
+    this(path, new InputStreamReader(inputStream));
   }
-  public TextScanner(URI source) {
-    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.toString()));
-    this.closeReader = true;
+
+  public TextScanner(@NotNull String path, @NotNull String s) {
+    this(path, new StringReader(s));
   }
-  public TextScanner(File source) {
-    this(source.getPath(), SourceConnector.getRuntimeFileOrUrlInputStream(source.getPath()));
-    this.closeReader = true;
-  }
-  /**
-   * Construct a TextScanner from an InputStream. The caller must close the input stream.
-   *
-   * @param inputStream The source.
-   */
-  public TextScanner(InputStream inputStream) {
-    this(inputStream.getClass().getName(), new InputStreamReader(inputStream));
+
+  public TextScanner(File file) {
+    this(file.getPath(), Streams.getFileText(file.getPath()));
   }
 
   /**
-   * Construct a TextScanner from an InputStream. The caller must close the input stream.
-   *
-   * @param sourceLabel The label for the source.
-   * @param inputStream The source.
+   * Determine if the source string still contains characters that next()
+   * can consume.
+   * @return true if not yet at the end of the source.
+   * @throws Exception thrown if there is an error stepping forward
+   *  or backward while checking for more data.
    */
-  public TextScanner(String sourceLabel, InputStream inputStream) {
-    this(sourceLabel, new InputStreamReader(inputStream));
-  }
-
-  /**
-   * Construct a TextScanner from a string.
-   *
-   * @param source A source string.
-   */
-  public TextScanner(String source) {
-    this(source.getClass().getName(), new StringReader(source));
-    this.closeReader = true;
-  }
-
-  /**
-   * Construct a TextScanner from a string.
-   *
-   * @param source A source string.
-   */
-  public TextScanner(String sourceLabel, String source) {
-    this(sourceLabel, new StringReader(source));
-  }
-
-
-  public String sourceLabel() {
-    return sourceLabel;
-  }
-
-  public long column() {
-    return column;
-  }
-
-  public long line() {
-    return line;
-  }
-
-  public long index() {
-    return index;
-  }
-
-  /**
-   * Back up one character. This provides a sort of lookahead capability,
-   * so that you can test for a digit or letter before attempting to parse
-   * the next number or identifier.
-   *
-   * @throws Exception Thrown if trying to step back more than 1 step
-   *                   or if already at the start of the string
-   */
-  protected void back() throws Exception {
-    if (this.usePrevious || this.index <= 0) {
-      throw new Exception("Stepping back two steps is not supported");
+  @Override
+  public boolean haveNext() throws Exception {
+    if(state.usePrevious) {
+      return true;
     }
-    this.decrementIndexes();
-    this.usePrevious = true;
-    this.eof = false;
-  }
-
-  /**
-   * Decrements the indexes for the {@link #back()} method based on the previous character read.
-   */
-  private void decrementIndexes() {
-    this.index--;
-    if (this.previous == '\r' || this.previous == '\n') {
-      this.line--;
-      this.column = this.characterPreviousLine;
-    } else if (this.column > 0) {
-      if (this.previous == '\\') this.backslashModeActive = !this.backslashModeActive;
-      else this.backslashModeActive = false;
-      this.column--;
+    try {
+      this.reader.mark(1);
+    } catch (IOException e) {
+      throw new Exception("Unable to preserve stream position", e);
     }
+    try {
+      // -1 is EOF, but next() can not consume the null character '\0'
+      if(this.reader.read() <= 0) {
+        state.eof = true;
+        return false;
+      }
+      this.reader.reset();
+    } catch (IOException e) {
+      throw new Exception("Unable to read the next character from the stream", e);
+    }
+    return true;
   }
 
   /**
@@ -178,135 +72,122 @@ public class TextScanner implements Iterable<Character>, Closeable {
    *
    * @return true if at the end of the file and we didn't step back
    */
-  public boolean end() {
-    return this.eof && !this.usePrevious;
+  @Override
+  public boolean endOfSource() {
+    return state.eof && !state.usePrevious;
   }
 
   /**
-   * Determine if the next character is a match with a specified character.
+   * Step backward one position.
    *
-   * @return true if not yet at the end of the source.
-   * @throws Exception thrown if there is an error stepping forward
-   *                   or backward while checking for more data.
+   * @throws Exception
    */
-  public boolean hasNext() throws Exception {
-    if (this.usePrevious) {
-      return true;
+  @Override
+  public void back() throws Exception {
+    if (state.usePrevious || state.index <= 0) {
+      throw new Exception("Stepping back two steps is not supported");
     }
-    try {
-      this.reader.mark(1);
-    }
-    catch (IOException e) {
-      throw new Exception("Unable to preserve stream position", e);
-    }
-    try {
-      // -1 is EOF, but next() can not consume the null character '\0'
-      if (this.reader.read() <= 0) {
-        this.eof = true;
-        return false;
-      }
-      this.reader.reset();
-    }
-    catch (IOException e) {
-      throw new Exception("Unable to read the next character from the stream", e);
-    }
-    return true;
+    state.decrementIndexes();
+    state.usePrevious = true;
+    state.eof = false;
   }
 
   /**
-   * Get the next character in the source string.
+   * Get the next character.
    *
-   * @return The next character, or 0 if past the end of the source string.
-   * @throws Exception Thrown if there is an error reading the source string.
+   * @return
+   * @throws Exception
    */
-  public char scanNext() throws Exception {
+  @Override
+  public char next() throws Exception {
     int c;
-    if (this.usePrevious) {
-      this.usePrevious = false;
-      c = this.previous;
+    if (state.usePrevious) {
+      state.usePrevious = false;
+      c = state.previous;
     } else {
       try {
         c = this.reader.read();
-      }
-      catch (IOException exception) {
+      } catch (IOException exception) {
         throw new Exception(exception);
       }
     }
     if (c <= 0) { // End of stream
-      this.eof = true;
-      //close();
+      state.eof = true;
       return 0;
     }
-    this.incrementIndexes(c);
-    this.previous = (char) c;
-    return this.previous;
+    state.incrementIndexes(c);
+    state.previous = (char) c;
+    return state.previous;
   }
 
-  public boolean haveEscapeWarrant() { return (previous == Char.BACKSLASH) && this.backslashModeActive; }
-
   /**
-   * Increments the internal indexes according to the previous character
-   * read and the character passed as the current character.
-   *
-   * @param c the current character read.
+   * Match the next string input with a source string.
+   * @param source
+   * @param caseSensitive
+   * @return
    */
-  private void incrementIndexes(int c) {
-    if (c > 0) {
-      this.index++;
-      if (c == '\r') {
-        this.line++;
-        this.characterPreviousLine = this.column;
-        this.column = 0;
-      } else if (c == '\n') {
-        if (this.previous != '\r') {
-          this.line++;
-          this.characterPreviousLine = this.column;
+  @Override
+  @NotNull public String next(@NotNull String source, boolean caseSensitive) {
+    StringBuilder out = new StringBuilder();
+    char[] sequence = source.toCharArray();
+    for (char c: sequence) {
+      char test = next();
+      if (!caseSensitive) {
+        c = Character.toLowerCase(c);
+        test = Character.toLowerCase(test);
+      }
+      if (test != c) {
+        if (test > 0) {
+          throw this.syntaxError("Expected '" + c + "' and instead saw '" +
+              test + "'");
         }
-        this.column = 0;
-      } else {
-        if (c == '\\') this.backslashModeActive = !this.backslashModeActive;
-        else this.backslashModeActive = false;
-        this.column++;
+        throw this.syntaxError("Expected '" + c + "' and instead saw ''");
       }
+      out.append(test);
     }
+    return out.toString();
   }
 
   /**
-   * Consume the next character, and check that it matches a specified
-   * character.
+   * Assemble characters while characters match map.
    *
-   * @param c The character to match.
-   * @return The character.
-   * @throws Exception if the character does not match.
+   * @param map
+   * @return
    */
-  public char scanExact(char c) throws Exception {
-    char n = this.scanNext();
-    if (n != c) {
-      if (n > 0) {
-        throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: '" + n + "'");
+  @Override
+  @NotNull public String next(char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    for (;;) {
+      c = this.next();
+      if (Char.mapContains(c, map)) {
+        if (c != 0) {
+          this.back();
+        }
+        return sb.toString().trim();
       }
-      throw this.syntaxError("Failure while scanning: '" + c + "'; current-value: ''");
+      sb.append(c);
     }
-    return n;
   }
 
   /**
    * Get the next n characters.
    *
-   * @param n The number of characters to take.
-   * @return A string of n characters.
-   * @throws Exception Substring bounds error if there are not
-   *                   n characters remaining in the source string.
+   * @param n     The number of characters to take.
+   * @return      A string of n characters.
+   * @throws Exception
+   *   Substring bounds error if there are not
+   *   n characters remaining in the source string.
    */
-  public String scanLength(int n) throws Exception {
+  @NotNull private String next(int n) throws Exception {
     if (n == 0) {
       return "";
     }
     char[] chars = new char[n];
     int pos = 0;
     while (pos < n) {
-      chars[pos] = this.scanNext();
-      if (this.end()) {
+      chars[pos] = this.next();
+      if (this.endOfSource()) {
         throw this.syntaxError("Substring bounds error");
       }
       pos += 1;
@@ -314,595 +195,460 @@ public class TextScanner implements Iterable<Character>, Closeable {
     return new String(chars);
   }
 
-  private void startMethod(Method method, Object... parameters) {
-    if (method.methodScanner != null)
-      throw new Exception(new OperationNotSupportedException("method instance already running"));
-    method.method_initialize(this);
-    method.startMethod(parameters);
+  @Override
+  final public boolean isQuoting() {
+    return state.methodQuote != NULL_CHARACTER;
   }
 
-  public boolean isSeeking() {
-    return seeking;
+  @Override
+  final public boolean quotedText(char character) {
+    // handle quoting
+    if (isQuoting()) {
+      // deactivate quoting if applicable
+      if (character == state.methodQuote) state.methodQuote = NULL_CHARACTER;
+      return true;
+    }
+    // activate quoting if applicable
+    if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE) {
+      state.methodQuote = character;
+      return true;
+    }
+    return false;
   }
 
-  /**
-   * Scans text until the TextScannerControl signals task complete.
-   * <p>
-   * if the text stream ends before the control returns a syntax error will be thrown.
-   * if the controller signals early exit with a control character match or 1 based position equality with {@link Method#bufferLimit}, scanning will stop, and the next
-   * stream token will be the current token.
-   *
-   * @param scanMethod the scan controller to use.
-   * @return the scanned text
-   * @throws SyntaxError
+  @NotNull final public String start(@NotNull VirtualTextScannerMethod<TextScanner> method, Object... parameters){
+    method.startMethod(this, parameters);
+    do { if (method.terminator(this, next())) break; }
+    while (method.continueScanning(this));
+    return method.computeMethodCall(this);
+  }
+
+//  /**
+//   * Get the next char in the string, skipping whitespace.
+//   * @throws Exception Thrown if there is an error reading the source string.
+//   * @return  A character, or 0 if there are no more characters.
+//   */
+//  public char nextClean() throws Exception {
+//    for (;;) {
+//      char c = this.next();
+//      if (c == 0 || c > ' ') {
+//        return c;
+//      }
+//    }
+//  }
+
+//  /**
+//   * Get the text up but not including the specified character or the
+//   * end of line, whichever comes first.
+//   * @param  delimiter A delimiter character.
+//   * @return   A string.
+//   * @throws Exception Thrown if there is an error while searching
+//   *  for the delimiter
+//   */
+//  @Override
+//  public String nextTo(char delimiter) throws Exception {
+//    StringBuilder sb = new StringBuilder();
+//    for (;;) {
+//      char c = next();
+//      if (c == delimiter || c == 0 || c == '\n' || c == '\r') {
+//        if (c != 0) {
+//          this.back();
+//        }
+//        return sb.toString().trim();
+//      }
+//      sb.append(c);
+//    }
+//  }
+
+
+//  /**
+//   * Get the text up but not including one of the specified delimiter
+//   * characters or the end of line, whichever comes first.
+//   * @param delimiters A set of delimiter characters.
+//   * @return A string, trimmed.
+//   * @throws Exception Thrown if there is an error while searching
+//   *  for the delimiter
+//   */
+//  @Override
+//  private String nextTo(String delimiters) throws Exception {
+//    char c;
+//    StringBuilder sb = new StringBuilder();
+//    for (;;) {
+//      c = this.next();
+//      if (delimiters.indexOf(c) >= 0 || c == 0 || c == '\n' || c == '\r') {
+//        if (c != 0) {
+//          this.back();
+//        }
+//        return sb.toString().trim();
+//      }
+//      sb.append(c);
+//    }
+//  }
+
+    /**
+   * Get the text up but not including one of the specified delimiter
+   * characters or the end of line, whichever comes first.
+   * @param delimiters A set of delimiter characters.
+   * @return A string, trimmed.
+   * @throws Exception Thrown if there is an error while searching
+   *  for the delimiter
    */
-  public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
+  @Override
+  public String scanField(char... delimiters) throws Exception {
     char c;
-    int i = 0;
-    startMethod(scanMethod, parameters);
-    StringBuilder scanned = new StringBuilder(scanMethod.bufferLimit);
-    do {
-      if ((c = this.scanNext()) == 0) {
-        if (scanMethod.endOfSourceCeption) break;
-        throw syntaxError("Expected '" + scanMethod + "'");
-      }
-      if (scanMethod.bufferLimit == ++i) {
-        if (scanMethod.bufferLimitCeption) break;
-        throw new Exception("Buffer overflow: " + scanMethod);
-      }
-      scanned.append(c);
-      if (scanMethod.exitMethod(c)) break;
-    } while (scanMethod.continueScanning(scanned));
-    if (scanMethod.boundaryCeption) ;
-    else {
-      this.back();
-      scanned.setLength(scanned.length() - 1);
-    }
-    scanMethod.methodScanner = null;
-    return scanMethod.computeMethodCall(this, scanned);
-  }
-
-  /**
-   * <p>Works like {@link #scan(Method, Object...)}, but restores the stream and
-   * returns nothing if the operation fails.</p>
-   * <br>
-   * <p>seek cannot be called recursively, but can be called concurrently with 
-   * scan methods.</p>
-   * <br>
-   * <p>Use the {@link #isSeeking()} method to determine if you should scan or
-   * seek from within a nested method call.</p>
-   *
-   * @param seekMethod the Method to use
-   * @return the text up to but not including the control break.
-   * @throws Exception if an {@link java.io.IOException} occurs
-   * @see #scanExact(char)
-   * @see #scanNext()
-   * @see #scanLength(int)
-   * @see #scan(Method, Object...)
-   */
-  public String seek(Method seekMethod, Object... parameters) throws Exception {
-    if (seeking) throw new Exception(new OperationNotSupportedException("scanner is already in seek mode"));
-    seeking = true;
-    char c = 0;
-    startMethod(seekMethod, parameters);
-    StringBuilder scanned = new StringBuilder(seekMethod.bufferLimit);
-    boolean success = false;
-    long startIndex = this.index;
-    long startCharacter = this.column;
-    long startLine = this.line;
-    boolean escapeFlag = this.backslashModeActive;
-    try {
-      this.reader.mark(1000000);
-      int i = 0;
-      boolean bufferLimitReached;
-      do {
-        c = this.scanNext();
-        bufferLimitReached = seekMethod.bufferLimit == ++i;
-        if (bufferLimitReached || c == 0) {
-          if (bufferLimitReached && seekMethod.bufferLimitCeption) break;
-          if (seekMethod.endOfSourceCeption) break;
-          throw new IllegalStateException();
-        } else {
-          scanned.append(c);
-          if (seekMethod.exitMethod(c)) break;
-        }
-      } while (seekMethod.continueScanning(scanned));
-      success = true;
-    }
-    catch (IllegalStateException signal){}
-    finally {
-      if (success == false){
-        // in some readers, reset() may throw an exception if
-        // the remaining portion of the input is greater than
-        // the mark size (1,000,000 above).
-        try { this.reader.reset(); }
-        catch (IOException e) { throw new Exception(e); }
-        this.index = startIndex;
-        this.column = startCharacter;
-        this.line = startLine;
-        this.backslashModeActive = escapeFlag;
-        scanned.setLength(0);
-        seeking = false;
-        seekMethod.methodScanner = null;
-        return "";
-      } else {
-        try /*  ignoring exceptions */ {
-          this.reader.mark(1);
-        } catch (IOException ignored){}
-        if (seekMethod.boundaryCeption) ;
-        else {
+    StringBuilder sb = new StringBuilder();
+    for (;;) {
+      c = this.next();
+      if (Char.mapContains(c, delimiters) || c == 0 || c == '\n' || c == '\r') {
+        if (c != 0) {
           this.back();
-          scanned.setLength(scanned.length() - 1);
         }
-        seekMethod.methodScanner = null;
-        seeking = false;
-        return seekMethod.computeMethodCall(this, scanned);
+        return sb.toString().trim();
+      }
+      sb.append(c);
+    }
+  }
+
+//  /**
+//   * Skip characters until the next character is the requested character.
+//   * If the requested character is not found, no characters are skipped.
+//   * @param sequence An exact termination sequence to match.
+//   * @return The requested match, or zero if the requested sequence
+//   * does not match.
+//   * @throws Exception Thrown if there is an error while searching
+//   *  for the sequence character
+//   */
+//  @Override
+//  public String scanField(char... sequence) throws Exception {
+//    return "";
+//  }
+
+//  @Override
+//  public String nextNot(char[] delimiters) throws Exception {
+//    char c;
+//    StringBuilder sb = new StringBuilder();
+//    for (;;) {
+//      c = this.next();
+//      if (! Char.mapContains(c, delimiters) || c == 0 || c == '\n' || c == '\r') {
+//        if (c != 0) {
+//          this.back();
+//        }
+//        return sb.toString().trim();
+//      }
+//      sb.append(c);
+//    }
+//  }
+
+//  /**
+//   * Skip characters until the next character is the requested character.
+//   * If the requested character is not found, no characters are skipped.
+//   * @param to A character to skip to.
+//   * @return The requested character, or zero if the requested character
+//   * is not found.
+//   * @throws Exception Thrown if there is an error while searching
+//   *  for the to character
+//   */
+//  public char SEEK(char to) throws Exception {
+//    char c;
+//    try {
+//      SerializableState backup = state.clone();
+//      this.reader.mark(1000000);
+//      do {
+//        c = next();
+//        if (c == 0) {
+//          // in some readers, reset() may throw an exception if
+//          // the remaining portion of the input is greater than
+//          // the mark size (1,000,000 above).
+//          reader.reset();
+//          this.state = backup;
+//          return 0;
+//        }
+//      } while (c != to);
+//      this.reader.mark(1);
+//    } catch (IOException exception) {
+//      throw new Exception(exception);
+//    }
+//    this.back();
+//    return c;
+//  }
+//
+  /**
+   * Return the characters up to the next close quote character.
+   * Backslash processing is done. The formal JSON format does not
+   * allow strings in single quotes, but an implementation is allowed to
+   * accept them.
+   * @param quote The quoting character, either
+   *      <code>"</code>&nbsp;<small>(double quote)</small> or
+   *      <code>'</code>&nbsp;<small>(single quote)</small>.
+   * @return      A String.
+   * @throws Exception Unterminated string.
+   */
+  @Override
+  public String scanQuote(char quote) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    for (;;) {
+      c = this.next();
+      switch (c) {
+        case 0:
+        case '\n':
+        case '\r':
+          throw this.syntaxError("Unterminated string");
+        case '\\':
+          c = this.next();
+          switch (c) {
+            case 'b':
+              sb.append('\b');
+              break;
+            case 't':
+              sb.append('\t');
+              break;
+            case 'n':
+              sb.append('\n');
+              break;
+            case 'f':
+              sb.append('\f');
+              break;
+            case 'r':
+              sb.append('\r');
+              break;
+            case 'u':
+              try {
+                sb.append((char)Integer.parseInt(this.next(4), 16));
+              } catch (NumberFormatException e) {
+                throw this.syntaxError("Illegal escape", e);
+              }
+              break;
+            case '"':
+            case '\'':
+            case '\\':
+            case '/':
+              sb.append(c);
+              break;
+            default:
+              throw this.syntaxError("Illegal escape.");
+          }
+          break;
+        default:
+          if (c == quote) {
+            return sb.toString();
+          }
+          sb.append(c);
       }
     }
   }
 
+  @Override
+  public boolean characterQuoting() {
+    return false;
+  }
+
+  @Override
+  public boolean haveEscape() {
+    return state.backslash && state.previous == '\\';
+  }
+
   /**
-   * Make a TextScanner.Exception to signal a syntax error.
+   * Make a Exception to signal a syntax error.
    *
    * @param message The error message.
-   * @return A TextScanner.Exception object, suitable for throwing
+   * @return  A Exception object, suitable for throwing
    */
-  public SyntaxError syntaxError(String message) {
-    return new SyntaxError(message + toTraceString());
+  @Override
+  public Exception syntaxError(String message) {
+    return new Exception(message + this.toString());
   }
 
   /**
-   * Make a printable string of this TextScanner.
+   * Make a Exception to signal a syntax error.
    *
-   * @return " at source: position: {@link #index} = {line: {@link #line}, column: {@link #column}}"
+   * @param message The error message.
+   * @param causedBy The throwable that caused the error.
+   * @return  A Exception object, suitable for throwing
    */
-  public String toTraceString() {
-    String source = " at " + Tools.makeNotNull(sourceLabel, "source") + ": position: ";
-    return source + this.index + " = {line: " + this.line + ", column: " + this.column + "}";
+  @Override
+  public Exception syntaxError(String message, Throwable causedBy) {
+    return new Exception(message + this.toString(), causedBy);
   }
 
+  /**
+   * Make a printable string of this JSONTokener.
+   *
+   * @return " at {index} [character {character} line {line}]"
+   */
   @Override
-  public Iterator<Character> iterator() {
-    TextScanner host = this;
-    return new Iterator<Character>() {
-      @Override
-      public boolean hasNext() {
-        return host.hasNext();
-      }
-
-      @Override
-      public Character next() {
-        return host.scanNext();
-      }
-    };
+  public String toString() {
+    return " at " + state.index + " [character " + state.character + " line " +
+        state.line + "]";
   }
 
-  @Override
-  public void close() {
-    if (closeReader) try /* close stream ignoring exceptions with final closure */ {
-      reader.close();
-      closed = true;
+  public static class SerializableState implements Cloneable, Serializable {
+
+    String path;
+    /** current read character position on the current line. */
+    long character;
+    /** flag to indicate if the end of the input has been found. */
+    boolean eof;
+    /** current read index of the input. */
+    long index;
+    /** current line of the input. */
+    long line;
+    /** previous character read from the input. */
+    public char previous;
+    /** flag to indicate that a previous character was requested. */
+    boolean usePrevious;
+    /** the number of characters read in the previous line. */
+    long characterPreviousLine;
+
+    boolean backslash;
+    char methodQuote;
+
+    @Override
+    protected SerializableState clone() {
+      try /*  throwing runtime exceptions with closure */ {
+        return (SerializableState)super.clone();
+      } catch (CloneNotSupportedException e){throw new RuntimeException(e);}
+      finally /*  complete */ {
+        ;
+      }
     }
-    catch (IOException ignored) {}
+
+    /**
+     * Decrements the indexes based on the previous character read.
+     */
+    public void decrementIndexes() {
+      this.index--;
+      if(this.previous=='\r' || this.previous == '\n') {
+        this.line--;
+        this.character=this.characterPreviousLine ;
+      } else if(this.character > 0){
+        if (previous=='\\') this.backslash = ! this.backslash;
+        this.character--;
+      }
+    }
+
+    /**
+     * Increments the internal indexes according to the previous character
+     * read and the character passed as the current character.
+     * @param c the current character read.
+     */
+    public void incrementIndexes(int c) {
+      if(c > 0) {
+        if (c =='\\'){
+          this.backslash = ! this.backslash;
+        }
+        this.index++;
+        if(c=='\r') {
+          this.line++;
+          this.characterPreviousLine = this.character;
+          this.character=0;
+        }else if (c=='\n') {
+          if(this.previous != '\r') {
+            this.line++;
+            this.characterPreviousLine = this.character;
+          }
+          this.character=0;
+        } else {
+          this.character++;
+        }
+      }
+    }
+
+
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    close();
-    super.finalize();
-  }
+  public static class Method<FOR extends VirtualTextScanner> implements VirtualTextScannerMethod<FOR> {
 
-  /**
-   * Text Scanner Method Implementation
-   *
-   * Creates a method for scanning text.
-   *
-   */
-  public static class Method implements Serializable, Cloneable {
-
-    long backup_index, backup_line, backup_column;
-
-    private static final long serialVersionUID = -7389459770461075270L;
-    private static final String undefined = "undefined";
-    // user managed
-    protected int bufferLimit = 0;
-    protected boolean boundaryCeption, endOfSourceCeption, bufferLimitCeption;
     protected String claim;
-    TextScanner methodScanner;
-    // implementation managed
-    private char methodQuote;
-    private SuperTokenMap<Serializable> methodTokenMap;
-    private Stack<String> methodContext;
-
-    public Method() {this(null);}
-
-    public Method(@Nullable Object claim) { this.claim = String.valueOf(Tools.makeNotNull(claim, undefined)); }
-
-    public Method BoundaryCeption(){
-      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
-      this.boundaryCeption = true;
-      return this;
-    }
-
-    public Method EndOfSourceCeption(){
-      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
-      this.endOfSourceCeption = true;
-      return this;
-    }
-    public Method BufferLimitCeption(){
-      if (methodScanner != null) throw new Exception(new OperationNotSupportedException());
-      this.bufferLimitCeption = true;
-      return this;
-    }
-
-    final public SyntaxError syntaxError(String message){
-      popErrorLocation();
-      return methodScanner.syntaxError(message);
-    }
-
-    final public char scanNext() throws Exception {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.scanNext();
-    }
-
-    final public char scanExact(char c) throws Exception {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.scanExact(c);
-    }
-
-    final public String scanLength(int n) throws Exception {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.scanLength(n);
-    }
-
-    final public String scan(Method scanMethod, Object... parameters) throws SyntaxError {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.scan(scanMethod, parameters);
-    }
-
-    final public boolean isSeeking() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.isSeeking();
-    }
-
-    final public String seek(Method seekMethod, Object... parameters) throws Exception {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.seek(seekMethod, parameters);
-    }
-
-    public void close() {
-      if (methodScanner == null) return;
-      methodScanner.close();
-    }
-
-    // implementation prep
-    void method_initialize(TextScanner textScanner) {
-      methodQuote = NULL_CHARACTER;
-      methodTokenMap = new SuperTokenMap();
-      methodContext = new Stack<>();
-      methodScanner = textScanner;
-      saveErrorLocation();
-    }
-
-    void saveErrorLocation() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      backup_index = index();
-      backup_line = line();
-      backup_column = column();
-    }
-
-    void popErrorLocation() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      methodScanner.line = backup_line;
-      methodScanner.index = backup_index;
-      methodScanner.column = backup_column;
-    }
+    protected StringBuilder buffer;
 
     /**
-     * Enters a sub-context.
-     * <p>
-     * Virtual Stack Recursion Guardian.
+     * Called by the scanner to signal that a new method call is beginning.
      *
-     * @param subContext the private data to associate with this token.
-     * @return a context token.
-     * @see #exitSubContext(String)
-     */
-    final protected String enterSubContext(Serializable subContext) {
-      String token = methodTokenMap.put(subContext);
-      methodContext.push(token);
-      return token;
-    }
-
-    /**
-     * Exits a sub-context as created by {@link #enterSubContext(Serializable)}
-     * <p>
-     * Virtual Stack Recursion Guardian.
-     *
-     * @param token the sub-context to exit
-     * @param <ANY> the user format.
-     * @return the user data.
-     * @see #enterSubContext(Serializable)
-     */
-    final protected <ANY extends Serializable> ANY exitSubContext(String token) {
-      if (methodContext.peek().equals(token)) {
-        methodContext.pop();
-        ANY v = (ANY) methodTokenMap.get(token);
-        methodTokenMap.eraseToken(token);
-        return v;
-      } else {
-        throw syntaxError("trying to exit wrong sub-context");
-      }
-    }
-
-    /**
-     * Called by the TextScanner to signal that a new method call is beginning.
-     *
+     * if you override this, call the super method to initialize the input buffer.
+     * <code>super(scanner, parameters); ... return sourceBuffer</code>
+     * @param scanner the host scanner
      * @param parameters the parameters given by the caller.
      */
-    public void startMethod(Object[] parameters) {}
-
-    /**
-     * Extended Operations Option
-     *
-     * This method is called when it is again safe to call seek/scan/next on the
-     * TextScanner.
-     *
-     * You can use this feature to create a virtual-pipe-chain.
-     *
-     * You can also (ideally) pre-process output, if having an exact copy of input
-     * data is not relevant for your purpose.
-     *
-     * @param scanner the TextScanner.
-     * @param scanned the input buffer.
-     * @return the scanned data as a string.
-     */
-    public String computeMethodCall(TextScanner scanner, StringBuilder scanned) {
-      return scanned.toString();
+    @Override
+    public void startMethod(@NotNull FOR scanner, Object[] parameters) {
+      buffer = new StringBuilder();
     }
 
-    /**
-     * Signals whether or not the process should continue reading input.
-     *
-     * @param input The string buffer.
-     * @return true if the TextScanner should read more input.
-     */
-    public boolean continueScanning(StringBuilder input) { return true; }
+    @Override
+    @NotNull public String toString() { return "ScanMethod "+claim; }
+
+    @Override
+    @NotNull public String getScopeView(@NotNull FOR virtualSourceScanner) {
+      return claim;
+    }
 
     /**
      * Return true to break processing on this character.
      *
+     * @param scanner
      * @param character
      * @return false to continue processing.
      */
-    public boolean exitMethod(char character) { return character == 0; }
+    @Override
+    public boolean terminator(@NotNull FOR scanner, char character) {
+      buffer.append(character);
+      if (scanner.haveEscape()) return false;
+      else if (scanner.quotedText(character)) return false;
+      return character == 0;
+    }
+
+    /**
+     * <p>Extended Operations Option</p>
+     *
+     * <p>This method is called when it is again safe to call seek/scan/next on the
+     * TextScanner.</p>
+     *
+     * <p>You can use this feature to create a virtual-pipe-chain.</p>
+     *
+     * <p>The default method returns the sourceBuffer as string.</p>
+     *
+     * <p>You can also (ideally) pre-process output, if having an exact copy of input
+     * data is not relevant for your purpose.</p>
+     *
+     * @param scanner the TextScanner.
+     * @return the scanned data as a string.
+     */
+    @Override
+    @NotNull public String computeMethodCall(@NotNull FOR scanner) {
+      scanner.back();
+      buffer.setLength(buffer.length() - 1);
+      return buffer.toString();
+    }
+
+    /**
+     * <p>Signals whether or not the process should continue reading input.</p>
+     *
+     * <p>The default method returns true.</p>
+     *
+     * @param scanner
+     * @return true if the TextScanner should read more input.
+     */
+    @Override
+    public boolean continueScanning(@NotNull FOR scanner) {
+      return true;
+    }
+
+    public int matchStringIndex(@NotNull String check){
+      return buffer.indexOf(check);
+    }
+
+    public boolean matchClass(char c, @NotNull char... map){
+      return mapContains(c, map);
+    }
 
     @Override
-    public String toString() { return claim; }
-
-    @Override
-    protected Object clone() {
+    @NotNull public TextScanner.Method clone() {
       try /* bake-cookies ignoring exceptions with final closure */ {
-        return super.clone();
+        return (Method) super.clone();
       }
-      catch (CloneNotSupportedException fatal) {throw new RuntimeException(fatal);}
-    }
-
-    final public boolean isQuoting() {
-      return methodQuote != NULL_CHARACTER;
-    }
-
-    final public boolean quotedText(char character) {
-      // handle quoting
-      if (isQuoting()) {
-        // deactivate quoting if applicable
-        if (character == methodQuote) methodQuote = NULL_CHARACTER;
-        return true;
-      }
-      // activate quoting if applicable
-      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE) {
-        methodQuote = character;
-        return true;
-      }
-      return false;
-    }
-
-    final public boolean hasNext() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.hasNext();
-    }
-
-    final public boolean haveEscapeWarrant() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.haveEscapeWarrant();
-    }
-
-    final public boolean end() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.end();
-    }
-
-    final public long index() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.index();
-    }
-
-    final public long line() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.line();
-    }
-
-    final public long column() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.column();
-    }
-
-    final public String sourceLabel() {
-      if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-      return methodScanner.sourceLabel();
-    }
-
-    public static class FindString extends Method {
-
-      protected String comparisonClaim;
-      protected boolean checkMatch, caseSensitive = true;
-      protected char[] finalMatchCharacter;
-      protected int findLength, sourceLength;
-      protected boolean handleQuoting = false;
-      protected Locale locale = Locale.ENGLISH;
-      public FindString() { super(); }
-      public FindString(Object claim) { super(claim); }
-
-      public FindString EscapeQuotes() {
-        handleQuoting = true;
-        return this;
-      }
-
-      public FindString AnyCase() {
-        caseSensitive = false;
-        return this;
-      }
-
-      public FindString AnyCase(Locale locale) {
-        this.locale = locale;
-        caseSensitive = false;
-        return this;
-      }
-
-      @Override
-      public void startMethod(Object... parameters) {
-        claim = String.valueOf(parameters[0]);
-        findLength = claim.length();
-        checkMatch = false;
-        finalMatchCharacter = new char[1];
-        boundaryCeption = true;
-        if (!caseSensitive) {
-          comparisonClaim = claim.toLowerCase(locale);
-          finalMatchCharacter[0] = comparisonClaim.charAt(claim.length() - 1);
-        } else {
-          finalMatchCharacter[0] = claim.charAt(claim.length() - 1);
-        }
-        sourceLength = 0;
-      }
-
-      @Override
-      public boolean continueScanning(StringBuilder input) {
-        if (checkMatch) {
-          String match = input.substring(Math.max(0, sourceLength - findLength));
-          // IF this matches STOP scanning by returning false.
-          if (caseSensitive) {
-            return !match.equals(claim);
-          } else return !match.toLowerCase(locale).equals(comparisonClaim);
-        }
-        return true;
-      }
-
-      @Override
-      public boolean exitMethod(char character) {
-
-        // since this is a string-match-operation, every branch returns false.
-        final boolean matchBoundary = false;
-
-        if (handleQuoting) {
-          // handle escapes
-          if (haveEscapeWarrant()) return matchBoundary;
-          // handle quoting
-          if (quotedText(character)) return matchBoundary;
-        }
-
-        sourceLength++;
-        if (!caseSensitive) character = String.valueOf(character).toLowerCase(locale).charAt(0);
-        // activate matching if this is the last character to match and our buffer is large enough.
-        checkMatch = (charMapContains(character, finalMatchCharacter)) && (sourceLength >= findLength);
-        return matchBoundary;
-
-      }
-
-    }
-
-    public static class MatchString extends Method {
-
-      Pattern pattern;
-      private int sourceLength, minimumLength, maximumLength;
-      private boolean checkMatch, matchStart;
-
-      public MatchString(String pattern){
-        this(pattern, pattern.length(), pattern);
-      }
-
-      public MatchString(String pattern, int flags){
-        this(pattern, pattern.length(), pattern, flags);
-      }
-
-      public MatchString(int minimumLength, String pattern){
-        this(pattern, minimumLength, pattern);
-      }
-
-      public MatchString(int minimumLength, String pattern, int flags){
-        this(pattern, minimumLength, pattern, flags);
-      }
-
-      public MatchString(String claim, int minimumLength, String pattern) {
-        this(claim, minimumLength, pattern, 0);
-      }
-
-      public MatchString(String claim, int minimumLength, String pattern, int flags) {
-        super(claim);
-        this.minimumLength = minimumLength;
-        this.pattern = Pattern.compile(pattern, flags);
-      }
-
-      public MatchString MatchStart(int maximumLength) {
-        if (maximumLength != 0 || methodScanner != null) throw new Exception("maximum length already set", new OperationNotSupportedException());
-        if (maximumLength < minimumLength)
-          throw new IllegalArgumentException("maximum length is less than minimum length");
-        this.maximumLength = maximumLength;
-        return MatchStart();
-      }
-
-      public MatchString MatchStart() {
-        if (matchStart || methodScanner != null) throw new Exception("match start configuration already set", new OperationNotSupportedException());
-        matchStart = true;
-        return this;
-      }
-
-      @Override
-      public void startMethod(Object... parameters) {
-        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-        checkMatch = false;
-        boundaryCeption = true;
-        sourceLength = 0;
-        if (matchStart) saveErrorLocation();
-      }
-
-      @Override
-      public boolean continueScanning(StringBuilder input) {
-        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-        if (checkMatch) {
-          String match;
-          if (matchStart) {
-            match = (maximumLength > 0 && sourceLength >= maximumLength) ?
-                input.substring(0, maximumLength) : input.substring(0);
-          }
-          else match = input.substring(Math.max(0, sourceLength - minimumLength));
-          if (pattern.matcher(match).matches()) return false;
-          else if (matchStart && !isSeeking()) {
-            popErrorLocation();
-            throw syntaxError("Expected: " + this + "; Found: `" + input.charAt(0) + "'");
-          }
-        }
-        return true;
-      }
-
-      @Override
-      public boolean exitMethod(char character) {
-        if (methodScanner == null) throw new Exception(new OperationNotSupportedException());
-        sourceLength++;
-        checkMatch = (sourceLength >= minimumLength);
-        return false;
-      }
+      catch (CloneNotSupportedException fatal) {throw new Exception("unable to create object copy", fatal);}
     }
 
   }
-
-
 }

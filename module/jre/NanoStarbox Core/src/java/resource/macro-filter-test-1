@@ -1,0 +1,5 @@
+@define: HARRY "POTTER MAN"
+
+POTTER == %{HARRY}
+
+@include: mixed-content-page.html
