@@ -80,14 +80,10 @@ public interface VirtualTextScanner<ROOT extends VirtualTextScanner<ROOT>> {
    * @return      A String.
    * @throws JSONException Unterminated string.
    */
-  @NotNull String scanQuote(char quote) throws JSONException;
+  @NotNull String scanQuote(char quote, boolean multiLine) throws JSONException;
 
-  /**
-   * Returns true if currently within a single or double quote quote.
-   *
-   * @return
-   */
-  boolean characterQuoting();
+  @NotNull String readLineWhiteSpace();
+  @NotNull String readWhiteSpace();
 
   /**
    * Returns true if this character is the start of a backslash escape.

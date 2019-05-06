@@ -15,12 +15,15 @@ public final class Char {
   public final static char BACKSLASH = '\\';
   public final static char SINGLE_QUOTE = '\'';
   public final static char DOUBLE_QUOTE = '"';
+  public final static char CARRIAGE_RETURN = '\r';
+  public final static char LINE_FEED = '\n';
 
   public final static char[] MAP = new MapAssembler(0, CHAR_MAX).toArray();
-  public final static char[] MAP_WHITE_SPACE = new MapAssembler(9, 13).merge(' ').toArray();
+  public final static char[] MAP_ALL_WHITE_SPACE = new MapAssembler(9, 13).merge(' ').toArray();
+  public final static char[] MAP_LINE_WHITE_SPACE = new MapAssembler(MAP_ALL_WHITE_SPACE).filter('\n', '\r').toArray();
   public final static char[] MAP_LETTERS = new MapAssembler(65, 90).merge(97, 122).toArray();
   public final static char[] MAP_NUMBERS = new MapAssembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_CONTROL = new MapAssembler(0, 31).filter(MAP_WHITE_SPACE).toArray();
+  public final static char[] MAP_CONTROL = new MapAssembler(0, 31).filter(MAP_ALL_WHITE_SPACE).toArray();
   public final static char[] MAP_EXTENDED = new MapAssembler.RangeMap(127, CHAR_MAX).compile();
   public final static char[] MAP_SYMBOLS = new MapAssembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 126).toArray();
 

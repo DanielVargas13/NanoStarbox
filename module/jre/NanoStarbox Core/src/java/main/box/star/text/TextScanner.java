@@ -160,9 +160,10 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     StringBuilder sb = new StringBuilder();
     for (;;) {
       c = this.next();
-      if (Char.mapContains(c, map)) {
+      if (!Char.mapContains(c, map)) {
         if (c != 0) {
           this.back();
+          sb.setLength(Math.max(0, sb.length()-1));
         }
         return sb.toString().trim();
       }
@@ -223,67 +224,8 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     return method.computeMethodCall(this);
   }
 
-//  /**
-//   * Get the next char in the string, skipping whitespace.
-//   * @throws Exception Thrown if there is an error reading the source string.
-//   * @return  A character, or 0 if there are no more characters.
-//   */
-//  public char nextClean() throws Exception {
-//    for (;;) {
-//      char c = this.next();
-//      if (c == 0 || c > ' ') {
-//        return c;
-//      }
-//    }
-//  }
-
-//  /**
-//   * Get the text up but not including the specified character or the
-//   * end of line, whichever comes first.
-//   * @param  delimiter A delimiter character.
-//   * @return   A string.
-//   * @throws Exception Thrown if there is an error while searching
-//   *  for the delimiter
-//   */
-//  @Override
-//  public String nextTo(char delimiter) throws Exception {
-//    StringBuilder sb = new StringBuilder();
-//    for (;;) {
-//      char c = next();
-//      if (c == delimiter || c == 0 || c == '\n' || c == '\r') {
-//        if (c != 0) {
-//          this.back();
-//        }
-//        return sb.toString().trim();
-//      }
-//      sb.append(c);
-//    }
-//  }
-
-
-//  /**
-//   * Get the text up but not including one of the specified delimiter
-//   * characters or the end of line, whichever comes first.
-//   * @param delimiters A set of delimiter characters.
-//   * @return A string, trimmed.
-//   * @throws Exception Thrown if there is an error while searching
-//   *  for the delimiter
-//   */
-//  @Override
-//  private String nextTo(String delimiters) throws Exception {
-//    char c;
-//    StringBuilder sb = new StringBuilder();
-//    for (;;) {
-//      c = this.next();
-//      if (delimiters.indexOf(c) >= 0 || c == 0 || c == '\n' || c == '\r') {
-//        if (c != 0) {
-//          this.back();
-//        }
-//        return sb.toString().trim();
-//      }
-//      sb.append(c);
-//    }
-//  }
+  public String readLineWhiteSpace() { return next(MAP_LINE_WHITE_SPACE); }
+  public String readWhiteSpace() { return next(MAP_ALL_WHITE_SPACE); }
 
     /**
    * Get the text up but not including one of the specified delimiter
@@ -308,36 +250,6 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
       sb.append(c);
     }
   }
-
-//  /**
-//   * Skip characters until the next character is the requested character.
-//   * If the requested character is not found, no characters are skipped.
-//   * @param sequence An exact termination sequence to match.
-//   * @return The requested match, or zero if the requested sequence
-//   * does not match.
-//   * @throws Exception Thrown if there is an error while searching
-//   *  for the sequence character
-//   */
-//  @Override
-//  public String scanField(char... sequence) throws Exception {
-//    return "";
-//  }
-
-//  @Override
-//  public String nextNot(char[] delimiters) throws Exception {
-//    char c;
-//    StringBuilder sb = new StringBuilder();
-//    for (;;) {
-//      c = this.next();
-//      if (! Char.mapContains(c, delimiters) || c == 0 || c == '\n' || c == '\r') {
-//        if (c != 0) {
-//          this.back();
-//        }
-//        return sb.toString().trim();
-//      }
-//      sb.append(c);
-//    }
-//  }
 
 //  /**
 //   * Skip characters until the next character is the requested character.
@@ -372,6 +284,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
 //    return c;
 //  }
 //
+
   /**
    * Return the characters up to the next close quote character.
    * Backslash processing is done. The formal JSON format does not
@@ -380,67 +293,47 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    * @param quote The quoting character, either
    *      <code>"</code>&nbsp;<small>(double quote)</small> or
    *      <code>'</code>&nbsp;<small>(single quote)</small>.
+   * @param multiLine if true, quotes span multiple lines.
    * @return      A String.
    * @throws Exception Unterminated string.
    */
   @Override
-  public String scanQuote(char quote) throws Exception {
+  public String scanQuote(char quote, boolean multiLine) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     for (;;) {
       c = this.next();
       switch (c) {
-        case 0:
-        case '\n':
-        case '\r':
-          throw this.syntaxError("Unterminated string");
-        case '\\':
+        case CARRIAGE_RETURN:
+        case LINE_FEED: if (multiLine) {
+          sb.append(c);
+          break;
+        }
+        case 0: throw this.syntaxError("Unterminated string");
+        case BACKSLASH:
           c = this.next();
           switch (c) {
-            case 'b':
-              sb.append('\b');
-              break;
-            case 't':
-              sb.append('\t');
-              break;
-            case 'n':
-              sb.append('\n');
-              break;
-            case 'f':
-              sb.append('\f');
-              break;
-            case 'r':
-              sb.append('\r');
-              break;
+            case 'b': sb.append('\b'); break;
+            case 't': sb.append('\t'); break;
+            case 'n': sb.append(LINE_FEED); break;
+            case 'f': sb.append('\f'); break;
+            case 'r': sb.append(CARRIAGE_RETURN); break;
             case 'u':
-              try {
-                sb.append((char)Integer.parseInt(this.next(4), 16));
-              } catch (NumberFormatException e) {
-                throw this.syntaxError("Illegal escape", e);
-              }
+              try { sb.append((char)Integer.parseInt(this.next(4), 16)); }
+              catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
               break;
-            case '"':
-            case '\'':
-            case '\\':
-            case '/':
-              sb.append(c);
-              break;
-            default:
-              throw this.syntaxError("Illegal escape.");
+            case DOUBLE_QUOTE:
+            case SINGLE_QUOTE:
+            case BACKSLASH:
+            case '/': sb.append(c); break;
+            default: throw this.syntaxError("Illegal escape");
           }
           break;
         default:
-          if (c == quote) {
-            return sb.toString();
-          }
-          sb.append(c);
+          if (c == quote) return sb.toString();
+          else sb.append(c);
       }
     }
-  }
-
-  @Override
-  public boolean characterQuoting() {
-    return false;
   }
 
   @Override
@@ -508,9 +401,6 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
       try /*  throwing runtime exceptions with closure */ {
         return (SerializableState)super.clone();
       } catch (CloneNotSupportedException e){throw new RuntimeException(e);}
-      finally /*  complete */ {
-        ;
-      }
     }
 
     /**
@@ -518,11 +408,11 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      */
     public void decrementIndexes() {
       this.index--;
-      if(this.previous=='\r' || this.previous == '\n') {
+      if(this.previous == CARRIAGE_RETURN || this.previous == LINE_FEED) {
         this.line--;
         this.character=this.characterPreviousLine ;
       } else if(this.character > 0){
-        if (previous=='\\') this.backslash = ! this.backslash;
+        if (previous==BACKSLASH) this.backslash = ! this.backslash;
         this.character--;
       }
     }
@@ -548,16 +438,13 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
             this.characterPreviousLine = this.character;
           }
           this.character=0;
-        } else {
-          this.character++;
-        }
+        } else this.character++;
       }
     }
 
-
   }
 
-  public static class Method<FOR extends VirtualTextScanner> implements VirtualTextScannerMethod<FOR> {
+  public static class Method implements VirtualTextScannerMethod<TextScanner> {
 
     protected String claim;
     protected StringBuilder buffer;
@@ -570,8 +457,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @param scanner the host scanner
      * @param parameters the parameters given by the caller.
      */
-    @Override
-    public void startMethod(@NotNull FOR scanner, Object[] parameters) {
+    @Override public void startMethod(TextScanner scanner, Object[] parameters) {
       buffer = new StringBuilder();
     }
 
@@ -579,7 +465,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     @NotNull public String toString() { return "ScanMethod "+claim; }
 
     @Override
-    @NotNull public String getScopeView(@NotNull FOR virtualSourceScanner) {
+    @NotNull public String getScopeView(TextScanner virtualSourceScanner) {
       return claim;
     }
 
@@ -591,7 +477,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @return false to continue processing.
      */
     @Override
-    public boolean terminator(@NotNull FOR scanner, char character) {
+    public boolean terminator(TextScanner scanner, char character) {
       buffer.append(character);
       if (scanner.haveEscape()) return false;
       else if (scanner.quotedText(character)) return false;
@@ -615,9 +501,9 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @return the scanned data as a string.
      */
     @Override
-    @NotNull public String computeMethodCall(@NotNull FOR scanner) {
+    @NotNull public String computeMethodCall(TextScanner scanner) {
       scanner.back();
-      buffer.setLength(buffer.length() - 1);
+      buffer.setLength(Math.max(0, buffer.length()-1));
       return buffer.toString();
     }
 
@@ -630,17 +516,11 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @return true if the TextScanner should read more input.
      */
     @Override
-    public boolean continueScanning(@NotNull FOR scanner) {
-      return true;
-    }
+    public boolean continueScanning(TextScanner scanner) { return true; }
 
-    public int matchStringIndex(@NotNull String check){
-      return buffer.indexOf(check);
-    }
+    public int matchStringIndex(@NotNull String check){ return buffer.indexOf(check); }
 
-    public boolean matchClass(char c, @NotNull char... map){
-      return mapContains(c, map);
-    }
+    public boolean matchClass(char c, @NotNull char... map){ return mapContains(c, map); }
 
     @Override
     @NotNull public TextScanner.Method clone() {
