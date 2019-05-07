@@ -1,6 +1,8 @@
 package box.star.text;
 
 import box.star.contract.NotNull;
+import jdk.nashorn.internal.objects.NativeRangeError;
+import org.w3c.dom.ranges.RangeException;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -419,6 +421,10 @@ public final class Char {
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
 
+    public Assembler(char start, char finish){
+      this((int) start, (int) finish);
+    }
+
     public Assembler(RangeMap map) {
       this(map.compile());
     }
@@ -427,7 +433,10 @@ public final class Char {
       merge(map);
     }
 
-    public Assembler(int start, int end) { merge(new RangeMap(start, end)); }
+    public Assembler(int start, int end) {
+      if (start > end) throw new RuntimeException("RangeError: start is greater than end");
+      merge(new RangeMap(start, end));
+    }
 
     public Assembler(int... integer) {
       merge(integer);
