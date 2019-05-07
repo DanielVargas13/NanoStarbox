@@ -1,6 +1,8 @@
 package box.star.text;
 
+import box.star.Tools;
 import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import box.star.io.Streams;
 
 import java.io.*;
@@ -289,74 +291,6 @@ public class TextScanner implements Scanner<TextScanner> {
     return method.compile(this);
   }
 
-  /**
-   * Return the characters up to the next close quote character.
-   * Backslash processing is done. The formal JSON format does not
-   * allow strings in single quotes, but an implementation is allowed to
-   * accept them.
-   *
-   * @param quote     The quoting character, either
-   *                  <code>"</code>&nbsp;<small>(double quote)</small> or
-   *                  <code>'</code>&nbsp;<small>(single quote)</small>.
-   * @param multiLine if true, quotes span multiple lines.
-   * @return A String.
-   * @throws Exception Unterminated string.
-   */
-  @Override
-  @NotNull
-  public String nextQuote(char quote, boolean multiLine) throws Exception {
-    char c;
-    StringBuilder sb = new StringBuilder();
-    for (; ; ) {
-      c = this.next();
-      switch (c) {
-        case CARRIAGE_RETURN:
-        case LINE_FEED:
-          if (multiLine) {
-            sb.append(c);
-            break;
-          }
-        case 0:
-          throw this.syntaxError("Unterminated string");
-        case BACKSLASH:
-          c = this.next();
-          switch (c) {
-            case 'b':
-              sb.append('\b');
-              break;
-            case 't':
-              sb.append('\t');
-              break;
-            case 'n':
-              sb.append(LINE_FEED);
-              break;
-            case 'f':
-              sb.append('\f');
-              break;
-            case 'r':
-              sb.append(CARRIAGE_RETURN);
-              break;
-            case 'u':
-              try { sb.append((char) Integer.parseInt(this.nextLength(4), 16)); }
-              catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
-              break;
-            case DOUBLE_QUOTE:
-            case SINGLE_QUOTE:
-            case BACKSLASH:
-            case SOLIDUS:
-              sb.append(c);
-              break;
-            default:
-              throw this.syntaxError("Illegal escape");
-          }
-          break;
-        default:
-          if (c == quote) return sb.toString();
-          else sb.append(c);
-      }
-    }
-  }
-
   @Override
   public boolean haveEscape() {
     return state.backslash && state.previous == BACKSLASH;
@@ -618,6 +552,31 @@ public class TextScanner implements Scanner<TextScanner> {
     @NotNull
     public String toString() { return claim; }
 
+    @Nullable
+    public String expandEscape(@NotNull TextScanner scanner, char character){
+      if (character == BACKSLASH){
+        if (! scanner.haveEscape()) return "";
+        return "\\";
+      }
+      if (scanner.isQuoting()) {
+        switch (character){
+          case '0': return NULL_CHARACTER+"";
+          case 't': return "\t";
+          case 'b': return BELL+"";
+          case 'v': return VERTICAL_TAB+"";
+          case 'r': return "\r";
+          case 'n': return "\n";
+          case 'f': return "\f";
+          case 'u': {
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextLength(4), 16)); }
+            catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
+          }
+          default: return null;
+        }
+      }
+      return null;
+    }
+
     /**
      * Add a character to the method buffer.
      * <p>
@@ -629,8 +588,9 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public void collect(@NotNull TextScanner scanner, char character) {
-      if (character == BACKSLASH && !scanner.haveEscape()) return;
-      buffer.append(character);
+      if (character == 0) return;
+      String escaped = expandEscape(scanner, character);
+      buffer.append(Tools.makeNotNull(escaped, character));
     }
 
     public boolean zeroTerminator(@NotNull TextScanner scanner, char character) {

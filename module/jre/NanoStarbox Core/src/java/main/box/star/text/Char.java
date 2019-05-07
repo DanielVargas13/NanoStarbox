@@ -205,18 +205,6 @@ public final class Char {
     @NotNull String nextMap(char... map);
 
     /**
-     * Return the characters up to the next close quote character.
-     * Backslash processing is done.
-     *
-     * @param quote The quoting character, either
-     *              <code>"</code>&nbsp;<small>(double quote)</small> or
-     *              <code>'</code>&nbsp;<small>(single quote)</small>.
-     * @return A String.
-     * @throws Exception Unterminated string.
-     */
-    @NotNull String nextQuote(char quote, boolean multiLine) throws Exception;
-
-    /**
      * Make a printable string of this Scanner.
      *
      * @return " at {index} [character {character} line {line}]"
