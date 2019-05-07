@@ -431,6 +431,7 @@ public final class Char {
     }
 
     public Assembler(CharSequence sequence){
+      chars = new StringBuilder(sequence.length());
       merge(sequence.toString());
     }
 
@@ -443,19 +444,22 @@ public final class Char {
     }
 
     public Assembler(RangeMap map) {
-      this(map.compile());
+      this(map.start, map.end);
     }
 
     public Assembler(char... map) {
+      chars = new StringBuilder(map.length);
       merge(map);
     }
 
     public Assembler(int start, int end) {
       if (start > end) throw new RuntimeException("RangeError: start is greater than end");
+      chars = new StringBuilder((end - start) + 2);
       merge(new RangeMap(start, end));
     }
 
     public Assembler(int... integer) {
+      chars = new StringBuilder(integer.length);
       merge(integer);
     }
 
