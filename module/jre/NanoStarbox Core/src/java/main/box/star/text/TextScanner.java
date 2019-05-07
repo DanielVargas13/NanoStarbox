@@ -241,7 +241,7 @@ public class TextScanner implements Scanner<TextScanner> {
   }
 
   @Override
-  final public boolean isQuotedText(char character) {
+  final public boolean parseQuotation(char character) {
     // handle quoting
     if (isQuoting()) {
       // deactivate quoting if applicable
@@ -603,24 +603,38 @@ public class TextScanner implements Scanner<TextScanner> {
     /**
      * Add a character to the method buffer.
      *
+     * This super method does not collect backslashes unless the backslash is
+     * escaped.
+     *
      * @param scanner
      * @param character
-     * Overriding is not recommended.
      */
     @Override
     public void collect(@NotNull TextScanner scanner, char character) {
+      if (character == BACKSLASH && ! scanner.haveEscape()) return;
       buffer.append(character);
     }
 
-    public boolean escaping(@NotNull TextScanner scanner){
-      if (scanner.haveEscape()) return true;
+    public boolean zeroTerminator(@NotNull TextScanner scanner, char character){
+      if (character == 0) {
+        if (scanner.haveEscape())
+          throw scanner.syntaxError("escaping end of source with a backslash");
+        if (scanner.isQuoting())
+          throw scanner.syntaxError("failure to find end of quoted text");
+        return true;
+      }
       return false;
     }
 
-    public boolean quoting(@NotNull TextScanner scanner, char character){
-      if (escaping(scanner)) return true;
-      else if (scanner.isQuotedText(character)) return true;
-      return false;
+    /**
+     * Stored results of last call to parseQuote
+     */
+    public boolean quoting, escaped;
+
+    public boolean parseQuote(@NotNull TextScanner scanner, char character){
+      escaped = scanner.haveEscape();
+      quoting = scanner.parseQuotation(character);
+      return (escaped || quoting);
     }
 
     /**
@@ -634,12 +648,8 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public boolean terminator(@NotNull TextScanner scanner, char character) {
-      if (character == 0) {
-        if (escaping(scanner))
-          throw scanner.syntaxError("escaping end of stream with backslash");
-        return true;
-      }
-      if (quoting(scanner, character)) return false;
+      if (zeroTerminator(scanner, character)) return true;
+      parseQuote(scanner, character);
       return false;
     }
 

@@ -217,7 +217,7 @@ public final class Char {
      * @param character
      * @return
      */
-    boolean isQuotedText(char character);
+    boolean parseQuotation(char character);
 
     @NotNull String nextMapVoid(@NotNull char... map) throws java.lang.Exception;
 
