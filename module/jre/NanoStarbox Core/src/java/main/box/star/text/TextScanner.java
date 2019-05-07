@@ -233,20 +233,25 @@ public class TextScanner implements Scanner<TextScanner> {
     return state.methodQuote != NULL_CHARACTER;
   }
 
+  private long parseQuoteLastQueryPosition; // this can roll-through-reset safely
   @Override
   final public boolean parseQuotation(char character) {
-    // handle quoting
-    if (isQuoting()) {
-      // deactivate quoting if applicable
-      if (character == state.methodQuote) state.methodQuote = NULL_CHARACTER;
-      return true;
+    // make sure we only toggle quoting once per iteration!
+    if (parseQuoteLastQueryPosition != getIndex()) {
+      parseQuoteLastQueryPosition = getIndex();
+      // handle quoting
+      if (isQuoting()) {
+        // deactivate quoting if applicable
+        if (character == state.methodQuote) state.methodQuote = NULL_CHARACTER;
+        return true;
+      }
+      // activate quoting if applicable
+      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE) {
+        state.methodQuote = character;
+        return true;
+      }
     }
-    // activate quoting if applicable
-    if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE) {
-      state.methodQuote = character;
-      return true;
-    }
-    return false;
+    return isQuoting();
   }
 
   @NotNull
