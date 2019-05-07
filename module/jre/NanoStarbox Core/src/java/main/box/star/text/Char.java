@@ -421,6 +421,10 @@ public final class Char {
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
 
+    public Assembler(Iterable<Character> stream){
+      merge(stream);
+    }
+
     public Assembler(char start, char finish){
       this((int) start, (int) finish);
     }
@@ -447,7 +451,6 @@ public final class Char {
       final char[] data = this.toArray();
       return new Iterator<Character>() {
         int i = 0;
-
         @Override
         public boolean hasNext() { return i < data.length; }
 
@@ -457,11 +460,20 @@ public final class Char {
     }
 
     public Assembler merge(int... integer) {
-      char[] current = toArray();
-      for (int i : integer) {
+      for (int i: integer){
         char c = (char) sanitizeRangeValue(i);
-        if (!mapContains(c, current)) chars.append(c);
+        if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       }
+      return this;
+    }
+
+    public Assembler merge(char... map) {
+      for (char c : map) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
+      return this;
+    }
+
+    public Assembler merge(Iterable<Character> stream){
+      for (char c: stream) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       return this;
     }
 
@@ -477,12 +489,6 @@ public final class Char {
       return merge(map.compile());
     }
 
-    public Assembler merge(char... map) {
-      char[] current = toArray();
-      for (char c : map) if (!mapContains(c, current)) chars.append(c);
-      return this;
-    }
-
     public Assembler filter(String source){
       return filter(source.toCharArray());
     }
@@ -492,6 +498,12 @@ public final class Char {
       for (int i : integer) map.append((char) i);
       char[] chars = map.toString().toCharArray();
       return filter(chars);
+    }
+
+    public Assembler filter(Iterable<Character> stream){
+      StringBuilder out = new StringBuilder();
+      for (char c: stream) out.append(c);
+      return filter(out.toString().toCharArray());
     }
 
     public Assembler filter(int start, int end) {
