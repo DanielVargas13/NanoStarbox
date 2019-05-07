@@ -29,8 +29,12 @@ public final class Char {
   public final static char[] MAP_EXTENDED = new Assembler.RangeMap(127, CHAR_MAX).compile();
   public final static char[] MAP_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 126).toArray();
 
+  private Char() {}
+
   public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
+
   public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? '\uffff' : val; }
+
   public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
 
   public static boolean mapContains(char search, char[] range) {
@@ -44,19 +48,331 @@ public final class Char {
     return out.toString().toCharArray();
   }
 
+  public static int parseInt(char c) {
+    return Integer.parseInt(c + "");
+  }
+
+  public static int parseInt(char c, int base) {
+    return Integer.parseInt(c + "", base);
+  }
+
+  /**
+   * Get the hex value of a character (base16).
+   *
+   * @param c A character between '0' and '9' or between 'A' and 'F' or
+   *          between 'a' and 'f'.
+   * @return An int between 0 and 15, or -1 if c was not a hex digit.
+   */
+  public static int parseHex(char c) {
+    if (c >= '0' && c <= '9') {
+      return c - '0';
+    }
+    if (c >= 'A' && c <= 'F') {
+      return c - ('A' - 10);
+    }
+    if (c >= 'a' && c <= 'f') {
+      return c - ('a' - 10);
+    }
+    return -1;
+  }
+
+  public interface Scanner<MainClass extends Scanner> {
+
+    /**
+     * Get a snapshot of the current scanner.
+     * <p>
+     * A snapshot stores the current state of the scanner, and manipulates
+     * the underlying reader, to create a virtual read-back-buffer.
+     *
+     * @return {@link Snapshot}
+     */
+    <ANY extends Snapshot> ANY getSnapshot();
+
+    /**
+     * Determine if the source string still contains characters that next()
+     * can consume.
+     *
+     * @return true if not yet at the end of the source.
+     * @throws Exception thrown if there is an error stepping forward
+     *                   or backward while checking for more data.
+     */
+    boolean haveNext() throws Exception;
+
+    /**
+     * Checks if the end of the input has been reached.
+     *
+     * @return true if at the end of the file and we didn't step back
+     */
+    boolean endOfSource();
+
+    /**
+     * Go back one step.
+     *
+     * @throws Exception
+     */
+    void back() throws Exception;
+
+    /**
+     * Get the next character
+     *
+     * @return
+     * @throws Exception
+     */
+    char next() throws Exception;
+
+    /**
+     * Read the given source or throw an error.
+     *
+     * @param source
+     * @return
+     */
+    @NotNull String nextString(@NotNull String source, boolean caseSensitive);
+
+    /**
+     * Assemble characters while character match map.
+     *
+     * @param map
+     * @return
+     */
+    @NotNull String nextMap(char... map);
+
+    /**
+     * Get the text up but not including one of the specified delimiter
+     * characters or the end of line, whichever comes first.
+     *
+     * @param delimiters A set of delimiter characters.
+     * @return A string, trimmed.
+     * @throws Exception Thrown if there is an error while searching
+     *                   for the delimiter
+     */
+    @NotNull String nextField(char... delimiters) throws Exception;
+
+    /**
+     * Skip characters until the next character is the requested character.
+     * If the requested character is not found, no characters are skipped.
+     * @param sequence A character or character sequence to match.
+     * @return The requested character, or zero if the requested character
+     * is not found.
+     * @throws Exception Thrown if there is an error while searching
+     *  for the to character
+     */
+    //String scanField(char... sequence) throws Exception;
+
+    /**
+     * Return the characters up to the next close quote character.
+     * Backslash processing is done.
+     *
+     * @param quote The quoting character, either
+     *              <code>"</code>&nbsp;<small>(double quote)</small> or
+     *              <code>'</code>&nbsp;<small>(single quote)</small>.
+     * @return A String.
+     * @throws Exception Unterminated string.
+     */
+    @NotNull String nextQuote(char quote, boolean multiLine) throws Exception;
+
+    /**
+     * Make a printable string of this Scanner.
+     *
+     * @return " at {index} [character {character} line {line}]"
+     */
+    String scope();
+
+    String getPath();
+
+    long getIndex();
+
+    long getLine();
+
+    long getColumn();
+
+    /**
+     * Returns true if this character is the start of a backslash escape.
+     *
+     * @return
+     */
+    boolean haveEscape();
+
+    @NotNull String run(@NotNull Char.Scanner.Method<MainClass> method, Object... parameters);
+
+    /**
+     * Make a Exception to signal a syntax error.
+     *
+     * @param message The error message.
+     * @return A Exception object, suitable for throwing
+     */
+    SyntaxError syntaxError(@NotNull String message);
+
+    /**
+     * Make a Exception to signal a syntax error.
+     *
+     * @param message  The error message.
+     * @param causedBy The throwable that caused the error.
+     * @return A Exception object, suitable for throwing
+     */
+    SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy);
+
+    /**
+     * Determines if the given character starts, continues or ends a quote stream.
+     *
+     * @param character
+     * @return
+     */
+    boolean isQuotedText(char character);
+
+    @NotNull String nextLength(int n) throws java.lang.Exception;
+
+    boolean isQuoting();
+
+    interface Method<MainClass extends Scanner> extends Cloneable {
+
+      void collect(TextScanner scanner, char character);
+
+      /**
+       * Return true to break processing on this character.
+       *
+       * @param character
+       * @return false to continue processing.
+       */
+      boolean terminator(@NotNull MainClass context, char character);
+
+      void reset();
+
+      /**
+       * Called by the TextScanner to signal that a new method call is beginning.
+       *
+       * @param parameters the parameters given by the caller.
+       */
+      void start(@NotNull MainClass context, Object[] parameters);
+
+      /**
+       * Compiles the scanned character buffer.
+       *
+       * @param context the host context.
+       * @return the scanned data as a string.
+       */
+      String compile(@NotNull MainClass context);
+
+      /**
+       * Signals whether or not the process should continue reading input.
+       *
+       * @return true if the TextScanner should read more input.
+       */
+      boolean scanning(@NotNull MainClass context);
+
+      void back(TextScanner scanner);
+    }
+
+    /**
+     * Scanner Snapshot Interface
+     * <p>
+     * An interface to cancel or close a snapshot.
+     * <p>
+     * A snapshot allows code to implement a rewind interface.
+     * <p>
+     * to rewind use {@link Snapshot#cancel()}
+     * to save use {@link Snapshot#close()}
+     */
+    interface Snapshot {
+      /**
+       * Cancel the current snapshot.
+       *
+       * @throws Exception if the operation fails
+       */
+      void cancel() throws Exception;
+
+      /**
+       * Close the current snapshot.
+       */
+      void close();
+    }
+
+    /**
+     * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
+     *
+     * @author Hypersoft-Systems: USA
+     * @version 2015-12-09
+     */
+    class Exception extends RuntimeException {
+      /**
+       * Serialization ID
+       */
+      private static final long serialVersionUID = 0;
+
+      /**
+       * Constructs a TextScanner.Exception with an explanatory message.
+       *
+       * @param message Detail about the reason for the exception.
+       */
+      public Exception(final String message) {
+        super(message);
+      }
+
+      /**
+       * Constructs a TextScanner.Exception with an explanatory message and cause.
+       *
+       * @param message Detail about the reason for the exception.
+       * @param cause   The cause.
+       */
+      public Exception(final String message, final Throwable cause) {
+        super(message, cause);
+      }
+
+      /**
+       * Constructs a new TextScanner.Exception with the specified cause.
+       *
+       * @param cause The cause.
+       */
+      public Exception(final Throwable cause) {
+        super(cause.getMessage(), cause);
+      }
+
+    }
+
+    /**
+     * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
+     *
+     * @author Hypersoft-Systems: USA
+     */
+    class SyntaxError extends RuntimeException {
+      /**
+       * Serialization ID
+       */
+      private static final long serialVersionUID = 0;
+
+      /**
+       * Constructs a TextScanner.Exception with an explanatory message.
+       *
+       * @param message Detail about the reason for the exception.
+       */
+      public SyntaxError(final String message) {
+        super(message);
+      }
+
+      /**
+       * Constructs a TextScanner.Exception with an explanatory message and cause.
+       *
+       * @param message Detail about the reason for the exception.
+       * @param cause   The cause.
+       */
+      public SyntaxError(final String message, final Throwable cause) {
+        super(message, cause);
+      }
+
+      /**
+       * Constructs a new TextScanner.Exception with the specified cause.
+       *
+       * @param cause The cause.
+       */
+      public SyntaxError(final Throwable cause) {
+        super(cause.getMessage(), cause);
+      }
+
+    }
+  }
+
   public static class Assembler implements Serializable, Iterable<Character> {
 
     private static final long serialVersionUID = 8454376662352328447L;
-
-    @Override public Iterator<Character> iterator() {
-      final char[] data = this.toArray();
-      return new Iterator<Character>() {
-        int i = 0;
-        @Override public boolean hasNext() { return i < data.length; }
-        @Override public Character next() { return data[i++]; }
-      };
-    }
-
     StringBuilder chars = new StringBuilder();
 
     public Assembler(RangeMap map) {
@@ -71,6 +387,20 @@ public final class Char {
 
     public Assembler(int... integer) {
       merge(integer);
+    }
+
+    @Override
+    public Iterator<Character> iterator() {
+      final char[] data = this.toArray();
+      return new Iterator<Character>() {
+        int i = 0;
+
+        @Override
+        public boolean hasNext() { return i < data.length; }
+
+        @Override
+        public Character next() { return data[i++]; }
+      };
     }
 
     public Assembler merge(int... integer) {
@@ -137,304 +467,21 @@ public final class Char {
 
     private static class RangeMap {
       public final int start, end;
+
       RangeMap(int start, int end) {
         this.start = sanitizeRangeValue(start);
         this.end = sanitizeRangeValue(end);
       }
+
       public boolean match(char character) {
         return character >= start || character <= end;
       }
+
       public char[] compile() {
         return buildRangeMap(this);
       }
     }
 
-  }
-
-  public static int parseInt(char c){
-    return Integer.parseInt(c+"");
-  }
-
-  public static int parseInt(char c, int base){
-    return Integer.parseInt(c+"", base);
-  }
-
-  /**
-   * Get the hex value of a character (base16).
-   * @param c A character between '0' and '9' or between 'A' and 'F' or
-   * between 'a' and 'f'.
-   * @return  An int between 0 and 15, or -1 if c was not a hex digit.
-   */
-  public static int parseHex(char c) {
-    if (c >= '0' && c <= '9') {
-      return c - '0';
-    }
-    if (c >= 'A' && c <= 'F') {
-      return c - ('A' - 10);
-    }
-    if (c >= 'a' && c <= 'f') {
-      return c - ('a' - 10);
-    }
-    return -1;
-  }
-
-  private Char(){}
-
-  public static interface Scanner<MainClass extends Scanner> {
-
-    <ANY extends Snapshot> ANY getSnapshot();
-
-    /**
-     * Determine if the source string still contains characters that next()
-     * can consume.
-     * @return true if not yet at the end of the source.
-     * @throws Exception thrown if there is an error stepping forward
-     *  or backward while checking for more data.
-     */
-    boolean haveNext() throws Exception;
-
-    /**
-     * Checks if the end of the input has been reached.
-     *
-     * @return true if at the end of the file and we didn't step back
-     */
-    boolean endOfSource();
-
-    /**
-     * Go back one step.
-     *
-     * @throws Exception
-     */
-    void back() throws Exception;
-
-    /**
-     * Get the next character
-     * @return
-     * @throws Exception
-     */
-    char next() throws Exception;
-
-    /**
-     * Read the given source or throw an error.
-     * @param source
-     * @return
-     */
-    @NotNull String next(@NotNull String source, boolean caseSensitive);
-
-    /**
-     * Assemble characters while character match map.
-     * @param map
-     * @return
-     */
-    @NotNull String next(char... map);
-
-    /**
-     * Get the text up but not including one of the specified delimiter
-     * characters or the end of line, whichever comes first.
-     * @param delimiters A set of delimiter characters.
-     * @return A string, trimmed.
-     * @throws Exception Thrown if there is an error while searching
-     *  for the delimiter
-     */
-    @NotNull String scanField(char... delimiters) throws Exception;
-
-    /**
-     * Skip characters until the next character is the requested character.
-     * If the requested character is not found, no characters are skipped.
-     * @param sequence A character or character sequence to match.
-     * @return The requested character, or zero if the requested character
-     * is not found.
-     * @throws Exception Thrown if there is an error while searching
-     *  for the to character
-     */
-    //String scanField(char... sequence) throws Exception;
-
-    /**
-     * Return the characters up to the next close quote character.
-     * Backslash processing is done.
-     *
-     * @param quote The quoting character, either
-     *      <code>"</code>&nbsp;<small>(double quote)</small> or
-     *      <code>'</code>&nbsp;<small>(single quote)</small>.
-     * @return      A String.
-     * @throws Exception Unterminated string.
-     */
-    @NotNull String scanQuote(char quote, boolean multiLine) throws Exception;
-
-    /**
-     * Make a printable string of this Scanner.
-     *
-     * @return " at {index} [character {character} line {line}]"
-     */
-    String scope();
-
-    String getPath();
-
-    long getIndex();
-    long getLine();
-    long getColumn();
-
-    /**
-     * Returns true if this character is the start of a backslash escape.
-     *
-     * @return
-     */
-    boolean haveEscape();
-
-    @NotNull String run(@NotNull Char.Scanner.Method<MainClass> method, Object... parameters);
-
-    /**
-     * Make a Exception to signal a syntax error.
-     *
-     * @param message The error message.
-     * @return  A Exception object, suitable for throwing
-     */
-    SyntaxError syntaxError(@NotNull String message);
-
-    /**
-     * Make a Exception to signal a syntax error.
-     *
-     * @param message The error message.
-     * @param causedBy The throwable that caused the error.
-     * @return  A Exception object, suitable for throwing
-     */
-    SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy);
-
-    /**
-     * Determines if the given character starts, continues or ends a quote stream.
-     *
-     * @param character
-     * @return
-     */
-    boolean quotedText(char character);
-    boolean isQuoting();
-
-    public static interface Method<MainClass extends Scanner> extends Cloneable {
-
-      void collect(TextScanner scanner, char character);
-
-      /**
-       * Return true to break processing on this character.
-       *
-       * @param character
-       * @return false to continue processing.
-       */
-      boolean terminator(@NotNull MainClass context, char character);
-
-      void reset();
-
-      /**
-       * Called by the TextScanner to signal that a new method call is beginning.
-       *
-       * @param parameters the parameters given by the caller.
-       */
-      void start(@NotNull MainClass context, Object[] parameters);
-
-      /**
-       * Compiles the scanned character buffer.
-       *
-       * @param context the host context.
-       * @return the scanned data as a string.
-       */
-      String compile(@NotNull MainClass context);
-
-      /**
-       * Signals whether or not the process should continue reading input.
-       *
-       * @return true if the TextScanner should read more input.
-       */
-      boolean scanning(@NotNull MainClass context);
-
-      void back(TextScanner scanner);
-    }
-
-    /**
-     * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-     *
-     * @author Hypersoft-Systems: USA
-     * @version 2015-12-09
-     */
-    public static class Exception extends RuntimeException {
-      /**
-       * Serialization ID
-       */
-      private static final long serialVersionUID = 0;
-
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message.
-       *
-       * @param message Detail about the reason for the exception.
-       */
-      public Exception(final String message) {
-        super(message);
-      }
-
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message and cause.
-       *
-       * @param message Detail about the reason for the exception.
-       * @param cause   The cause.
-       */
-      public Exception(final String message, final Throwable cause) {
-        super(message, cause);
-      }
-
-      /**
-       * Constructs a new TextScanner.Exception with the specified cause.
-       *
-       * @param cause The cause.
-       */
-      public Exception(final Throwable cause) {
-        super(cause.getMessage(), cause);
-      }
-
-    }
-
-    /**
-     * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-     *
-     * @author Hypersoft-Systems: USA
-     */
-    public static class SyntaxError extends RuntimeException {
-      /**
-       * Serialization ID
-       */
-      private static final long serialVersionUID = 0;
-
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message.
-       *
-       * @param message Detail about the reason for the exception.
-       */
-      public SyntaxError(final String message) {
-        super(message);
-      }
-
-      /**
-       * Constructs a TextScanner.Exception with an explanatory message and cause.
-       *
-       * @param message Detail about the reason for the exception.
-       * @param cause   The cause.
-       */
-      public SyntaxError(final String message, final Throwable cause) {
-        super(message, cause);
-      }
-
-      /**
-       * Constructs a new TextScanner.Exception with the specified cause.
-       *
-       * @param cause The cause.
-       */
-      public SyntaxError(final Throwable cause) {
-        super(cause.getMessage(), cause);
-      }
-
-    }
-
-    interface Snapshot {
-      void rewind();
-      void close();
-    }
   }
 
 }

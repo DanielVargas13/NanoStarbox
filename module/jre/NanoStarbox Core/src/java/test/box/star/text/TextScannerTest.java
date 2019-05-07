@@ -18,17 +18,16 @@ class TextScannerTest {
     String result;
     result = x.run(new TextScanner.Method(){
       char[] controlTerms = new char[]{META_DOCUMENT_TAG_END};
-      /**
-       * Return true to break processing on this character.
-       *
-       * @param scanner
-       * @param character
-       * @return false to continue processing.
-       */
       @Override
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (super.terminator(scanner, character)) return true;
         return mapContains(character, controlTerms);
+      }
+      @Override
+      public @NotNull String compile(TextScanner scanner) {
+        // super uses:
+        // back();
+        return buffer.toString();
       }
     });
     System.out.println(result);
