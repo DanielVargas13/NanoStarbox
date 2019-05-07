@@ -4,6 +4,7 @@ import box.star.contract.NotNull;
 import jdk.nashorn.internal.objects.NativeRangeError;
 import org.w3c.dom.ranges.RangeException;
 
+import java.io.Closeable;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -141,7 +142,7 @@ public final class Char {
     return -1;
   }
 
-  public interface Scanner<MainClass extends Scanner> {
+  public interface Scanner<MainClass extends Scanner> extends Closeable {
 
     /**
      * Get a snapshot of the current scanner.

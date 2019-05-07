@@ -4,6 +4,8 @@ import box.star.contract.NotNull;
 import box.star.io.Streams;
 
 import java.io.*;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.WeakReference;
 
 import static box.star.text.Char.*;
 
@@ -14,6 +16,23 @@ public class TextScanner implements Scanner<TextScanner> {
    */
   protected Reader reader;
   protected SerializableState state;
+  private boolean closeable;
+
+  @Override
+  public void close() {
+    try /*  ignoring exceptions with final closure */ {
+      if (closeable) reader.close();
+    } catch (IOException ignored){}
+    finally /*  complete */ {
+      ;
+    }
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
+  }
 
   public TextScanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
@@ -22,14 +41,17 @@ public class TextScanner implements Scanner<TextScanner> {
 
   public TextScanner(@NotNull String path, @NotNull InputStream inputStream) {
     this(path, new InputStreamReader(inputStream));
+    if (inputStream.equals(System.in)) return;
+    closeable = true;
   }
 
   public TextScanner(@NotNull String path, @NotNull String s) {
     this(path, new StringReader(s));
+    this.closeable = true;
   }
 
   public TextScanner(@NotNull File file) {
-    this(file.getPath(), Streams.getFileText(file.getPath()));
+    this(file.getPath(), Streams.getUriStream(file.toURI()));
   }
 
   public boolean snapshot() {

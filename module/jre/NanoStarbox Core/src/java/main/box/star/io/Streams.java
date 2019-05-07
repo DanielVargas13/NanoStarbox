@@ -47,8 +47,13 @@ public class Streams {
     new ObjectOutputStream(os).writeObject(object);
   }
 
-  public static InputStream getUriStream(URI link) throws IOException {
-    return link.toURL().openConnection().getInputStream();
+  public static InputStream getUriStream(URI link) {
+    try {
+      return link.toURL().openConnection().getInputStream();
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public static String getUriText(URI link) throws IOException {
