@@ -7,6 +7,7 @@ import org.w3c.dom.ranges.RangeException;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.stream.IntStream;
 
 public final class Char {
 
@@ -416,10 +417,16 @@ public final class Char {
     }
   }
 
-  public static class Assembler implements Serializable, Iterable<Character> {
+  public static class Assembler implements Serializable, Iterable<Character>, CharSequence {
 
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
+
+    public Assembler(){};
+
+    public Assembler(CharSequence sequence){
+      merge(sequence.toString());
+    }
 
     public Assembler(Iterable<Character> stream){
       merge(stream);
@@ -459,10 +466,14 @@ public final class Char {
       };
     }
 
+    public Assembler merge(CharSequence sequence){
+      return merge(sequence.toString());
+    }
+
     public Assembler merge(int... integer) {
       for (int i: integer){
         char c = (char) sanitizeRangeValue(i);
-        if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
+        if (! contains(c)) chars.append(c);
       }
       return this;
     }
@@ -500,6 +511,10 @@ public final class Char {
       return filter(chars);
     }
 
+    public Assembler filter(CharSequence sequence){
+      return filter(sequence.toString());
+    }
+
     public Assembler filter(Iterable<Character> stream){
       StringBuilder out = new StringBuilder();
       for (char c: stream) out.append(c);
@@ -528,12 +543,99 @@ public final class Char {
       return chars.toString().toCharArray();
     }
 
+    /**
+     * Returns the length of this character sequence.  The length is the number
+     * of 16-bit <code>char</code>s in the sequence.
+     *
+     * @return the number of <code>char</code>s in this sequence
+     */
+    @Override
+    public int length() {
+      return chars.length();
+    }
+
+    /**
+     * Returns the <code>char</code> value at the specified index.  An index ranges from zero
+     * to <tt>length() - 1</tt>.  The first <code>char</code> value of the sequence is at
+     * index zero, the next at index one, and so on, as for array
+     * indexing.
+     *
+     * <p>If the <code>char</code> value specified by the index is a
+     * <a href="{@docRoot}/java/lang/Character.html#unicode">surrogate</a>, the surrogate
+     * value is returned.
+     *
+     * @param index the index of the <code>char</code> value to be returned
+     * @return the specified <code>char</code> value
+     * @throws IndexOutOfBoundsException if the <tt>index</tt> argument is negative or not less than
+     *                                   <tt>length()</tt>
+     */
+    @Override
+    public char charAt(int index) {
+      return chars.charAt(index);
+    }
+
+    /**
+     * Returns a <code>CharSequence</code> that is a subsequence of this sequence.
+     * The subsequence starts with the <code>char</code> value at the specified index and
+     * ends with the <code>char</code> value at index <tt>end - 1</tt>.  The length
+     * (in <code>char</code>s) of the
+     * returned sequence is <tt>end - start</tt>, so if <tt>start == end</tt>
+     * then an empty sequence is returned.
+     *
+     * @param start the start index, inclusive
+     * @param end   the end index, exclusive
+     * @return the specified subsequence
+     * @throws IndexOutOfBoundsException if <tt>start</tt> or <tt>end</tt> are negative,
+     *                                   if <tt>end</tt> is greater than <tt>length()</tt>,
+     *                                   or if <tt>start</tt> is greater than <tt>end</tt>
+     */
+    @Override
+    public CharSequence subSequence(int start, int end) {
+      return chars.subSequence(start, end);
+    }
+
     @Override
     public String toString() {
       return chars.toString();
     }
 
-    public boolean match(char character) {
+    /**
+     * Returns a stream of {@code int} zero-extending the {@code char} values
+     * from this sequence.  Any char which maps to a <a
+     * href="{@docRoot}/java/lang/Character.html#unicode">surrogate code
+     * point</a> is passed through uninterpreted.
+     *
+     * <p>If the sequence is mutated while the stream is being read, the
+     * result is undefined.
+     *
+     * @return an IntStream of char values from this sequence
+     * @since 1.8
+     */
+    @Override
+    public IntStream chars() {
+      return chars.chars();
+    }
+
+    /**
+     * Returns a stream of code point values from this sequence.  Any surrogate
+     * pairs encountered in the sequence are combined as if by {@linkplain
+     * Character#toCodePoint Character.toCodePoint} and the result is passed
+     * to the stream. Any other code units, including ordinary BMP characters,
+     * unpaired surrogates, and undefined code units, are zero-extended to
+     * {@code int} values which are then passed to the stream.
+     *
+     * <p>If the sequence is mutated while the stream is being read, the result
+     * is undefined.
+     *
+     * @return an IntStream of Unicode code points from this sequence
+     * @since 1.8
+     */
+    @Override
+    public IntStream codePoints() {
+      return chars.codePoints();
+    }
+
+    public boolean contains(char character) {
       return chars.indexOf(character + "") != -1;
     }
 
