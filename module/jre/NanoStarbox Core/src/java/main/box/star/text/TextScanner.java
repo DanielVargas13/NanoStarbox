@@ -570,7 +570,7 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public void reset() {
-      buffer = new StringBuilder();
+      buffer = new StringBuilder((int) SPACE);
     }
 
     /**
