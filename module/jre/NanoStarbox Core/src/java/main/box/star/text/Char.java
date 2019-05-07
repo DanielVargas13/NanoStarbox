@@ -422,7 +422,13 @@ public final class Char {
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
 
-    public Assembler(){};
+    public Assembler(){
+      chars = new StringBuilder((int) SPACE );
+    };
+
+    public Assembler(int capacity){
+      chars = new StringBuilder(capacity);
+    }
 
     public Assembler(CharSequence sequence){
       merge(sequence.toString());
