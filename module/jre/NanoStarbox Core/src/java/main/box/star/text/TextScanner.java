@@ -13,20 +13,11 @@ public class TextScanner implements Scanner<TextScanner> {
    * Reader for the input.
    */
   protected Reader reader;
-  protected SerializableState state = new SerializableState();
+  protected SerializableState state;
 
   public TextScanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
-    state.eof = false;
-    state.usePrevious = false;
-    state.previous = 0;
-    state.index = 0;
-    state.character = 1;
-    state.characterPreviousLine = 0;
-    state.line = 1;
-    state.path = path;
-    state.snapshot = false;
-    state.methodQuote = NULL_CHARACTER;
+    this.state = new SerializableState(path);
   }
   public TextScanner(@NotNull String path, @NotNull InputStream inputStream) {
     this(path, new InputStreamReader(inputStream));
@@ -481,6 +472,21 @@ public class TextScanner implements Scanner<TextScanner> {
 
     boolean backslash;
     char methodQuote;
+
+    public SerializableState(String path){
+      SerializableState state = this;
+      //state.eof = false;
+      //state.usePrevious = false;
+      //state.previous = 0;
+      //state.index = 0;
+      state.character = 1;
+      //state.characterPreviousLine = 0;
+      state.line = 1;
+      state.path = path;
+      //state.snapshot = false;
+      //state.methodQuote = NULL_CHARACTER;
+      //state.backslash = false;
+    }
 
     @Override
     protected SerializableState clone() {
