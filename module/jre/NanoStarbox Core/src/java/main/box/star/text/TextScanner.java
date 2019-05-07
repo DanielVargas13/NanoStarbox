@@ -313,7 +313,7 @@ public class TextScanner implements Scanner<TextScanner> {
             case DOUBLE_QUOTE:
             case SINGLE_QUOTE:
             case BACKSLASH:
-            case '/':
+            case SOLIDUS:
               sb.append(c);
               break;
             default:

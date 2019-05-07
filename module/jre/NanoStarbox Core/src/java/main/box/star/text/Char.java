@@ -19,6 +19,7 @@ public final class Char {
   public final static char DOUBLE_QUOTE = '"';
   public final static char CARRIAGE_RETURN = '\r';
   public final static char LINE_FEED = '\n';
+  public final static char SOLIDUS = '/';
 
   public final static char[] MAP = new Assembler(0, CHAR_MAX).toArray();
   public final static char[] MAP_ALL_WHITE_SPACE = new Assembler(9, 13).merge(' ').toArray();
