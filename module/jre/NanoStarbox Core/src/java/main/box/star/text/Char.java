@@ -465,6 +465,10 @@ public final class Char {
       return this;
     }
 
+    public Assembler merge(String source){
+      return merge(source.toCharArray());
+    }
+
     public Assembler merge(int start, int end) {
       return merge(new RangeMap(start, end));
     }
@@ -479,12 +483,15 @@ public final class Char {
       return this;
     }
 
+    public Assembler filter(String source){
+      return filter(source.toCharArray());
+    }
+
     public Assembler filter(int... integer) {
       StringBuilder map = new StringBuilder();
       for (int i : integer) map.append((char) i);
       char[] chars = map.toString().toCharArray();
-      filter(chars);
-      return this;
+      return filter(chars);
     }
 
     public Assembler filter(int start, int end) {
