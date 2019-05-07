@@ -187,6 +187,29 @@ public class TextScanner implements Scanner<TextScanner> {
   }
 
   /**
+   * Scan and assemble characters while scan is not in map.
+   *
+   * @param map
+   * @return
+   * @throws Exception if read fails.
+   */
+  @Override
+  @NotNull
+  public String nextMapVoid(@NotNull char... map) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      c = this.next();
+      if (!Char.mapContains(c, map)) sb.append(c);
+      else {
+        this.back();
+        break;
+      }
+    } while (c != 0);
+    return sb.toString();
+  }
+
+  /**
    * Get the next n characters.
    *
    * @param n The number of characters to take.
@@ -591,6 +614,8 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * Return true to break processing on this character.
+     *
+     * This super method handles backslash escapes, quoting, and end of source.
      *
      * @param scanner
      * @param character

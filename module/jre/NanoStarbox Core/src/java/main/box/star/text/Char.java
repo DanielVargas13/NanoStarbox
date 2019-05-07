@@ -219,6 +219,8 @@ public final class Char {
      */
     boolean isQuotedText(char character);
 
+    @NotNull String nextMapVoid(@NotNull char... map) throws java.lang.Exception;
+
     @NotNull String nextLength(int n) throws java.lang.Exception;
 
     boolean isQuoting();

@@ -16,6 +16,10 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
+
+    result = x.nextMapVoid('<');
+    assertEquals("", result);
+
     result = x.run(new TextScanner.Method(){
       char[] controlTerms = new char[]{META_DOCUMENT_TAG_END};
       @Override
@@ -25,11 +29,10 @@ class TextScannerTest {
       }
       @Override
       public @NotNull String compile(TextScanner scanner) {
-        // super uses:
-        // back();
         return buffer.toString();
       }
     });
+    assertEquals("<!DOCTYPE html>", result);
     System.out.println(result);
   }
 
