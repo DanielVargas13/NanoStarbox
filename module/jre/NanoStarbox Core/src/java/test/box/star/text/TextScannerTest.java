@@ -17,7 +17,7 @@ class TextScannerTest {
   void start(){
     String result;
 
-    result = x.nextMapVoid('<');
+    result = x.nextField('<');
     assertEquals("", result);
 
     result = x.run(new TextScanner.Method(){
@@ -25,8 +25,8 @@ class TextScannerTest {
       @Override
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (zeroTerminator(scanner, character)) return true;
-        if (parseQuote(scanner, character)) return false;
-        return mapContains(character, terminator);
+        else if (parseQuote(scanner, character)) return false;
+        else return mapContains(character, terminator);
       }
       @Override
       public @NotNull String compile(@NotNull TextScanner scanner) {

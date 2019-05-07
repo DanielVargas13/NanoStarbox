@@ -137,28 +137,6 @@ public final class Char {
     @NotNull String nextMap(char... map);
 
     /**
-     * Get the text up but not including one of the specified delimiter
-     * characters or the end of line, whichever comes first.
-     *
-     * @param delimiters A set of delimiter characters.
-     * @return A string, trimmed.
-     * @throws Exception Thrown if there is an error while searching
-     *                   for the delimiter
-     */
-    @NotNull String nextField(char... delimiters) throws Exception;
-
-    /**
-     * Skip characters until the next character is the requested character.
-     * If the requested character is not found, no characters are skipped.
-     * @param sequence A character or character sequence to match.
-     * @return The requested character, or zero if the requested character
-     * is not found.
-     * @throws Exception Thrown if there is an error while searching
-     *  for the to character
-     */
-    //String scanField(char... sequence) throws Exception;
-
-    /**
      * Return the characters up to the next close quote character.
      * Backslash processing is done.
      *
@@ -219,7 +197,7 @@ public final class Char {
      */
     boolean parseQuotation(char character);
 
-    @NotNull String nextMapVoid(@NotNull char... map) throws java.lang.Exception;
+    @NotNull String nextField(@NotNull char... map) throws java.lang.Exception;
 
     @NotNull String nextLength(int n) throws java.lang.Exception;
 

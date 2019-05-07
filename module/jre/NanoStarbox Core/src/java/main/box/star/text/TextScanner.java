@@ -195,7 +195,7 @@ public class TextScanner implements Scanner<TextScanner> {
    */
   @Override
   @NotNull
-  public String nextMapVoid(@NotNull char... map) throws Exception {
+  public String nextField(@NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -267,31 +267,6 @@ public class TextScanner implements Scanner<TextScanner> {
     }
     while (!method.terminator(this, c) && method.scanning(this));
     return method.compile(this);
-  }
-
-  /**
-   * Get the text up but not including one of the specified delimiter
-   * characters or the end of line, whichever comes first.
-   *
-   * @param delimiters A set of delimiter characters.
-   * @return A string, trimmed.
-   * @throws Exception Thrown if there is an error while searching
-   *                   for the delimiter
-   */
-  @Override @NotNull
-  public String nextField(char... delimiters) throws Exception {
-    char c;
-    StringBuilder sb = new StringBuilder();
-    for (; ; ) {
-      c = this.next();
-      if (Char.mapContains(c, delimiters) || c == NULL_CHARACTER || c == LINE_FEED || c == CARRIAGE_RETURN) {
-        if (c != 0) {
-          this.back();
-        }
-        return sb.toString().trim();
-      }
-      sb.append(c);
-    }
   }
 
   /**
