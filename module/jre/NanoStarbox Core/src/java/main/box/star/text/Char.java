@@ -515,7 +515,7 @@ public final class Char {
     }
 
     public Assembler filter(int... integer) {
-      StringBuilder map = new StringBuilder();
+      StringBuilder map = new StringBuilder(chars.length());
       for (int i : integer) map.append((char) i);
       char[] chars = map.toString().toCharArray();
       return filter(chars);
@@ -526,7 +526,7 @@ public final class Char {
     }
 
     public Assembler filter(Iterable<Character> stream){
-      StringBuilder out = new StringBuilder();
+      StringBuilder out = new StringBuilder(chars.length());
       for (char c: stream) out.append(c);
       return filter(out.toString().toCharArray());
     }
@@ -540,7 +540,7 @@ public final class Char {
     }
 
     public Assembler filter(char... map) {
-      StringBuilder filter = new StringBuilder();
+      StringBuilder filter = new StringBuilder(chars.length());
       for (char c : chars.toString().toCharArray()) {
         if (mapContains(c, map)) continue;
         filter.append(c);
