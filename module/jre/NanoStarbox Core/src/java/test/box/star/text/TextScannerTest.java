@@ -16,7 +16,7 @@ class TextScannerTest {
   @Test
   void start(){
     String result;
-    result = x.start(new TextScanner.Method(){
+    result = x.run(new TextScanner.Method(){
       char[] controlTerms = new char[]{META_DOCUMENT_TAG_END};
       /**
        * Return true to break processing on this character.

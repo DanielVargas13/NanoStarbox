@@ -7,7 +7,56 @@ import java.io.*;
 
 import static box.star.text.Char.*;
 
-public class TextScanner implements VirtualTextScanner<TextScanner> {
+public class TextScanner implements Scanner<TextScanner> {
+
+  /**
+   * Scanner snapshot.
+   */
+  public static class Snapshot implements Scanner.Snapshot {
+    private TextScanner main;
+    private SerializableState state;
+    Snapshot(TextScanner main){
+      if (main.snapshot()){
+        throw new Exception("cannot acquire scanner snapshot lock", new IllegalStateException());
+      }
+      this.main = main;
+      this.state = main.state.clone();
+      try {
+        main.reader.mark(1000000);
+      }
+      catch (IOException e) {
+        throw new Exception("failed to set scanner snapshot buffer", e);
+      }
+      main.state.snapshot = true;
+    }
+    @Override
+    public void rewind(){
+      if (main == null)
+        throw new Exception("scanner snapshot lock closed", new IllegalStateException());
+      try {
+        try { main.reader.reset(); main.state = state; }
+        catch (IOException e) {
+          throw new Exception("failed to rewind snapshot", e);
+        }
+      } finally { close(); }
+    }
+    @Override
+    public void close(){
+      if (main == null) return;
+      try {
+        try { main.reader.mark(1);}
+        catch (IOException ignore) {}
+      } finally {
+        this.main.state.snapshot = false;
+        this.main = null;
+        this.state = null;
+      }
+    }
+  }
+
+  public boolean snapshot(){
+    return state.snapshot;
+  }
 
   /** Reader for the input. */
   protected Reader reader;
@@ -35,6 +84,11 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
 
   public TextScanner(File file) {
     this(file.getPath(), Streams.getFileText(file.getPath()));
+  }
+
+  @Override
+  public <ANY extends Scanner.Snapshot> ANY getSnapshot(){
+    return (ANY) new Snapshot(this);
   }
 
   /**
@@ -80,7 +134,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
   /**
    * Step backward one position.
    *
-   * @throws Exception
+   * @throws Exception if unable to step backward
    */
   @Override
   public void back() throws Exception {
@@ -96,7 +150,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    * Get the next character.
    *
    * @return
-   * @throws Exception
+   * @throws Exception if read fails
    */
   @Override
   public char next() throws Exception {
@@ -105,11 +159,8 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
       state.usePrevious = false;
       c = state.previous;
     } else {
-      try {
-        c = this.reader.read();
-      } catch (IOException exception) {
-        throw new Exception(exception);
-      }
+      try { c = this.reader.read(); }
+      catch (IOException exception) { throw new Exception(exception); }
     }
     if (c <= 0) { // End of stream
       state.eof = true;
@@ -125,9 +176,10 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    * @param source
    * @param caseSensitive
    * @return
+   * @throws SyntaxError if match fails
    */
   @Override
-  @NotNull public String next(@NotNull String source, boolean caseSensitive) {
+  @NotNull public String next(@NotNull String source, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
     char[] sequence = source.toCharArray();
     for (char c: sequence) {
@@ -149,26 +201,22 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
   }
 
   /**
-   * Assemble characters while characters match map.
+   * Scan and assemble characters while scan in map.
    *
    * @param map
    * @return
+   * @throws Exception if read fails.
    */
   @Override
-  @NotNull public String next(char... map) {
+  @NotNull public String next(char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
-    for (;;) {
+    do {
       c = this.next();
-      if (!Char.mapContains(c, map)) {
-        if (c != 0) {
-          this.back();
-          sb.setLength(Math.max(0, sb.length()-1));
-        }
-        return sb.toString().trim();
-      }
-      sb.append(c);
-    }
+      if (Char.mapContains(c, map)) sb.append(c);
+      else { this.back(); break; }
+    } while (c != 0);
+    return sb.toString();
   }
 
   /**
@@ -217,15 +265,14 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     return false;
   }
 
-  @NotNull final public String start(@NotNull VirtualTextScannerMethod<TextScanner> method, Object... parameters){
-    method.startMethod(this, parameters);
-    do { if (method.terminator(this, next())) break; }
-    while (method.continueScanning(this));
-    return method.computeMethodCall(this);
+  @NotNull final public String run(@NotNull Char.Scanner.Method<TextScanner> method, Object... parameters){
+    method.reset();
+    method.start(this, parameters);
+    char c;
+    do { c = next(); method.collect(this, c); }
+    while (! method.terminator(this, c) && method.scanning(this));
+    return method.compile(this);
   }
-
-  public String readLineWhiteSpace() { return next(MAP_LINE_WHITE_SPACE); }
-  public String readWhiteSpace() { return next(MAP_ALL_WHITE_SPACE); }
 
     /**
    * Get the text up but not including one of the specified delimiter
@@ -348,8 +395,8 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    * @return  A Exception object, suitable for throwing
    */
   @Override
-  public Exception syntaxError(String message) {
-    return new SyntaxError(message + this.toString());
+  public SyntaxError syntaxError(String message) {
+    return new SyntaxError(message + this.scope());
   }
 
   /**
@@ -360,22 +407,44 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
    * @return  A Exception object, suitable for throwing
    */
   @Override
-  public Exception syntaxError(String message, Throwable causedBy) {
-    return new SyntaxError(message + this.toString(), causedBy);
+  public SyntaxError syntaxError(String message, Throwable causedBy) {
+    return new SyntaxError(message + this.scope(), causedBy);
   }
 
-  /**
-   * Make a printable string of this JSONTokener.
-   *
-   * @return " at {index} [character {character} line {line}]"
-   */
   @Override
-  public String toString() {
+  public String scope() {
     return " at " + state.index + " [character " + state.character + " line " +
         state.line + "]";
   }
 
-  public static class SerializableState implements Cloneable, Serializable {
+  @Override
+  public String toString() {
+    return scope();
+  }
+
+  @Override
+  public String getPath() {
+    return state.path;
+  }
+
+  @Override
+  public long getIndex() {
+    return state.index;
+  }
+
+  @Override
+  public long getLine() {
+    return state.line;
+  }
+
+  @Override
+  public long getColumn() {
+    return state.character;
+  }
+
+  protected static class SerializableState implements Cloneable, Serializable {
+
+    boolean snapshot;
 
     String path;
     /** current read character position on the current line. */
@@ -397,7 +466,7 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
     char methodQuote;
 
     @Override
-    public SerializableState clone() {
+    protected SerializableState clone() {
       try /*  throwing runtime exceptions with closure */ {
         return (SerializableState)super.clone();
       } catch (CloneNotSupportedException e){throw new RuntimeException(e);}
@@ -444,10 +513,20 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
 
   }
 
-  public static class Method implements VirtualTextScannerMethod<TextScanner> {
+  public static class Method implements Scanner.Method<TextScanner> {
 
     protected String claim;
     protected StringBuilder buffer;
+
+    public Method(){}
+    public Method(String claim){this.claim = claim;}
+
+    /**
+     * Create the character buffer
+     */
+    @Override public void reset(){
+      buffer = new StringBuilder();
+    }
 
     /**
      * Called by the scanner to signal that a new method call is beginning.
@@ -457,16 +536,14 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @param scanner the host scanner
      * @param parameters the parameters given by the caller.
      */
-    @Override public void startMethod(TextScanner scanner, Object[] parameters) {
-      buffer = new StringBuilder();
-    }
+    @Override public void start(TextScanner scanner, Object[] parameters) {}
 
     @Override
-    @NotNull public String toString() { return "ScanMethod "+claim; }
+    @NotNull public String toString() { return claim; }
 
     @Override
-    @NotNull public String getScopeView(TextScanner virtualSourceScanner) {
-      return claim;
+    public void collect(TextScanner scanner, char character){
+      buffer.append(character);
     }
 
     /**
@@ -478,7 +555,6 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      */
     @Override
     public boolean terminator(TextScanner scanner, char character) {
-      buffer.append(character);
       if (scanner.haveEscape()) return false;
       else if (scanner.quotedText(character)) return false;
       return character == 0;
@@ -501,9 +577,8 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @return the scanned data as a string.
      */
     @Override
-    @NotNull public String computeMethodCall(TextScanner scanner) {
-      scanner.back();
-      buffer.setLength(Math.max(0, buffer.length()-1));
+    @NotNull public String compile(TextScanner scanner) {
+      back(scanner);
       return buffer.toString();
     }
 
@@ -516,19 +591,22 @@ public class TextScanner implements VirtualTextScanner<TextScanner> {
      * @return true if the TextScanner should read more input.
      */
     @Override
-    public boolean continueScanning(TextScanner scanner) { return true; }
+    public boolean scanning(TextScanner scanner) { return true; }
 
-    public int matchStringIndex(@NotNull String check){ return buffer.indexOf(check); }
-
-    public boolean matchClass(char c, @NotNull char... map){ return mapContains(c, map); }
+    @Override
+    public void back(TextScanner scanner){
+      scanner.back();
+      buffer.setLength(Math.max(0, buffer.length()-1));
+    }
 
     @Override
     @NotNull public TextScanner.Method clone() {
-      try /* bake-cookies ignoring exceptions with final closure */ {
-        return (Method) super.clone();
+      try { return (Method) super.clone(); }
+      catch (CloneNotSupportedException failure) {
+        throw new Exception("unable to create method object", failure);
       }
-      catch (CloneNotSupportedException fatal) {throw new Exception("unable to create object copy", fatal);}
     }
 
   }
+
 }
