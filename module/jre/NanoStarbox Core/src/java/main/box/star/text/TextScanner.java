@@ -612,6 +612,17 @@ public class TextScanner implements Scanner<TextScanner> {
       buffer.append(character);
     }
 
+    public boolean escaping(@NotNull TextScanner scanner, char character){
+      if (scanner.haveEscape()) return true;
+      return false;
+    }
+
+    public boolean quoting(@NotNull TextScanner scanner, char character){
+      if (escaping(scanner, character)) return true;
+      else if (scanner.isQuotedText(character)) return true;
+      return false;
+    }
+
     /**
      * Return true to break processing on this character.
      *
@@ -623,9 +634,9 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public boolean terminator(@NotNull TextScanner scanner, char character) {
-      if (scanner.haveEscape()) return false;
-      else if (scanner.isQuotedText(character)) return false;
-      return character == 0;
+      if (character == 0) return true;
+      if (quoting(scanner, character)) return false;
+      return false;
     }
 
     /**
