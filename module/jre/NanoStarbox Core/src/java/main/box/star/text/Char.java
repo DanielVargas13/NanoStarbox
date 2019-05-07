@@ -3,6 +3,7 @@ package box.star.text;
 import box.star.contract.NotNull;
 
 import java.io.Serializable;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 public final class Char {
@@ -17,20 +18,80 @@ public final class Char {
   public final static char BACKSLASH = '\\';
   public final static char SINGLE_QUOTE = '\'';
   public final static char DOUBLE_QUOTE = '"';
-  public final static char CARRIAGE_RETURN = '\r';
-  public final static char LINE_FEED = '\n';
   public final static char SOLIDUS = '/';
+  public final static char SPACE = ' ';
+  public final static char
+  START_OF_HEADING = 1,
+  START_OF_TEXT = 2,
+  END_OF_TEXT = 3,
+  END_OF_TRANSMISSION = 4,
+  ENQUIRY = 5,
+  ACKNOWLEDGEMENT = 6,
+  BELL = 7,
+  BACKSPACE = 8,
+  HORIZONTAL_TAB = 9,
+  LINE_FEED = 10,
+  VERTICAL_TAB = 11,
+  FORM_FEED = 12,
+  CARRIAGE_RETURN = 13,
+  SHIFT_OUT = 14,
+  SHIFT_IN = 15,
+  DATA_LINK_ESCAPE = 16,
+  DEVICE_CONTROL_1 = 17,
+  DEVICE_CONTROL_2 = 18,
+  DEVICE_CONTROL_3 = 19,
+  DEVICE_CONTROL_4 = 20,
+  NEGATIVE_ACKNOWLEDGEMENT = 21,
+  SYNCHRONOUS_IDLE = 22,
+  END_OF_TRANSMISSION_BLOCK = 23,
+  CANCEL = 24,
+  END_OF_MEDIUM = 25,
+  SUBSTITUTE = 26,
+  ESCAPE = 27,
+  FILE_SEPARATOR = 28,
+  GROUP_SEPARATOR = 29,
+  RECORD_SEPARATOR = 30,
+  UNIT_SEPARATOR = 31,
+  DELETE = 127;
 
-  public final static char[] MAP = new Assembler(0, CHAR_MAX).toArray();
-  public final static char[] MAP_ALL_WHITE_SPACE = new Assembler(9, 13).merge(' ').toArray();
-  public final static char[] MAP_LINE_WHITE_SPACE = new Assembler(MAP_ALL_WHITE_SPACE).filter('\n', '\r').toArray();
+  public final static char[] MAP = new Assembler(NULL_CHARACTER, CHAR_MAX).toArray();
+  public final static char[] MAP_ALL_WHITE_SPACE = new Assembler(9, 13).merge(SPACE).toArray();
+  public final static char[] MAP_LINE_WHITE_SPACE = new Assembler(MAP_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
   public final static char[] MAP_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
   public final static char[] MAP_NUMBERS = new Assembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_CONTROL = new Assembler(0, 31).filter(MAP_ALL_WHITE_SPACE).toArray();
-  public final static char[] MAP_EXTENDED = new Assembler.RangeMap(127, CHAR_MAX).compile();
+  public final static char[] MAP_CONTROL = new Assembler(NULL_CHARACTER, 31).merge(DELETE).filter(MAP_ALL_WHITE_SPACE).toArray();
+  public final static char[] MAP_EXTENDED = new Assembler.RangeMap(128, CHAR_MAX).compile();
   public final static char[] MAP_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 126).toArray();
 
   private Char() {}
+
+  private final static Hashtable<Character, String> TRANSLATION = new Hashtable<>(10);
+
+  public static String translate(char c, String translation){
+    Char.TRANSLATION.put(c, translation);
+    return translation;
+  }
+
+  public static String translate(char c){
+    if (c == 0) return "null";
+    if (TRANSLATION.containsKey(c)){
+      return TRANSLATION.get(c);
+    }
+    return String.valueOf(c);
+  }
+
+  static {
+    translate(ESCAPE, "escape");
+    translate(BELL, "bell");
+    translate(BACKSPACE, "backspace");
+    translate(FORM_FEED, "form-feed (\\f)");
+    translate(VERTICAL_TAB, "vertical-tab (\\v)");
+    translate(HORIZONTAL_TAB, "tab (\\t)");
+    translate(BACKSLASH, "backslash (\\)");
+    translate(LINE_FEED, "line-feed (\\n)");
+    translate(CARRIAGE_RETURN, "carriage-return (\\r)");
+    translate(SPACE, "space");
+  }
 
   public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
 
@@ -120,6 +181,8 @@ public final class Char {
      * @throws Exception
      */
     char next() throws Exception;
+
+    char nextCharacter(char character, boolean caseSensitive);
 
     /**
      * Read the given source or throw an error.

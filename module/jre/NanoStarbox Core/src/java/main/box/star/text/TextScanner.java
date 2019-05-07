@@ -19,6 +19,7 @@ public class TextScanner implements Scanner<TextScanner> {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
     this.state = new SerializableState(path);
   }
+
   public TextScanner(@NotNull String path, @NotNull InputStream inputStream) {
     this(path, new InputStreamReader(inputStream));
   }
@@ -35,7 +36,8 @@ public class TextScanner implements Scanner<TextScanner> {
     return state.snapshot;
   }
 
-  @Override @NotNull
+  @Override
+  @NotNull
   public <ANY extends Scanner.Snapshot> ANY getSnapshot() {
     return (ANY) new Snapshot(this);
   }
@@ -123,6 +125,20 @@ public class TextScanner implements Scanner<TextScanner> {
     return state.previous;
   }
 
+  @Override
+  public char nextCharacter(char character, boolean caseSensitive) {
+    char c = next();
+    if (c == 0)
+      throw syntaxError("Expected " + translate(character) + " and found end of text stream");
+    if (!caseSensitive) {
+      c = Character.toLowerCase(c);
+      character = Character.toLowerCase(character);
+    }
+    if (character != c)
+      throw this.syntaxError("Expected " + translate(c) + " and found " + translate(character));
+    return c;
+  }
+
   /**
    * Match the next string input with a source string.
    *
@@ -136,21 +152,7 @@ public class TextScanner implements Scanner<TextScanner> {
   public String nextString(@NotNull String source, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
     char[] sequence = source.toCharArray();
-    for (char c : sequence) {
-      char test = next();
-      if (!caseSensitive) {
-        c = Character.toLowerCase(c);
-        test = Character.toLowerCase(test);
-      }
-      if (test != c) {
-        if (test > 0) {
-          throw this.syntaxError("Expected '" + c + "' and instead saw '" +
-              test + "'");
-        }
-        throw this.syntaxError("Expected '" + c + "' and instead saw end of source");
-      }
-      out.append(test);
-    }
+    for (char c : sequence) out.append(nextCharacter(c, caseSensitive));
     return out.toString();
   }
 
@@ -273,7 +275,8 @@ public class TextScanner implements Scanner<TextScanner> {
    * @return A String.
    * @throws Exception Unterminated string.
    */
-  @Override @NotNull
+  @Override
+  @NotNull
   public String nextQuote(char quote, boolean multiLine) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
@@ -338,7 +341,8 @@ public class TextScanner implements Scanner<TextScanner> {
    * @param message The error message.
    * @return A Exception object, suitable for throwing
    */
-  @Override @NotNull
+  @Override
+  @NotNull
   public SyntaxError syntaxError(String message) {
     return new SyntaxError(message + this.scope());
   }
@@ -350,7 +354,8 @@ public class TextScanner implements Scanner<TextScanner> {
    * @param causedBy The throwable that caused the error.
    * @return A Exception object, suitable for throwing
    */
-  @Override @NotNull
+  @Override
+  @NotNull
   public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
     return new SyntaxError(message + this.scope(), causedBy);
   }
@@ -393,7 +398,7 @@ public class TextScanner implements Scanner<TextScanner> {
     Snapshot(@NotNull TextScanner main) {
       if (main.snapshot())
         throw new Exception("cannot acquire scanner snapshot lock", new IllegalStateException());
-      if (! main.haveNext()){
+      if (!main.haveNext()) {
         throw new Exception("the scanner has no data available for this operation", new IllegalStateException());
       }
       this.main = main;
@@ -473,7 +478,7 @@ public class TextScanner implements Scanner<TextScanner> {
     boolean backslash;
     char methodQuote;
 
-    public SerializableState(String path){
+    public SerializableState(String path) {
       SerializableState state = this;
       //state.eof = false;
       //state.usePrevious = false;
@@ -540,6 +545,10 @@ public class TextScanner implements Scanner<TextScanner> {
 
   public static class Method implements Scanner.Method<TextScanner> {
 
+    /**
+     * Stored results of last call to parseQuote
+     */
+    public boolean quoting, escaped;
     protected String claim;
     protected StringBuilder buffer;
 
@@ -551,7 +560,7 @@ public class TextScanner implements Scanner<TextScanner> {
      * Create the character buffer
      *
      * <p><i>
-     *   Overriding is not recommended.
+     * Overriding is not recommended.
      * </i></p>
      */
     @Override
@@ -573,8 +582,9 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * <p><i>
-     *   Overriding is not recommended.
+     * Overriding is not recommended.
      * </i></p>
+     *
      * @return String representation
      */
     @Override
@@ -583,7 +593,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * Add a character to the method buffer.
-     *
+     * <p>
      * This super method does not collect backslashes unless the backslash is
      * escaped.
      *
@@ -592,11 +602,11 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public void collect(@NotNull TextScanner scanner, char character) {
-      if (character == BACKSLASH && ! scanner.haveEscape()) return;
+      if (character == BACKSLASH && !scanner.haveEscape()) return;
       buffer.append(character);
     }
 
-    public boolean zeroTerminator(@NotNull TextScanner scanner, char character){
+    public boolean zeroTerminator(@NotNull TextScanner scanner, char character) {
       if (character == 0) {
         if (scanner.haveEscape())
           throw scanner.syntaxError("escaping end of source with a backslash");
@@ -607,12 +617,7 @@ public class TextScanner implements Scanner<TextScanner> {
       return false;
     }
 
-    /**
-     * Stored results of last call to parseQuote
-     */
-    public boolean quoting, escaped;
-
-    public boolean parseQuote(@NotNull TextScanner scanner, char character){
+    public boolean parseQuote(@NotNull TextScanner scanner, char character) {
       escaped = scanner.haveEscape();
       quoting = scanner.parseQuotation(character);
       return (escaped || quoting);
@@ -620,7 +625,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * Return true to break processing on this character.
-     *
+     * <p>
      * This super method handles backslash escapes, quoting, and end of source.
      *
      * @param scanner
@@ -636,7 +641,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * Return the compiled buffer contents.
-     *
+     * <p>
      * This super method does not return the last character read.
      *
      * @param scanner
@@ -663,7 +668,7 @@ public class TextScanner implements Scanner<TextScanner> {
     /**
      * Step back the scanner and the buffer by 1 character.
      * <p><i>
-     *   Overriding is not recommended.
+     * Overriding is not recommended.
      * </i></p>
      *
      * @param scanner
@@ -676,6 +681,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
     /**
      * Probably shouldn't use this if you are reading this.
+     *
      * @return
      */
     @Override
