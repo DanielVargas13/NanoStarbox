@@ -21,14 +21,14 @@ class TextScannerTest {
     assertEquals("", result);
 
     result = x.run(new TextScanner.Method(){
-      char[] controlTerms = new char[]{META_DOCUMENT_TAG_END};
+      char[] terminator = new char[]{META_DOCUMENT_TAG_END};
       @Override
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (super.terminator(scanner, character)) return true;
-        return mapContains(character, controlTerms);
+        return mapContains(character, terminator);
       }
       @Override
-      public @NotNull String compile(TextScanner scanner) {
+      public @NotNull String compile(@NotNull TextScanner scanner) {
         return buffer.toString();
       }
     });

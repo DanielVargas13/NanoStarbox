@@ -612,13 +612,13 @@ public class TextScanner implements Scanner<TextScanner> {
       buffer.append(character);
     }
 
-    public boolean escaping(@NotNull TextScanner scanner, char character){
+    public boolean escaping(@NotNull TextScanner scanner){
       if (scanner.haveEscape()) return true;
       return false;
     }
 
     public boolean quoting(@NotNull TextScanner scanner, char character){
-      if (escaping(scanner, character)) return true;
+      if (escaping(scanner)) return true;
       else if (scanner.isQuotedText(character)) return true;
       return false;
     }
@@ -634,7 +634,11 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     @Override
     public boolean terminator(@NotNull TextScanner scanner, char character) {
-      if (character == 0) return true;
+      if (character == 0) {
+        if (escaping(scanner))
+          throw scanner.syntaxError("escaping end of stream with backslash");
+        return true;
+      }
       if (quoting(scanner, character)) return false;
       return false;
     }
