@@ -168,9 +168,9 @@ public final class Char {
      * A snapshot stores the current state of the scanner, and manipulates
      * the underlying reader, to create a virtual read-back-buffer.
      *
-     * @return {@link ScannerShapshot}
+     * @return {@link Capture}
      */
-    <ANY extends ScannerShapshot> ANY getSnapshot();
+    Capture getSnapshot();
 
     /**
      * Determine if the source string still contains characters that next()
@@ -333,16 +333,16 @@ public final class Char {
      * <p>
      * A snapshot allows code to implement a rewind interface.
      * <p>
-     * to rewind use {@link ScannerShapshot#cancel()}
-     * to save use {@link ScannerShapshot#close()}
+     * to rewind use {@link Capture#back()}
+     * to close use {@link Capture#close()}
      */
-    interface ScannerShapshot {
+    interface Capture {
       /**
        * Cancel the current snapshot.
        *
        * @throws Exception if the operation fails
        */
-      void cancel() throws Exception;
+      void back() throws Exception;
 
       /**
        * Close the current snapshot.

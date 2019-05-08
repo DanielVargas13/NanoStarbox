@@ -59,8 +59,8 @@ public class TextScanner implements Scanner<TextScanner> {
 
   @Override
   @NotNull
-  public <ANY extends ScannerShapshot> ANY getSnapshot() {
-    return (ANY) new Snapshot(this);
+  public TextScanner.Snapshot getSnapshot() {
+    return new Snapshot(this);
   }
 
   /**
@@ -409,7 +409,7 @@ public class TextScanner implements Scanner<TextScanner> {
     return state.column;
   }
 
-  public static class Snapshot implements ScannerShapshot {
+  public static class Snapshot implements Capture {
     private TextScanner main;
     private SerializableState state;
 
@@ -431,7 +431,7 @@ public class TextScanner implements Scanner<TextScanner> {
     }
 
     @Override
-    public void cancel() throws Exception {
+    public void back() throws Exception {
       if (main == null) return;
       try {
         try {
