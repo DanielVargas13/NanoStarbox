@@ -112,16 +112,22 @@ class TextScannerTest {
 
   @Test void string_comparison_case_sensitive(){
     String s = "0123456789";
-    TextScanner x = new TextScanner("test-string", s+"A");
+    String s2 = s+"A";
+    String s3 = s+"a";
+    TextScanner x = new TextScanner("test-string", s2);
     TextScanner.Snapshot sx = x.getSnapshot();
-    assertEquals(s+"A", x.nextString(s+"A", true));
+    assertEquals(s2, x.nextString(s2, true));
     sx.cancel();
     try {
-      x.nextString(s + "a", true);
+      sx = x.getSnapshot();
+      x.nextString(s3, true);
     } catch (Scanner.SyntaxError e){
-      e.printStackTrace();
-      assertEquals(true, true);
-      return;
+      String certification = "Expected A and found a at location = " +
+          "{line: 1, column: 12, index: 11, source: 'test-string'}";
+      assertEquals(certification, e.getMessage());
+      sx.cancel();
     }
+    // finally test case insensitive
+    assertEquals(s3, x.nextString(s2, false));
   }
 }
