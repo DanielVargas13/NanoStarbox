@@ -8,6 +8,7 @@ import java.util.Date;
 
 import static box.star.text.Char.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class TextScannerTest {
 
@@ -86,4 +87,41 @@ class TextScannerTest {
     assertEquals('\1', result.charAt(0));
   }
 
+  @Test void snapshot_lifecycle(){
+    TextScanner x = new TextScanner("test-string", "0123456789");
+    assertEquals(false, x.snapshot());
+    TextScanner.Snapshot s = x.getSnapshot();
+    assertEquals(true, x.snapshot());
+    assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
+    s.close();
+    assertEquals(false, x.snapshot());
+    assertEquals("23", x.nextMapLength(2, MAP_ASCII_NUMBERS));
+    snapshot_rewind_lifecycle();
+  }
+
+  void snapshot_rewind_lifecycle(){
+    TextScanner x = new TextScanner("test-string", "0123456789");
+    assertEquals(false, x.snapshot());
+    TextScanner.Snapshot s = x.getSnapshot();
+    assertEquals(true, x.snapshot());
+    assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
+    s.cancel();
+    assertEquals(false, x.snapshot());
+    assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
+  }
+
+  @Test void string_comparison_case_sensitive(){
+    String s = "0123456789";
+    TextScanner x = new TextScanner("test-string", s+"A");
+    TextScanner.Snapshot sx = x.getSnapshot();
+    assertEquals(s+"A", x.nextString(s+"A", true));
+    sx.cancel();
+    try {
+      x.nextString(s + "a", true);
+    } catch (Scanner.SyntaxError e){
+      e.printStackTrace();
+      assertEquals(true, true);
+      return;
+    }
+  }
 }

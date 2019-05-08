@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 public final class Char {
@@ -169,9 +168,9 @@ public final class Char {
      * A snapshot stores the current state of the scanner, and manipulates
      * the underlying reader, to create a virtual read-back-buffer.
      *
-     * @return {@link Snapshot}
+     * @return {@link ScannerShapshot}
      */
-    <ANY extends Snapshot> ANY getSnapshot();
+    <ANY extends ScannerShapshot> ANY getSnapshot();
 
     /**
      * Determine if the source string still contains characters that next()
@@ -334,10 +333,10 @@ public final class Char {
      * <p>
      * A snapshot allows code to implement a rewind interface.
      * <p>
-     * to rewind use {@link Snapshot#cancel()}
-     * to save use {@link Snapshot#close()}
+     * to rewind use {@link ScannerShapshot#cancel()}
+     * to save use {@link ScannerShapshot#close()}
      */
-    interface Snapshot {
+    interface ScannerShapshot {
       /**
        * Cancel the current snapshot.
        *

@@ -59,7 +59,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
   @Override
   @NotNull
-  public <ANY extends Scanner.Snapshot> ANY getSnapshot() {
+  public <ANY extends ScannerShapshot> ANY getSnapshot() {
     return (ANY) new Snapshot(this);
   }
 
@@ -155,7 +155,7 @@ public class TextScanner implements Scanner<TextScanner> {
       throw syntaxError("Expected " + translate(character) + " and found end of text stream");
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
-      character = toLowerCase(character);
+      character = Char.toLowerCase(character);
     }
     if (character != c)
       throw this.syntaxError("Expected " + translate(c) + " and found " + translate(character));
@@ -381,8 +381,7 @@ public class TextScanner implements Scanner<TextScanner> {
 
   @Override
   public String claim() {
-    return " at " + state.index + " [character " + state.character + " line " +
-        state.line + "]";
+    return " at location = "+"{line: " + state.line + ", column: " + state.column + ", index: "+state.index+", source: '"+state.path+"'}";
   }
 
   @Override
@@ -407,10 +406,10 @@ public class TextScanner implements Scanner<TextScanner> {
 
   @Override
   public long getColumn() {
-    return state.character;
+    return state.column;
   }
 
-  public static class Snapshot implements Scanner.Snapshot {
+  public static class Snapshot implements ScannerShapshot {
     private TextScanner main;
     private SerializableState state;
 
@@ -473,7 +472,7 @@ public class TextScanner implements Scanner<TextScanner> {
     /**
      * current read character position on the current line.
      */
-    long character;
+    long column;
     /**
      * flag to indicate if the end of the input has been found.
      */
@@ -504,7 +503,7 @@ public class TextScanner implements Scanner<TextScanner> {
       //state.usePrevious = false;
       //state.previous = 0;
       //state.index = 0;
-      state.character = 1;
+      state.column = 1;
       //state.characterPreviousLine = 0;
       state.line = 1;
       state.path = path;
@@ -528,10 +527,10 @@ public class TextScanner implements Scanner<TextScanner> {
       this.index--;
       if (this.previous == CARRIAGE_RETURN || this.previous == LINE_FEED) {
         this.line--;
-        this.character = this.characterPreviousLine;
-      } else if (this.character > 0) {
+        this.column = this.characterPreviousLine;
+      } else if (this.column > 0) {
         if (previous == BACKSLASH) this.backslashed = !this.backslashed;
-        this.character--;
+        this.column--;
       }
     }
 
@@ -549,15 +548,15 @@ public class TextScanner implements Scanner<TextScanner> {
         this.index++;
         if (c == '\r') {
           this.line++;
-          this.characterPreviousLine = this.character;
-          this.character = 0;
+          this.characterPreviousLine = this.column;
+          this.column = 0;
         } else if (c == '\n') {
           if (this.previous != '\r') {
             this.line++;
-            this.characterPreviousLine = this.character;
+            this.characterPreviousLine = this.column;
           }
-          this.character = 0;
-        } else this.character++;
+          this.column = 0;
+        } else this.column++;
       }
     }
 
