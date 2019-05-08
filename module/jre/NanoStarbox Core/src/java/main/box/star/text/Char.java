@@ -7,9 +7,13 @@ import java.io.Closeable;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public final class Char {
+
+  private static Locale locale;
 
   public final static int CHAR_MAX = '\uffff';
 
@@ -70,22 +74,24 @@ public final class Char {
 
   private Char() {}
 
-  private final static Hashtable<Character, String> TRANSLATION = new Hashtable<>(10);
+  private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
+  private static Hashtable<Character, String> TRANSLATION;
 
-  public static String translate(char c, String translation){
-    Char.TRANSLATION.put(c, translation);
-    return translation;
+  public static void setLocale(Locale locale) {
+    Char.locale = locale;
+    if (!TRANSLATIONS.containsKey(locale)) TRANSLATIONS.put(locale, new Hashtable<>((int)SPACE));
+    TRANSLATION = TRANSLATIONS.get(locale);
   }
 
-  public static String translate(char c){
-    if (c == 0) return "null";
-    if (TRANSLATION.containsKey(c)){
-      return TRANSLATION.get(c);
-    }
-    return String.valueOf(c);
+  public static char[] toLowerCase(String source){
+    return source.toLowerCase(locale).toCharArray();
   }
 
-  static {
+  public static char[] toUpperCase(String source){
+    return source.toUpperCase(locale).toCharArray();
+  }
+
+  public static void importLocaleEnglishASCII(){
     translate(DELETE, "delete (\\d)");
     translate(ESCAPE, "escape (\\e)");
     translate(BELL, "bell");
@@ -97,6 +103,17 @@ public final class Char {
     translate(LINE_FEED, "line-feed (\\n)");
     translate(CARRIAGE_RETURN, "carriage-return (\\r)");
     translate(SPACE, "space");
+  }
+
+  public static String translate(char c, String translation){
+    Char.TRANSLATION.put(c, translation);
+    return translation;
+  }
+
+  public static String translate(char c){
+    if (c == 0) return "null";
+    else if (TRANSLATION.containsKey(c))return TRANSLATION.get(c);
+    else return String.valueOf(c);
   }
 
   public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
@@ -124,24 +141,24 @@ public final class Char {
     return Integer.parseInt(c + "", base);
   }
 
-  /**
-   * Get the hex value of a character (base16).
-   *
-   * @param c A character between '0' and '9' or between 'A' and 'F' or
-   *          between 'a' and 'f'.
-   * @return An int between 0 and 15, or -1 if c was not a hex digit.
-   */
-  public static int parseHex(char c) {
-    if (c >= '0' && c <= '9') {
-      return c - '0';
-    }
-    if (c >= 'A' && c <= 'F') {
-      return c - ('A' - 10);
-    }
-    if (c >= 'a' && c <= 'f') {
-      return c - ('a' - 10);
-    }
-    return -1;
+  public static char valueOf(int c){
+    return (char)c;
+  }
+
+  public static char[] valueOf(@NotNull String source){
+    return source.toCharArray();
+  }
+
+  public static char toLowerCase(char c) {
+    return toLowerCase(c+"")[0];
+  }
+
+  public static char toUpperCase(char c) {
+    return toUpperCase(c+"")[0];
+  }
+
+  public static String toString(char... elements){
+    return String.valueOf(elements);
   }
 
   public interface Scanner<MainClass extends Scanner> extends Closeable {
@@ -211,7 +228,7 @@ public final class Char {
      *
      * @return " at {index} [character {character} line {line}]"
      */
-    String scope();
+    String claim();
 
     String getPath();
 
@@ -249,9 +266,11 @@ public final class Char {
      */
     SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy);
 
-    @NotNull String nextMap(int max, @NotNull char... map) throws java.lang.Exception;
+    @NotNull String nextMapLength(int max, @NotNull char... map) throws java.lang.Exception;
 
     @NotNull String nextField(@NotNull char... map) throws java.lang.Exception;
+
+    @NotNull String nextFieldLength(int max, @NotNull char... map) throws java.lang.Exception;
 
     @NotNull String nextLength(int n) throws java.lang.Exception;
 
@@ -669,6 +688,11 @@ public final class Char {
       }
     }
 
+  }
+
+  static {
+    setLocale(Locale.ENGLISH);
+    importLocaleEnglishASCII();
   }
 
 }

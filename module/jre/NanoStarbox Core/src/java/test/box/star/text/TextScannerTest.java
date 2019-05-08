@@ -29,7 +29,6 @@ class TextScannerTest {
       }
     });
     assertEquals("<!DOCTYPE html>", result);
-    System.out.println(result);
   }
 
   @Test void quoting(){

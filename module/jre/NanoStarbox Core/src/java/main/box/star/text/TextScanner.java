@@ -154,8 +154,8 @@ public class TextScanner implements Scanner<TextScanner> {
     if (c == 0)
       throw syntaxError("Expected " + translate(character) + " and found end of text stream");
     if (!caseSensitive) {
-      c = Character.toLowerCase(c);
-      character = Character.toLowerCase(character);
+      c = Char.toLowerCase(c);
+      character = toLowerCase(character);
     }
     if (character != c)
       throw this.syntaxError("Expected " + translate(c) + " and found " + translate(character));
@@ -203,15 +203,16 @@ public class TextScanner implements Scanner<TextScanner> {
   }
 
   /**
-   * Scan and assemble characters while scan in map.
+   * Scan and assemble characters while scan in map and scan-length < max.
    *
+   * @param max
    * @param map
    * @return
    * @throws Exception if read fails.
    */
   @Override
   @NotNull
-  public String nextMap(int max, @NotNull char... map) throws Exception {
+  public String nextMapLength(int max, @NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -239,6 +240,31 @@ public class TextScanner implements Scanner<TextScanner> {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
+      c = this.next();
+      if (!Char.mapContains(c, map)) sb.append(c);
+      else {
+        this.back();
+        break;
+      }
+    } while (c != 0);
+    return sb.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is not in map and scan-length < max.
+   *
+   * @param max
+   * @param map
+   * @return
+   * @throws Exception if read fails.
+   */
+  @Override
+  @NotNull
+  public String nextFieldLength(int max, @NotNull char... map) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      if (sb.length() == max) break;
       c = this.next();
       if (!Char.mapContains(c, map)) sb.append(c);
       else {
@@ -337,7 +363,7 @@ public class TextScanner implements Scanner<TextScanner> {
   @Override
   @NotNull
   public SyntaxError syntaxError(String message) {
-    return new SyntaxError(message + this.scope());
+    return new SyntaxError(message + this.claim());
   }
 
   /**
@@ -350,18 +376,18 @@ public class TextScanner implements Scanner<TextScanner> {
   @Override
   @NotNull
   public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
-    return new SyntaxError(message + this.scope(), causedBy);
+    return new SyntaxError(message + this.claim(), causedBy);
   }
 
   @Override
-  public String scope() {
+  public String claim() {
     return " at " + state.index + " [character " + state.character + " line " +
         state.line + "]";
   }
 
   @Override
   public String toString() {
-    return scope();
+    return claim();
   }
 
   @Override
@@ -605,18 +631,18 @@ public class TextScanner implements Scanner<TextScanner> {
         case 'n': return "\n";
         case 'f': return "\f";
         /*unicode*/ case 'u': {
-          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
         }
         /*hex or octal*/ case '0': {
           char c = scanner.next();
           if (c == 'x'){
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
             catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
           } else {
             scanner.back();
           }
-          String chars = '0'+scanner.nextMap(3, MAP_ASCII_OCTAL);
+          String chars = '0'+scanner.nextMapLength(3, MAP_ASCII_OCTAL);
           int value = Integer.parseInt(chars, 8);
           if (value > 255){
             throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: "+value);
@@ -625,9 +651,8 @@ public class TextScanner implements Scanner<TextScanner> {
           return out+"";
         }
         /*integer or pass-through */ default: {
-          // Number or character-as-string-pass-through
           if (mapContains(character, MAP_ASCII_NUMBERS)){
-            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
+            String chars = character + scanner.nextMapLength(2, MAP_ASCII_NUMBERS);
             int value = Integer.parseInt(chars);
             if (value > 255){
               throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: "+value);
