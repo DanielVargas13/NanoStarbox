@@ -203,6 +203,30 @@ public class TextScanner implements Scanner<TextScanner> {
   }
 
   /**
+   * Scan and assemble characters while scan in map.
+   *
+   * @param map
+   * @return
+   * @throws Exception if read fails.
+   */
+  @Override
+  @NotNull
+  public String nextMap(int max, @NotNull char... map) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      if (sb.length() == max) break;
+      c = this.next();
+      if (Char.mapContains(c, map)) sb.append(c);
+      else {
+        this.back();
+        break;
+      }
+    } while (c != 0);
+    return sb.toString();
+  }
+
+  /**
    * Scan and assemble characters while scan is not in map.
    *
    * @param map
@@ -563,7 +587,27 @@ public class TextScanner implements Scanner<TextScanner> {
 
     @Nullable public String expand(@NotNull TextScanner scanner, char character){
       switch (character){
-        case '0': return NULL_CHARACTER+"";
+        case '0': {
+          char c = scanner.next();
+          if (c == 'x'){
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+            catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
+          } else {
+            scanner.back();
+            String chars = '0'+scanner.nextMap(3, MAP_ASCII_OCTAL);
+            if (chars.length() == 4) {
+              int value = Integer.parseInt(chars, 8);
+              if (value > 255){
+                throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: "+value);
+              }
+              char out = (char) value;
+              return out+"";
+            }
+          }
+          return NULL_CHARACTER+"";
+        }
+        case 'd': return DELETE+"";
+        case 'e': return ESCAPE+"";
         case 't': return "\t";
         case 'b': return BELL+"";
         case 'v': return VERTICAL_TAB+"";
@@ -575,6 +619,18 @@ public class TextScanner implements Scanner<TextScanner> {
           catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
         }
         default:
+          if (mapContains(character, MAP_ASCII_NUMBERS)){
+            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
+            if (chars.length() > 0) {
+              int value = Integer.parseInt(chars);
+              if (value > 255){
+                throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: "+value);
+              } else {
+                char out = (char)value;
+                return out +"";
+              }
+            }
+          }
           return String.valueOf(character);
       }
     }
@@ -673,12 +729,14 @@ public class TextScanner implements Scanner<TextScanner> {
           if (! scanner.haveEscape() && mapContains(character, popQuotes)) pop();
         }
         if (mapContains(scanner.quoteType(), escapeQuotes)){
-          if (scanner.haveBackslash()) {
-            this.pop(1);
-            return true;
-          } else if (scanner.haveEscape()){
+          if (scanner.haveEscape()){
             swap(expand(scanner, character));
             return true;
+          } else {
+            if (scanner.haveBackslash()){
+              this.pop();
+              return true;
+            }
           }
         }
         return true;
