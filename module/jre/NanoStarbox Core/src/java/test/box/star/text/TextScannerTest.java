@@ -41,7 +41,7 @@ class TextScannerTest {
       @Override
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (super.terminator(scanner, character)) return true;
-        else if (quoteStream(scanner, character)) return false;
+        else if (quotingStream(scanner, character)) return false;
         return false;
       }
     }));

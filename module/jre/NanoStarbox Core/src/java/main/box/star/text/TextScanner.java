@@ -667,11 +667,11 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     private char[] popQuotes = new char[]{DOUBLE_QUOTE, SINGLE_QUOTE};
 
-    public boolean quoteStream(@NotNull TextScanner scanner, char character){
-      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
-        if (! scanner.haveEscape() && mapContains(character, popQuotes)) pop();
-      }
+    public boolean quotingStream(@NotNull TextScanner scanner, char character){
       if (scanner.isQuoting(character)){
+        if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
+          if (! scanner.haveEscape() && mapContains(character, popQuotes)) pop();
+        }
         if (mapContains(scanner.quoteType(), escapeQuotes)){
           if (scanner.haveBackslash()) {
             this.pop(1);
