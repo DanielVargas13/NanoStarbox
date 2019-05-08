@@ -585,27 +585,17 @@ public class TextScanner implements Scanner<TextScanner> {
     @NotNull
     public String toString() { return claim; }
 
+    /**
+     * Performs all right-hand-side-backslash operations.
+     *
+     * (for this: right-hand-side = "everything after")
+     *
+     * @param scanner
+     * @param character
+     * @return
+     */
     @Nullable public String expand(@NotNull TextScanner scanner, char character){
       switch (character){
-        case '0': {
-          char c = scanner.next();
-          if (c == 'x'){
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
-          } else {
-            scanner.back();
-            String chars = '0'+scanner.nextMap(3, MAP_ASCII_OCTAL);
-            if (chars.length() == 4) {
-              int value = Integer.parseInt(chars, 8);
-              if (value > 255){
-                throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: "+value);
-              }
-              char out = (char) value;
-              return out+"";
-            }
-          }
-          return NULL_CHARACTER+"";
-        }
         case 'd': return DELETE+"";
         case 'e': return ESCAPE+"";
         case 't': return "\t";
@@ -614,24 +604,39 @@ public class TextScanner implements Scanner<TextScanner> {
         case 'r': return "\r";
         case 'n': return "\n";
         case 'f': return "\f";
-        case 'u': {
-          try { return String.valueOf((char) Integer.parseInt(scanner.nextLength(4), 16)); }
+        /*unicode*/ case 'u': {
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
         }
-        default:
+        /*hex or octal*/ case '0': {
+          char c = scanner.next();
+          if (c == 'x'){
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+            catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
+          } else {
+            scanner.back();
+          }
+          String chars = '0'+scanner.nextMap(3, MAP_ASCII_OCTAL);
+          int value = Integer.parseInt(chars, 8);
+          if (value > 255){
+            throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: "+value);
+          }
+          char out = (char) value;
+          return out+"";
+        }
+        /*integer or pass-through */ default: {
+          // Number or character-as-string-pass-through
           if (mapContains(character, MAP_ASCII_NUMBERS)){
             String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
-            if (chars.length() > 0) {
-              int value = Integer.parseInt(chars);
-              if (value > 255){
-                throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: "+value);
-              } else {
-                char out = (char)value;
-                return out +"";
-              }
+            int value = Integer.parseInt(chars);
+            if (value > 255){
+              throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: "+value);
+            } else {
+              char out = (char)value;
+              return out+"";
             }
-          }
-          return String.valueOf(character);
+          } else return character+"";
+        }
       }
     }
 
@@ -702,6 +707,9 @@ public class TextScanner implements Scanner<TextScanner> {
       popQuotes[0] = ((value)?DOUBLE_QUOTE:NULL_CHARACTER);
     }
 
+    private boolean popEscapes = true;
+    public void popEscapes(boolean value){ popEscapes = value;
+    }
     public void useEscapes(boolean value){
       useSingleQuoteEscapes(value);
       useDoubleQuoteEscapes(value);
@@ -725,19 +733,11 @@ public class TextScanner implements Scanner<TextScanner> {
 
     public boolean quotingStream(@NotNull TextScanner scanner, char character){
       if (scanner.isQuoting(character)){
-        if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
-          if (! scanner.haveEscape() && mapContains(character, popQuotes)) pop();
-        }
-        if (mapContains(scanner.quoteType(), escapeQuotes)){
-          if (scanner.haveEscape()){
-            swap(expand(scanner, character));
-            return true;
-          } else {
-            if (scanner.haveBackslash()){
-              this.pop();
-              return true;
-            }
-          }
+        if (! scanner.haveEscape() && (character == DOUBLE_QUOTE || character == SINGLE_QUOTE)){
+          if (mapContains(character, popQuotes)) pop();
+        } else if (mapContains(scanner.quoteType(), escapeQuotes)) {
+          if (scanner.haveEscape()) swap(expand(scanner, character));
+          else if (scanner.haveBackslash() && this.popEscapes) this.pop();
         }
         return true;
       }
