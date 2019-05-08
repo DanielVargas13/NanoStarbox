@@ -2,8 +2,6 @@ package box.star.text;
 
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
-import jdk.nashorn.internal.objects.NativeRangeError;
-import org.w3c.dom.ranges.RangeException;
 
 import java.io.Closeable;
 import java.io.Serializable;
@@ -59,14 +57,14 @@ public final class Char {
   UNIT_SEPARATOR = 31,
   DELETE = 127;
 
-  public final static char[] MAP = new Assembler(NULL_CHARACTER, CHAR_MAX).toArray();
-  public final static char[] MAP_ALL_WHITE_SPACE = new Assembler(9, 13).merge(SPACE).toArray();
-  public final static char[] MAP_LINE_WHITE_SPACE = new Assembler(MAP_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
-  public final static char[] MAP_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
-  public final static char[] MAP_NUMBERS = new Assembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_CONTROL = new Assembler(NULL_CHARACTER, 31).merge(DELETE).filter(MAP_ALL_WHITE_SPACE).toArray();
-  public final static char[] MAP_EXTENDED = new Assembler.RangeMap(128, CHAR_MAX).compile();
-  public final static char[] MAP_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 126).toArray();
+  public final static char[] MAP_ASCII = new Assembler(NULL_CHARACTER, 255).toArray();
+  public final static char[] MAP_ASCII_EXTENDED = new Assembler.RangeMap(128, 255).compile();
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).merge(SPACE).toArray();
+  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
+  public final static char[] MAP_ASCII_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
+  public final static char[] MAP_ASCII_NUMBERS = new Assembler.RangeMap(48, 57).compile();
+  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).merge(DELETE).filter(MAP_ASCII_ALL_WHITE_SPACE).toArray();
+  public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
 
   private Char() {}
 

@@ -4,6 +4,7 @@ import box.star.contract.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Date;
 
 import static box.star.text.Char.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,6 +13,9 @@ class TextScannerTest {
 
   TextScanner x = new TextScanner(new File("src/java/resource/mixed-content-page.html"));
 
+  @Test void dump(){
+
+  }
   @Test
   void start(){
     String result;
@@ -25,10 +29,6 @@ class TextScannerTest {
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (zeroTerminator(scanner, character)) return true;
         else return mapContains(character, terminator);
-      }
-      @Override
-      public @NotNull String compile(@NotNull TextScanner scanner) {
-        return buffer.toString();
       }
     });
     assertEquals("<!DOCTYPE html>", result);
