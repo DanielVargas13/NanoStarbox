@@ -1,6 +1,7 @@
 package box.star.text;
 
 import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import jdk.nashorn.internal.objects.NativeRangeError;
 import org.w3c.dom.ranges.RangeException;
 
@@ -226,6 +227,8 @@ public final class Char {
      */
     boolean haveEscape();
 
+    boolean isQuoting(char character);
+
     @NotNull String run(@NotNull Char.Scanner.Method<MainClass> method, Object... parameters);
 
     /**
@@ -245,14 +248,6 @@ public final class Char {
      */
     SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy);
 
-    /**
-     * Determines if the given character starts, continues or ends a quote stream.
-     *
-     * @param character
-     * @return
-     */
-    boolean parseQuotation(char character);
-
     @NotNull String nextField(@NotNull char... map) throws java.lang.Exception;
 
     @NotNull String nextLength(int n) throws java.lang.Exception;
@@ -260,6 +255,10 @@ public final class Char {
     boolean isQuoting();
 
     interface Method<MainClass extends Scanner> extends Cloneable {
+
+      void swap(@Nullable char forLastBufferCharacter);
+
+      void swap(@Nullable String forLastBufferCharacter);
 
       void collect(TextScanner scanner, char character);
 
@@ -296,6 +295,14 @@ public final class Char {
       boolean scanning(@NotNull MainClass context);
 
       void back(TextScanner scanner);
+
+      char peek();
+
+      char[] peek(int count);
+
+      char pop();
+
+      char[] pop(int count);
     }
 
     /**

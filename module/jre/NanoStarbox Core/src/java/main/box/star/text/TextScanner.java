@@ -1,13 +1,10 @@
 package box.star.text;
 
-import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
 
 import java.io.*;
-import java.lang.ref.PhantomReference;
-import java.lang.ref.WeakReference;
 
 import static box.star.text.Char.*;
 
@@ -145,6 +142,8 @@ public class TextScanner implements Scanner<TextScanner> {
       return 0;
     }
     state.incrementIndexes(c);
+    if (state.previous == BACKSLASH) state.escaped = true;
+    else state.escaped = false;
     state.previous = (char) c;
     return state.previous;
   }
@@ -252,17 +251,22 @@ public class TextScanner implements Scanner<TextScanner> {
     return new String(chars);
   }
 
-  @Override
-  final public boolean isQuoting() {
-    return state.methodQuote != NULL_CHARACTER;
+  private long parseQuoteLastQueryPosition; // this can roll-through-reset safely
+
+  public char quoteType(){
+    return state.methodQuote;
   }
 
-  private long parseQuoteLastQueryPosition; // this can roll-through-reset safely
+  @Override public boolean isQuoting(){
+    return quoteType() != NULL_CHARACTER;
+  }
+
   @Override
-  final public boolean parseQuotation(char character) {
+  final public boolean isQuoting(char character) {
     // make sure we only toggle quoting once per iteration!
     if (parseQuoteLastQueryPosition != getIndex()) {
       parseQuoteLastQueryPosition = getIndex();
+      //char character = state.previous;
       // handle quoting
       if (isQuoting()) {
         // deactivate quoting if applicable
@@ -275,7 +279,7 @@ public class TextScanner implements Scanner<TextScanner> {
         return true;
       }
     }
-    return isQuoting();
+    return state.methodQuote != NULL_CHARACTER;
   }
 
   @NotNull
@@ -286,14 +290,18 @@ public class TextScanner implements Scanner<TextScanner> {
     do {
       c = next();
       method.collect(this, c);
-    }
-    while (!method.terminator(this, c) && method.scanning(this));
+      if (method.terminator(this, c)) break;
+    } while (method.scanning(this));
     return method.compile(this);
+  }
+
+  public boolean haveBackslash(){
+    return state.backslashed;
   }
 
   @Override
   public boolean haveEscape() {
-    return state.backslash && state.previous == BACKSLASH;
+    return state.escaped;
   }
 
   /**
@@ -403,12 +411,13 @@ public class TextScanner implements Scanner<TextScanner> {
     }
   }
 
-  protected static class SerializableState implements Cloneable, Serializable {
+  public static class SerializableState implements Cloneable, Serializable {
 
     /**
      * previous character read from the input.
      */
     public char previous;
+    public boolean escaped;
     boolean snapshot;
     String path;
     /**
@@ -436,7 +445,7 @@ public class TextScanner implements Scanner<TextScanner> {
      */
     long characterPreviousLine;
 
-    boolean backslash;
+    boolean backslashed;
     char methodQuote;
 
     public SerializableState(String path) {
@@ -471,7 +480,7 @@ public class TextScanner implements Scanner<TextScanner> {
         this.line--;
         this.character = this.characterPreviousLine;
       } else if (this.character > 0) {
-        if (previous == BACKSLASH) this.backslash = !this.backslash;
+        if (previous == BACKSLASH) this.backslashed = !this.backslashed;
         this.character--;
       }
     }
@@ -485,7 +494,7 @@ public class TextScanner implements Scanner<TextScanner> {
     public void incrementIndexes(int c) {
       if (c > 0) {
         if (c == '\\') {
-          this.backslash = !this.backslash;
+          this.backslashed = !this.backslashed;
         }
         this.index++;
         if (c == '\r') {
@@ -552,29 +561,35 @@ public class TextScanner implements Scanner<TextScanner> {
     @NotNull
     public String toString() { return claim; }
 
-    @Nullable
-    public String expandEscape(@NotNull TextScanner scanner, char character){
-      if (character == BACKSLASH){
-        if (! scanner.haveEscape()) return "";
-        return "\\";
-      }
-      if (scanner.isQuoting()) {
-        switch (character){
-          case '0': return NULL_CHARACTER+"";
-          case 't': return "\t";
-          case 'b': return BELL+"";
-          case 'v': return VERTICAL_TAB+"";
-          case 'r': return "\r";
-          case 'n': return "\n";
-          case 'f': return "\f";
-          case 'u': {
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextLength(4), 16)); }
-            catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
-          }
-          default: return null;
+    @Nullable public String expand(@NotNull TextScanner scanner, char character){
+      switch (character){
+        case '0': return NULL_CHARACTER+"";
+        case 't': return "\t";
+        case 'b': return BELL+"";
+        case 'v': return VERTICAL_TAB+"";
+        case 'r': return "\r";
+        case 'n': return "\n";
+        case 'f': return "\f";
+        case 'u': {
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextLength(4), 16)); }
+          catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
         }
+        default:
+          return String.valueOf(character);
       }
-      return null;
+    }
+
+    @Override
+    public void swap(@Nullable char forLastBufferCharacter){
+      buffer.setLength(Math.max(0, buffer.length() - 1));
+      buffer.append(forLastBufferCharacter);
+    }
+
+    @Override
+    public void swap(@Nullable String forLastBufferCharacter){
+      buffer.setLength(Math.max(0, buffer.length() - 1));
+      if (forLastBufferCharacter == null || forLastBufferCharacter.equals("")) return;
+      buffer.append(forLastBufferCharacter);
     }
 
     /**
@@ -589,8 +604,7 @@ public class TextScanner implements Scanner<TextScanner> {
     @Override
     public void collect(@NotNull TextScanner scanner, char character) {
       if (character == 0) return;
-      String escaped = expandEscape(scanner, character);
-      buffer.append(Tools.makeNotNull(escaped, character));
+      buffer.append(character);
     }
 
     public boolean zeroTerminator(@NotNull TextScanner scanner, char character) {
@@ -598,16 +612,10 @@ public class TextScanner implements Scanner<TextScanner> {
         if (scanner.haveEscape())
           throw scanner.syntaxError("escaping end of source with a backslash");
         if (scanner.isQuoting())
-          throw scanner.syntaxError("failure to find end of quoted text");
+          throw scanner.syntaxError("failed to find end of text quoting at end of text stream");
         return true;
       }
       return false;
-    }
-
-    public boolean parseQuote(@NotNull TextScanner scanner, char character) {
-      escaped = scanner.haveEscape();
-      quoting = scanner.parseQuotation(character);
-      return (escaped || quoting);
     }
 
     /**
@@ -622,14 +630,64 @@ public class TextScanner implements Scanner<TextScanner> {
     @Override
     public boolean terminator(@NotNull TextScanner scanner, char character) {
       if (zeroTerminator(scanner, character)) return true;
-      parseQuote(scanner, character);
+      return false;
+    }
+
+    public void useSingleQuoteEscapes(boolean value){
+      escapeQuotes[1] = ((value)?SINGLE_QUOTE:NULL_CHARACTER);
+    }
+    public void useDoubleQuoteEscapes(boolean value){
+      escapeQuotes[0] = ((value)?DOUBLE_QUOTE:NULL_CHARACTER);
+    }
+    public void popSingleQuotes(boolean value){
+      popQuotes[1] = ((value)?SINGLE_QUOTE:NULL_CHARACTER);
+    }
+    public void popDoubleQuotes(boolean value){
+      popQuotes[0] = ((value)?DOUBLE_QUOTE:NULL_CHARACTER);
+    }
+
+    public void useEscapes(boolean value){
+      useSingleQuoteEscapes(value);
+      useDoubleQuoteEscapes(value);
+    }
+
+    public void popQuotes(boolean value){
+      popSingleQuotes(value);
+      popDoubleQuotes(value);
+    }
+
+    /**
+     * <p>Set 0 to 0 to skip parsing escapes in double quotes.</p>
+     * <p>Set 1 to 0 to skip parsing escapes in single quotes.</p>
+     */
+    private char[] escapeQuotes = new char[]{DOUBLE_QUOTE, SINGLE_QUOTE};
+    /**
+     * <p>Set 0 to 0 to leave double quotes in the buffer.</p>
+     * <p>Set 1 to 0 to leave single quotes in the buffer.</p>
+     */
+    private char[] popQuotes = new char[]{DOUBLE_QUOTE, SINGLE_QUOTE};
+
+    public boolean quoteStream(@NotNull TextScanner scanner, char character){
+      if (character == DOUBLE_QUOTE || character == SINGLE_QUOTE){
+        if (! scanner.haveEscape() && mapContains(character, popQuotes)) pop();
+      }
+      if (scanner.isQuoting(character)){
+        if (mapContains(scanner.quoteType(), escapeQuotes)){
+          if (scanner.haveBackslash()) {
+            this.pop(1);
+            return true;
+          } else if (scanner.haveEscape()){
+            swap(expand(scanner, character));
+            return true;
+          }
+        }
+        return true;
+      }
       return false;
     }
 
     /**
      * Return the compiled buffer contents.
-     * <p>
-     * This super method does not return the last character read.
      *
      * @param scanner
      * @return the buffer.
@@ -637,7 +695,6 @@ public class TextScanner implements Scanner<TextScanner> {
     @Override
     @NotNull
     public String compile(@NotNull TextScanner scanner) {
-      back(scanner);
       return buffer.toString();
     }
 
@@ -664,6 +721,31 @@ public class TextScanner implements Scanner<TextScanner> {
     public void back(@NotNull TextScanner scanner) {
       scanner.back();
       buffer.setLength(Math.max(0, buffer.length() - 1));
+    }
+
+    @Override public char peek(){
+      return buffer.charAt(Math.max(0, buffer.length() - 1));
+    }
+
+    @Override public char[] peek(int count){
+      int offset = Math.max(0, buffer.length() - count);
+      return buffer.substring(offset).toCharArray();
+    }
+
+    @Override
+    public char pop(){
+      int target = Math.max(0, buffer.length() - 1);
+      char c = buffer.charAt(target);
+      buffer.setLength(target);
+      return c;
+    }
+
+    @Override
+    public char[] pop(int count){
+      int offset = Math.max(0, buffer.length() - count);
+      char[] c = buffer.substring(offset).toCharArray();
+      buffer.setLength(offset);
+      return c;
     }
 
     /**

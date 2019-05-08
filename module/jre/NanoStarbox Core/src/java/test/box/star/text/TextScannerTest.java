@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static box.star.text.Char.META_DOCUMENT_TAG_END;
-import static box.star.text.Char.mapContains;
+import static box.star.text.Char.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
@@ -25,7 +24,6 @@ class TextScannerTest {
       @Override
       public boolean terminator(@NotNull TextScanner scanner, char character) {
         if (zeroTerminator(scanner, character)) return true;
-        else if (parseQuote(scanner, character)) return false;
         else return mapContains(character, terminator);
       }
       @Override
@@ -37,5 +35,17 @@ class TextScannerTest {
     System.out.println(result);
   }
 
+  @Test void quoting(){
+    TextScanner x = new TextScanner("test-string", "'\\\\t'");
+    String result = (x.run(new TextScanner.Method(){
+      @Override
+      public boolean terminator(@NotNull TextScanner scanner, char character) {
+        if (super.terminator(scanner, character)) return true;
+        else if (quoteStream(scanner, character)) return false;
+        return false;
+      }
+    }));
+    assertEquals(BACKSLASH+""+HORIZONTAL_TAB, result);
+  }
 
 }
