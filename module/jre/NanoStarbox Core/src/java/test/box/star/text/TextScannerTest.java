@@ -1,23 +1,20 @@
 package box.star.text;
 
 import box.star.contract.NotNull;
-import box.star.text.basic.Scanner;
-import box.star.text.basic.ScannerMethod;
-import box.star.text.basic.ScannerStateLock;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 import static box.star.text.Char.*;
+import box.star.text.basic.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextScannerTest {
 
-  Scanner x = new Scanner(new File("src/java/resource/mixed-content-page.html"));
-
   @Test
   void general_testing() {
+    Scanner x = new Scanner(new File("src/java/resource/mixed-content-page.html"));
     String result;
 
     result = x.nextField('<');
