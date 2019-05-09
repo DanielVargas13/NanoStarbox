@@ -352,8 +352,8 @@ public class Scanner implements Closeable {
     do {
       char c = next();
       method.collect(this, c);
-      if (method.terminator(this, c)) break;
-    } while (method.scanning(this));
+      if (method.terminate(this, c)) break;
+    } while (method.scan(this));
     return method.compile(this);
   }
 

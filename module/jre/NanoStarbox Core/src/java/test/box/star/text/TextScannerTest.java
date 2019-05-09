@@ -24,7 +24,7 @@ class TextScannerTest {
       char[] terminator = new char[]{META_DOCUMENT_TAG_END};
 
       @Override
-      public boolean terminator(@NotNull Scanner scanner, char character) {
+      public boolean terminate(@NotNull Scanner scanner, char character) {
         if (zeroTerminator(scanner, character)) return true;
         else return mapContains(character, terminator);
       }

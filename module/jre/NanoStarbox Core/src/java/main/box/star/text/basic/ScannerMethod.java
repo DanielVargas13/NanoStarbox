@@ -35,7 +35,7 @@ import static box.star.text.Char.*;
  *
  * <h3>lifecycle</h3>
  * <ul>
- *   {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminator(Scanner, char)} and {@link #scanning(Scanner)}</li>
+ *   {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminate(Scanner, char)} and {@link #scan(Scanner)}</li>
  * </ul>
  */
 public class ScannerMethod implements Cloneable {
@@ -240,7 +240,7 @@ public class ScannerMethod implements Cloneable {
    * @param character
    * @return false to continue processing.
    */
-  protected boolean terminator(@NotNull Scanner scanner, char character) {
+  protected boolean terminate(@NotNull Scanner scanner, char character) {
     return zeroTerminator(scanner, character);
   }
 
@@ -265,7 +265,7 @@ public class ScannerMethod implements Cloneable {
    * @param scanner
    * @return true if the TextScanner should read more input.
    */
-  protected boolean scanning(@NotNull Scanner scanner) { return true; }
+  protected boolean scan(@NotNull Scanner scanner) { return true; }
 
   /**
    * Step back the scanner and the buffer by 1 character.
@@ -287,7 +287,7 @@ public class ScannerMethod implements Cloneable {
    *
    * @return
    */
-  protected char peek() {
+  protected char current() {
     return buffer.charAt(bufferOffset);
   }
 
