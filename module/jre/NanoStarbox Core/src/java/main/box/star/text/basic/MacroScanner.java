@@ -8,14 +8,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
-public class MacroContext {
+public class MacroScanner {
 
   static final   char[] scanBreak = new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE).merge(')').toArray();
 
   public static class Command implements Cloneable {
     protected Scanner scanner;
-    protected MacroContext main;
-    protected void enterContext(Scanner scanner, MacroContext main){
+    protected MacroScanner main;
+    protected void enterContext(Scanner scanner, MacroScanner main){
       this.scanner = scanner;
       this.main = main;
     }
@@ -35,23 +35,23 @@ public class MacroContext {
 
   public Map<String, String> environment;
   public Map<String, Object> objects;
-  public Map<String, MacroContext.Command> commands;
+  public Map<String, MacroScanner.Command> commands;
 
   private CommandBuilder commandBuilder = new CommandBuilder();
   private Runner macroRunner = new Runner(this);
 
-  MacroContext(Map<String, String> environment){
+  MacroScanner(Map<String, String> environment){
     this.environment = environment;
     objects = new Hashtable<>();
     commands = new Hashtable<>();
   }
 
-  public MacroContext addCommand(String name, Command command){
+  public MacroScanner addCommand(String name, Command command){
     commands.put(name, command);
     return this;
   }
 
-  public MacroContext addObject(String name, Object object){
+  public MacroScanner addObject(String name, Object object){
     objects.put(name, object);
     return this;
   }
@@ -72,7 +72,7 @@ public class MacroContext {
   }
 
   private String doMacro(Scanner scanner){
-    MacroContext context = this;
+    MacroScanner context = this;
     char next = scanner.next();
     switch (next){
       case '{': {
@@ -104,19 +104,19 @@ public class MacroContext {
 
   public static class Runner extends ScannerMethod {
 
-    MacroContext context;
+    MacroScanner context;
 
     public Runner(){
-      this.context = new MacroContext(System.getenv());
+      this.context = new MacroScanner(System.getenv());
     }
 
-    public Runner(MacroContext context){
+    public Runner(MacroScanner context){
       this.context = context;
     }
 
     @Override
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      if (context == null) this.context = (MacroContext) parameters[0];
+      if (context == null) this.context = (MacroScanner) parameters[0];
     }
 
     @Override
@@ -132,12 +132,12 @@ public class MacroContext {
 
   private class CommandBuilder extends ScannerMethod {
 
-    MacroContext context;
+    MacroScanner context;
     private ParameterBuilder parameterBuilder = new ParameterBuilder();
 
     @Override
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      this.context = (MacroContext) parameters[0];
+      this.context = (MacroScanner) parameters[0];
     }
 
     @Override
@@ -162,12 +162,12 @@ public class MacroContext {
 
   private class ParameterBuilder extends  ScannerMethod {
 
-    MacroContext context;
+    MacroScanner context;
     Stack<String> parameters;
 
     @Override
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      this.context = (MacroContext) parameters[0];
+      this.context = (MacroScanner) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
