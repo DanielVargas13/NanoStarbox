@@ -10,16 +10,26 @@ class MacroScannerTest {
 
   @Test void main(){
     MacroScanner macroContext = new MacroScanner(System.getenv());
+    macroContext.environment.put("THIS", "Menu");
     macroContext.addCommand("list", new MacroScanner.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         return String.join(", ", parameters);
       }
     });
+    macroContext.addCommand("say-java", new MacroScanner.Command(){
+      @Override
+      protected String run(String command, Stack<String> parameters) {
+        return "Java";
+      }
+    });
     macroContext.addCommand("menu", new MacroScanner.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
-        return "Java Menu: "+String.join(" ", parameters);
+        return
+            call("say-java", null)
+              +eval(" %[THIS]: ")
+                +String.join(" ", parameters);
       }
     });
     System.out.println(macroContext.start(scanner));

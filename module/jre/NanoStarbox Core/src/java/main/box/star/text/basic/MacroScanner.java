@@ -25,6 +25,15 @@ public class MacroScanner {
   public static class Command implements Cloneable {
     protected Scanner scanner;
     protected MacroScanner main;
+
+    protected String call(String name, Stack<String> parameters){
+      return main.doCommand(scanner, name, parameters);
+    }
+
+    protected String eval(String source){
+      return main.start("eval", source);
+    }
+
     protected void enterContext(Scanner scanner, MacroScanner main){
       this.scanner = scanner;
       this.main = main;
@@ -52,7 +61,7 @@ public class MacroScanner {
   private Main macroRunner = new Main(this);
 
   MacroScanner(Map<String, String> environment){
-    this.environment = environment;
+    this.environment = new Hashtable<>(environment);
     objects = new Hashtable<>();
     commands = new Hashtable<>();
   }
