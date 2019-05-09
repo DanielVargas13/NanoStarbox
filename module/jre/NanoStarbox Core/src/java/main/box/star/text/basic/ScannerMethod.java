@@ -2,6 +2,7 @@ package box.star.text.basic;
 
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
+import box.star.text.Char;
 
 import static box.star.text.Char.*;
 
@@ -56,6 +57,18 @@ public class ScannerMethod implements Cloneable {
 
 
   /**
+   * The expand pass-through-method.
+   *
+   * The recommended override for systematic performance integrity of the expand
+   * command.
+   *
+   * @param sanner
+   * @param c
+   * @return
+   */
+  protected String tryExpand(@NotNull Scanner sanner, char c){ return Char.toString(c); }
+
+  /**
    * Performs all right-hand-side-ampersand operations.
    *
    * (for this: right-hand-side = "everything after")
@@ -86,7 +99,7 @@ public class ScannerMethod implements Cloneable {
       case 'd': return DELETE+"";
       case 'e': return ESCAPE+"";
       case 't': return "\t";
-      case 'b': return BELL+"";
+      case 'b': return "\b";
       case 'v': return VERTICAL_TAB+"";
       case 'r': return "\r";
       case 'n': return "\n";
@@ -121,7 +134,7 @@ public class ScannerMethod implements Cloneable {
             char out = (char)value;
             return out+"";
           }
-        } else return character+"";
+        } else return tryExpand(scanner, character);
       }
     }
   }
