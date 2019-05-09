@@ -7,13 +7,31 @@ import box.star.text.Char;
 import static box.star.text.Char.*;
 
 /**
- * <p>ScannerMethod</p>
+ * <h2>ScannerMethod</h2>
  *
  * <p>This class extends the operational capabilities of the basic text
  * {@link Scanner}.</p>
- *
+ *<br>
  * <p>Use this class to perform inline stream extrapolations.</p>
+ * <br>
  *
+ * <h3>Working Theory</h3>
+ *
+ * <p>A ScannerMethod is instantiated by an implementation to obtain structured
+ * data. The method may be started with optional parameters, and may be cloned
+ * for concurrent operations or sub-calls.</p>
+ * <br>
+ * <p>For example, you want to collect some meta-document-language attributes into a hash-map.
+ * What you will do is send a hash map to the method through the text-scanner's
+ * {@link Scanner#run(ScannerMethod, Object...)} method, and when the run method
+ * calls your {@link #compile(Scanner)} method, you simply parse the data you
+ * collected in your buffer, and store it in your attribute-map. To obtain your
+ * method parameters you must record them during the Scanner's call to your
+ * {@link #start(Scanner, Object[])} method.</p>
+ * <br>
+ * <p>A method may call other methods, and may also call upon the methods
+ * of the scanner during any execution phase of its lifecycle.</p>
+ * <br>
  */
 public class ScannerMethod implements Cloneable {
 
