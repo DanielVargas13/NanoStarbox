@@ -71,9 +71,6 @@ public class Scanner implements Closeable {
    * {@link #haveNext()} loads the next position into history.
    */
   public void flushHistory() {
-    if (state.haveNext())
-      throw new Exception("cannot flush history",
-          new IllegalStateException("buffer state is not synchronized"));
     state.clearHistory();
   }
 
@@ -275,11 +272,33 @@ public class Scanner implements Closeable {
     StringBuilder sb = new StringBuilder();
     do {
       c = this.next();
-      if (!Char.mapContains(c, map)) sb.append(c);
-      else {
+      if (Char.mapContains(c, map)){
         this.back();
         break;
       }
+      sb.append(c);
+    } while (c != 0);
+    return sb.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is not in map.
+   *
+   * @param map
+   * @return
+   * @throws Exception if read fails.
+   */
+  @NotNull
+  public String nextUnescapedField(@NotNull char... map) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      c = this.next();
+      if (Char.mapContains(c, map) && ! escapeMode()){
+        this.back();
+        break;
+      }
+      sb.append(c);
     } while (c != 0);
     return sb.toString();
   }
@@ -421,6 +440,15 @@ public class Scanner implements Closeable {
 
   public long getColumn() {
     return state.column;
+  }
+
+  public char nextCharacter(char character) {
+    char c = next();
+    if (c == 0)
+      throw syntaxError("Expected " + translate(character) + " and found end of text stream");
+    if (character != c)
+      throw this.syntaxError("Expected " + translate(character) + " and found " + translate(c));
+    return c;
   }
 
   /**

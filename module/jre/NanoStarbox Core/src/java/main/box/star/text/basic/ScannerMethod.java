@@ -228,7 +228,11 @@ public class ScannerMethod implements Cloneable {
    * @return
    */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
-    return character == 0;
+    if (character == 0) {
+      back(scanner);
+      return true;
+    }
+    return false;
   }
 
   /**
