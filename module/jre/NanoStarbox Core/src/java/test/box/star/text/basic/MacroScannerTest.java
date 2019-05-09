@@ -6,18 +6,18 @@ import java.util.Stack;
 
 class MacroScannerTest {
 
-  Scanner scanner = new Scanner("test", "%(menu %(list \"%[JDK_HOME]\" %[JAVA_HOME]))");
+  Scanner scanner = new Scanner("test", "%(menu %(list \"'%[JDK_HOME]'\" \"'%[JAVA_HOME]'\"))");
 
   @Test void main(){
     MacroScanner macroContext = new MacroScanner(System.getenv());
-    macroContext.environment.put("THIS", "Menu");
+    macroContext.environment.put("what", "Menu");
     macroContext.addCommand("list", new MacroScanner.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         return String.join(", ", parameters);
       }
     });
-    macroContext.addCommand("say-java", new MacroScanner.Command(){
+    macroContext.addCommand("alert", new MacroScanner.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         return "Java";
@@ -27,9 +27,9 @@ class MacroScannerTest {
       @Override
       protected String run(String command, Stack<String> parameters) {
         return
-            call("say-java", null)
-              +eval(" %[THIS]: ")
-                +String.join(" ", parameters);
+            call("alert", null)
+              +eval(" %[what]: ")
+                +String.join("\n", split(parameters.firstElement()));
       }
     });
     System.out.println(macroContext.start(scanner));

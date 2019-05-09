@@ -34,6 +34,14 @@ public class MacroScanner {
       return main.start("eval", source);
     }
 
+    protected Stack<String> split(String source){
+      ParameterBuilder pb = new ParameterBuilder();
+      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
+      Stack<String> parameters = new Stack<>();
+      scanner.run(pb, main, parameters);
+      return parameters;
+    }
+
     protected void enterContext(Scanner scanner, MacroScanner main){
       this.scanner = scanner;
       this.main = main;
@@ -166,7 +174,7 @@ public class MacroScanner {
     
   }
 
-  private class ParameterBuilder extends  ScannerMethod {
+  private static class ParameterBuilder extends  ScannerMethod {
 
     MacroScanner context;
     Stack<String> parameters;
@@ -182,6 +190,14 @@ public class MacroScanner {
     protected boolean scan(@NotNull Scanner scanner) {
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       return true;
+    }
+
+    protected Stack<String> split(String source){
+      ParameterBuilder pb = new ParameterBuilder();
+      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
+      Stack<String> parameters = new Stack<>();
+      scanner.run(pb, context, parameters);
+      return parameters;
     }
 
     private String getParameter(Scanner scanner, char character){
