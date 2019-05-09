@@ -230,7 +230,7 @@ public class ScannerMethod implements Cloneable {
    */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
     if (character == 0) {
-      stepBack(scanner);
+      backStep(scanner);
       return true;
     }
     return false;
@@ -280,7 +280,7 @@ public class ScannerMethod implements Cloneable {
    *
    * @param scanner
    */
-  protected void stepBack(@NotNull Scanner scanner) {
+  protected void backStep(@NotNull Scanner scanner) {
     scanner.back();
     buffer.setLength(bufferOffset--);
   }

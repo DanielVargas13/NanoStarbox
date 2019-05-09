@@ -57,11 +57,19 @@ public class MacroScanner {
     commands.put(name, command); return this;
   }
 
+  public MacroScanner addCommands(Map<String, Command>map){
+    commands.putAll(map); return this;
+  }
+
   public MacroScanner addObject(String name, Object object){
     objects.put(name, object); return this;
   }
 
-  String nextMacroBody(Scanner scanner, char closure){
+  public MacroScanner loadObjects(Map<String, Object>map){
+    objects.putAll(map); return this;
+  }
+
+  private String nextMacroBody(Scanner scanner, char closure){
     String data = scanner.nextField(closure);
     scanner.nextCharacter(closure);
     return data;
@@ -133,7 +141,7 @@ public class MacroScanner {
 
     @Override
     protected boolean scan(@NotNull Scanner scanner) {
-      if (current() == EXIT_PROCEDURE){ stepBack(scanner); }
+      if (current() == EXIT_PROCEDURE){ backStep(scanner); }
       else {
         String name = current()+scanner.nextField(scanProcedureBreak);
         Stack<String> parameters = new Stack<>();
@@ -169,16 +177,16 @@ public class MacroScanner {
         parameters.push(context.doMacro(scanner));
         return false;
       } else if (character == EXIT_PROCEDURE){
-        stepBack(scanner);
+        backStep(scanner);
         return true;
       } else if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
-        String data = scanner.nextUnescapedField(character);
+        String data = scanner.nextBoundField(character);
         parameters.push(context.start(file, data));
         scanner.nextCharacter(character);
         return false;
       } else if (character == Char.SINGLE_QUOTE) {
-        parameters.push(scanner.nextUnescapedField(character));
+        parameters.push(scanner.nextBoundField(character));
         scanner.nextCharacter(character);
         return false;
       }

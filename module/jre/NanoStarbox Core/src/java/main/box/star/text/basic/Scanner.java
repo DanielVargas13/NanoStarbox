@@ -285,12 +285,14 @@ public class Scanner implements Closeable {
   /**
    * Scan and assemble characters while scan is not in map.
    *
+   * ignores escaped map characters.
+   *
    * @param map
    * @return
    * @throws Exception if read fails.
    */
   @NotNull
-  public String nextUnescapedField(@NotNull char... map) throws Exception {
+  public String nextBoundField(@NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
