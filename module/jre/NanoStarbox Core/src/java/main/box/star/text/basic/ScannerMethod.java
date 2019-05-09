@@ -11,7 +11,7 @@ import static box.star.text.Char.*;
  *
  * <p>This class extends the operational capabilities of the basic text
  * {@link Scanner}.</p>
- *<br>
+ * <br>
  * <p>Use this class to perform inline stream extrapolations.</p>
  * <br>
  *
@@ -52,7 +52,7 @@ public class ScannerMethod implements Cloneable {
    */
   protected void reset() {
     buffer = new StringBuilder((int) SPACE);
-    bufferOffset = - 1;
+    bufferOffset = -1;
   }
 
   /**
@@ -78,7 +78,7 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * The expand pass-through-method.
-   *
+   * <p>
    * The recommended override for systematic performance integrity of the expand
    * command.
    *
@@ -86,26 +86,26 @@ public class ScannerMethod implements Cloneable {
    * @param c
    * @return
    */
-  protected String tryExpand(@NotNull Scanner scanner, char c){ return Char.toString(c); }
+  protected String tryExpand(@NotNull Scanner scanner, char c) { return Char.toString(c); }
 
   /**
    * Performs all right-hand-side-ampersand operations.
-   *
+   * <p>
    * (for this: right-hand-side = "everything after")
-   *
+   * <p>
    * the default method expands nothing.
    *
    * @param scanner
    */
-  protected String expandAmpersand(@NotNull Scanner scanner){
+  protected String expandAmpersand(@NotNull Scanner scanner) {
     return "";
   }
 
   /**
    * Performs all right-hand-side-backslash operations.
-   *
+   * <p>
    * (for this: right-hand-side = "everything after")
-   *
+   * <p>
    * escaping `&' will call {@link #expandAmpersand(Scanner)}.
    *
    * @param scanner
@@ -113,46 +113,58 @@ public class ScannerMethod implements Cloneable {
    * @return
    */
   @Nullable
-  protected String expand(@NotNull Scanner scanner, char character){
-    switch (character){
-      case '&': return expandAmpersand(scanner);
-      case 'd': return DELETE+"";
-      case 'e': return ESCAPE+"";
-      case 't': return "\t";
-      case 'b': return "\b";
-      case 'v': return VERTICAL_TAB+"";
-      case 'r': return "\r";
-      case 'n': return "\n";
-      case 'f': return "\f";
-      /*unicode*/ case 'u': {
+  protected String expand(@NotNull Scanner scanner, char character) {
+    switch (character) {
+      case '&':
+        return expandAmpersand(scanner);
+      case 'd':
+        return DELETE + "";
+      case 'e':
+        return ESCAPE + "";
+      case 't':
+        return "\t";
+      case 'b':
+        return "\b";
+      case 'v':
+        return VERTICAL_TAB + "";
+      case 'r':
+        return "\r";
+      case 'n':
+        return "\n";
+      case 'f':
+        return "\f";
+      /*unicode*/
+      case 'u': {
         try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
         catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
       }
-      /*hex or octal*/ case '0': {
+      /*hex or octal*/
+      case '0': {
         char c = scanner.next();
-        if (c == 'x'){
+        if (c == 'x') {
           try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) { throw scanner.syntaxError("Illegal escape", e); }
         } else {
           scanner.back();
         }
-        String chars = '0'+scanner.nextMapLength(3, MAP_ASCII_OCTAL);
+        String chars = '0' + scanner.nextMapLength(3, MAP_ASCII_OCTAL);
         int value = Integer.parseInt(chars, 8);
-        if (value > 255){
-          throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: "+value);
+        if (value > 255) {
+          throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: " + value);
         }
         char out = (char) value;
-        return out+"";
+        return out + "";
       }
-      /*integer or pass-through */ default: {
-        if (mapContains(character, MAP_ASCII_NUMBERS)){
+      /*integer or pass-through */
+      default: {
+        if (mapContains(character, MAP_ASCII_NUMBERS)) {
           String chars = character + scanner.nextMapLength(2, MAP_ASCII_NUMBERS);
           int value = Integer.parseInt(chars);
-          if (value > 255){
-            throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: "+value);
+          if (value > 255) {
+            throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: " + value);
           } else {
-            char out = (char)value;
-            return out+"";
+            char out = (char) value;
+            return out + "";
           }
         } else return tryExpand(scanner, character);
       }
@@ -160,15 +172,15 @@ public class ScannerMethod implements Cloneable {
   }
 
   /**
-   *  Places the given character on the character buffer at the current position,
-   *  overwriting the current position.
-   *
+   * Places the given character on the character buffer at the current position,
+   * overwriting the current position.
+   * <p>
    * This feature enables incorporation of escape expansions into the current
    * buffer.
    *
    * @param forLastBufferCharacter
    */
-  protected void swap(@Nullable char forLastBufferCharacter){
+  protected void swap(@Nullable char forLastBufferCharacter) {
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     buffer.append(forLastBufferCharacter);
   }
@@ -176,15 +188,15 @@ public class ScannerMethod implements Cloneable {
   /**
    * Places the given string on the character buffer at the current position,
    * overwriting the current position.
-   *
+   * <p>
    * If the string is empty or null, the operation is silently aborted.
-   *
+   * <p>
    * This feature enables incorporation of escape expansions into the current
    * buffer.
    *
    * @param forLastBufferCharacter
    */
-  protected void swap(@Nullable String forLastBufferCharacter){
+  protected void swap(@Nullable String forLastBufferCharacter) {
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     if (forLastBufferCharacter == null || forLastBufferCharacter.equals("")) return;
     buffer.append(forLastBufferCharacter);
@@ -214,7 +226,7 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * Return true to break processing at this character position.
-   *
+   * <p>
    * The default method handles the zero terminator.
    *
    * @param scanner
@@ -227,7 +239,7 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * Return the compiled buffer contents.
-   *
+   * <p>
    * This method is called after the scanner completes a method call.
    *
    * @param scanner
@@ -263,24 +275,24 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * Examine the character on the top of the buffer.
-   *
+   * <p>
    * Works like {@link #pop()}, but doesn't modify the buffer.
    *
    * @return
    */
-  protected char peek(){
+  protected char peek() {
     return buffer.charAt(bufferOffset);
   }
 
   /**
    * Examine characters on the top of the buffer.
-   *
+   * <p>
    * Works like {@link #pop(int)}, but doesn't modify the buffer.
    *
    * @param count
    * @return
    */
-  protected char[] peek(int count){
+  protected char[] peek(int count) {
     int offset = Math.max(0, buffer.length() - count);
     return buffer.substring(offset).toCharArray();
   }
@@ -290,7 +302,7 @@ public class ScannerMethod implements Cloneable {
    *
    * @return the top character on the buffer
    */
-  protected char pop(){
+  protected char pop() {
     char c = buffer.charAt(bufferOffset--);
     buffer.setLength(bufferOffset);
     return c;
@@ -302,7 +314,7 @@ public class ScannerMethod implements Cloneable {
    * @param count the amount of characters to cut
    * @return the characters selected
    */
-  protected char[] pop(int count){
+  protected char[] pop(int count) {
     int offset = Math.max(0, buffer.length() - count);
     char[] c = buffer.substring(offset).toCharArray();
     buffer.setLength(offset);
@@ -311,13 +323,26 @@ public class ScannerMethod implements Cloneable {
   }
 
   /**
-   * Probably shouldn't use this if you are reading this.
+   * <h2>Clone</h2>
+   * <p>Creates a re-entrant-safe-single-state-method, from a given method.</p>
+   * <br>
+   * <p>The method implementation must honor the reset contract, by configuring
+   * itself as a new instance.</p>
    *
-   * @return
+   * <p>A default method should not store any runtime values. Runtime values
+   * should be applied during {@link #reset()} and
+   * {@link #start(Scanner, Object[])}.</p>
+   *
+   * @return the cloned method instance
    */
-  @NotNull @Override
+  @NotNull
+  @Override
   protected ScannerMethod clone() {
-    try { return (ScannerMethod) super.clone(); }
+    try {
+      ScannerMethod clone = (ScannerMethod) super.clone();
+      clone.reset();
+      return clone;
+    }
     catch (CloneNotSupportedException failure) {
       throw new Scanner.Exception("unable to create method object", failure);
     }

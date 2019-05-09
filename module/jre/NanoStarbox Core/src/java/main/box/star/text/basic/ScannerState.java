@@ -20,21 +20,23 @@ public class ScannerState implements Cloneable, Serializable {
   public ScannerState(String path) {
     ScannerState state = this;
     state.path = path;
-    state.index = -1; state.column = 0; state.line = 1;
+    state.index = -1;
+    state.column = 0;
+    state.line = 1;
     state.clearHistory();
   }
 
-  public int getHistoryLength(){
+  public int getHistoryLength() {
     return buffer.length();
   }
 
-  public void clearHistory(){
+  public void clearHistory() {
     buffer = new StringBuilder(128);
     bufferPosition = -1;
     columnHistory = new Stack<>();
   }
 
-  protected char escape(char c){
+  protected char escape(char c) {
 
     char previous = previousCharacter();
 
@@ -51,7 +53,7 @@ public class ScannerState implements Cloneable, Serializable {
 
   }
 
-  public boolean haveNext(){
+  public boolean haveNext() {
     return bufferPosition != (buffer.length() - 1);
   }
 
@@ -60,44 +62,62 @@ public class ScannerState implements Cloneable, Serializable {
     return buffer.charAt(bufferPosition);
   }
 
-  protected long nextColumn(){
+  protected long nextColumn() {
     columnHistory.push(column);
     return 0;
   }
 
-  protected long previousColumn(){
+  protected long previousColumn() {
     return columnHistory.pop();
   }
 
-  protected char nextCharacter(char c){
-    switch(escape(c)){
-      case CARRIAGE_RETURN:{ this.column = nextColumn(); break; }
-      case LINE_FEED: { this.column = nextColumn(); this.line++; break; }
-      default: this.column++;
+  protected char nextCharacter(char c) {
+    switch (escape(c)) {
+      case CARRIAGE_RETURN: {
+        this.column = nextColumn();
+        break;
+      }
+      case LINE_FEED: {
+        this.column = nextColumn();
+        this.line++;
+        break;
+      }
+      default:
+        this.column++;
     }
     return c;
   }
 
   protected void recordCharacter(char c) {
-    if (this.buffer.length() == this.buffer.capacity()){
+    if (this.buffer.length() == this.buffer.capacity()) {
       this.buffer.ensureCapacity(this.buffer.length() + historySize);
     }
     this.buffer.append(nextCharacter(c));
-    this.bufferPosition++; this.index++;
+    this.bufferPosition++;
+    this.index++;
   }
 
-  protected void stepBackward(){
+  protected void stepBackward() {
     char c = previousCharacter();
-    bufferPosition--; this.index--; this.eof = false;
-    switch(escape(c)){
-      case CARRIAGE_RETURN: this.column = previousColumn(); break;
-      case LINE_FEED: this.column = previousColumn(); this.line--; break;
-      default: this.column--;
+    bufferPosition--;
+    this.index--;
+    this.eof = false;
+    switch (escape(c)) {
+      case CARRIAGE_RETURN:
+        this.column = previousColumn();
+        break;
+      case LINE_FEED:
+        this.column = previousColumn();
+        this.line--;
+        break;
+      default:
+        this.column--;
     }
   }
 
-  protected char next(){
-    this.index++; this.bufferPosition++;
+  protected char next() {
+    this.index++;
+    this.bufferPosition++;
     return nextCharacter(previousCharacter());
   }
 

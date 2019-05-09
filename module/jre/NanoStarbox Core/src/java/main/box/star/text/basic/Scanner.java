@@ -6,60 +6,16 @@ import box.star.text.Char;
 
 import java.io.*;
 
-import static box.star.text.Char.*;
+import static box.star.text.Char.translate;
 
-public class Scanner implements Closeable{
+public class Scanner implements Closeable {
 
   /**
    * Reader for the input.
    */
   protected Reader reader;
   protected boolean closeable;
-
-  public void setLineEscape(boolean escapeLines){
-    state.escapeLines = escapeLines;
-  }
-
-  public void setLineEscape(boolean escapeLines, boolean useUnderscore) {
-    state.escapeLines = escapeLines;
-    state.escapeUnderscoreLine = useUnderscore;
-  }
-
   protected ScannerState state;
-
-  /**
-   * Call this after each successful main loop to clear the back-buffer.
-   *
-   * {@link #haveNext()} loads the next position into history.
-   *
-   */
-  public void flushHistory(){
-    if (state.haveNext())
-      throw new Exception("cannot flush history",
-          new IllegalStateException("buffer state is not synchronized"));
-    state.clearHistory();
-  }
-
-  @Override
-  public void close() {
-    try /*  ignoring exceptions with final closure */ {
-      if (closeable) reader.close();
-    } catch (IOException ignored){}
-    finally /*  complete */ {
-      ;
-    }
-  }
-
-  /**
-   * Closes the file if closeable when the object is garbage collected.
-   *
-   * @throws Throwable
-   */
-  @Override
-  protected void finalize() throws Throwable {
-    close();
-    super.finalize();
-  }
 
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
@@ -81,10 +37,63 @@ public class Scanner implements Closeable{
     this(file.getPath(), Streams.getUriStream(file.toURI()));
   }
 
+  public void setLineEscape(boolean escapeLines) {
+    state.escapeLines = escapeLines;
+  }
+
+  public void setLineEscape(boolean escapeLines, boolean useUnderscore) {
+    state.escapeLines = escapeLines;
+    state.escapeUnderscoreLine = useUnderscore;
+  }
+
+  /**
+   * Call this after each successful main loop to clear the back-buffer.
+   * <p>
+   * {@link #haveNext()} loads the next position into history.
+   */
+  public void flushHistory() {
+    if (state.haveNext())
+      throw new Exception("cannot flush history",
+          new IllegalStateException("buffer state is not synchronized"));
+    state.clearHistory();
+  }
+
+  /**
+   * <p>call this to close the reader.</p>
+   */
+  @Override
+  public void close() {
+    try /*  ignoring exceptions with final closure */ {
+      if (closeable) reader.close();
+    }
+    catch (IOException ignored) {}
+    finally /*  complete */ {
+    }
+  }
+
+  /**
+   * Closes the file if closeable when the object is garbage collected.
+   *
+   * @throws Throwable
+   */
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
+  }
+
+  /**
+   * @return true if this scanner already has a state lock.
+   */
   public boolean hasStateLock() {
     return state.snapshot;
   }
 
+  /**
+   * Obtains a state lock, which can reset the reader and state if needed.
+   *
+   * @return a new state lock if the state is not already locked.
+   */
   @NotNull
   public ScannerStateLock getStateLock() {
     return new ScannerStateLock(this);
@@ -98,14 +107,13 @@ public class Scanner implements Closeable{
    * @throws Exception thrown if there is an error stepping forward
    *                   or backward while checking for more data.
    */
-
   public boolean haveNext() throws Exception {
     if (state.haveNext()) return true;
     else if (state.eof) return false;
     else {
       try {
         int c = this.reader.read();
-        if (c <= 0){
+        if (c <= 0) {
           state.eof = true;
           return false;
         }
@@ -122,7 +130,6 @@ public class Scanner implements Closeable{
    *
    * @return true if at the end of the file and we didn't step back
    */
-
   public boolean endOfSource() {
     return state.eof && !state.haveNext();
   }
@@ -132,7 +139,6 @@ public class Scanner implements Closeable{
    *
    * @throws Exception if unable to step backward
    */
-
   public void back() throws Exception { state.stepBackward(); }
 
   /**
@@ -141,13 +147,12 @@ public class Scanner implements Closeable{
    * @return
    * @throws Exception if read fails
    */
-
   public char next() throws Exception {
     if (state.haveNext()) return state.next();
     else {
       try {
         int c = this.reader.read();
-        if (c <= 0){
+        if (c <= 0) {
           state.eof = true;
           return 0;
         }
@@ -158,7 +163,11 @@ public class Scanner implements Closeable{
     }
   }
 
-
+  /**
+   * @param character
+   * @param caseSensitive
+   * @return
+   */
   public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
     if (c == 0)
@@ -180,7 +189,6 @@ public class Scanner implements Closeable{
    * @return
    * @throws SyntaxError if match fails
    */
-
   @NotNull
   public String nextString(@NotNull String source, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
@@ -196,7 +204,6 @@ public class Scanner implements Closeable{
    * @return
    * @throws Exception if read fails.
    */
-
   @NotNull
   public String nextMap(@NotNull char... map) throws Exception {
     char c;
@@ -220,7 +227,6 @@ public class Scanner implements Closeable{
    * @return
    * @throws Exception if read fails.
    */
-
   @NotNull
   public String nextMapLength(int max, @NotNull char... map) throws Exception {
     char c;
@@ -244,7 +250,6 @@ public class Scanner implements Closeable{
    * @return
    * @throws Exception if read fails.
    */
-
   @NotNull
   public String nextField(@NotNull char... map) throws Exception {
     char c;
@@ -268,7 +273,6 @@ public class Scanner implements Closeable{
    * @return
    * @throws Exception if read fails.
    */
-
   @NotNull
   public String nextFieldLength(int max, @NotNull char... map) throws Exception {
     char c;
@@ -294,7 +298,6 @@ public class Scanner implements Closeable{
    *                   n characters remaining in the source string.
    */
   @NotNull
-
   public String nextLength(int n) throws Exception {
     if (n == 0) {
       return "";
@@ -311,24 +314,45 @@ public class Scanner implements Closeable{
     return new String(chars);
   }
 
+  /**
+   * <h2>Run</h2>
+   * <p>Starts a {@link ScannerMethod}.</p>
+   * <br>
+   * <p>Creates a copy of the method, and calls its
+   * {@link ScannerMethod#start(Scanner, Object[])} method with the given
+   * parameters.</p>
+   *
+   * @param method
+   * @param parameters
+   * @return
+   */
   @NotNull
   final public String run(ScannerMethod method, Object... parameters) {
-    method.reset();
+    method = method.clone();
     method.start(this, parameters);
-    char c;
     do {
-      c = next();
+      char c = next();
       method.collect(this, c);
       if (method.terminator(this, c)) break;
     } while (method.scanning(this));
     return method.compile(this);
   }
 
-  public boolean backSlashMode(){
+  /**
+   * <p>Call this to determine if the current character should be escaped.</p>
+   * <br>
+   * <p>if the sequence is \ then backslash mode = true;</p>
+   * <p>if the sequence is \\ then backslash mode = false (and escape mode = true).</p>
+   *
+   * @return true if the current state is in backslash mode.
+   */
+  public boolean backSlashMode() {
     return state.slashing;
   }
 
-
+  /**
+   * @return true if the current state is in escape mode for the current character.
+   */
   public boolean escapeMode() {
     return state.escaped;
   }
@@ -339,7 +363,6 @@ public class Scanner implements Closeable{
    * @param message The error message.
    * @return A Exception object, suitable for throwing
    */
-
   @NotNull
   public SyntaxError syntaxError(String message) {
     return new SyntaxError(message + this.claim());
@@ -352,37 +375,30 @@ public class Scanner implements Closeable{
    * @param causedBy The throwable that caused the error.
    * @return A Exception object, suitable for throwing
    */
-
   @NotNull
   public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
     return new SyntaxError(message + this.claim(), causedBy);
   }
 
-
   public String claim() {
-    return " at location = "+"{line: " + getLine() + ", column: " + getColumn() + ", index: "+getIndex()+", source: '"+getPath()+"'}";
+    return " at location = " + "{line: " + getLine() + ", column: " + getColumn() + ", index: " + getIndex() + ", source: '" + getPath() + "'}";
   }
-
 
   public String toString() {
     return claim();
   }
 
-
   public String getPath() {
     return state.path;
   }
-
 
   public long getIndex() {
     return state.index;
   }
 
-
   public long getLine() {
     return state.line;
   }
-
 
   public long getColumn() {
     return state.column;
