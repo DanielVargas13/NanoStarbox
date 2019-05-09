@@ -32,6 +32,11 @@ import static box.star.text.Char.*;
  * <p>A method may call other methods, and may also call upon the methods
  * of the scanner during any execution phase of its lifecycle.</p>
  * <br>
+ *
+ * <h3>lifecycle</h3>
+ * <ul>
+ *   {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminator(Scanner, char)} and {@link #scanning(Scanner)}</li>
+ * </ul>
  */
 public class ScannerMethod implements Cloneable {
 
