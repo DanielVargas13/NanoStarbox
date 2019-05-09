@@ -54,10 +54,26 @@ public class ScannerMethod implements Cloneable {
   @NotNull
   public String toString() { return claim; }
 
+
+  /**
+   * Performs all right-hand-side-ampersand operations.
+   *
+   * (for this: right-hand-side = "everything after")
+   *
+   * the default method expands nothing.
+   *
+   * @param scanner
+   */
+  protected String expandAmpersand(@NotNull Scanner scanner){
+    return "";
+  }
+
   /**
    * Performs all right-hand-side-backslash operations.
    *
    * (for this: right-hand-side = "everything after")
+   *
+   * escaping `&' will call {@link #expandAmpersand(Scanner)}.
    *
    * @param scanner
    * @param character
@@ -66,6 +82,7 @@ public class ScannerMethod implements Cloneable {
   @Nullable
   protected String expand(@NotNull Scanner scanner, char character){
     switch (character){
+      case '&': return expandAmpersand(scanner);
       case 'd': return DELETE+"";
       case 'e': return ESCAPE+"";
       case 't': return "\t";
