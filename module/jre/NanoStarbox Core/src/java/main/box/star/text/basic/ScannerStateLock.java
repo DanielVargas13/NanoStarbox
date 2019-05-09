@@ -28,7 +28,7 @@ public class ScannerStateLock {
     main.state.snapshot = true;
   }
 
-  public void back() throws Scanner.Exception {
+  public void restore() throws Scanner.Exception {
     if (main == null) return;
     try {
       try {
@@ -39,10 +39,10 @@ public class ScannerStateLock {
         throw new Scanner.Exception("failed to release lock", e);
       }
     }
-    finally { close(); }
+    finally { free(); }
   }
 
-  public void close() {
+  public void free() {
     if (main == null) return;
     try {
       try { main.reader.mark(1);}

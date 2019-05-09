@@ -41,7 +41,7 @@ class TextScannerTest {
     ScannerStateLock s = x.getStateLock();
     assertEquals(true, x.hasStateLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
-    s.close();
+    s.free();
     assertEquals(false, x.hasStateLock());
     assertEquals("23", x.nextMapLength(2, MAP_ASCII_NUMBERS));
     snapshot_rewind_lifecycle();
@@ -53,7 +53,7 @@ class TextScannerTest {
     ScannerStateLock s = x.getStateLock();
     assertEquals(true, x.hasStateLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
-    s.back();
+    s.restore();
     assertEquals(false, x.hasStateLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
   }
@@ -65,7 +65,7 @@ class TextScannerTest {
     Scanner x = new Scanner("test-string", s2);
     ScannerStateLock sx = x.getStateLock();
     assertEquals(s2, x.nextString(s2, true));
-    sx.back();
+    sx.restore();
     try {
       sx = x.getStateLock();
       x.nextString(s3, true);
@@ -74,12 +74,12 @@ class TextScannerTest {
       String certification = "Expected A and found a at location = " +
           "{line: 1, column: 11, index: 10, source: 'test-string'}";
       assertEquals(certification, e.getMessage());
-      sx.back();
+      sx.restore();
     }
     // finally test case insensitive
     assertEquals(s3, x.nextString(s2, false));
     // this doesn't matter if you are not going to use x.
-    sx.close();
+    sx.free();
   }
 
 }
