@@ -6,6 +6,14 @@ import box.star.text.Char;
 
 import static box.star.text.Char.*;
 
+/**
+ * ScannerMethod
+ *
+ * Extends the operational capabilities of {@link Scanner}
+ *
+ * Use ScannerMethods to perform inline stream extrapolations.
+ *
+ */
 public class ScannerMethod implements Cloneable {
 
   /**
@@ -26,7 +34,6 @@ public class ScannerMethod implements Cloneable {
    * Overriding is not recommended.
    * </i></p>
    */
-
   protected void reset() {
     buffer = new StringBuilder((int) SPACE);
     bufferOffset = - 1;
@@ -41,7 +48,6 @@ public class ScannerMethod implements Cloneable {
    * @param scanner    the host scanner
    * @param parameters the parameters given by the caller.
    */
-
   protected void start(@NotNull Scanner scanner, Object[] parameters) {}
 
   /**
@@ -51,7 +57,6 @@ public class ScannerMethod implements Cloneable {
    *
    * @return String representation
    */
-  
   @NotNull
   public String toString() { return claim; }
 
@@ -139,11 +144,31 @@ public class ScannerMethod implements Cloneable {
     }
   }
 
+  /**
+   *  Places the given character on the character buffer at the current position,
+   *  overwriting the current position.
+   *
+   * This feature enables incorporation of escape expansions into the current
+   * buffer.
+   *
+   * @param forLastBufferCharacter
+   */
   protected void swap(@Nullable char forLastBufferCharacter){
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     buffer.append(forLastBufferCharacter);
   }
 
+  /**
+   * Places the given string on the character buffer at the current position,
+   * overwriting the current position.
+   *
+   * If the string is empty or null, the operation is silently aborted.
+   *
+   * This feature enables incorporation of escape expansions into the current
+   * buffer.
+   *
+   * @param forLastBufferCharacter
+   */
   protected void swap(@Nullable String forLastBufferCharacter){
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     if (forLastBufferCharacter == null || forLastBufferCharacter.equals("")) return;
@@ -152,33 +177,35 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * Add a character to the method buffer.
-   * <p>
-   * This super method does not collect backslashes unless the backslash is
-   * escaped.
    *
    * @param scanner
    * @param character
    */
-
   protected void collect(@NotNull Scanner scanner, char character) {
     buffer.append(character);
     bufferOffset++;
   }
 
+  /**
+   * Returns true if the character is zero.
+   *
+   * @param scanner
+   * @param character
+   * @return
+   */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
     return character == 0;
   }
 
   /**
-   * Return true to break processing on this character.
-   * <p>
-   * This super method handles backslash escapes, quoting, and end of source.
+   * Return true to break processing at this character position.
+   *
+   * The default method handles the zero terminator.
    *
    * @param scanner
    * @param character
    * @return false to continue processing.
    */
-
   protected boolean terminator(@NotNull Scanner scanner, char character) {
     return zeroTerminator(scanner, character);
   }
@@ -186,10 +213,11 @@ public class ScannerMethod implements Cloneable {
   /**
    * Return the compiled buffer contents.
    *
+   * This method is called after the scanner completes a method call.
+   *
    * @param scanner
    * @return the buffer.
    */
-  
   @NotNull
   protected String compile(@NotNull Scanner scanner) {
     return buffer.toString();
@@ -203,7 +231,6 @@ public class ScannerMethod implements Cloneable {
    * @param scanner
    * @return true if the TextScanner should read more input.
    */
-
   protected boolean scanning(@NotNull Scanner scanner) { return true; }
 
   /**
@@ -214,28 +241,52 @@ public class ScannerMethod implements Cloneable {
    *
    * @param scanner
    */
-
   protected void back(@NotNull Scanner scanner) {
     scanner.back();
     buffer.setLength(bufferOffset--);
   }
 
+  /**
+   * Examine the character on the top of the buffer.
+   *
+   * Works like {@link #pop()}, but doesn't modify the buffer.
+   *
+   * @return
+   */
   protected char peek(){
     return buffer.charAt(bufferOffset);
   }
 
+  /**
+   * Examine characters on the top of the buffer.
+   *
+   * Works like {@link #pop(int)}, but doesn't modify the buffer.
+   *
+   * @param count
+   * @return
+   */
   protected char[] peek(int count){
     int offset = Math.max(0, buffer.length() - count);
     return buffer.substring(offset).toCharArray();
   }
 
-
+  /**
+   * Cuts the top character from the top of the buffer.
+   *
+   * @return the top character on the buffer
+   */
   protected char pop(){
     char c = buffer.charAt(bufferOffset--);
     buffer.setLength(bufferOffset);
     return c;
   }
 
+  /**
+   * Cut characters from the top of the buffer.
+   *
+   * @param count the amount of characters to cut
+   * @return the characters selected
+   */
   protected char[] pop(int count){
     int offset = Math.max(0, buffer.length() - count);
     char[] c = buffer.substring(offset).toCharArray();
@@ -249,7 +300,6 @@ public class ScannerMethod implements Cloneable {
    *
    * @return
    */
-  
   @NotNull @Override
   protected ScannerMethod clone() {
     try { return (ScannerMethod) super.clone(); }
