@@ -25,6 +25,21 @@ public class MacroFilter implements Cloneable {
     catch (CloneNotSupportedException e) { throw new RuntimeException(e); }
   }
 
+  /**
+   * This is where you scan static text for identifiers, and replace them.
+   *
+   * Each parameter, and command execution result, will be run through
+   * this procedure.
+   *
+   * You may perform a recursive loop in this phase to resolve all identifiers.
+   *
+   * @param text
+   * @return
+   */
+  public String expand(String text){
+    return text;
+  }
+
   public Scanner scanner;
   public Map<String, Command> commandMap = new Hashtable<>();
   public Map<String, Object> objectMap = new Hashtable<>();
@@ -42,17 +57,17 @@ public class MacroFilter implements Cloneable {
   String exec(String command, Stack<String> parameters){
     if (commandMap.containsKey(command)){
       Command action = commandMap.get(command);
-      return action.run(this, parameters);
+      return expand(action.run(this, parameters));
     }
     throw scanner.syntaxError("unknown command", new IllegalArgumentException(command));
   }
 
-  ScannerMethod main = new ScannerMethod("MacroFilter"){
+  ScannerMethod main = new ScannerMethod("main"){
     @Override
     protected boolean scan(@NotNull Scanner scanner) {
       if (current() == '%') {
         char next = scanner.next();
-        if (next == '(') swap(scanner.run(submacro));
+        if (next == '(') swap(scanner.run(macroCommand));
         else scanner.back();
       }
       return true;
@@ -61,7 +76,7 @@ public class MacroFilter implements Cloneable {
 
   static char[] breakMap = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(')').toArray();
 
-  ScannerMethod submacro = new ScannerMethod("MacroFilterFunction"){
+  ScannerMethod macroCommand = new ScannerMethod("command"){
 
     /**
      * Disable buffer collection
@@ -92,13 +107,13 @@ public class MacroFilter implements Cloneable {
         scanner.nextCharacter(')', false);
       } else if (character == '%') {
         char next = scanner.next();
-        if (next == '(') swap(scanner.run(submacro));
+        if (next == '(') swap(scanner.run(macroCommand));
         else scanner.back();
       } else if (character == ')') {
         return true;
       } else {
         String param = character + scanner.nextField(breakMap);
-        if (param.length() > 0) params.add(param);
+        if (param.length() > 0) params.add(context.expand(param));
       }
       return false;
     }
