@@ -8,6 +8,25 @@ import java.io.*;
 
 import static box.star.text.Char.translate;
 
+/**
+ * <h2>Basic Text Scanner</h2>
+ * <p>Provides the facilities to scan text.</p>
+ * <br>
+ *   <p>Quick Overview</p>
+ *   <ul>
+ *     <li>Master Batch Operation State Restore through {@link #getStateLock()}</li>
+ *     <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}</li>
+ *     <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
+ *     <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
+ *     <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
+ *     <li>Character Field Boundary Searching through {@link #nextField(char...)} and {@link #nextFieldLength(int, char...)}</li>
+ *     <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
+ *     <li>Integral Line and Character Escape interface through {@link #setLineEscape(boolean)}, {@link #setLineEscape(boolean, boolean)}, {@link #backSlashMode()}, and {@link #escapeMode()}</li>
+ *   </ul>
+ * <br>
+ * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA</tt>
+ * <p></p>
+ */
 public class Scanner implements Closeable {
 
   /**
@@ -448,8 +467,6 @@ public class Scanner implements Closeable {
 
   /**
    * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-   *
-   * @author Hypersoft-Systems: USA
    */
   public static class SyntaxError extends RuntimeException {
     /**
