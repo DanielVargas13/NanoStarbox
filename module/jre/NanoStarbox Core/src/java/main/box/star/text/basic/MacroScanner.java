@@ -10,7 +10,7 @@ import java.util.Stack;
 
 public class MacroScanner {
 
-  static final   char[] scanBreak = new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE).merge(')').toArray();
+  static final char[] scanBreak = new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE).merge(')').toArray();
 
   public static class Command implements Cloneable {
     protected Scanner scanner;
@@ -19,17 +19,18 @@ public class MacroScanner {
       this.scanner = scanner;
       this.main = main;
     }
-    protected String run(String command, Stack<String> parameters){
-      return "";
-    }
+    /**
+     * Your subclass implementation here
+     * @param command
+     * @param parameters
+     * @return
+     */
+    protected String run(String command, Stack<String> parameters){ return Tools.EMPTY_STRING; }
+    
     @Override
     protected Object clone() {
-      try {
-        return super.clone();
-      }
-      catch (CloneNotSupportedException e) {
-        throw new RuntimeException(e);
-      }
+      try { return super.clone(); }
+      catch (CloneNotSupportedException e) { throw new RuntimeException(e); }
     }
   }
 
@@ -47,13 +48,11 @@ public class MacroScanner {
   }
 
   public MacroScanner addCommand(String name, Command command){
-    commands.put(name, command);
-    return this;
+    commands.put(name, command); return this;
   }
 
   public MacroScanner addObject(String name, Object object){
-    objects.put(name, object);
-    return this;
+    objects.put(name, object); return this;
   }
 
   String nextMacroBody(Scanner scanner, char closure){
@@ -106,25 +105,11 @@ public class MacroScanner {
 
     MacroScanner context;
 
-    public Runner(){
-      this.context = new MacroScanner(System.getenv());
-    }
-
-    public Runner(MacroScanner context){
-      this.context = context;
-    }
-
-    @Override
-    protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      if (context == null) this.context = (MacroScanner) parameters[0];
-    }
+    public Runner(MacroScanner context){ this.context = context; }
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
-      if (character == '%') {
-        swap(context.doMacro(scanner));
-        return false;
-      }
+      if (character == '%') { swap(context.doMacro(scanner)); return false; }
       return super.terminate(scanner, character);
     }
 
@@ -142,22 +127,16 @@ public class MacroScanner {
 
     @Override
     protected boolean scan(@NotNull Scanner scanner) {
-      String name = current()+scanner.nextField(scanBreak);
-      Stack<String> parameters = new Stack<>();
-      scanner.run(parameterBuilder, context, parameters);
-      swap(context.doCommand(scanner, name, parameters));
+      if (current() == ')'){ stepBack(scanner); }
+      else {
+        String name = current()+scanner.nextField(scanBreak);
+        Stack<String> parameters = new Stack<>();
+        scanner.run(parameterBuilder, context, parameters);
+        swap(context.doCommand(scanner, name, parameters));
+      }
       return false;
     }
-
-    @Override
-    protected boolean terminate(@NotNull Scanner scanner, char character) {
-      if (character == ')'){
-        back(scanner);
-        return true;
-      }
-      return super.terminate(scanner, character);
-    }
-
+    
   }
 
   private class ParameterBuilder extends  ScannerMethod {
@@ -173,36 +152,36 @@ public class MacroScanner {
     }
 
     @Override
+    protected boolean scan(@NotNull Scanner scanner) {
+      scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
+      return true;
+    }
+
+    @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (character == '%') {
         parameters.push(context.doMacro(scanner));
-        scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
         return false;
       } else if (character == ')'){
-        back(scanner);
+        stepBack(scanner);
         return true;
       } else if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
         String data = scanner.nextUnescapedField(character);
         parameters.push(context.start(file, data));
         scanner.nextCharacter(character);
-        scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
         return false;
       } else if (character == Char.SINGLE_QUOTE) {
         parameters.push(scanner.nextUnescapedField(character));
         scanner.nextCharacter(character);
-        scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
         return false;
       }
       parameters.push(character + scanner.nextField(scanBreak));
-      scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       return false;
     }
 
     @Override
-    protected @NotNull String compile(@NotNull Scanner scanner) {
-      return "";
-    }
+    protected @NotNull String compile(@NotNull Scanner scanner) { return Tools.EMPTY_STRING; }
 
   }
 }

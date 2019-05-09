@@ -1,5 +1,6 @@
 package box.star.text.basic;
 
+import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.io.Streams;
 import box.star.text.Char;
@@ -338,7 +339,7 @@ public class Scanner implements Closeable {
   @NotNull
   public String nextLength(int n) throws Exception {
     if (n == 0) {
-      return "";
+      return Tools.EMPTY_STRING;
     }
     char[] chars = new char[n];
     int pos = 0;

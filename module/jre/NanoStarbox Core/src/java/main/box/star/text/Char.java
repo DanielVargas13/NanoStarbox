@@ -1,5 +1,6 @@
 package box.star.text;
 
+import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 
@@ -133,11 +134,11 @@ public final class Char {
   }
 
   public static int parseInt(char c) {
-    return Integer.parseInt(c + "");
+    return Integer.parseInt(c + Tools.EMPTY_STRING);
   }
 
   public static int parseInt(char c, int base) {
-    return Integer.parseInt(c + "", base);
+    return Integer.parseInt(c + Tools.EMPTY_STRING, base);
   }
 
   public static char valueOf(int c){
@@ -149,11 +150,11 @@ public final class Char {
   }
 
   public static char toLowerCase(char c) {
-    return toLowerCase(c+"")[0];
+    return toLowerCase(c+Tools.EMPTY_STRING)[0];
   }
 
   public static char toUpperCase(char c) {
-    return toUpperCase(c+"")[0];
+    return toUpperCase(c+Tools.EMPTY_STRING)[0];
   }
 
   public static String toString(char... elements){
@@ -393,7 +394,7 @@ public final class Char {
     }
 
     public boolean contains(char character) {
-      return chars.indexOf(character + "") != -1;
+      return chars.indexOf(character + Tools.EMPTY_STRING) != -1;
     }
 
     private static class RangeMap {

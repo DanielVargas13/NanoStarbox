@@ -1,5 +1,6 @@
 package box.star.text.basic;
 
+import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.text.Char;
@@ -103,7 +104,7 @@ public class ScannerMethod implements Cloneable {
    * @param scanner
    */
   protected String expandAmpersand(@NotNull Scanner scanner) {
-    return "";
+    return Tools.EMPTY_STRING;
   }
 
   /**
@@ -123,15 +124,15 @@ public class ScannerMethod implements Cloneable {
       case '&':
         return expandAmpersand(scanner);
       case 'd':
-        return DELETE + "";
+        return DELETE + Tools.EMPTY_STRING;
       case 'e':
-        return ESCAPE + "";
+        return ESCAPE + Tools.EMPTY_STRING;
       case 't':
         return "\t";
       case 'b':
         return "\b";
       case 'v':
-        return VERTICAL_TAB + "";
+        return VERTICAL_TAB + Tools.EMPTY_STRING;
       case 'r':
         return "\r";
       case 'n':
@@ -158,7 +159,7 @@ public class ScannerMethod implements Cloneable {
           throw scanner.syntaxError("octal escape subscript out of range; expected 00-0377; have: " + value);
         }
         char out = (char) value;
-        return out + "";
+        return out + Tools.EMPTY_STRING;
       }
       /*integer or pass-through */
       default: {
@@ -169,7 +170,7 @@ public class ScannerMethod implements Cloneable {
             throw scanner.syntaxError("integer escape subscript out of range; expected 0-255; have: " + value);
           } else {
             char out = (char) value;
-            return out + "";
+            return out + Tools.EMPTY_STRING;
           }
         } else return tryExpand(scanner, character);
       }
@@ -204,7 +205,7 @@ public class ScannerMethod implements Cloneable {
    */
   protected void swap(@Nullable String forLastBufferCharacter) {
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
-    if (forLastBufferCharacter == null || forLastBufferCharacter.equals("")) return;
+    if (forLastBufferCharacter == null || forLastBufferCharacter.equals(Tools.EMPTY_STRING)) return;
     buffer.append(forLastBufferCharacter);
     bufferOffset += forLastBufferCharacter.length();
   }
@@ -229,7 +230,7 @@ public class ScannerMethod implements Cloneable {
    */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
     if (character == 0) {
-      back(scanner);
+      stepBack(scanner);
       return true;
     }
     return false;
@@ -279,7 +280,7 @@ public class ScannerMethod implements Cloneable {
    *
    * @param scanner
    */
-  protected void back(@NotNull Scanner scanner) {
+  protected void stepBack(@NotNull Scanner scanner) {
     scanner.back();
     buffer.setLength(bufferOffset--);
   }

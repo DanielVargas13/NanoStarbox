@@ -22,6 +22,8 @@ import java.util.*;
 public class Tools {
 
 
+  public static final String EMPTY_STRING = "";
+
   /**
    * Reflection of Throwable.initCause(Throwable) from JDK 1.4
    * or nul if it is not available.
