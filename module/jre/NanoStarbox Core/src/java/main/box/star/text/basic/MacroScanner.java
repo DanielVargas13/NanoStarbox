@@ -10,7 +10,13 @@ import java.util.Stack;
 
 public class MacroScanner {
 
-  static final char[] scanBreak = new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE).merge(')').toArray();
+  private final static char
+      ENTER_PROCEDURE = '(', EXIT_PROCEDURE = ')',
+      ENTER_OBJECT = '{', EXIT_OBJECT = '}',
+      ENTER_VARIABLE = '[', EXIT_VARIABLE = ']';
+
+  private static final char[] scanProcedureBreak = new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE).merge(EXIT_PROCEDURE).toArray();
+  public char macroTrigger = '%';
 
   public static class Command implements Cloneable {
     protected Scanner scanner;
@@ -74,22 +80,22 @@ public class MacroScanner {
     MacroScanner context = this;
     char next = scanner.next();
     switch (next){
-      case '{': {
+      case ENTER_OBJECT: {
         return(Tools.makeNotNull(
-            context.objects.get(nextMacroBody(scanner, '}')
+            context.objects.get(nextMacroBody(scanner, EXIT_OBJECT)
             ), "undefined").toString());
       }
-      case '(': {
+      case ENTER_PROCEDURE: {
         String output = scanner.run(commandBuilder, context);
-        scanner.nextCharacter(')');
+        scanner.nextCharacter(EXIT_PROCEDURE);
         return(output);
       }
-      case '[': {
-        return(context.environment.get(nextMacroBody(scanner, ']')));
+      case ENTER_VARIABLE: {
+        return(context.environment.get(nextMacroBody(scanner, EXIT_VARIABLE)));
       }
       default: scanner.back();
     }
-    return "%"; // failed;
+    return Char.toString(macroTrigger); // failed;
   }
 
   private String doCommand(Scanner scanner, String commandName, Stack<String> parameters) {
@@ -109,7 +115,7 @@ public class MacroScanner {
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
-      if (character == '%') { swap(context.doMacro(scanner)); return false; }
+      if (character == context.macroTrigger) { swap(context.doMacro(scanner)); return false; }
       return super.terminate(scanner, character);
     }
 
@@ -127,9 +133,9 @@ public class MacroScanner {
 
     @Override
     protected boolean scan(@NotNull Scanner scanner) {
-      if (current() == ')'){ stepBack(scanner); }
+      if (current() == EXIT_PROCEDURE){ stepBack(scanner); }
       else {
-        String name = current()+scanner.nextField(scanBreak);
+        String name = current()+scanner.nextField(scanProcedureBreak);
         Stack<String> parameters = new Stack<>();
         scanner.run(parameterBuilder, context, parameters);
         swap(context.doCommand(scanner, name, parameters));
@@ -159,10 +165,10 @@ public class MacroScanner {
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
-      if (character == '%') {
+      if (character == context.macroTrigger) {
         parameters.push(context.doMacro(scanner));
         return false;
-      } else if (character == ')'){
+      } else if (character == EXIT_PROCEDURE){
         stepBack(scanner);
         return true;
       } else if (character == Char.DOUBLE_QUOTE) {
@@ -176,7 +182,7 @@ public class MacroScanner {
         scanner.nextCharacter(character);
         return false;
       }
-      parameters.push(character + scanner.nextField(scanBreak));
+      parameters.push(character + scanner.nextField(scanProcedureBreak));
       return false;
     }
 
