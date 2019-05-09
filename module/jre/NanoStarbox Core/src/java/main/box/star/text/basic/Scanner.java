@@ -105,7 +105,7 @@ public class Scanner implements Closeable {
    * @return true if this scanner already has a state lock.
    */
   public boolean hasStateLock() {
-    return state.snapshot;
+    return state.locked;
   }
 
   /**

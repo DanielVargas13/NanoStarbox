@@ -25,7 +25,7 @@ public class ScannerStateLock {
     catch (IOException e) {
       throw new Scanner.Exception("failed to configure source reader", e);
     }
-    main.state.snapshot = true;
+    main.state.locked = true;
   }
 
   public void restore() throws Scanner.Exception {
@@ -36,7 +36,7 @@ public class ScannerStateLock {
         main.state = backupState;
       }
       catch (IOException e) {
-        throw new Scanner.Exception("failed to release lock", e);
+        throw new Scanner.Exception("failed to restore backup state", e);
       }
     }
     finally { free(); }
@@ -49,7 +49,7 @@ public class ScannerStateLock {
       catch (IOException ignore) {}
     }
     finally {
-      this.main.state.snapshot = false;
+      this.main.state.locked = false;
       this.main = null;
       this.backupState = null;
     }
