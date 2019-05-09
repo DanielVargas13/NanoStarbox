@@ -9,12 +9,16 @@ class MacroContextTest {
   @Test void main(){
     MacroContext macroContext = new MacroContext(System.getenv());
     macroContext.addCommand("test", new MacroContext.Command(){
+      /**
+       * Make a simple show of it
+       */
       @Override
       protected String run(String command, Stack<String> parameters) {
         return String.join(", ", parameters);
       }
     });
     Scanner scanner = new Scanner("test", "Java Menu: %(test \"%[JDK_HOME]\" %[JAVA_HOME])");
-    System.out.println(scanner.run(new MacroRunner(macroContext)));
+    System.out.println(macroContext.start(scanner));
   }
+
 }
