@@ -7,18 +7,16 @@ import box.star.text.Char;
 import static box.star.text.Char.*;
 
 /**
- * ScannerMethod
+ * <p>ScannerMethod</p>
  *
- * Extends the operational capabilities of {@link Scanner}
+ * <p>This class extends the operational capabilities of the basic text
+ * {@link Scanner}.</p>
  *
- * Use ScannerMethods to perform inline stream extrapolations.
+ * <p>Use this class to perform inline stream extrapolations.</p>
  *
  */
 public class ScannerMethod implements Cloneable {
 
-  /**
-   * Stored results of last call to parseQuote
-   */
   protected String claim;
   protected StringBuilder buffer;
   protected int bufferOffset;
@@ -60,18 +58,17 @@ public class ScannerMethod implements Cloneable {
   @NotNull
   public String toString() { return claim; }
 
-
   /**
    * The expand pass-through-method.
    *
    * The recommended override for systematic performance integrity of the expand
    * command.
    *
-   * @param sanner
+   * @param scanner
    * @param c
    * @return
    */
-  protected String tryExpand(@NotNull Scanner sanner, char c){ return Char.toString(c); }
+  protected String tryExpand(@NotNull Scanner scanner, char c){ return Char.toString(c); }
 
   /**
    * Performs all right-hand-side-ampersand operations.
