@@ -183,6 +183,7 @@ public class ScannerMethod implements Cloneable {
   protected void swap(@Nullable char forLastBufferCharacter) {
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     buffer.append(forLastBufferCharacter);
+    bufferOffset++;
   }
 
   /**
@@ -200,6 +201,7 @@ public class ScannerMethod implements Cloneable {
     if (bufferOffset > -1) buffer.setLength(bufferOffset--);
     if (forLastBufferCharacter == null || forLastBufferCharacter.equals("")) return;
     buffer.append(forLastBufferCharacter);
+    bufferOffset += forLastBufferCharacter.length();
   }
 
   /**
