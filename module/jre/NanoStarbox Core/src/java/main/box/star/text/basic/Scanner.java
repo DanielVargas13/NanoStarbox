@@ -132,7 +132,7 @@ public class Scanner implements Closeable {
     else {
       try {
         int c = this.reader.read();
-        if (c <= 0) {
+        if (c < 0) {
           state.eof = true;
           return false;
         }
@@ -171,7 +171,7 @@ public class Scanner implements Closeable {
     else {
       try {
         int c = this.reader.read();
-        if (c <= 0) {
+        if (c < 0) {
           state.eof = true;
           return 0;
         }
