@@ -199,6 +199,13 @@ public class MacroScanner {
 //      return parameters;
 //    }
 
+    protected Stack<String> split(String source){
+      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
+      Stack<String> parameters = new Stack<>();
+      scanner.run(this, context, parameters);
+      return parameters;
+    }
+
     private String getParameter(Scanner scanner, char character){
       if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
@@ -207,7 +214,8 @@ public class MacroScanner {
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
           data += getParameter(scanner, character);
         }
-        return data;//(context.start(file, data));
+        // expand double quoted text
+        return (context.start(file, data));
       } else if (character == Char.SINGLE_QUOTE) {
         String data = scanner.nextField(character);
         scanner.nextCharacter(character);
@@ -222,7 +230,10 @@ public class MacroScanner {
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (character == context.macroTrigger) {
-        parameters.push(context.doMacro(scanner));
+        // expand unquoted macros, into positional parameters.
+        // does not support concatenations.
+        parameters.addAll(split(context.doMacro(scanner)));
+        //parameters.push();
         return false;
       } else if (character == EXIT_PROCEDURE){
         backStep(scanner);

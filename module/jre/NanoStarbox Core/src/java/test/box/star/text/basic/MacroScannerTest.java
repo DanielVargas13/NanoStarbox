@@ -6,7 +6,7 @@ import java.util.Stack;
 
 class MacroScannerTest {
 
-  Scanner scanner = new Scanner("test", "%(menu %(list '%[JDK_HOME]' '%[TEMP]'))");
+  Scanner scanner = new Scanner("test", "%(menu \"%(list '%[JDK_HOME]' '%[TEMP]')\")");
 
   @Test void main(){
     MacroScanner macroContext = new MacroScanner(System.getenv());
