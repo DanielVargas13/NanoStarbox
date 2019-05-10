@@ -192,13 +192,6 @@ public class MacroScanner {
       return true;
     }
 
-//    protected Stack<String> split(String source){
-//      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
-//      Stack<String> parameters = new Stack<>();
-//      scanner.run(this, context, parameters);
-//      return parameters;
-//    }
-
     protected Stack<String> split(String source){
       Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
       Stack<String> parameters = new Stack<>();
