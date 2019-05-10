@@ -230,7 +230,8 @@ public class ScannerMethod implements Cloneable {
    */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
     if (character == 0) {
-      backStep(scanner);
+      //pop();
+      //backStep(scanner);
       return true;
     }
     return false;

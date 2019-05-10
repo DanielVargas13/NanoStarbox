@@ -9,6 +9,7 @@ import static box.star.text.Char.*;
 import box.star.text.basic.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TextScannerTest {
 
@@ -77,6 +78,34 @@ class TextScannerTest {
     assertEquals(s3, x.nextString(s2, false));
     // this doesn't matter if you are not going to use x.
     sx.free();
+  }
+
+  @Test void location_tracking(){
+    String s = "0123456789";
+    Scanner x = new Scanner("test-string", s);
+    x.next();
+    assertEquals(1, x.getColumn());
+    x.back();
+    assertEquals(0, x.getColumn());
+    System.err.println(x.run(new ScannerMethod(){}));
+    assertEquals(s.indexOf("9"), x.getIndex());
+    assertEquals(s.length(), x.getColumn());
+    assertTrue(x.endOfSource());
+    x.back();
+    x.back();
+    x.back();
+    assertEquals(s.length() - 3, x.getColumn());
+    System.err.println(x.run(new ScannerMethod(){
+      @Override
+      protected @NotNull String compile(@NotNull Scanner scanner) {
+        if (scanner.getIndex() == 9) {
+          backStep(scanner);
+          backStep(scanner);
+        }
+        return super.compile(scanner);
+      }
+    }));
+    assertEquals(9 - 2, x.getIndex());
   }
 
 }
