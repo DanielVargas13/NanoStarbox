@@ -27,7 +27,7 @@ class MacroScannerTest {
       @Override
       protected String run(String command, Stack<String> parameters) {
         StringBuilder out = new StringBuilder();
-        out.append(call("alert", null));
+        out.append(call("alert"));
         out.append(eval(" %[what]: \n\n"));
         // spec: first element is variable list; platform: Windows; tweak variables for local system effects.
         for (String p: parameters.firstElement().split(", ")){

@@ -4,6 +4,7 @@ import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.text.Char;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
@@ -25,6 +26,12 @@ public class MacroScanner {
   public static class Command implements Cloneable {
     protected Scanner scanner;
     protected MacroScanner main;
+
+    protected String call(String name, String... parameters){
+      Stack<String>p = new Stack<>();
+      p.addAll(Arrays.asList(parameters));
+      return main.doCommand(scanner, name, p);
+    }
 
     protected String call(String name, Stack<String> parameters){
       return main.doCommand(scanner, name, parameters);
@@ -68,7 +75,7 @@ public class MacroScanner {
   private CommandBuilder commandBuilder = new CommandBuilder();
   private Main macroRunner = new Main(this);
 
-  MacroScanner(Map<String, String> environment){
+  public MacroScanner(Map<String, String> environment){
     this.environment = new Hashtable<>(environment);
     objects = new Hashtable<>();
     commands = new Hashtable<>();
