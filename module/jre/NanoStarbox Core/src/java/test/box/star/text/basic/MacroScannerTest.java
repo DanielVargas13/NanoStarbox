@@ -26,10 +26,13 @@ class MacroScannerTest {
     macroContext.addCommand("menu", new MacroScanner.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
-        return
-            call("alert", null)
-              +eval(" %[what]: ")
-                +String.join("\n", split(parameters.firstElement()));
+        StringBuilder out = new StringBuilder();
+        out.append(call("alert", null));
+        out.append(eval(" %[what]: \n\n"));
+        for (String p: split(parameters.firstElement())){
+          out.append("\t"+eval(p)+"\n");
+        }
+        return out.toString();
       }
     });
     System.out.println(macroContext.start(scanner));

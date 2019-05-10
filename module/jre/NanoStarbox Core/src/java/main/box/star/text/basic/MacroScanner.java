@@ -192,13 +192,12 @@ public class MacroScanner {
       return true;
     }
 
-    protected Stack<String> split(String source){
-      ParameterBuilder pb = new ParameterBuilder();
-      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
-      Stack<String> parameters = new Stack<>();
-      scanner.run(pb, context, parameters);
-      return parameters;
-    }
+//    protected Stack<String> split(String source){
+//      Scanner scanner = new Scanner("split", source+EXIT_PROCEDURE);
+//      Stack<String> parameters = new Stack<>();
+//      scanner.run(this, context, parameters);
+//      return parameters;
+//    }
 
     private String getParameter(Scanner scanner, char character){
       if (character == Char.DOUBLE_QUOTE) {
@@ -208,7 +207,7 @@ public class MacroScanner {
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
           data += getParameter(scanner, character);
         }
-        return (context.start(file, data));
+        return data;//(context.start(file, data));
       } else if (character == Char.SINGLE_QUOTE) {
         String data = scanner.nextField(character);
         scanner.nextCharacter(character);
