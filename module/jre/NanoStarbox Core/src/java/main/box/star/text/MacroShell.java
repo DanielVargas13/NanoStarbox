@@ -274,10 +274,11 @@ public class MacroShell {
       if (character == context.macroTrigger){
         data.append(context.doMacro(scanner));
       } else if (character == Char.DOUBLE_QUOTE) {
+        long ln = scanner.getLine(), col = scanner.getColumn(), idx = scanner.getIndex();
         data.append(this.extractQuote(scanner));
         scanner.nextCharacter(character);
         if (data.indexOf(Char.toString(context.macroTrigger)) != -1) {
-          data = new StringBuilder(context.start(scanner.getPath(), data.toString(), scanner.getLine(), scanner.getColumn(), scanner.getIndex()));
+          data = new StringBuilder(context.start(scanner.getPath(), data.toString(), ln, col, idx));
         }
       } else if (character == Char.SINGLE_QUOTE) {
         data.append(scanner.nextField(character));
