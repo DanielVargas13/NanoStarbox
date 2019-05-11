@@ -171,7 +171,7 @@ public class Scanner implements Closeable {
     else {
       try {
         int c = this.reader.read();
-        if (c < 0) {
+        if (c <= 0) {
           state.eof = true;
           return 0;
         }
@@ -301,8 +301,7 @@ public class Scanner implements Closeable {
    * @return
    */
   @Nullable
-  public String expand(char character, CharacterExpander fallback) {
-    CharacterExpander support = Tools.makeNotNull(fallback, defaultCharacterExpander);
+  public String expand(char character) {
     switch (character) {
       case 'd':
         return DELETE + Tools.EMPTY_STRING;
@@ -353,7 +352,7 @@ public class Scanner implements Closeable {
             char out = (char) value;
             return out + Tools.EMPTY_STRING;
           }
-        } else return support.expand(this, character);
+        } else return defaultCharacterExpander.expand(this, character);
       }
     }
   }
@@ -368,45 +367,31 @@ public class Scanner implements Closeable {
    */
   @NotNull
   public String nextBoundField(@NotNull char... map) throws SyntaxError {
-    return nextControlField(new char[]{NULL_CHARACTER}, defaultCharacterExpander, map);
-  }
-
-  /**
-   * Scan and assemble characters while scan is not in map, expanding escape
-   * sequences, and ignoring escaped characters in map.
-   *
-   * @param escapeControls use a custom character-map to trigger expansions.
-   * @param escapeBuilder use a custom character expander to resolve custom trigger escapes.
-   * @param map
-   * @return
-   * @throws SyntaxError
-   */
-  public String nextControlField(char[] escapeControls, @Nullable CharacterExpander escapeBuilder, @NotNull char... map) throws SyntaxError {
 
     StringBuilder sb = new StringBuilder();
 
     while (true) {
+
       char c = next();
+
       if (c == BACKSLASH && ! escapeMode()) continue;
-      else if (c == 0) {
+
+      if (c == 0) {
         if (escapeMode())
           throw syntaxError("expected character escape sequence, found end of stream");
         return sb.toString();
       }
+
       if (escapeMode()) {
-        String swap = expand(c, defaultCharacterExpander);
-        if (!Char.toString(c).equals(swap)) {
-          sb.append(swap);
-          continue;
-        }
-      } else if (mapContains(c, escapeControls)) {
-        String swap = escapeBuilder.expand(this, c);
+        String swap = expand(c);
         sb.append(swap);
         continue;
-    } else if (Char.mapContains(c, map)){
-        this.back(); break;
       }
+
+      if (Char.mapContains(c, map)){ this.back(); break; }
+
       sb.append(c);
+
     }
     return sb.toString();
   }

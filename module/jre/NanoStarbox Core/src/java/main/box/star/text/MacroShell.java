@@ -10,6 +10,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
+import static box.star.text.Char.BACKSLASH;
+
 public class MacroShell {
 
   private final static char
@@ -214,6 +216,53 @@ public class MacroShell {
       return parameters;
     }
 
+    /**
+     * A hack on nextBoundField that allows us to seek-beyond quotes within macro functions.
+     *
+     * @param scanner
+     * @return
+     * @throws Scanner.SyntaxError
+     */
+    public String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
+
+      StringBuilder sb = new StringBuilder();
+      int nesting = 0;
+
+      while (true) {
+
+        char c = scanner.next();
+
+        if (c == BACKSLASH && ! scanner.escapeMode()) continue;
+        if (c == 0) {
+          if (scanner.escapeMode()) {
+            throw scanner.syntaxError("expected character escape sequence, found end of stream");
+          }
+          if (nesting > 0) {
+            throw scanner.syntaxError("expected end of macro");
+          }
+          return sb.toString();
+        }
+
+        if (scanner.escapeMode()) {
+          String swap = scanner.expand(c);
+          sb.append(swap);
+          continue;
+        }
+
+        if (c == context.macroTrigger) {
+          char n = scanner.next();
+          if (n == '(') nesting++;
+          scanner.back();
+        } else if (nesting > 0 && c == ')') nesting--;
+
+        if (nesting == 0 && c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
+
+        sb.append(c);
+
+      }
+      return sb.toString();
+    }
+
     private String getParameter(Scanner scanner, char character){
       if (character == context.macroTrigger){
         StringBuilder data = new StringBuilder();
@@ -225,7 +274,7 @@ public class MacroShell {
       } else if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
         StringBuilder data = new StringBuilder();
-        data.append(scanner.nextBoundField(character));
+        data.append(this.extractQuote(scanner));
         scanner.nextCharacter(character);
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
           data.append(getParameter(scanner, character));
