@@ -252,7 +252,7 @@ public class MacroShell {
           char n = scanner.next();
           if (n == '(') nesting++;
           scanner.back();
-        }
+        } else if (nesting > 0 && c == ')') nesting--;
 
         if (scanner.escapeMode()) {
           String swap = scanner.expand(c);
@@ -260,8 +260,7 @@ public class MacroShell {
           continue;
         }
 
-        if (nesting > 0 && c == ')') nesting--;
-        else if (nesting == 0 && c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
+        if (nesting == 0 && c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
 
         sb.append(c);
 
