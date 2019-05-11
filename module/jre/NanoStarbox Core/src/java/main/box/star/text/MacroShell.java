@@ -254,7 +254,6 @@ public class MacroShell {
     private String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
 
       StringBuilder sb = new StringBuilder();
-      int nesting = 0;
 
       while (true) {
 
@@ -266,9 +265,6 @@ public class MacroShell {
           if (scanner.escapeMode()) {
             throw scanner.syntaxError("expected character escape sequence, found end of stream");
           }
-          if (nesting > 0) {
-            throw scanner.syntaxError("expected end of macro");
-          }
           return sb.toString();
         }
 
@@ -278,13 +274,12 @@ public class MacroShell {
           continue;
         }
 
-        if (c == context.macroTrigger) {
-          char n = scanner.next();
-          if (n == '(') nesting++;
-          scanner.back();
-        } else if (nesting > 0 && c == ')') nesting--;
+        if (c == context.macroTrigger){
+          sb.append(context.doMacro(scanner));
+          continue;
+        }
 
-        if (nesting == 0 && c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
+        if (c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
 
         sb.append(c);
 
@@ -298,17 +293,14 @@ public class MacroShell {
       if (character == context.macroTrigger){
         data.append(context.doMacro(scanner));
       } else if (character == Char.DOUBLE_QUOTE) {
-        long ln = scanner.getLine(), col = scanner.getColumn(), idx = scanner.getIndex();
         data.append(this.extractQuote(scanner));
         scanner.nextCharacter(character);
-        if (data.indexOf(Char.toString(context.macroTrigger)) != -1) {
-          data = new StringBuilder(context.start(scanner.getPath(), data.toString(), ln, col, idx));
-        }
       } else if (character == Char.SINGLE_QUOTE) {
         data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
       } else {
-        data.append(character).append(scanner.nextField(PARAMETER_TEXT_MAP));
+        scanner.back();
+        data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
       }
       while (true){
         c = scanner.next();
