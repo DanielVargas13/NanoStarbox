@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: nano-starbox-rhino.jar
+Class-Path: nano-starbox-core.jar
 Main-Class: org.mozilla.javascript.tools.shell.JSConsole
 

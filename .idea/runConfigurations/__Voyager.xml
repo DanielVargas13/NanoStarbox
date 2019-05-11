@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name=": Voyager" type="JarApplication">
-    <option name="JAR_PATH" value="$PROJECT_DIR$/jar/nano-starbox-jfx-voyager.jar" />
+    <option name="JAR_PATH" value="$PROJECT_DIR$/jar/nano-starbox-voyager-jfx.jar" />
     <option name="PROGRAM_PARAMETERS" value="-s &quot;&lt;html&gt;Hello World&lt;/html&gt;&quot;" />
     <option name="WORKING_DIRECTORY" value="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="BuildArtifacts" enabled="true">
-        <artifact name="Libraries" />
+        <artifact name="Release" />
       </option>
     </method>
   </configuration>

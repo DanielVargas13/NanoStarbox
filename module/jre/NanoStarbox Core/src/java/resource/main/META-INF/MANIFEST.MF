@@ -1,3 +1,10 @@
 Manifest-Version: 1.0
-Class-Path: nano-starbox-jna.jar
+Implementation-Title: Mozilla Rhino
+Implementation-Version: 1.7.9
+Built-Date: 2018-03-15
+Class-Path: nano-starbox-jna.jar nano-starbox-core-android-support.jar
+Implementation-URL: http://www.mozilla.org/rhino
+Main-Class: org.mozilla.javascript.tools.shell.Main
+Implementation-Vendor: Mozilla Foundation
+Built-Time: 15:37:38
 

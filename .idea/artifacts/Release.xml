@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Release">
+    <output-path>$PROJECT_DIR$/jar</output-path>
+    <root id="root">
+      <element id="archive" name="nano-starbox-core.jar">
+        <element id="module-output" name="NanoStarbox Core" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/resource/main/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+      <element id="archive" name="nano-starbox-core-android-support.jar">
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/rhino-android-1.5.jar" path-in-jar="/" />
+      </element>
+      <element id="archive" name="nano-starbox-jna.jar">
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/jna-4.5.2.jar" path-in-jar="/" />
+      </element>
+      <element id="archive" name="nano-starbox-voyager-jfx.jar">
+        <element id="module-output" name="NanoStarbox Voyager" />
+      </element>
+      <element id="archive" name="nano-starbox-rhino-console.jar">
+        <element id="module-output" name="NanoStarbox Rhino Console" />
+      </element>
+      <element id="archive" name="nano-starbox-rhino-console-debug.jar">
+        <element id="module-output" name="NanoStarbox Rhino Debugger" />
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -7,6 +7,13 @@
       </element>
       <element id="archive" name="nano-starbox-core.jar">
         <element id="module-output" name="NanoStarbox Core" />
+        <element id="module-output" name="NanoStarbox Web Server" />
+        <element id="module-output" name="NanoStarbox Rhino" />
+      </element>
+      <element id="archive" name="nano-starbox-core-android-support.jar">
+        <element id="extracted-dir" path="$PROJECT_DIR$/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/src/java/lib/feature/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/src/java/lib/feature/rhino-android-1.5.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>

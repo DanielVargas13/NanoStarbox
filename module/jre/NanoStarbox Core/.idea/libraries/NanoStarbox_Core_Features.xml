@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="NanoStarbox Core Features">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/jna-4.5.2.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="JSConsole" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.mozilla.javascript.tools.shell.JSConsole" />
     <module name="NanoStarbox Rhino Console" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../.." />

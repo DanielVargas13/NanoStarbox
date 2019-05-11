@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="NanoStarbox Android Support">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/libcore-dex-7.1.0_r7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/rhino-android-1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

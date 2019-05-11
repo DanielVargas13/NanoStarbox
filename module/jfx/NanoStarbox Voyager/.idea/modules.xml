@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" filepath="$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/lib/feature/src/NanoStarbox Core Support.iml" filepath="$PROJECT_DIR$/../../jre/NanoStarbox Core/src/java/lib/feature/src/NanoStarbox Core Support.iml" />
       <module fileurl="file://$PROJECT_DIR$/NanoStarbox Voyager.iml" filepath="$PROJECT_DIR$/NanoStarbox Voyager.iml" />
     </modules>
   </component>
