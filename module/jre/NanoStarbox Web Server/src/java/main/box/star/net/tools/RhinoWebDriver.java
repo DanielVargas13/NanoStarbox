@@ -1,5 +1,7 @@
 package box.star.net.tools;
 
+import box.star.Tools;
+import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.net.WebServer;
 import box.star.net.http.IHTTPSession;
@@ -33,6 +35,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
     global.init(cx);
     cx.evaluateString(global, initScript, "<stdin>", 1, null);
     Context.exit();
+    addGlobalObject("global", global);
     addGlobalObject("server", server);
     server.addStaticIndexFile("index.js");
     server.registerMimeTypeDriver(RHINO_DRIVER_KEY, this);
@@ -55,17 +58,14 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
 
     try {
       if (mimeType.equals(RHINO_MACRO_DOCUMENT_DRIVER_KEY)) {
-        Scriptable shell = getScriptShell(cx);
+        Scriptable shell = getScriptShell(cx, global);
+        ScriptRuntime.setObjectProp(shell, "file", Context.javaToJS(file, shell), cx);
         ScriptRuntime.setObjectProp(shell, "session", Context.javaToJS(ihttpSession, shell), cx);
         Scanner scanner = new Scanner(file);
-        MacroShell context = new MacroShell(System.getenv());
-        context.addCommand("include", new MacroShell.Command(){
-          @Override
-          protected String run(String command, Stack<String> parameters) {
-            return Streams.getFileText(new File(file.getParent(), parameters.firstElement()).getPath());
-          }
-        });
-        context.addCommand("js", new MacroShell.Command(){
+        MacroShell macroShell = new MacroShell(System.getenv());
+        // allow javascript to program the shell
+        ScriptRuntime.setObjectProp(shell, "shell", Context.javaToJS(macroShell, shell), cx);
+       macroShell.addCommand("js", new MacroShell.Command(){
           @Override
           protected String run(String command, Stack<String> parameters) {
             StringBuilder output = new StringBuilder();
@@ -80,11 +80,11 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         });
         // chop off the mime-type-magic
         scanner.nextField(Char.LINE_FEED);
-        return webServer.htmlResponse(Status.OK, context.start(scanner));
+        return webServer.htmlResponse(Status.OK, macroShell.start(scanner));
       }
       try (Reader reader = new FileReader(file)) {
         Script script = cx.compileReader(reader, file.getPath(), 1, null);
-        Scriptable shell = getScriptShell(cx);
+        Scriptable shell = getScriptShell(cx, global);
         script.exec(cx, shell);
         Function f = (Function) ScriptableObject.getProperty(shell, "generateServiceResponse");
         Object[] parameters = new Object[]{
@@ -102,8 +102,8 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
     }
   }
 
-  Scriptable getScriptShell(Context cx) {
-    return ScriptRuntime.newObject(cx, global, "Object", null);
+  Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
+    return ScriptRuntime.newObject(cx, Tools.makeNotNull(parent, global), "Object", null);
   }
 
 }
