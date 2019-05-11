@@ -412,7 +412,8 @@ public class Scanner implements Closeable {
 
       char c = next();
 
-      if (c == BACKSLASH && ! escapeMode()) continue;
+      if (c == BACKSLASH )
+        continue;
 
       if (c == 0) {
         if (escapeMode())

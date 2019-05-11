@@ -69,7 +69,7 @@ public final class Char {
   public final static char[] MAP_ASCII_NUMBERS = new Assembler.RangeMap(48, 57).compile();
   public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).merge(DELETE).filter(MAP_ASCII_ALL_WHITE_SPACE).toArray();
   public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
-  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toArray();
+  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge((int)'a', (int)'f').merge((int)'A', (int)'F').toArray();
   public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toArray();
 
   private Char() {}
@@ -236,10 +236,6 @@ public final class Char {
         if (! contains(c)) chars.append(c);
       }
       return this;
-    }
-
-    public Assembler merge(char start, char end){
-      return merge((int) start, (int) end);
     }
 
     public Assembler merge(char... map) {
