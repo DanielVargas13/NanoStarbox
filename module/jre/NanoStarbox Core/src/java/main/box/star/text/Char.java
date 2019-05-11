@@ -127,6 +127,12 @@ public final class Char {
     return false;
   }
 
+  public static boolean stringContains(String search, char... range){
+    char[] data = search.toCharArray();
+    for (char c: data) if (mapContains(c, range)) return true;
+    return false;
+  }
+
   static char[] buildRangeMap(Assembler.RangeMap range) {
     StringBuilder out = new StringBuilder();
     for (int i = range.start; i <= range.end; i++) out.append((char) i);

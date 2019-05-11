@@ -2,12 +2,14 @@ package box.star.text.basic;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.text.Char;
 
 import java.io.*;
 
-import static box.star.text.Char.translate;
+import static box.star.text.Char.*;
+import static box.star.text.Char.MAP_ASCII_NUMBERS;
 
 /**
  * <h2>Basic Text Scanner</h2>
@@ -283,26 +285,126 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scan and assemble characters while scan is not in map.
+   * The expand pass-through-method.
+   * <p>
+   * The recommended override for systematic performance integrity of the expand
+   * command.
    *
-   * ignores escaped map characters.
+   * @param c
+   * @return
+   */
+  protected String tryExpand(char c) { return Char.toString(c); }
+
+  /**
+   * Performs all right-hand-side-ampersand operations.
+   * <p>
+   * (for this: right-hand-side = "everything after")
+   * <p>
+   * the default method expands nothing.
+   *
+   */
+  protected String expandAmpersand() {
+    return Tools.EMPTY_STRING;
+  }
+
+  /**
+   * Performs all right-hand-side-backslash operations.
+   * <p>
+   * (for this: right-hand-side = "everything after")
+   * <p>
+   * escaping `&' will call {@link #expandAmpersand()}.
+   *
+   * @param character
+   * @return
+   */
+  @Nullable
+  protected String expand(char character) {
+    switch (character) {
+      case '&':
+        return expandAmpersand();
+      case 'd':
+        return DELETE + Tools.EMPTY_STRING;
+      case 'e':
+        return ESCAPE + Tools.EMPTY_STRING;
+      case 't':
+        return "\t";
+      case 'b':
+        return "\b";
+      case 'v':
+        return VERTICAL_TAB + Tools.EMPTY_STRING;
+      case 'r':
+        return "\r";
+      case 'n':
+        return "\n";
+      case 'f':
+        return "\f";
+      /*unicode*/
+      case 'u': {
+        try { return String.valueOf((char) Integer.parseInt(this.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+        catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
+      }
+      /*hex or octal*/
+      case '0': {
+        char c = this.next();
+        if (c == 'x') {
+          try { return String.valueOf((char) Integer.parseInt(this.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+          catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
+        } else {
+          this.back();
+        }
+        String chars = '0' + this.nextMapLength(3, MAP_ASCII_OCTAL);
+        int value = Integer.parseInt(chars, 8);
+        if (value > 255) {
+          throw this.syntaxError("octal escape subscript out of range; expected 00-0377; have: " + value);
+        }
+        char out = (char) value;
+        return out + Tools.EMPTY_STRING;
+      }
+      /*integer or pass-through */
+      default: {
+        if (mapContains(character, MAP_ASCII_NUMBERS)) {
+          String chars = character + this.nextMapLength(2, MAP_ASCII_NUMBERS);
+          int value = Integer.parseInt(chars);
+          if (value > 255) {
+            throw this.syntaxError("integer escape subscript out of range; expected 0-255; have: " + value);
+          } else {
+            char out = (char) value;
+            return out + Tools.EMPTY_STRING;
+          }
+        } else return tryExpand(character);
+      }
+    }
+  }
+
+  /**
+   * Scan and assemble characters while scan is not in map, expanding escape
+   * sequences, and ignoring escaped characters in map.
    *
    * @param map
    * @return
-   * @throws Exception if read fails.
+   * @throws SyntaxError if trying to escape end of stream.
    */
   @NotNull
-  public String nextBoundField(@NotNull char... map) throws Exception {
-    char c;
+  public String nextBoundField(@NotNull char... map) throws SyntaxError {
     StringBuilder sb = new StringBuilder();
-    do {
-      c = this.next();
-      if (Char.mapContains(c, map) && ! escapeMode()){
-        this.back();
-        break;
+    while (haveNext()) {
+      char c = next();
+      if (c == BACKSLASH && ! escapeMode()) continue;
+      else if (c == 0) {
+        if (escapeMode())
+          throw syntaxError("expected character escape sequence, found end of stream");
+        return sb.toString();
+      }
+      if (escapeMode()) {
+        String swap = expand(c);
+        if (! Char.toString(c).equals(swap)) {
+          sb.append(swap); continue;
+        }
+      } else if (Char.mapContains(c, map)){
+        this.back(); break;
       }
       sb.append(c);
-    } while (c != 0);
+    }
     return sb.toString();
   }
 
