@@ -139,7 +139,8 @@ public class MacroShell {
       }
       default: scanner.back();
     }
-    return Char.toString(macroTrigger); // failed;
+    throw new IllegalStateException();
+//    return Char.toString(macroTrigger); // failed;
   }
 
   private String doCommand(Scanner scanner, String commandName, Stack<String> parameters) {
@@ -248,17 +249,17 @@ public class MacroShell {
           return sb.toString();
         }
 
-        if (c == context.macroTrigger) {
-          char n = scanner.next();
-          if (n == '(') nesting++;
-          scanner.back();
-        } else if (nesting > 0 && c == ')') nesting--;
-
         if (scanner.escapeMode()) {
           String swap = scanner.expand(c);
           sb.append(swap);
           continue;
         }
+
+        if (c == context.macroTrigger) {
+          char n = scanner.next();
+          if (n == '(') nesting++;
+          scanner.back();
+        } else if (nesting > 0 && c == ')') nesting--;
 
         if (nesting == 0 && c == Char.DOUBLE_QUOTE){ scanner.back(); break; }
 
