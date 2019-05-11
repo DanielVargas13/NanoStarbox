@@ -286,8 +286,8 @@ public class MacroShell {
       } else {
         data.append(character + scanner.nextBoundField(PARAMETER_TEXT_MAP));
       }
-      while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-        data.append(getParameter(scanner, character));
+      while (!Char.mapContains(c = scanner.next(), BREAK_PROCEDURE_MAP)){
+        data.append(getParameter(scanner, c));
       }
       return data.toString();
     }
