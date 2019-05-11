@@ -264,40 +264,27 @@ public class MacroShell {
     }
 
     private String getParameter(Scanner scanner, char character){
+      char c;
+      StringBuilder data = new StringBuilder();
       if (character == context.macroTrigger){
-        StringBuilder data = new StringBuilder();
         data.append(context.doMacro(scanner));
-        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data.append(getParameter(scanner, character));
-        }
-        return data.toString();
       } else if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
-        StringBuilder data = new StringBuilder();
         data.append(this.extractQuote(scanner));
         scanner.nextCharacter(character);
-        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data.append(getParameter(scanner, character));
+        if (data.indexOf(Char.toString(context.macroTrigger)) != -1) {
+          data = new StringBuilder(context.start(file, data.toString()));
         }
-        if (data.indexOf(Char.toString(context.macroTrigger)) != -1)
-          return (context.start(file, data.toString()));
-        else return data.toString();
       } else if (character == Char.SINGLE_QUOTE) {
-        StringBuilder data = new StringBuilder();
         data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
-        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data.append(getParameter(scanner, character));
-        }
-        return data.toString();
       } else {
-        StringBuilder data = new StringBuilder();
         data.append(character + scanner.nextBoundField(PARAMETER_TEXT_MAP));
-        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data.append(getParameter(scanner, character));
-        }
-        return data.toString();
       }
+      while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
+        data.append(getParameter(scanner, character));
+      }
+      return data.toString();
     }
 
     @Override
