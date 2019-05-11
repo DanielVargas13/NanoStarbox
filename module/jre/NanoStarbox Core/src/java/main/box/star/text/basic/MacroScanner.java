@@ -183,6 +183,8 @@ public class MacroScanner {
 
   private static class ParameterBuilder extends  ScannerMethod {
 
+    private char[] PARAMETER_TEXT_MAP;
+
     MacroScanner context;
     Stack<String> parameters;
 
@@ -191,6 +193,9 @@ public class MacroScanner {
       this.context = (MacroScanner) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
+      PARAMETER_TEXT_MAP = new
+          Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.DOUBLE_QUOTE, Char. SINGLE_QUOTE, context.macroTrigger)
+          .toArray();
     }
 
     @Override
@@ -207,37 +212,48 @@ public class MacroScanner {
     }
 
     private String getParameter(Scanner scanner, char character){
-      if (character == Char.DOUBLE_QUOTE) {
+      if (character == context.macroTrigger){
+        StringBuilder data = new StringBuilder();
+        data.append(context.doMacro(scanner));
+        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
+          data.append(getParameter(scanner, character));
+        }
+        return data.toString();
+      } else if (character == Char.DOUBLE_QUOTE) {
         String file = scanner.claim();
-        String data = scanner.nextBoundField(character);
+        StringBuilder data = new StringBuilder();
+        data.append(scanner.nextBoundField(character));
         scanner.nextCharacter(character);
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data += getParameter(scanner, character);
+          data.append(getParameter(scanner, character));
         }
         // expand double quoted text
-        return (context.start(file, data));
+        return (context.start(file, data.toString()));
       } else if (character == Char.SINGLE_QUOTE) {
-        String data = scanner.nextField(character);
+        StringBuilder data = new StringBuilder();
+        data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
-          data += getParameter(scanner, character);
+          data.append(getParameter(scanner, character));
         }
-        return (data);
+        return data.toString();
+      } else {
+        StringBuilder data = new StringBuilder();
+        data.append(character + scanner.nextBoundField(PARAMETER_TEXT_MAP));
+        while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
+          data.append(getParameter(scanner, character));
+        }
+        return data.toString();
       }
-      return (character + scanner.nextField(BREAK_PROCEDURE_MAP));
     }
+
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
-      if (character == context.macroTrigger) {
-        // expand unquoted macros, into positional parameters.
-        // does not support concatenations.
-        parameters.addAll(split(context.doMacro(scanner)));
-        //parameters.push();
+      if (character == EXIT_PROCEDURE){ backStep(scanner); return true; }
+      else if (character == context.macroTrigger || ! Char.mapContains(character, Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE)) {
+        parameters.addAll(split(getParameter(scanner, character)));
         return false;
-      } else if (character == EXIT_PROCEDURE){
-        backStep(scanner);
-        return true;
       }
       parameters.push(getParameter(scanner, character));
       return false;
