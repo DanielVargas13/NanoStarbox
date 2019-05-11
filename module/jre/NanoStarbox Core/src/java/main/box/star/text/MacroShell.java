@@ -116,7 +116,7 @@ public class MacroShell {
   }
 
   public String start(String file, String text, long line, long column, long index){
-    Scanner scanner = new Scanner(file, text).at(line, column, index);
+    Scanner scanner = new Scanner(file, text).At(line, column, index);
     return scanner.run(macroRunner);
   }
 

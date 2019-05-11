@@ -4,13 +4,13 @@ import box.star.contract.NotNull;
 
 import java.io.IOException;
 
-public class ScannerStateLock {
+public class ScannerStateRecord {
 
   protected Scanner main;
   protected ScannerState backupState;
 
-  protected ScannerStateLock(@NotNull Scanner main) {
-    if (main.hasStateLock())
+  protected ScannerStateRecord(@NotNull Scanner main) {
+    if (main.hasStateRecordLock())
       throw new Scanner.Exception("cannot acquire scanner lock",
           new IllegalStateException("state lock acquired"));
     if (!main.haveNext()) {

@@ -39,22 +39,6 @@ public class Scanner implements Closeable {
   protected boolean closeable;
   protected ScannerState state;
 
-  /**
-   * Sometimes you need to parse some sub-text, so here is a method to set
-   * the location data.
-   *
-   * @param line
-   * @param column
-   * @param index
-   * @return
-   */
-  public Scanner at(long line, long column, long index) {
-    state.line = line;
-    state.column = column;
-    state.index = index;
-    return this;
-  }
-
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
     this.state = new ScannerState(path);
@@ -75,10 +59,47 @@ public class Scanner implements Closeable {
     this(file.getPath(), Streams.getUriStream(file.toURI()));
   }
 
+  /**
+   * Sometimes you need to parse some sub-text, so here is a method to set
+   * the location data, after you create the scanner.
+   *
+   * @param line
+   * @param column
+   * @param index
+   * @return the new Scanner
+   * @throws IllegalStateException if this is not a new {@link Scanner}
+   */
+  public Scanner At(long line, long column, long index) throws IllegalStateException {
+    // since this is a profile-method, raise hell if state is
+    // in post-initialization status.
+    if (state.index != -1) {
+      throw new IllegalStateException("Scanner has already been initialized");
+    }
+    state.line = line;
+    state.column = column;
+    state.index = index;
+    return this;
+  }
+
+  /**
+   * This method enables lines to be escaped by the state, and probably should
+   * not be used for any reason.
+   *
+   * @param escapeLines
+   */
+  @Deprecated
   public void setLineEscape(boolean escapeLines) {
     state.escapeLines = escapeLines;
   }
 
+  /**
+   * This method enables lines to be escaped by the state, and probably should
+   * not be used for any reason.
+   *
+   * @param escapeLines
+   * @param useUnderscore
+   */
+  @Deprecated
   public void setLineEscape(boolean escapeLines, boolean useUnderscore) {
     state.escapeLines = escapeLines;
     state.escapeUnderscoreLine = useUnderscore;
@@ -114,13 +135,14 @@ public class Scanner implements Closeable {
   @Override
   protected void finalize() throws Throwable {
     close();
+    flushHistory();
     super.finalize();
   }
 
   /**
    * @return true if this scanner already has a state lock.
    */
-  public boolean hasStateLock() {
+  public boolean hasStateRecordLock() {
     return state.locked;
   }
 
@@ -130,8 +152,8 @@ public class Scanner implements Closeable {
    * @return a new state lock if the state is not already locked.
    */
   @NotNull
-  public ScannerStateLock getStateLock() {
-    return new ScannerStateLock(this);
+  public ScannerStateRecord getStateLock() {
+    return new ScannerStateRecord(this);
   }
 
   /**
@@ -148,7 +170,7 @@ public class Scanner implements Closeable {
     else {
       try {
         int c = this.reader.read();
-        if (c < 0) {
+        if (c <= 0) {
           state.eof = true;
           return false;
         }

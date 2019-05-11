@@ -9,7 +9,7 @@ import java.util.Stack;
 class MacroShellTest {
 
   @Test void main(){
-    Scanner scanner = new Scanner("test", "%(menu \"%(list '%[JDK_HOME]' '%[TEMP]' \\64test-bound-field-expansion)\")");
+    Scanner scanner = new Scanner("test", "%(menu \"%(list \"%[JDK_HOME]\" '%[TEMP]' \\64test-bound-field-expansion)\")");
     MacroShell context = new MacroShell(System.getenv());
     context.environment.put("what", "Menu");
     context.addCommand("list", new MacroShell.Command(){

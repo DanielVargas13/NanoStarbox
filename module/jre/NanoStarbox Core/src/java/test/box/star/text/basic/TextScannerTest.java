@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static box.star.text.Char.*;
-import box.star.text.basic.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,24 +34,24 @@ class TextScannerTest {
 
   @Test void snapshot_lifecycle() {
     Scanner x = new Scanner("test-string", "0123456789");
-    assertEquals(false, x.hasStateLock());
-    ScannerStateLock s = x.getStateLock();
-    assertEquals(true, x.hasStateLock());
+    assertEquals(false, x.hasStateRecordLock());
+    ScannerStateRecord s = x.getStateLock();
+    assertEquals(true, x.hasStateRecordLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
     s.free();
-    assertEquals(false, x.hasStateLock());
+    assertEquals(false, x.hasStateRecordLock());
     assertEquals("23", x.nextMapLength(2, MAP_ASCII_NUMBERS));
     snapshot_rewind_lifecycle();
   }
 
   void snapshot_rewind_lifecycle() {
     Scanner x = new Scanner("test-string", "0123456789");
-    assertEquals(false, x.hasStateLock());
-    ScannerStateLock s = x.getStateLock();
-    assertEquals(true, x.hasStateLock());
+    assertEquals(false, x.hasStateRecordLock());
+    ScannerStateRecord s = x.getStateLock();
+    assertEquals(true, x.hasStateRecordLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
     s.restore();
-    assertEquals(false, x.hasStateLock());
+    assertEquals(false, x.hasStateRecordLock());
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
   }
 
@@ -61,7 +60,7 @@ class TextScannerTest {
     String s2 = s + "A";
     String s3 = s + "a";
     Scanner x = new Scanner("test-string", s2);
-    ScannerStateLock sx = x.getStateLock();
+    ScannerStateRecord sx = x.getStateLock();
     assertEquals(s2, x.nextString(s2, true));
     sx.restore();
     try {
