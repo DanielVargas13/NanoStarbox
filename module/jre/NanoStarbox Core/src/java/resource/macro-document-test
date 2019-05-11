@@ -3,6 +3,10 @@ Welcome to Cafe Java de la Creme a la Macro Test
 %(menu
     "%(list "%[JDK_HOME]" '%[TEMP]')"
 )
-only two list-items: %(list \64\ test-bound-field-expansion "(\n\n\tusing list the list command with a literal-parameter-escape, followed by this quoted text\n\n)")
+only two list-items: %(list \64\ test-bound-field-expansion "(
+
+    using the list command with a literal-parameter-escape, followed by this quoted text
+
+)")
 
 Definitely a stocking stuffer.
