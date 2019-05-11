@@ -251,7 +251,7 @@ public class MacroScanner {
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (character == EXIT_PROCEDURE){ backStep(scanner); return true; }
-      else if (character == context.macroTrigger || ! Char.mapContains(character, Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE)) {
+      else if (character == context.macroTrigger) {
         parameters.addAll(split(getParameter(scanner, character)));
         return false;
       }
