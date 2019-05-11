@@ -8,9 +8,8 @@ import java.util.Stack;
 
 class MacroShellTest {
 
-  Scanner scanner = new Scanner("test", "%(menu \"%(list '%[JDK_HOME]' '%[TEMP]' \\64test-bound-field-expansion)\")");
-
   @Test void main(){
+    Scanner scanner = new Scanner("test", "%(menu \"%(list '%[JDK_HOME]' '%[TEMP]' \\64test-bound-field-expansion)\")");
     MacroShell context = new MacroShell(System.getenv());
     context.environment.put("what", "Menu");
     context.addCommand("list", new MacroShell.Command(){
@@ -38,7 +37,12 @@ class MacroShellTest {
         return out.toString();
       }
     });
-    System.out.println(context.start(scanner));
+    long startTime = System.nanoTime();
+    String data = context.start(scanner);
+    long endTime = System.nanoTime();
+    long timeElapsed = endTime - startTime;
+    System.out.println(data);
+    System.out.println("Execution time in milliseconds: " + ((double)timeElapsed) / ((double)1000000));
   }
 
 }
