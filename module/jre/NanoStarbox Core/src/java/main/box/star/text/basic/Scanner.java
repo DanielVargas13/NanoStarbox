@@ -387,7 +387,7 @@ public class Scanner implements Closeable {
   @NotNull
   public String nextBoundField(@NotNull char... map) throws SyntaxError {
     StringBuilder sb = new StringBuilder();
-    while (haveNext()) {
+    while (true) {
       char c = next();
       if (c == BACKSLASH && ! escapeMode()) continue;
       else if (c == 0) {
