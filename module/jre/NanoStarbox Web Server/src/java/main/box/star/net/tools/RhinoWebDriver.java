@@ -56,6 +56,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
     try {
       if (mimeType.equals(RHINO_MACRO_DOCUMENT_DRIVER_KEY)) {
         Scriptable shell = getScriptShell(cx);
+        ScriptRuntime.setObjectProp(shell, "session", Context.javaToJS(ihttpSession, shell), cx);
         Scanner scanner = new Scanner(file);
         MacroShell context = new MacroShell(System.getenv());
         context.addCommand("include", new MacroShell.Command(){
