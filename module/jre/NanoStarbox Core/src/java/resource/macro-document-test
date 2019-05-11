@@ -1,0 +1,3 @@
+Welcome to Cafe Java de la Creme a la Macro Test
+
+%(menu "%(list '%[JDK_HOME]' '%[TEMP]' \64test-bound-field-expansion)")

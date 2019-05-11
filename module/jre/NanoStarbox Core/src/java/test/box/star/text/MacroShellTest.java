@@ -4,12 +4,13 @@ import box.star.text.MacroShell;
 import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.Stack;
 
 class MacroShellTest {
 
   @Test void main(){
-    Scanner scanner = new Scanner("test", "%(menu \"%(list \"%[JDK_HOME]\" '%[TEMP]' \\64test-bound-field-expansion)\")");
+    Scanner scanner = new Scanner(new File("src/java/resource/macro-document-test"));
     MacroShell context = new MacroShell(System.getenv());
     context.environment.put("what", "Menu");
     context.addCommand("list", new MacroShell.Command(){

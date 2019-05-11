@@ -14,6 +14,18 @@ import static box.star.text.Char.BACKSLASH;
 
 public class MacroShell {
 
+  public static class Exception extends RuntimeException {
+    public Exception(String message) {
+      super(message);
+    }
+    public Exception(String message, Throwable cause) {
+      super(message, cause);
+    }
+    public Exception(Throwable cause) {
+      super(cause);
+    }
+  }
+
   private final static char
       ENTER_PROCEDURE = '(', EXIT_PROCEDURE = ')',
       ENTER_OBJECT = '{', EXIT_OBJECT = '}',
@@ -75,6 +87,13 @@ public class MacroShell {
   public Map<String, Object> objects;
   public Map<String, MacroShell.Command> commands;
 
+  private final static Command STAR_COMMAND = new Command(){
+    @Override
+    protected String run(String command, Stack<String> parameters) {
+      throw new Exception("unknown command: '"+command+"'"+scanner);
+    }
+  };
+
   private CommandBuilder commandBuilder = new CommandBuilder();
   private Main macroRunner = new Main(this);
 
@@ -82,6 +101,8 @@ public class MacroShell {
     this.environment = new Hashtable<>(environment);
     objects = new Hashtable<>();
     commands = new Hashtable<>();
+    // the default resolver throws an error.
+    addCommand("*", STAR_COMMAND);
   }
 
   public MacroShell addCommand(String name, Command command){
@@ -139,8 +160,7 @@ public class MacroShell {
       }
       default: scanner.back();
     }
-    throw new IllegalStateException();
-//    return Char.toString(macroTrigger); // failed;
+    return Char.toString(macroTrigger);
   }
 
   private String doCommand(Scanner scanner, String commandName, Stack<String> parameters) {
@@ -148,8 +168,11 @@ public class MacroShell {
       Command command = commands.get(commandName);
       command.enterContext(scanner, this);
       return command.run(commandName, parameters);
+    } else {
+      Command command = commands.get("*");
+      command.enterContext(scanner, this);
+      return command.run(commandName, parameters);
     }
-    throw scanner.syntaxError("unknown command: '"+commandName+"'");
   }
 
   public static class Main extends ScannerMethod {
@@ -287,8 +310,14 @@ public class MacroShell {
       } else {
         data.append(character + scanner.nextBoundField(PARAMETER_TEXT_MAP));
       }
-      while (!Char.mapContains(c = scanner.next(), BREAK_PROCEDURE_MAP)){
-        data.append(getParameter(scanner, c));
+      while (true){
+        c = scanner.next();
+        if (!Char.mapContains(c, BREAK_PROCEDURE_MAP)){
+          data.append(getParameter(scanner, c));
+        } else {
+          scanner.back();
+          break;
+        }
       }
       return data.toString();
     }
