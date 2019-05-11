@@ -1,5 +1,6 @@
 package box.star.net.tools;
 
+import box.star.io.Streams;
 import box.star.net.WebServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
@@ -57,7 +58,13 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         Scriptable shell = getScriptShell(cx);
         Scanner scanner = new Scanner(file);
         MacroShell context = new MacroShell(System.getenv());
-        context.addCommand("eval", new MacroShell.Command(){
+        context.addCommand("include", new MacroShell.Command(){
+          @Override
+          protected String run(String command, Stack<String> parameters) {
+            return Streams.getFileText(new File(file.getParent(), parameters.firstElement()).getPath());
+          }
+        });
+        context.addCommand("js", new MacroShell.Command(){
           @Override
           protected String run(String command, Stack<String> parameters) {
             StringBuilder output = new StringBuilder();
