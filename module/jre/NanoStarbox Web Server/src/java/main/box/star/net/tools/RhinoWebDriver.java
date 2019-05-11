@@ -1,19 +1,25 @@
 package box.star.net.tools;
 
 import box.star.net.WebServer;
-import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
+import box.star.net.http.response.Status;
+import box.star.text.Char;
+import box.star.text.MacroShell;
+import box.star.text.basic.Scanner;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.tools.shell.Global;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.Stack;
 
 public class RhinoWebDriver extends WebServer.MimeTypeDriver {
 
   private static final String RHINO_DRIVER_KEY = "javascript/x-nano-starbox-rhino-servlet";
+  private static final String RHINO_MACRO_DOCUMENT_DRIVER_KEY = "javascript/x-nano-starbox-rhino-macro-document";
+
   private static final String initScript = "var Starbox = Packages.box.star, " +
     "Net = Packages.box.star.net, " +
       "System = java.lang.System, " +
@@ -29,6 +35,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
     addGlobalObject("server", server);
     server.addStaticIndexFile("index.js");
     server.registerMimeTypeDriver(RHINO_DRIVER_KEY, this);
+    server.registerMimeTypeDriver(RHINO_MACRO_DOCUMENT_DRIVER_KEY, this);
   }
 
   public static void createInstance(WebServer ws) {
@@ -44,7 +51,29 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
   @Override
   public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
     Context cx = Context.enter();
+
     try {
+      if (mimeType.equals(RHINO_MACRO_DOCUMENT_DRIVER_KEY)) {
+        Scriptable shell = getScriptShell(cx);
+        Scanner scanner = new Scanner(file);
+        MacroShell context = new MacroShell(System.getenv());
+        context.addCommand("eval", new MacroShell.Command(){
+          @Override
+          protected String run(String command, Stack<String> parameters) {
+            StringBuilder output = new StringBuilder();
+            for (String p: parameters) output.append((String)
+                  Context.jsToJava(
+                      cx.evaluateString(shell, p,
+                          scanner.getPath(), (int) scanner.getLine(),
+                          null), String.class)
+            );
+            return output.toString();
+          }
+        });
+        // chop off the mime-type-magic
+        scanner.nextField(Char.LINE_FEED);
+        return webServer.htmlResponse(Status.OK, context.start(scanner));
+      }
       try (Reader reader = new FileReader(file)) {
         Script script = cx.compileReader(reader, file.getPath(), 1, null);
         Scriptable shell = getScriptShell(cx);

@@ -10,7 +10,6 @@ import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
-import box.star.Template;
 
 import java.io.*;
 import java.util.Date;
@@ -307,7 +306,7 @@ public class WebServer extends HTTPServer {
     private MimeTypeDriver next;
 
     // override this method.
-    public Template.Filler getTemplateFiller() {return null;}
+    //public Template.Filler getTemplateFiller() {return null;}
 
     public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
       return null;
