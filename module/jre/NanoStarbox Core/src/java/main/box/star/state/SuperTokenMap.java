@@ -1,6 +1,6 @@
 package box.star.state;
 
-import box.star.text.token.TokenGenerator;
+import box.star.text.TokenGenerator;
 
 import java.io.Serializable;
 import java.util.Hashtable;
