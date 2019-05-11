@@ -115,6 +115,11 @@ public class MacroShell {
     return scanner.run(macroRunner);
   }
 
+  public String start(String file, long line, long column, long index, String text){
+    Scanner scanner = new Scanner(file, text).at(line, column, index);
+    return scanner.run(macroRunner);
+  }
+
   private String doMacro(Scanner scanner){
     MacroShell context = this;
     char next = scanner.next();
@@ -269,11 +274,10 @@ public class MacroShell {
       if (character == context.macroTrigger){
         data.append(context.doMacro(scanner));
       } else if (character == Char.DOUBLE_QUOTE) {
-        String file = scanner.claim();
         data.append(this.extractQuote(scanner));
         scanner.nextCharacter(character);
         if (data.indexOf(Char.toString(context.macroTrigger)) != -1) {
-          data = new StringBuilder(context.start(file, data.toString()));
+          data = new StringBuilder(context.start(scanner.getPath(), scanner.getLine(), scanner.getColumn(), scanner.getIndex(), data.toString()));
         }
       } else if (character == Char.SINGLE_QUOTE) {
         data.append(scanner.nextField(character));

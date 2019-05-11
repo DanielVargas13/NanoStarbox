@@ -39,6 +39,22 @@ public class Scanner implements Closeable {
   protected boolean closeable;
   protected ScannerState state;
 
+  /**
+   * Sometimes you need to parse some sub-text, so here is a method to set
+   * the location data.
+   *
+   * @param line
+   * @param column
+   * @param index
+   * @return
+   */
+  public Scanner at(long line, long column, long index) {
+    state.line = line;
+    state.column = column;
+    state.index = index;
+    return this;
+  }
+
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
     this.state = new ScannerState(path);
