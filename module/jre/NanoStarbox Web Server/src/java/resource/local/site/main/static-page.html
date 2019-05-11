@@ -2,8 +2,16 @@
 <html>
 <body>
 <h1>%(js "server.host+':'+server.port")</h1>
-JavaScript Object Keys in global object: "session"<br>
-<br>
-%(js "Object.keys(session).join('\\n');")
+<p>Local Resource: %(js file)</p>
+<p>
+    JavaScript Object Keys in global object: "session":<br>
+    <ul><li>%(js "Object.keys(session).join('\\n');")</li></ul>
+</p>
+%(js '
+    help() || "<br>JavaScript help has been printed on the console.";
+')
+<p>Server-Side-Hacking: <strong>Mozilla Rhino powered Java Object Hosting and Document Generation with Starbox Android JIT Support and Runtime Class Path Loader; powered by Starbox: WebServer+JavaScript+JSON+JNA+XML+MacroShell</strong>
+</p>
+<p>Analysis: EXPERT-LEVEL-SYSTEM-HACKING</p>
 </body>
 </html>
