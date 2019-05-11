@@ -33,7 +33,7 @@ public class MacroShell {
 
   private static final char[] BREAK_PROCEDURE_MAP =
       new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
-          .merge(EXIT_PROCEDURE)
+          .mergeMap(EXIT_PROCEDURE)
             .toArray();
 
   public char macroTrigger = '%';
@@ -227,7 +227,7 @@ public class MacroShell {
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
-      PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger).toArray();
+      PARAMETER_TEXT_MAP = assembler.mergeMap(context.macroTrigger).toArray();
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
 

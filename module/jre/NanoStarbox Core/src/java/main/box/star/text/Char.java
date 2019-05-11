@@ -2,9 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
-import box.star.contract.Nullable;
 
-import java.io.Closeable;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -63,13 +61,13 @@ public final class Char {
 
   public final static char[] MAP_ASCII = new Assembler(NULL_CHARACTER, 255).toArray();
   public final static char[] MAP_ASCII_EXTENDED = new Assembler.RangeMap(128, 255).compile();
-  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).merge(SPACE).toArray();
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).mergeMap(SPACE).toArray();
   public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
   public final static char[] MAP_ASCII_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
   public final static char[] MAP_ASCII_NUMBERS = new Assembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).merge(DELETE).filter(MAP_ASCII_ALL_WHITE_SPACE).toArray();
+  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).mergeMap(DELETE).filterMap(MAP_ASCII_ALL_WHITE_SPACE).toArray();
   public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
-  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge((int)'a', (int)'f').merge((int)'A', (int)'F').toArray();
+  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toArray();
   public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toArray();
 
   private Char() {}
@@ -189,17 +187,13 @@ public final class Char {
       merge(stream);
     }
 
-    public Assembler(char start, char finish){
-      this((int) start, (int) finish);
-    }
-
-    public Assembler(RangeMap map) {
+    private Assembler(RangeMap map) {
       this(map.start, map.end);
     }
 
-    public Assembler(char... map) {
+    public Assembler(char[] map) {
       chars = new StringBuilder(map.length);
-      merge(map);
+      mergeMap(map);
     }
 
     public Assembler(int start, int end) {
@@ -238,7 +232,7 @@ public final class Char {
       return this;
     }
 
-    public Assembler merge(char... map) {
+    public Assembler mergeMap(char... map) {
       for (char c : map) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       return this;
     }
@@ -249,26 +243,26 @@ public final class Char {
     }
 
     public Assembler merge(String source){
-      return merge(source.toCharArray());
+      return mergeMap(source.toCharArray());
     }
 
     public Assembler merge(int start, int end) {
       return merge(new RangeMap(start, end));
     }
 
-    public Assembler merge(RangeMap map) {
-      return merge(map.compile());
+    private Assembler merge(RangeMap map) {
+      return mergeMap(map.compile());
     }
 
     public Assembler filter(String source){
-      return filter(source.toCharArray());
+      return filterMap(source.toCharArray());
     }
 
     public Assembler filter(int... integer) {
       StringBuilder map = new StringBuilder(chars.length());
       for (int i : integer) map.append((char) i);
       char[] chars = map.toString().toCharArray();
-      return filter(chars);
+      return filterMap(chars);
     }
 
     public Assembler filter(CharSequence sequence){
@@ -278,7 +272,7 @@ public final class Char {
     public Assembler filter(Iterable<Character> stream){
       StringBuilder out = new StringBuilder(chars.length());
       for (char c: stream) out.append(c);
-      return filter(out.toString().toCharArray());
+      return filterMap(out.toString().toCharArray());
     }
 
     public Assembler filter(int start, int end) {
@@ -286,10 +280,10 @@ public final class Char {
     }
 
     public Assembler filter(RangeMap map) {
-      return filter(map.compile());
+      return filterMap(map.compile());
     }
 
-    public Assembler filter(char... map) {
+    public Assembler filterMap(char... map) {
       StringBuilder filter = new StringBuilder(chars.length());
       for (char c : chars.toString().toCharArray()) {
         if (mapContains(c, map)) continue;
