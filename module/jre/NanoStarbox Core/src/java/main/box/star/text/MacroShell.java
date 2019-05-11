@@ -228,7 +228,7 @@ public class MacroShell {
      * @return
      * @throws Scanner.SyntaxError
      */
-    public String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
+    private String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
 
       StringBuilder sb = new StringBuilder();
       int nesting = 0;
