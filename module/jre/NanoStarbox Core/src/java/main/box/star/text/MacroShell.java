@@ -279,7 +279,7 @@ public class MacroShell {
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
           data.append(getParameter(scanner, character));
         }
-        if (data.indexOf(Char.toString(context.macroTrigger, ENTER_PROCEDURE)) != -1)
+        if (data.indexOf(Char.toString(context.macroTrigger)) != -1)
           return (context.start(file, data.toString()));
         else return data.toString();
       } else if (character == Char.SINGLE_QUOTE) {
