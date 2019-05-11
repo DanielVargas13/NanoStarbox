@@ -284,44 +284,26 @@ public class Scanner implements Closeable {
     return sb.toString();
   }
 
-  /**
-   * The expand pass-through-method.
-   * <p>
-   * The recommended override for systematic performance integrity of the expand
-   * command.
-   *
-   * @param c
-   * @return
-   */
-  protected String tryExpand(char c) { return Char.toString(c); }
-
-  /**
-   * Performs all right-hand-side-ampersand operations.
-   * <p>
-   * (for this: right-hand-side = "everything after")
-   * <p>
-   * the default method expands nothing.
-   *
-   */
-  protected String expandAmpersand() {
-    return Tools.EMPTY_STRING;
-  }
+  private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
+    @Override
+    public String expand(Scanner scanner, char c) {
+      return Char.toString(c);
+    }
+  };
 
   /**
    * Performs all right-hand-side-backslash operations.
    * <p>
    * (for this: right-hand-side = "everything after")
-   * <p>
-   * escaping `&' will call {@link #expandAmpersand()}.
+   * </p>
    *
    * @param character
    * @return
    */
   @Nullable
-  protected String expand(char character) {
+  public String expand(char character, CharacterExpander fallback) {
+    CharacterExpander support = Tools.makeNotNull(fallback, defaultCharacterExpander);
     switch (character) {
-      case '&':
-        return expandAmpersand();
       case 'd':
         return DELETE + Tools.EMPTY_STRING;
       case 'e':
@@ -371,7 +353,7 @@ public class Scanner implements Closeable {
             char out = (char) value;
             return out + Tools.EMPTY_STRING;
           }
-        } else return tryExpand(character);
+        } else return support.expand(this, character);
       }
     }
   }
@@ -386,7 +368,23 @@ public class Scanner implements Closeable {
    */
   @NotNull
   public String nextBoundField(@NotNull char... map) throws SyntaxError {
+    return nextControlField(new char[]{NULL_CHARACTER}, defaultCharacterExpander, map);
+  }
+
+  /**
+   * Scan and assemble characters while scan is not in map, expanding escape
+   * sequences, and ignoring escaped characters in map.
+   *
+   * @param escapeControls use a custom character-map to trigger expansions.
+   * @param escapeBuilder use a custom character expander to resolve custom trigger escapes.
+   * @param map
+   * @return
+   * @throws SyntaxError
+   */
+  public String nextControlField(char[] escapeControls, @Nullable CharacterExpander escapeBuilder, @NotNull char... map) throws SyntaxError {
+
     StringBuilder sb = new StringBuilder();
+
     while (true) {
       char c = next();
       if (c == BACKSLASH && ! escapeMode()) continue;
@@ -396,11 +394,16 @@ public class Scanner implements Closeable {
         return sb.toString();
       }
       if (escapeMode()) {
-        String swap = expand(c);
-        if (! Char.toString(c).equals(swap)) {
-          sb.append(swap); continue;
+        String swap = expand(c, defaultCharacterExpander);
+        if (!Char.toString(c).equals(swap)) {
+          sb.append(swap);
+          continue;
         }
-      } else if (Char.mapContains(c, map)){
+      } else if (mapContains(c, escapeControls)) {
+        String swap = escapeBuilder.expand(this, c);
+        sb.append(swap);
+        continue;
+    } else if (Char.mapContains(c, map)){
         this.back(); break;
       }
       sb.append(c);
