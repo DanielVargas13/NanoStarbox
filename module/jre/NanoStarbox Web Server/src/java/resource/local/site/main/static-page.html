@@ -1,5 +1,9 @@
+//->mime-type: javascript/x-nano-starbox-rhino-macro-document
 <html>
 <body>
-<h1><*server.getHost()*>:<*server.getPort()*></h1>
+<h1>%(js "server.host+':'+server.port")</h1>
+JavaScript Object Keys in global object: "session"<br>
+<br>
+%(js "Object.keys(session).join('\\n');")
 </body>
 </html>
