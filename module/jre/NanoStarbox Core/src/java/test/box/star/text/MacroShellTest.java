@@ -33,6 +33,7 @@ class MacroShellTest {
         out.append(eval(" %[what]: \n\n"));
         // spec: first element is variable list; platform: Windows; tweak variables for local system effects.
         for (String p: parameters.firstElement().split(", ")){
+          //out.append(p);
           out.append("\t"+eval(p)+"\n");
         }
         return out.toString();

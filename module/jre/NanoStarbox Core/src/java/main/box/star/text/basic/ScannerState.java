@@ -43,11 +43,13 @@ public class ScannerState implements Cloneable, Serializable {
     boolean lineMode = (c == CARRIAGE_RETURN || c == LINE_FEED);
     boolean slashMode = (c == BACKSLASH);
 
-    if (previous == BACKSLASH) escaped = true;
+    if (previous == BACKSLASH && slashing == true) escaped = true;
     else escaped = escapeUnderscoreLine && previous == '_' && lineMode;
 
     if (slashMode) this.slashing = !this.slashing;
-    else if (escaped && escapeLines && lineMode) c = 0;
+    else this.slashing = false;
+
+    if (escaped && escapeLines && lineMode) c = 0;
 
     return c;
 

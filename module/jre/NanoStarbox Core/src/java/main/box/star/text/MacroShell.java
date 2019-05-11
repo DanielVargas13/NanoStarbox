@@ -216,8 +216,7 @@ public class MacroShell {
   private static class ParameterBuilder extends  ScannerMethod {
 
     private static final Char.Assembler assembler =
-        new Char.Assembler(BREAK_PROCEDURE_MAP)
-            .merge(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
+        new Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.toString(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE));
 
     private char[] PARAMETER_TEXT_MAP;
 
@@ -228,8 +227,8 @@ public class MacroShell {
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
-      scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger).toArray();
+      scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
 
     @Override
@@ -262,6 +261,7 @@ public class MacroShell {
         char c = scanner.next();
 
         if (c == BACKSLASH && ! scanner.escapeMode()) continue;
+
         if (c == 0) {
           if (scanner.escapeMode()) {
             throw scanner.syntaxError("expected character escape sequence, found end of stream");
@@ -308,7 +308,7 @@ public class MacroShell {
         data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
       } else {
-        data.append(character + scanner.nextBoundField(PARAMETER_TEXT_MAP));
+        data.append(character).append(scanner.nextField(PARAMETER_TEXT_MAP));
       }
       while (true){
         c = scanner.next();
