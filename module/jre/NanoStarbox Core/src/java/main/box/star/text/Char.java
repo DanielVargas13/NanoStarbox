@@ -61,11 +61,11 @@ public final class Char {
 
   public final static char[] MAP_ASCII = new Assembler(NULL_CHARACTER, 255).toArray();
   public final static char[] MAP_ASCII_EXTENDED = new Assembler.RangeMap(128, 255).compile();
-  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).mergeMap(SPACE).toArray();
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).map(SPACE).toArray();
   public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
   public final static char[] MAP_ASCII_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
   public final static char[] MAP_ASCII_NUMBERS = new Assembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).mergeMap(DELETE).filterMap(MAP_ASCII_ALL_WHITE_SPACE).toArray();
+  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).map(DELETE).filterMap(MAP_ASCII_ALL_WHITE_SPACE).toArray();
   public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
   public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toArray();
   public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toArray();
@@ -193,7 +193,7 @@ public final class Char {
 
     public Assembler(char[] map) {
       chars = new StringBuilder(map.length);
-      mergeMap(map);
+      map(map);
     }
 
     public Assembler(int start, int end) {
@@ -232,7 +232,7 @@ public final class Char {
       return this;
     }
 
-    public Assembler mergeMap(char... map) {
+    public Assembler map(char... map) {
       for (char c : map) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       return this;
     }
@@ -243,7 +243,7 @@ public final class Char {
     }
 
     public Assembler merge(String source){
-      return mergeMap(source.toCharArray());
+      return map(source.toCharArray());
     }
 
     public Assembler merge(int start, int end) {
@@ -251,7 +251,7 @@ public final class Char {
     }
 
     private Assembler merge(RangeMap map) {
-      return mergeMap(map.compile());
+      return map(map.compile());
     }
 
     public Assembler filter(String source){

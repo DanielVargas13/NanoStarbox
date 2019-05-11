@@ -33,7 +33,7 @@ public class MacroShell {
 
   private static final char[] BREAK_PROCEDURE_MAP =
       new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
-          .mergeMap(EXIT_PROCEDURE)
+          .map(EXIT_PROCEDURE)
             .toArray();
 
   public char macroTrigger = '%';
@@ -41,8 +41,10 @@ public class MacroShell {
   public static class Command implements Cloneable {
     protected Scanner scanner;
     protected MacroShell main;
+    protected String nameTag;
 
     protected String call(String name, String... parameters){
+      this.nameTag = name;
       Stack<String>p = new Stack<>();
       p.addAll(Arrays.asList(parameters));
       return main.doCommand(scanner, name, p);
@@ -53,7 +55,7 @@ public class MacroShell {
     }
 
     protected String eval(String source){
-      return main.start("eval", source);
+      return main.start("evaluator@"+nameTag, source);
     }
 
     protected Stack<String> split(String source){
@@ -216,7 +218,7 @@ public class MacroShell {
   private static class ParameterBuilder extends  ScannerMethod {
 
     private static final Char.Assembler assembler =
-        new Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.toString(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE));
+        new Char.Assembler(BREAK_PROCEDURE_MAP).map(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
 
     private char[] PARAMETER_TEXT_MAP;
 
@@ -227,7 +229,7 @@ public class MacroShell {
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
-      PARAMETER_TEXT_MAP = assembler.mergeMap(context.macroTrigger).toArray();
+      PARAMETER_TEXT_MAP = assembler.map(context.macroTrigger).toArray();
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
 
@@ -330,4 +332,3 @@ public class MacroShell {
 
   }
 }
-

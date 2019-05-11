@@ -1,3 +1,9 @@
 Welcome to Cafe Java de la Creme a la Macro Test
 
-%(menu "%(list "%[JDK_HOME]" '%[TEMP]' \64test-bound-field-expansion)")
+%(menu
+    "%(list "%[JDK_HOME]" '%[TEMP]')"
+)
+
+only two list-items: %(list \64\ test-bound-field-expansion with-list!)
+
+Definitely a stocking stuffer.
