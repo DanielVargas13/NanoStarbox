@@ -1,29 +1,31 @@
-package box.star.text.basic;
+package box.star.text;
 
+import box.star.text.MacroShell;
+import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-class MacroScannerTest {
+class MacroShellTest {
 
   Scanner scanner = new Scanner("test", "%(menu \"%(list '%[JDK_HOME]' '%[TEMP]' \\64test-bound-field-expansion)\")");
 
   @Test void main(){
-    MacroScanner macroContext = new MacroScanner(System.getenv());
-    macroContext.environment.put("what", "Menu");
-    macroContext.addCommand("list", new MacroScanner.Command(){
+    MacroShell context = new MacroShell(System.getenv());
+    context.environment.put("what", "Menu");
+    context.addCommand("list", new MacroShell.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         return String.join(", ", parameters);
       }
     });
-    macroContext.addCommand("alert", new MacroScanner.Command(){
+    context.addCommand("alert", new MacroShell.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         return "Java";
       }
     });
-    macroContext.addCommand("menu", new MacroScanner.Command(){
+    context.addCommand("menu", new MacroShell.Command(){
       @Override
       protected String run(String command, Stack<String> parameters) {
         StringBuilder out = new StringBuilder();
@@ -36,7 +38,7 @@ class MacroScannerTest {
         return out.toString();
       }
     });
-    System.out.println(macroContext.start(scanner));
+    System.out.println(context.start(scanner));
   }
 
 }

@@ -1,4 +1,4 @@
-package box.star.text;
+package box.star.text.basic;
 
 import box.star.contract.NotNull;
 import org.junit.jupiter.api.Test;

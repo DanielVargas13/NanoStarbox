@@ -1,15 +1,16 @@
-package box.star.text.basic;
+package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
-import box.star.text.Char;
+import box.star.text.basic.Scanner;
+import box.star.text.basic.ScannerMethod;
 
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
 
-public class MacroScanner {
+public class MacroShell {
 
   private final static char
       ENTER_PROCEDURE = '(', EXIT_PROCEDURE = ')',
@@ -25,7 +26,7 @@ public class MacroScanner {
 
   public static class Command implements Cloneable {
     protected Scanner scanner;
-    protected MacroScanner main;
+    protected MacroShell main;
 
     protected String call(String name, String... parameters){
       Stack<String>p = new Stack<>();
@@ -49,7 +50,7 @@ public class MacroScanner {
       return parameters;
     }
 
-    protected void enterContext(Scanner scanner, MacroScanner main){
+    protected void enterContext(Scanner scanner, MacroShell main){
       this.scanner = scanner;
       this.main = main;
     }
@@ -70,30 +71,30 @@ public class MacroScanner {
 
   public Map<String, String> environment;
   public Map<String, Object> objects;
-  public Map<String, MacroScanner.Command> commands;
+  public Map<String, MacroShell.Command> commands;
 
   private CommandBuilder commandBuilder = new CommandBuilder();
   private Main macroRunner = new Main(this);
 
-  public MacroScanner(Map<String, String> environment){
+  public MacroShell(Map<String, String> environment){
     this.environment = new Hashtable<>(environment);
     objects = new Hashtable<>();
     commands = new Hashtable<>();
   }
 
-  public MacroScanner addCommand(String name, Command command){
+  public MacroShell addCommand(String name, Command command){
     commands.put(name, command); return this;
   }
 
-  public MacroScanner addCommands(Map<String, Command>map){
+  public MacroShell addCommands(Map<String, Command>map){
     commands.putAll(map); return this;
   }
 
-  public MacroScanner addObject(String name, Object object){
+  public MacroShell addObject(String name, Object object){
     objects.put(name, object); return this;
   }
 
-  public MacroScanner loadObjects(Map<String, Object>map){
+  public MacroShell loadObjects(Map<String, Object>map){
     objects.putAll(map); return this;
   }
 
@@ -113,7 +114,7 @@ public class MacroScanner {
   }
 
   private String doMacro(Scanner scanner){
-    MacroScanner context = this;
+    MacroShell context = this;
     char next = scanner.next();
     switch (next){
       case ENTER_OBJECT: {
@@ -145,9 +146,9 @@ public class MacroScanner {
 
   public static class Main extends ScannerMethod {
 
-    MacroScanner context;
+    MacroShell context;
 
-    public Main(MacroScanner context){ this.context = context; }
+    public Main(MacroShell context){ this.context = context; }
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
@@ -159,12 +160,12 @@ public class MacroScanner {
 
   private class CommandBuilder extends ScannerMethod {
 
-    MacroScanner context;
+    MacroShell context;
     private ParameterBuilder parameterBuilder = new ParameterBuilder();
 
     @Override
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      this.context = (MacroScanner) parameters[0];
+      this.context = (MacroShell) parameters[0];
     }
 
     @Override
@@ -183,19 +184,21 @@ public class MacroScanner {
 
   private static class ParameterBuilder extends  ScannerMethod {
 
+    private static final Char.Assembler assembler =
+        new Char.Assembler(BREAK_PROCEDURE_MAP)
+            .merge(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
+
     private char[] PARAMETER_TEXT_MAP;
 
-    MacroScanner context;
+    MacroShell context;
     Stack<String> parameters;
 
     @Override
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
-      this.context = (MacroScanner) parameters[0];
+      this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
-      PARAMETER_TEXT_MAP = new
-          Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.DOUBLE_QUOTE, Char. SINGLE_QUOTE, context.macroTrigger)
-          .toArray();
+      PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger).toArray();
     }
 
     @Override
@@ -227,7 +230,6 @@ public class MacroScanner {
         while (!Char.mapContains(character = scanner.next(), BREAK_PROCEDURE_MAP)){
           data.append(getParameter(scanner, character));
         }
-        // expand double quoted text
         return (context.start(file, data.toString()));
       } else if (character == Char.SINGLE_QUOTE) {
         StringBuilder data = new StringBuilder();
@@ -246,7 +248,6 @@ public class MacroScanner {
         return data.toString();
       }
     }
-
 
     @Override
     protected boolean terminate(@NotNull Scanner scanner, char character) {
