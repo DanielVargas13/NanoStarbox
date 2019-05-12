@@ -1,10 +1,14 @@
 #### Hypersoft-Systems: NanoStarbox
 
-This JDK 1.8 API Level 8 [project](LICENSE) is managed with IntelliJ IDEA using [git](https://github.com/hypersoft/NanoStarboox/) VCS.
+This JDK 1.8 API Level 8 [project](LICENSE) is managed with IntelliJ IDEA using [git](https://github.com/hypersoft/NanoStarboox/) VCS (version-control-system).
 
-NanoStarbox is composed of a headless core module:
+NanoStarbox is a working draft specification composed of a headless core module:
 
 * [NanoStarbox Core](module/jre/NanoStarbox%20Core)
+
+Each working draft specification is guaranteed to be compatible with itself.
+working drafts may or may not be compatible with working drafts of the future or past.
+Compatibility is an issue of expert systems knowledge.
 
 Additionally there are several provided support packages for desktops:
 
