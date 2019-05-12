@@ -8,7 +8,7 @@
 
 package org.mozilla.javascript;
 
-import box.star.js.android.Android;
+import box.star.js.Android;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.ScriptNode;
 import org.mozilla.javascript.debug.DebuggableScript;

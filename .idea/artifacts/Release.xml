@@ -28,6 +28,9 @@
       <element id="archive" name="nano-starbox-xml.jar">
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/simple-xml-2.7.1.jar" path-in-jar="/" />
       </element>
+      <element id="archive" name="nano-starbox-json.jar">
+        <element id="module-output" name="NanoStarbox JSON" />
+      </element>
     </root>
   </artifact>
 </component>

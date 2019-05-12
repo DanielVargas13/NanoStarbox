@@ -1,4 +1,4 @@
-package box.star.json;
+package org.json;
 
 import java.io.IOException;
 import java.math.BigDecimal;

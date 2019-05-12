@@ -1,4 +1,4 @@
-package box.star.js.android;
+package box.star.js;
 
 import org.mozilla.javascript.Context;
 
