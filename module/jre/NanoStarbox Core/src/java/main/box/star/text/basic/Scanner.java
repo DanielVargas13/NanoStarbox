@@ -106,6 +106,27 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * Determines the size of the current history buffer.
+   * @return
+   */
+  public int historySize(){
+    return state.getHistoryLength();
+  }
+
+  /**
+   *  Trims the size of the history buffer to the amount given.
+   *
+   *  if the amount is zero or less, the history is flushed.
+   *  if the amount is not reached, nothing is done.
+   *
+   * @param size
+   * @throws IllegalStateException if the current position is within the history.
+   */
+  public void trimHistory(int size) throws IllegalStateException {
+    state.trimHistoryLength(size);
+  }
+
+  /**
    * Call this after each successful main loop to clear the back-buffer.
    * <p>
    * {@link #haveNext()} loads the next position into history.
