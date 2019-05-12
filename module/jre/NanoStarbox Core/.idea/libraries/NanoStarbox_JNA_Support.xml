@@ -3,7 +3,11 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/src/java/lib/feature/jna-4.5.2.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/doc/jna-4.5.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/java/lib/feature/src/jna-4.5.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

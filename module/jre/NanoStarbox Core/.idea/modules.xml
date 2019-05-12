@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/NanoStarbox Core.iml" filepath="$PROJECT_DIR$/.idea/NanoStarbox Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/java/lib/feature/src/xmlpull-parser-runtime.iml" filepath="$PROJECT_DIR$/src/java/lib/feature/src/xmlpull-parser-runtime.iml" />
     </modules>
   </component>
 </project>

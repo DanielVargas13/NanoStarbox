@@ -8,7 +8,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/resource/main/META-INF/MANIFEST.MF" />
         </element>
       </element>
-      <element id="archive" name="nano-starbox-core-android-support.jar">
+      <element id="archive" name="nano-starbox-android-scripting-support.jar">
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/rhino-android-1.5.jar" path-in-jar="/" />
@@ -24,6 +24,9 @@
       </element>
       <element id="archive" name="nano-starbox-rhino-console-debug.jar">
         <element id="module-output" name="NanoStarbox Rhino Debugger" />
+      </element>
+      <element id="archive" name="nano-starbox-xml.jar">
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/simple-xml-2.7.1.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>

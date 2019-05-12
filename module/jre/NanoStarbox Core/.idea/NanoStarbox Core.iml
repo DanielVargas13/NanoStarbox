@@ -28,6 +28,6 @@
     </orderEntry>
     <orderEntry type="library" exported="" name="NanoStarbox JNA Support" level="project" />
     <orderEntry type="library" exported="" name="NanoStarbox Android Support" level="project" />
-    <orderEntry type="module" module-name="xmlpull-parser-runtime" scope="PROVIDED" />
+    <orderEntry type="library" exported="" name="NanoStarbox Simple XML Support" level="project" />
   </component>
 </module>
