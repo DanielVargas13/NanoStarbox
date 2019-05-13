@@ -44,6 +44,9 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
   /**
    * Disk synchronization setup function.
    *
+   * Make sure you set the monitor before calling this function, so you can
+   * synchronize with external cache handlers during the cleanup phase.
+   *
    * @param synchronization a file in which to synchronize data.
    * @param loader a class to transform non serializable values during load and save.
    */
