@@ -55,7 +55,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (synchronizationFile.exists()){
       try {
         FileInputStream fis = new FileInputStream(synchronizationFile);
-        map = loader.loadMap((Map<K, CacheMap<K, V>>) Streams.readSerializable(fis));
+        map = loader.loadMap((Map<K, CacheMap.Entry<V>>) Streams.readSerializable(fis));
         fis.close();
         cleanup();
       }
