@@ -22,8 +22,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
   protected final static CacheMapMonitor<Object, Object> defaultCacheMapMonitor = new CacheMapMonitor<Object, Object>() {
     @Override
-    public void onCacheEvent(CacheEvent action, long timeStamp, Object key, Object value) {
-    }
+    public void onCacheEvent(CacheEvent action, long timeStamp, Object key, Object value) {}
   };
 
   /**
@@ -86,7 +85,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
    * object.
    *
    */
-  public void synchronize() {
+  synchronized public void synchronize() {
     cleanup();
     if (cacheMapLoader == null) return;
     try {
