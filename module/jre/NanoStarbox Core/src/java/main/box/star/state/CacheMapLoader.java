@@ -21,16 +21,21 @@ public class CacheMapLoader<K, V> {
    * @return
    */
   public Serializable saveMap(Map<K, CacheMap.Entry<V>>map){
+    for (K k:map.keySet()){
+      CacheMap.Entry<V>e = map.get(k);
+      if (e.value() instanceof Serializable) continue;
+      e.setValue(null);
+    }
     return null;
   }
 
   /**
-   * Conver each map Entry.value to runtime object form, and return the map.
+   * Convert each map Entry.value to runtime object form, and return the map.
    * @param output
    * @return
    */
-  Map<K, CacheMap.Entry<V>> loadMap(Map<K, CacheMap<K, V>> output) {
-    return null;
+  Map<K, CacheMap.Entry<V>> loadMap(Map<K, CacheMap.Entry<V>> output) {
+    return output;
   };
 
 }
