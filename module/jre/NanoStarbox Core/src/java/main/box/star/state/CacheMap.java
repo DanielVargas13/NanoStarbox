@@ -8,11 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Runtime Object Cache capable of synchronizing with disk based cache services
+ * Runtime Object Cache
+ *
+ * Capable of synchronizing serializable values to disk.
+ *
+ * Capable of synchronizing with disk based cache services
  * through the {@link CacheMapMonitor} interface.
  *
- * @param <K>
- * @param <V>
+ * @param <K> a serializable key
+ * @param <V> an object
  */
 public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
