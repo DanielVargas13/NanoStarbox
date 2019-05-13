@@ -14,10 +14,16 @@ import java.util.Set;
  */
 public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
+  protected final static CacheMapMonitor<Object, Object> defaultCacheMapMonitor = new CacheMapMonitor<Object, Object>() {
+    @Override
+    public void onCacheEvent(CacheEvent action, long timeStamp, Object key, Object value) {
+    }
+  };
+
   /**
    * Default: self-monitoring/null-driver
    */
-  private CacheMapMonitor<K, V> cacheMapMonitor = this;
+  private CacheMapMonitor<K, V> cacheMapMonitor = (CacheMapMonitor<K, V>) defaultCacheMapMonitor;
 
   /**
    *
@@ -25,7 +31,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
    * @throws IllegalStateException if monitor already set
    */
   public void setMonitor(CacheMapMonitor<K, V> monitor) {
-    if (this.cacheMapMonitor != this){
+    if (this.cacheMapMonitor != defaultCacheMapMonitor){
       throw new IllegalStateException("cache monitor already set");
     }
     this.cacheMapMonitor = monitor;
