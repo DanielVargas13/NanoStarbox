@@ -1,8 +1,5 @@
 #### NanoStarbox NSR6 Development: Active Tasks
 
-* Move Rhino Web Server Plugin functionality into the Web Server 
-(commit-hash)
-
 * Add zip archive and directory mounting to the Web Server
 (commit-hash)
 
