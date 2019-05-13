@@ -8,6 +8,10 @@ public class TokenCache<T> extends TokenMap<T> {
   protected TokenGenerator tokenGenerator = new TokenGenerator();
   protected CacheMap<String, T> map;
 
+  public void setCacheMonitor(CacheMapMonitor<String, T> cacheMonitor){
+    map.setMonitor(cacheMonitor);
+  }
+
   public TokenCache(long duration, int... lengths){
     tokenFormat = lengths;
     map = new CacheMap<>(duration, true);

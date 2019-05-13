@@ -4,9 +4,33 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class CacheMap<K, V> {
+/**
+ * Runtime Object Cache capable of synchronizing with disk based cache services
+ * through the {@link CacheMapMonitor} interface.
+ *
+ * @param <K>
+ * @param <V>
+ */
+public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
-  private long millisUntilExpiration;
+  /**
+   * Default: self-monitoring/null-driver
+   */
+  private CacheMapMonitor<K, V> cacheMapMonitor = this;
+
+  /**
+   *
+   * @param monitor
+   * @throws IllegalStateException if monitor already set
+   */
+  public void setMonitor(CacheMapMonitor<K, V> monitor) {
+    if (this.cacheMapMonitor != this){
+      throw new IllegalStateException("cache monitor already set");
+    }
+    this.cacheMapMonitor = monitor;
+  }
+
+  private long maxAge;
   private Map<K, Entry<V>> map;
 
   // Clear out old entries every few queries
@@ -27,7 +51,7 @@ public class CacheMap<K, V> {
    */
   @SuppressWarnings("serial")
   public CacheMap(long cacheDuration, boolean updateExpirationByRequest) {
-    this.millisUntilExpiration = cacheDuration;
+    this.maxAge = cacheDuration;
     this.updateExpirationByRequest = updateExpirationByRequest;
 
     map = new LinkedHashMap<K, Entry<V>>() {
@@ -43,7 +67,10 @@ public class CacheMap<K, V> {
     }
     Entry<V> entry = entryFor(key);
     if (entry != null) {
-      if (updateExpirationByRequest) entry.setTimestamp(System.currentTimeMillis());
+      if (updateExpirationByRequest) {
+        entry.setTimestamp(System.currentTimeMillis());
+        cacheMapMonitor.onRenew(key, entry.val);
+      }
       return entry.val();
     }
     return null;
@@ -57,8 +84,10 @@ public class CacheMap<K, V> {
     if (entry != null) {
       entry.setTimestamp(System.currentTimeMillis());
       entry.setVal(val);
+      cacheMapMonitor.onUpdate(key, val);
     } else {
       map.put(key, new Entry<V>(System.currentTimeMillis(), val));
+      cacheMapMonitor.onCreate(key, val);
     }
   }
 
@@ -70,7 +99,8 @@ public class CacheMap<K, V> {
     Entry<V> entry = map.get(key);
     if (entry != null) {
       long delta = System.currentTimeMillis() - entry.timestamp();
-      if (delta < 0 || delta >= millisUntilExpiration) {
+      if (delta < 0 || delta >= maxAge) {
+        cacheMapMonitor.onExpire(key, entry.val);
         map.remove(key);
         entry = null;
       }
@@ -115,6 +145,18 @@ public class CacheMap<K, V> {
 
   public boolean containsKey(Object key) {return map.containsKey(key);}
 
-  public synchronized Entry<V> remove(Object key) {return map.remove(key);}
+  public synchronized V remove(Object key) {
+    if (map.containsKey(key)) {
+      cacheMapMonitor.onRemove((K)key, map.get(key).val);
+      return map.remove(key).val;
+    }
+    return null;
+  }
+
+  @Override public void onCreate(K key, V value) {}
+  @Override public void onUpdate(K key, V value) {}
+  @Override public void onExpire(K key, V value) {}
+  @Override public void onRemove(K key, V value) {}
+  @Override public void onRenew(K key, V value){}
 
 }

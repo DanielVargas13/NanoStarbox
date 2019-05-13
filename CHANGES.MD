@@ -1,5 +1,7 @@
 #### NSR6
 
+* Add CacheMapMonitor (4736dc0538f2fc40441134172e41ec3b10755ab1)
+
 * Add TokenCache\<Object\> to Web Server (e7ccbf0cba5e3e84b19058cc6018a45526fbb6cc)
 
 * Refactor box.star.chron.Timer.createInterval as createPulse (4f6161aa653b0dcad80160a60cd86d0caca3da66)
