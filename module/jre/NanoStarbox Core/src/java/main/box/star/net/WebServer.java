@@ -26,7 +26,6 @@ public class WebServer extends HTTPServer {
     configuration.set("staticIndexFiles", staticIndexFiles = new Stack<>());
     configuration.set("mimeTypeReaders", new Stack<>());
     configuration.set("mimeTypeDriverTable", new Hashtable<>());
-    configuration.set("templateFillerTable", new Hashtable<>());
     configuration.set("directoryMountHandlers", new Hashtable<>());
 
     configuration.set("documentRoot", new File("."));
@@ -297,9 +296,7 @@ public class WebServer extends HTTPServer {
       for (String p: getVirtualDirectories()){
         if (uri.startsWith(p)){
           IResponseHandler directoryMountHandler = getVirtualDirectoryHandler(uri);
-          if (directoryMountHandler != null){
-            return directoryMountHandler.generateServiceResponse(this, file, mimeType, query);
-          }
+          return directoryMountHandler.generateServiceResponse(this, file, mimeType, query);
         }
       }
       
@@ -336,10 +333,6 @@ public class WebServer extends HTTPServer {
    */
   public static class MimeTypeDriver implements IResponseHandler {
     private MimeTypeDriver next;
-
-    // override this method.
-    //public Template.Filler getTemplateFiller() {return null;}
-
     public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
       return null;
     }
