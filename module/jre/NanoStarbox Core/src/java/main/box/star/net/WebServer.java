@@ -60,8 +60,8 @@ public class WebServer extends HTTPServer {
     return timer.createTimeout(time, callback, parameter);
   }
 
-  public TimerTask createInterval(int time, ITimerMethod<Object> callback, Object... parameter) {
-    return timer.createInterval(time, callback, parameter);
+  public TimerTask createPulse(int time, ITimerMethod<Object> callback, Object... parameter) {
+    return timer.createPulse(time, callback, parameter);
   }
 
   public TimerTask createAlarm(Date time, ITimerMethod<Object> callback, Object... parameter) {
