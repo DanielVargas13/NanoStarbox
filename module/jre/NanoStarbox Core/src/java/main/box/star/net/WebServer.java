@@ -11,12 +11,14 @@ import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 import box.star.net.tools.RhinoWebDriver;
+import box.star.state.TokenCache;
 
 import java.io.*;
 import java.util.*;
 
 public class WebServer extends HTTPServer {
 
+  private TokenCache<Object> tokenCache;
   private Timer timer = new Timer();
 
   public WebServer() {
@@ -152,6 +154,41 @@ public class WebServer extends HTTPServer {
       return;
     }
     mimeTypeDriverTable.put(mimeType, driver);
+  }
+
+  /**
+   * Configures the token cache duration for the server.
+   *
+   * Must be called once and only once before {@link #getTokenCache()}
+   *
+   * @param duration milliseconds which must pass before token expiration.
+   * @return this {@link WebServer}
+   */
+  public WebServer setTokenCacheDuration(long duration){
+    if (tokenCache == null){
+      configuration.set("tokenCacheDuration", duration);
+      return this;
+    }
+    throw new IllegalStateException("Token cache is already running");
+  }
+
+  /**
+   * Gets the token cache for the server.
+   *
+   * If the token cache does not exist, it is created with a default duration of 1 hour.
+   *
+   * The token cache allows applications, scripts and pages to store, share and
+   * recall runtime data with a serializable key known as a token. A token can
+   * then be stored in an object such as a user-cookie, to enable visitation
+   * based sessions.
+   *
+   * @return
+   */
+  public TokenCache<Object>getTokenCache(){
+    if (tokenCache == null){
+      tokenCache = new TokenCache<Object>((long)configuration.getOrDefault("tokenCacheDuration", 60 * 10000), 8);
+    }
+    return tokenCache;
   }
 
   public void start(String hostname, int port) throws IOException {
