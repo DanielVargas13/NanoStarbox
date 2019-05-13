@@ -26,7 +26,7 @@ public class WebServer extends HTTPServer {
     configuration.set("staticIndexFiles", staticIndexFiles = new Stack<>());
     configuration.set("mimeTypeReaders", new Stack<>());
     configuration.set("mimeTypeDriverTable", new Hashtable<>());
-    configuration.set("directoryMountHandlers", new Hashtable<>());
+    configuration.set("virtualDirectoryHandlers", new Hashtable<>());
 
     configuration.set("documentRoot", new File("."));
 
@@ -78,26 +78,26 @@ public class WebServer extends HTTPServer {
   }
 
   public List<String> getVirtualDirectories(){
-    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
-    return new ArrayList<>(directoryMountHandlers.keySet());
+    Map<String, IResponseHandler> virtualDirectoryHandlers = configuration.get("virtualDirectoryHandlers");
+    return new ArrayList<>(virtualDirectoryHandlers.keySet());
   }
 
   /**
    * Adds a virtual directory handler to the mount handlers.
    * 
-   * All paths inheriting from this path, will be resolved by the directoryMountHandler.
+   * All paths inheriting from this path, will be resolved by the virtualDirectoryHandler.
    * 
    * @param path
-   * @param directoryMountHandler
+   * @param virtualDirectoryHandler
    */
-  public void addVirtualDirectory(String path, IResponseHandler directoryMountHandler){
-    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
-    directoryMountHandlers.put(path, directoryMountHandler);
+  public void addVirtualDirectory(String path, IResponseHandler virtualDirectoryHandler){
+    Map<String, IResponseHandler> virtualDirectoryHandlers = configuration.get("virtualDirectoryHandlers");
+    virtualDirectoryHandlers.put(path, virtualDirectoryHandler);
   }
   
   public IResponseHandler getVirtualDirectoryHandler(String key){
-    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
-    return directoryMountHandlers.get(key);
+    Map<String, IResponseHandler> virtualDirectoryHandlers = configuration.get("virtualDirectoryHandlers");
+    return virtualDirectoryHandlers.get(key);
   }
   
   public void addStaticIndexFile(String filename) {
@@ -295,8 +295,8 @@ public class WebServer extends HTTPServer {
 
       for (String p: getVirtualDirectories()){
         if (uri.startsWith(p)){
-          IResponseHandler directoryMountHandler = getVirtualDirectoryHandler(uri);
-          return directoryMountHandler.generateServiceResponse(this, file, mimeType, query);
+          IResponseHandler virtualDirectoryHandler = getVirtualDirectoryHandler(uri);
+          return virtualDirectoryHandler.generateServiceResponse(this, file, mimeType, query);
         }
       }
       
