@@ -1,5 +1,7 @@
 #### NSR6
 
+* Add Virtual File Links to Web Server (f33742b05e755ad8bf58613b31cc1c0aa55a9ef3)
+
 * Add virtual directory mounting to the Web Server
 (f1564d42f4221de5a424a29a607dc9287ad53a94)
 
