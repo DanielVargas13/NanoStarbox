@@ -12,8 +12,9 @@ import box.star.text.basic.Scanner;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.tools.shell.Global;
 
-import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Stack;
 
@@ -52,7 +53,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
   }
 
   @Override
-  public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
+  public Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession) {
     Context cx = Context.enter();
 
     try {
@@ -60,7 +61,7 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         Scriptable shell = getScriptShell(cx, global);
         ScriptRuntime.setObjectProp(shell, "file", Context.javaToJS(file, shell), cx);
         ScriptRuntime.setObjectProp(shell, "session", Context.javaToJS(ihttpSession, shell), cx);
-        Scanner scanner = new Scanner(file);
+        Scanner scanner = new Scanner(ihttpSession.getUri(), file);
         MacroShell macroShell = new MacroShell(System.getenv());
         // allow javascript to program the shell
         ScriptRuntime.setObjectProp(shell, "shell", Context.javaToJS(macroShell, shell), cx);
@@ -81,8 +82,8 @@ public class RhinoWebDriver extends WebServer.MimeTypeDriver {
         scanner.nextField(Char.LINE_FEED);
         return webServer.htmlResponse(Status.OK, macroShell.start(scanner));
       }
-      try (Reader reader = new FileReader(file)) {
-        Script script = cx.compileReader(reader, file.getPath(), 1, null);
+      try (Reader reader = new InputStreamReader(file)) {
+        Script script = cx.compileReader(reader, ihttpSession.getUri(), 1, null);
         Scriptable shell = getScriptShell(cx, global);
         script.exec(cx, shell);
         Function f = (Function) ScriptableObject.getProperty(shell, "generateServiceResponse");

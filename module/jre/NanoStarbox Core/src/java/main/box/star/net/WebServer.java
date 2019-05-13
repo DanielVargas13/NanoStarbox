@@ -217,7 +217,15 @@ public class WebServer extends HTTPServer {
   }
 
   public File locateServerFile(String uri) {
-    return new File(getDocumentRoot(), uri);
+    // support virtual file links
+    Map<String, File> vfl = getVirtualFileLinks();
+    File file;
+    if (vfl.containsKey(uri)) {
+      file = vfl.get(uri);
+    } else {
+      file = new File(getDocumentRoot(), uri);
+    }
+    return file;
   }
 
   public String getFileExtensionMimeType(String extension) {
@@ -292,7 +300,7 @@ public class WebServer extends HTTPServer {
     return plainTextResponse(Status.OK, listDirectory(directory, query));
   }
 
-  public Response getMimeTypeResponse(File file, String mimeType, IHTTPSession query) {
+  public Response getMimeTypeResponse(InputStream file, String mimeType, IHTTPSession query) {
     Hashtable<String, MimeTypeDriver> mimeTypeDriverTable = getMimeTypeDriverTable();
     MimeTypeDriver mimeTypeDriver = mimeTypeDriverTable.get(mimeType);
     Response out = null;
@@ -325,7 +333,13 @@ public class WebServer extends HTTPServer {
    */
   public Response serveFile(File file, String mimeType, IHTTPSession query) {
 
-    Response magic = getMimeTypeResponse(file, mimeType, query);
+    Response magic = null;
+    try {
+      magic = getMimeTypeResponse(new FileInputStream(file), mimeType, query);
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
     if (magic != null) return magic;
 
     return staticFileResponse(file, mimeType, query);
@@ -344,21 +358,17 @@ public class WebServer extends HTTPServer {
       
       String uri = query.getUri().substring(1);
       File file = locateServerFile(uri);
+
       String mimeType = mimeTypeMagic(file);
+
       if (blacklistRequest(uri, file, mimeType, query)) return forbiddenResponse();
 
+      // support virtual directory
       for (String p: getVirtualDirectories()){
         if (uri.startsWith(p)){
-          IResponseHandler virtualDirectoryHandler = getVirtualDirectoryHandler(uri);
-          return virtualDirectoryHandler.generateServiceResponse(this, file, mimeType, query);
+          IResponseHandler virtualDirectoryHandler = getVirtualDirectoryHandler(p);
+          return virtualDirectoryHandler.generateServiceResponse(this, null, mimeType, query);
         }
-      }
-
-      // support virtual file links
-      Map<String, File> vfl = getVirtualFileLinks();
-      if (vfl.containsKey(uri)) {
-        file = vfl.get(uri);
-        mimeType = mimeTypeMagic(file);
       }
 
       // support server's root file system links
@@ -374,7 +384,7 @@ public class WebServer extends HTTPServer {
   }
 
   public interface IResponseHandler {
-    Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession);
+    Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession);
   }
 
   /**
@@ -395,7 +405,7 @@ public class WebServer extends HTTPServer {
    */
   public static class MimeTypeDriver implements IResponseHandler {
     private MimeTypeDriver next;
-    public Response generateServiceResponse(WebServer webServer, File file, String mimeType, IHTTPSession ihttpSession) {
+    public Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession) {
       return null;
     }
   }

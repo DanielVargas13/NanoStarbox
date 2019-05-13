@@ -5,7 +5,8 @@ var ByteArrayOutputStream = java.io.ByteArrayOutputStream;
 
 function generateServiceResponse(file, mimeType, httpSession) {
     var captureStream = new ByteArrayOutputStream();
-    var scriptDirectory = file.getParent();
+    var scriptDirectory = new java.io.File(httpSession.getUri().substring(1))
+    if (scriptDirectory == "") scriptDirectory = ".";
     if (System.getProperty("os.name").startsWith("Windows")) new Starbox.Command("cmd", "/c")
         .setDirectory(scriptDirectory)
             .writeOutputTo(captureStream)

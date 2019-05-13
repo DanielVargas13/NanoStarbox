@@ -1,5 +1,7 @@
 #### NSR6
 
+* Switched to stream Drivers in WebServer and added ZipSiteDriver (ca32bb498226363db2bc2653bcf919ed909cf2d9)
+
 * Add CacheMap Loader (b1cceef0e8474a78a8fa2eb6e23c3dcd7889460a)
 
 * Add CacheMapMonitor (f1325932e1f449b7498bdd5789e9a294ad1b5f8b)
