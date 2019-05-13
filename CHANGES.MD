@@ -1,5 +1,7 @@
 #### NSR6
 
+* Incorporate RhinoWebDriver in the Web Server (f9b3ee46c59f259fb7422854fda58de3f90d553f)
+
 * Add Virtual File Links to Web Server (f33742b05e755ad8bf58613b31cc1c0aa55a9ef3)
 
 * Add virtual directory mounting to the Web Server
