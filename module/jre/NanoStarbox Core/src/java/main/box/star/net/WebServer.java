@@ -307,7 +307,7 @@ public class WebServer extends HTTPServer {
 
     while (out == null) {
       if (mimeTypeDriver == null) break;
-      out = mimeTypeDriver.generateServiceResponse(this, file, mimeType, query);
+      out = mimeTypeDriver.generateServiceResponse(this, query.getUri().substring(1), file, mimeType, query);
       if (out != null) return out;
       mimeTypeDriver = mimeTypeDriver.next;
     }
@@ -367,7 +367,7 @@ public class WebServer extends HTTPServer {
       for (String p: getVirtualDirectories()){
         if (uri.startsWith(p)){
           IResponseHandler virtualDirectoryHandler = getVirtualDirectoryHandler(p);
-          return virtualDirectoryHandler.generateServiceResponse(this, null, mimeType, query);
+          return virtualDirectoryHandler.generateServiceResponse(this, uri, null, mimeType, query);
         }
       }
 
@@ -384,7 +384,7 @@ public class WebServer extends HTTPServer {
   }
 
   public interface IResponseHandler {
-    Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession);
+    Response generateServiceResponse(WebServer webServer, String uri, InputStream fileStream, String mimeType, IHTTPSession ihttpSession);
   }
 
   /**
@@ -405,7 +405,7 @@ public class WebServer extends HTTPServer {
    */
   public static class MimeTypeDriver implements IResponseHandler {
     private MimeTypeDriver next;
-    public Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession) {
+    public Response generateServiceResponse(WebServer webServer, String uri, InputStream fileStream, String mimeType, IHTTPSession ihttpSession) {
       return null;
     }
   }

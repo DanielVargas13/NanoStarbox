@@ -1,5 +1,7 @@
 #### NSR6
 
+* Add uri parameter to WebServer drivers (6d9390c79be15cbd1f0dfca81a71c69e5e9fc66d)
+
 * Switched to stream Drivers in WebServer and added ZipSiteDriver (ca32bb498226363db2bc2653bcf919ed909cf2d9)
 
 * Add CacheMap Loader (b1cceef0e8474a78a8fa2eb6e23c3dcd7889460a)

@@ -3,7 +3,7 @@
 var Status = Net.http.response.Status;
 var ByteArrayOutputStream = java.io.ByteArrayOutputStream;
 
-function generateServiceResponse(file, mimeType, httpSession) {
+function generateServiceResponse(uri, stream, mimeType, httpSession) {
     var captureStream = new ByteArrayOutputStream();
     var scriptDirectory = new java.io.File(httpSession.getUri().substring(1))
     if (scriptDirectory == "") scriptDirectory = ".";

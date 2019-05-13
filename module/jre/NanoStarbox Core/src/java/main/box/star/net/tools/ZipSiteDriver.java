@@ -40,8 +40,8 @@ public class ZipSiteDriver implements WebServer.IResponseHandler {
   }
 
   @Override
-  public Response generateServiceResponse(WebServer webServer, InputStream file, String mimeType, IHTTPSession ihttpSession) {
-    String target = ihttpSession.getUri().substring(1);
+  public Response generateServiceResponse(WebServer webServer, String uri, InputStream fileStream, String mimeType, IHTTPSession ihttpSession) {
+    String target = uri;
     try {
       if (vfs.containsKey(target)){
         InputStream inputStream = this.zipFile.getInputStream(vfs.get(target));
