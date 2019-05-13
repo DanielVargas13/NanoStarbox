@@ -27,7 +27,7 @@ public class WebServer extends HTTPServer {
     configuration.set("mimeTypeReaders", new Stack<>());
     configuration.set("mimeTypeDriverTable", new Hashtable<>());
     configuration.set("virtualDirectoryHandlers", new Hashtable<>());
-
+    configuration.set("virtualFileLinks", new Hashtable<>());
     configuration.set("documentRoot", new File("."));
 
     // this field is public...
@@ -77,6 +77,19 @@ public class WebServer extends HTTPServer {
     return (Stack<MimeTypeReader>) configuration.get("mimeTypeReaders");
   }
 
+  /**
+   * Gets a map the user can control to configure virtual file links.
+   * @return
+   */
+  public Map<String, File> getVirtualFileLinks(){
+    return configuration.get("virtualFileLinks");
+  }
+
+  /**
+   * Gets a list copy of the current virtual directories registered.
+   *
+   * @return
+   */
   public List<String> getVirtualDirectories(){
     Map<String, IResponseHandler> virtualDirectoryHandlers = configuration.get("virtualDirectoryHandlers");
     return new ArrayList<>(virtualDirectoryHandlers.keySet());
@@ -299,7 +312,15 @@ public class WebServer extends HTTPServer {
           return virtualDirectoryHandler.generateServiceResponse(this, file, mimeType, query);
         }
       }
-      
+
+      // support virtual file links
+      Map<String, File> vfl = getVirtualFileLinks();
+      if (vfl.containsKey(uri)) {
+        file = vfl.get(uri);
+        mimeType = mimeTypeMagic(file);
+      }
+
+      // support server's root file system links
       return (file.isDirectory()) ?
           serveDirectory(file, query) : serveFile(file, mimeType, query);
     }
