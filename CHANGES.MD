@@ -1,5 +1,7 @@
 #### NSR6
 
+* Refactor box.star.chron.Timer.createInterval as createPulse (4f6161aa653b0dcad80160a60cd86d0caca3da66)
+
 * Incorporate RhinoWebDriver in the Web Server (f9b3ee46c59f259fb7422854fda58de3f90d553f)
 
 * Add Virtual File Links to Web Server (f33742b05e755ad8bf58613b31cc1c0aa55a9ef3)
