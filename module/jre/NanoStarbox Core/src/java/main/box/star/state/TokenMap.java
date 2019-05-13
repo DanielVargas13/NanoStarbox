@@ -4,19 +4,19 @@ import box.star.text.TokenGenerator;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SharedTokenMap<T> {
+public class TokenMap<T> {
 
   protected int[] tokenFormat;
 
   protected TokenGenerator tokenGenerator = new TokenGenerator();
   protected ConcurrentHashMap<String, T> map;
 
-  public SharedTokenMap(int... lengths){
+  public TokenMap(int... lengths){
     tokenFormat = lengths;
     map = new ConcurrentHashMap<>();
   }
 
-  public SharedTokenMap(int tokenLength){
+  public TokenMap(int tokenLength){
     tokenFormat = new int[]{tokenLength};
     map = new ConcurrentHashMap<>();
   }
