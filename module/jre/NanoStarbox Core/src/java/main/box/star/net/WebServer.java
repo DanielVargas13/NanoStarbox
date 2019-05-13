@@ -124,6 +124,8 @@ public class WebServer extends HTTPServer {
 
   @Override
   public void stop() {
+    TokenCache tokenCache = getTokenCache();
+    if (tokenCache.isConfiguredForDiskSynchronization())tokenCache.synchronize();
     timer.cancelTimers();
     super.stop();
   }
