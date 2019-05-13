@@ -12,10 +12,7 @@ import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Stack;
-import java.util.TimerTask;
+import java.util.*;
 
 public class WebServer extends HTTPServer {
 
@@ -30,6 +27,7 @@ public class WebServer extends HTTPServer {
     configuration.set("mimeTypeReaders", new Stack<>());
     configuration.set("mimeTypeDriverTable", new Hashtable<>());
     configuration.set("templateFillerTable", new Hashtable<>());
+    configuration.set("directoryMountHandlers", new Hashtable<>());
 
     configuration.set("documentRoot", new File("."));
 
@@ -80,6 +78,29 @@ public class WebServer extends HTTPServer {
     return (Stack<MimeTypeReader>) configuration.get("mimeTypeReaders");
   }
 
+  public List<String> getVirtualDirectories(){
+    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
+    return new ArrayList<>(directoryMountHandlers.keySet());
+  }
+
+  /**
+   * Adds a virtual directory handler to the mount handlers.
+   * 
+   * All paths inheriting from this path, will be resolved by the directoryMountHandler.
+   * 
+   * @param path
+   * @param directoryMountHandler
+   */
+  public void addVirtualDirectory(String path, IResponseHandler directoryMountHandler){
+    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
+    directoryMountHandlers.put(path, directoryMountHandler);
+  }
+  
+  public IResponseHandler getVirtualDirectoryHandler(String key){
+    Map<String, IResponseHandler> directoryMountHandlers = configuration.get("directoryMountHandlers");
+    return directoryMountHandlers.get(key);
+  }
+  
   public void addStaticIndexFile(String filename) {
     getStaticIndexFiles().push(filename);
   }
@@ -267,10 +288,21 @@ public class WebServer extends HTTPServer {
   @Override
   protected Response serviceRequest(IHTTPSession query) {
     try {
+      
       String uri = query.getUri().substring(1);
       File file = locateServerFile(uri);
       String mimeType = mimeTypeMagic(file);
       if (blacklistRequest(uri, file, mimeType, query)) return forbiddenResponse();
+
+      for (String p: getVirtualDirectories()){
+        if (uri.startsWith(p)){
+          IResponseHandler directoryMountHandler = getVirtualDirectoryHandler(uri);
+          if (directoryMountHandler != null){
+            return directoryMountHandler.generateServiceResponse(this, file, mimeType, query);
+          }
+        }
+      }
+      
       return (file.isDirectory()) ?
           serveDirectory(file, query) : serveFile(file, mimeType, query);
     }
