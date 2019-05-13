@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class RhinoWebDriverTest {
+class WebServerTest {
 
 
   WebServer ws = new WebServer();
@@ -13,11 +13,10 @@ class RhinoWebDriverTest {
   {
     ws.setDocumentRoot("src/java/resource/local/site/main");
     ws.makeSecure(new File("src/java/resource/test/Starbox.jks"), "Starbox");
-    RhinoWebDriver.createInstance(ws);
   }
 
   @Test
-  void p() throws Exception {
+  void WebServer() throws Exception {
 
     ws.start();
 

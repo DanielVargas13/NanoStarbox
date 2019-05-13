@@ -10,6 +10,7 @@ import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
+import box.star.net.tools.RhinoWebDriver;
 
 import java.io.*;
 import java.util.*;
@@ -50,6 +51,8 @@ public class WebServer extends HTTPServer {
         return null;
       }
     });
+
+    new RhinoWebDriver(this);
 
   }
 
