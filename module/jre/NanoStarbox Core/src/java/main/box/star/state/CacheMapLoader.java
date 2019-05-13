@@ -26,7 +26,7 @@ public class CacheMapLoader<K, V> {
       if (e.value() instanceof Serializable) continue;
       e.setValue(null);
     }
-    return null;
+    return (Serializable) map;
   }
 
   /**
