@@ -1,5 +1,7 @@
 #### NSR6
 
+* Add CacheMap Loader (b1cceef0e8474a78a8fa2eb6e23c3dcd7889460a)
+
 * Add CacheMapMonitor (f1325932e1f449b7498bdd5789e9a294ad1b5f8b)
 
 * Add TokenCache\<Object\> to Web Server (e7ccbf0cba5e3e84b19058cc6018a45526fbb6cc)

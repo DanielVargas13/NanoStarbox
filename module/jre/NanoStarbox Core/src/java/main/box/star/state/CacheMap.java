@@ -1,6 +1,8 @@
 package box.star.state;
 
-import java.io.Serializable;
+import box.star.io.Streams;
+
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +26,8 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
    * Default: self-monitoring/null-driver
    */
   private CacheMapMonitor<K, V> cacheMapMonitor = (CacheMapMonitor<K, V>) defaultCacheMapMonitor;
+  private CacheMapLoader<K, V> cacheMapLoader;
+  private File synchronizationFile;
 
   /**
    *
@@ -35,6 +39,55 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
       throw new IllegalStateException("cache monitor already set");
     }
     this.cacheMapMonitor = monitor;
+  }
+
+  /**
+   * Disk synchronization setup function.
+   *
+   * @param synchronization a file in which to synchronize data.
+   * @param loader a class to transform non serializable values during load and save.
+   */
+  public void setSynchronization(File synchronization, CacheMapLoader<K, V> loader){
+    if (cacheMapLoader != null)
+      throw new IllegalStateException("cache map loader already set");
+    cacheMapLoader = loader;
+    synchronizationFile = synchronization;
+    if (synchronizationFile.exists()){
+      try {
+        FileInputStream fis = new FileInputStream(synchronizationFile);
+        map = loader.loadMap((Map<K, CacheMap<K, V>>) Streams.readSerializable(fis));
+        fis.close();
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  /**
+   * Run the synchronization function.
+   *
+   * Culls expired entries and optionally saves the data to disk in a reloadable
+   * format.
+   *
+   * If there is no cache map loader set, then only expired entries
+   * are culled from the cache.
+   *
+   * This feature does not notify the monitor of any events. It is assumed
+   * that the monitor and loader are a feature-set, quite possibly the same
+   * object.
+   *
+   */
+  public void synchronize() {
+    cleanup();
+    if (cacheMapLoader == null) return;
+    try {
+      FileOutputStream os = new FileOutputStream(synchronizationFile);
+      Streams.writeSerializable(os, cacheMapLoader.saveMap(map));
+      os.close();
+    } catch (Exception e){
+      throw new RuntimeException(e);
+    }
   }
 
   private long maxAge;
@@ -76,9 +129,9 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (entry != null) {
       if (updateExpirationByRequest) {
         entry.setTimestamp(System.currentTimeMillis());
-        cacheMapMonitor.onCacheEvent(CacheEvent.RENEW, entry.timestamp, key, entry.val);
+        cacheMapMonitor.onCacheEvent(CacheEvent.RENEW, entry.timestamp, key, entry.value);
       }
-      return entry.val();
+      return entry.value();
     }
     return null;
   }
@@ -90,7 +143,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     Entry<V> entry = entryFor(key);
     if (entry != null) {
       entry.setTimestamp(System.currentTimeMillis());
-      entry.setVal(val);
+      entry.setValue(val);
       cacheMapMonitor.onCacheEvent(CacheEvent.UPDATE, entry.timestamp, key, val);
     } else {
       entry = new Entry<V>(System.currentTimeMillis(), val);
@@ -108,7 +161,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (entry != null) {
       long delta = System.currentTimeMillis() - entry.timestamp();
       if (delta < 0 || delta >= maxAge) {
-        cacheMapMonitor.onCacheEvent(CacheEvent.EXPIRE, entry.timestamp, key, entry.val);
+        cacheMapMonitor.onCacheEvent(CacheEvent.EXPIRE, entry.timestamp, key, entry.value);
         map.remove(key);
         entry = null;
       }
@@ -130,25 +183,33 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     queryCount = 0;
   }
 
-  private static class Entry<T> {
+  /**
+   * This class is serializable but it's values may not be. The {@link CacheMapLoader}
+   * class allows transformation of the cache to a serializable format.
+   * @param <T>
+   */
+  public static class Entry<T> implements Serializable {
+
+    private static final long serialVersionUID = 6164182392342985833L;
 
     private long timestamp;
-    private T val;
+    private T value;
 
-    Entry(long timestamp, T val) {
+    private Entry(long timestamp, T value) {
       this.timestamp = timestamp;
-      this.val = val;
+      this.value = value;
     }
 
     long timestamp() { return timestamp; }
 
-    void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
 
-    T val() {
-      return val;
+    public T value() {
+      return value;
     }
 
-    void setVal(T val) { this.val = val; }
+    public void setValue(T val) { this.value = val; }
+
   }
 
   public boolean containsKey(Object key) {return map.containsKey(key);}
@@ -156,8 +217,8 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
   public synchronized V remove(Object key) {
     if (map.containsKey(key)) {
       Entry<V> entry = map.get(key);
-      cacheMapMonitor.onCacheEvent(CacheEvent.REMOVE, entry.timestamp, (K)key, map.get(key).val);
-      return map.remove(key).val;
+      cacheMapMonitor.onCacheEvent(CacheEvent.REMOVE, entry.timestamp, (K)key, map.get(key).value);
+      return map.remove(key).value;
     }
     return null;
   }

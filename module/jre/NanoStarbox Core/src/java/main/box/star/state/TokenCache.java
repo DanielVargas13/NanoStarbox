@@ -2,6 +2,8 @@ package box.star.state;
 
 import box.star.text.TokenGenerator;
 
+import java.io.File;
+
 public class TokenCache<T> extends TokenMap<T> {
 
   protected int[] tokenFormat;
@@ -10,6 +12,11 @@ public class TokenCache<T> extends TokenMap<T> {
 
   public TokenCache<T> setMonitor(CacheMapMonitor<String, T> cacheMonitor){
     map.setMonitor(cacheMonitor);
+    return this;
+  }
+
+  public TokenCache<T> setSynchronization(File synchronization, CacheMapLoader<String, T> cacheMapLoader){
+    map.setSynchronization(synchronization, cacheMapLoader);
     return this;
   }
 
