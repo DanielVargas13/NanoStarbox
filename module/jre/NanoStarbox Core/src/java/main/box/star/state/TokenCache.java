@@ -6,6 +6,12 @@ import java.io.File;
 
 public class TokenCache<T> extends TokenMap<T> {
 
+  private boolean configuredForDiskSynchronization;
+
+  public boolean isConfiguredForDiskSynchronization() {
+    return configuredForDiskSynchronization;
+  }
+
   protected int[] tokenFormat;
   protected TokenGenerator tokenGenerator = new TokenGenerator();
   protected CacheMap<String, T> map;
@@ -15,8 +21,14 @@ public class TokenCache<T> extends TokenMap<T> {
     return this;
   }
 
+  public TokenCache<T> synchronize(){
+    map.synchronize();
+    return this;
+  }
+
   public TokenCache<T> setSynchronization(File synchronization, CacheMapLoader<String, T> cacheMapLoader){
     map.setSynchronization(synchronization, cacheMapLoader);
+    configuredForDiskSynchronization = true;
     return this;
   }
 
