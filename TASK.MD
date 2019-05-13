@@ -5,4 +5,4 @@ entry made in CHANGES.MD, when the task is complete.
 
 * Move Rhino Web Server Plugin functionality into the Web Server
 
-* Add zip archive mounting to the Web Server.
+* Add zip archive and directory mounting to the Web Server.
