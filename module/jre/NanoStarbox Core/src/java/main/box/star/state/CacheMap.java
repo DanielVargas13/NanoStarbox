@@ -1,5 +1,6 @@
 package box.star.state;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -69,7 +70,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (entry != null) {
       if (updateExpirationByRequest) {
         entry.setTimestamp(System.currentTimeMillis());
-        cacheMapMonitor.onRenew(key, entry.val);
+        cacheMapMonitor.onCacheEvent(CacheEvent.RENEW, entry.timestamp, key, entry.val);
       }
       return entry.val();
     }
@@ -84,10 +85,11 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (entry != null) {
       entry.setTimestamp(System.currentTimeMillis());
       entry.setVal(val);
-      cacheMapMonitor.onUpdate(key, val);
+      cacheMapMonitor.onCacheEvent(CacheEvent.UPDATE, entry.timestamp, key, val);
     } else {
-      map.put(key, new Entry<V>(System.currentTimeMillis(), val));
-      cacheMapMonitor.onCreate(key, val);
+      entry = new Entry<V>(System.currentTimeMillis(), val);
+      map.put(key, entry);
+      cacheMapMonitor.onCacheEvent(CacheEvent.CREATE, entry.timestamp, key, val);
     }
   }
 
@@ -100,7 +102,7 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     if (entry != null) {
       long delta = System.currentTimeMillis() - entry.timestamp();
       if (delta < 0 || delta >= maxAge) {
-        cacheMapMonitor.onExpire(key, entry.val);
+        cacheMapMonitor.onCacheEvent(CacheEvent.EXPIRE, entry.timestamp, key, entry.val);
         map.remove(key);
         entry = null;
       }
@@ -147,16 +149,14 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
   public synchronized V remove(Object key) {
     if (map.containsKey(key)) {
-      cacheMapMonitor.onRemove((K)key, map.get(key).val);
+      Entry<V> entry = map.get(key);
+      cacheMapMonitor.onCacheEvent(CacheEvent.REMOVE, entry.timestamp, (K)key, map.get(key).val);
       return map.remove(key).val;
     }
     return null;
   }
 
-  @Override public void onCreate(K key, V value) {}
-  @Override public void onUpdate(K key, V value) {}
-  @Override public void onExpire(K key, V value) {}
-  @Override public void onRemove(K key, V value) {}
-  @Override public void onRenew(K key, V value){}
+  @Override
+  public void onCacheEvent(CacheEvent action, long timeStamp, K key, V value) {}
 
 }
