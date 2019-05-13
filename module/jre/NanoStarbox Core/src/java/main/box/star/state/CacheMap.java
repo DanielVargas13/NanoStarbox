@@ -115,6 +115,6 @@ public class CacheMap<K, V> {
 
   public boolean containsKey(Object key) {return map.containsKey(key);}
 
-  public Entry<V> remove(Object key) {return map.remove(key);}
+  public synchronized Entry<V> remove(Object key) {return map.remove(key);}
 
 }
