@@ -25,7 +25,7 @@ public class TokenCache<T> extends TokenMap<T> {
     return token;
   }
 
-  synchronized public String put(T value){
+  public String put(T value){
     String token = getNextToken();
     map.put(token, value);
     return token;
