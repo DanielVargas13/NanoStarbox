@@ -43,7 +43,7 @@ public class WebService extends HTTPServer implements MimeTypeProvider {
       if (path.equals(uri)) return provider.getContent(session);
     }
     // second: parent-uri-equality
-    while (uri.length() > 0) {
+    while (! uri.equals("/") ) {
       uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
       if (uri.equals("")) uri = "/";
       for (String path:contentProviders.keySet()){

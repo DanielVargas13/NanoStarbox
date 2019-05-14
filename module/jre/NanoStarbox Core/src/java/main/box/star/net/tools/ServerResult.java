@@ -17,8 +17,12 @@ public class ServerResult extends ServerContent {
     this.mimeType = content.mimeType;
     this.length = content.length;
     this.lastModified = content.lastModified;
-    if (content.data != null) status = Status.OK;
-    else status = Status.NO_CONTENT;
+    if (content.status == null){
+      if (content.data != null) status = Status.OK;
+      else status = Status.NO_CONTENT;
+    } else {
+      status = content.status;
+    }
   }
 
 //  public ServerResult(IHTTPSession session, Status status, String mimeType, Object data, long length, long lastModified){
@@ -71,6 +75,7 @@ public class ServerResult extends ServerContent {
         return Response.newChunkedResponse(status, mimeType, new FileInputStream((File)data));
       }
       catch (FileNotFoundException e) {
+        // this should not be happening.
         throw new RuntimeException(e);
       }
     }

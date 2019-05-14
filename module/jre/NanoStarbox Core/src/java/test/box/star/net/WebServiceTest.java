@@ -31,9 +31,11 @@ class WebServiceTest {
     ws.addMimeTypeDriver("text/html", new MimeTypeDriver() {
       @Override
       public ServerResult createMimeTypeResult(ServerContent content) {
-        String mimeType = ws.readMimeTypeMagic(content.getStream());
-        if (RHINO_MACRO_DRIVER_MIME_TYPE.equals(mimeType)){
-          return rhinoMacroDriver.createMimeTypeResult(content);
+        if (content.isOkay()){
+          String mimeType = ws.readMimeTypeMagic(content.getStream());
+          if (RHINO_MACRO_DRIVER_MIME_TYPE.equals(mimeType)){
+            return rhinoMacroDriver.createMimeTypeResult(content);
+          }
         }
         return new ServerResult(content);
       }

@@ -4,6 +4,8 @@ import box.star.content.MimeTypeMap;
 import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
 
+import java.util.List;
+
 public class ContentProvider {
 
   private final MimeTypeMap mimeTypeMap;
