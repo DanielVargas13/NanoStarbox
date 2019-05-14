@@ -10,6 +10,7 @@ import box.star.net.tools.*;
 
 import java.io.BufferedInputStream;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 
 public class WebService extends HTTPServer implements MimeTypeProvider {
@@ -62,12 +63,33 @@ public class WebService extends HTTPServer implements MimeTypeProvider {
     return new ServerResult(content);
   }
 
+  private boolean quiet = true;
+
   @Override
   protected Response serviceRequest(IHTTPSession session) {
+
+    if (!this.quiet) {
+      Map<String, String> header = session.getHeaders();
+      Map<String, String> parms = session.getParms();
+      String uri = session.getUri();
+      System.out.println(session.getMethod() + " '" + uri + "' ");
+
+      Iterator<String> e = header.keySet().iterator();
+      while (e.hasNext()) {
+        String value = e.next();
+        System.out.println("  HDR: '" + value + "' = '" + header.get(value) + "'");
+      }
+      e = parms.keySet().iterator();
+      while (e.hasNext()) {
+        String value = e.next();
+        System.out.println("  PRM: '" + value + "' = '" + parms.get(value) + "'");
+      }
+    }
+
     try {
       ServerResult serverResult = getResult(getContent(session));
       if (serverResult == null) return notFoundResponse();
-      return serverResult.response();
+      return serverResult.getResponse();
     } catch (Exception e){
       return this.serverExceptionResponse(e);
     }
