@@ -2,13 +2,13 @@ package box.star.content;
 
 import box.star.io.Streams;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 public class MimeTypeMap extends HashMap<String, String> {
+
+  private static final Map<String, String> pathMimeType = new HashMap<>();
+  private static final List<MagicMimeTypeReader> magicReaders = new ArrayList<>();
 
   public static final String MIME_SEPARATOR = " ";
   public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
@@ -45,9 +45,14 @@ public class MimeTypeMap extends HashMap<String, String> {
     for (String key : map.keySet()) this.put(key, map.get(key));
   }
 
+  public void setPathMimeType(String path, String mimeType){
+    pathMimeType.put(path, mimeType);
+  }
+
   @Override
   public String get(Object key) {
     if (this.containsKey(key)) return super.get(key);
+    if (pathMimeType.containsKey(key)) return pathMimeType.get(key);
     return DEFAULT_MIME_TYPE;
   }
 
@@ -69,8 +74,33 @@ public class MimeTypeMap extends HashMap<String, String> {
     return DEFAULT_MIME_TYPE;
   }
 
+//  public String readMimeTypeMagic(File file){
+//    try {
+//      FileInputStream fr = new FileInputStream(file);
+//      BufferedInputStream br = new BufferedInputStream(fr);
+//      String mimeType = readMimeTypeMagic(br);
+//      br.close();
+//      return mimeType;
+//    } catch (Exception e){throw new RuntimeException(e);}
+//  }
+
+  public String readMimeTypeMagic(BufferedInputStream stream){
+    String mimeType;
+    for (MagicMimeTypeReader reader:magicReaders){
+      mimeType = reader.getMimeType(stream);
+      if (mimeType != null) return mimeType;
+    }
+    return DEFAULT_MIME_TYPE;
+  }
+
   public String[] parseMultiPartMimeType(String mimeType) {
     return mimeType.split(MIME_SEPARATOR);
   }
 
+  public MimeTypeMap addMagicReader(MagicMimeTypeReader magicReader){
+    magicReaders.add(magicReader);
+    return this;
+  }
+
 }
+

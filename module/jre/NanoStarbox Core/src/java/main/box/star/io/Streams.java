@@ -88,8 +88,13 @@ public class Streams {
     }
   }
 
-  public InputStream getInputStream(File source) throws Exception {
-    return new FileInputStream(source);
+  public static InputStream getInputStream(File source) {
+    try {
+      return new FileInputStream(source);
+    }
+    catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

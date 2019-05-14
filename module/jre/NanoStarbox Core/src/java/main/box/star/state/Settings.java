@@ -6,6 +6,7 @@ public class Settings extends Configuration<Enum, Serializable> implements Seria
 
   private static final long serialVersionUID = -1068114640999220388L;
 
-  public Settings(String name){super(name);}
-
+  Settings(Manager<Enum, Serializable> manager) {
+    super(manager);
+  }
 }

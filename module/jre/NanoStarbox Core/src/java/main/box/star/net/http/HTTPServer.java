@@ -113,10 +113,12 @@ import java.util.regex.Pattern;
  */
 public abstract class HTTPServer {
 
-  public static final String HOST_KEY = "host";
-  public static final String PORT_KEY = "port";
-  public static final String DAEMON_KEY = "daemon";
-  public static final String SOCKET_TIMEOUT_KEY = "socket-read-timeout";
+  public static final String
+      CONFIG_HOST = "host",
+      CONFIG_PORT = "port",
+      CONFIG_DAEMON = "daemon",
+      CONFIG_SOCKET_READ_TIMEOUT = "socket-read-timeout";
+
   public static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
   public static final Pattern CONTENT_DISPOSITION_PATTERN = Pattern.compile(CONTENT_DISPOSITION_REGEX, Pattern.CASE_INSENSITIVE);
   public static final String CONTENT_TYPE_REGEX = "([ |\t]*content-type[ |\t]*:)(.*)";
@@ -140,7 +142,10 @@ public abstract class HTTPServer {
    * parameters map for later re-processing.
    */
   private static final String QUERY_STRING_PARAMETER = "HTTPServer.QUERY_STRING";
-  public final ServiceConfiguration configuration = new ServiceConfiguration();
+
+  private final Configuration.Manager<String, Serializable> configurationManager = new Configuration.Manager<>(getClass().getName());
+  public final Configuration<String, Serializable> configuration = configurationManager.getConfiguration();
+
   protected List<IHandler<IHTTPSession, Response>> interceptors = new ArrayList<IHandler<IHTTPSession, Response>>(4);
   /**
    * Pluggable strategy for asynchronously executing requests.
@@ -155,21 +160,20 @@ public abstract class HTTPServer {
    */
   private IFactory<ITempFileManager> tempFileManagerFactory;
 
-  // public final String hostname;
-
-  // public final int myPort;
   private long lastAccessTime = 0;
 
   /**
    * Constructs an HTTP server on given hostname and port.
    */
   public HTTPServer() {
+    configurationManager.set(CONFIG_HOST, "localhost");
+    configurationManager.set(CONFIG_PORT, 8080);
+    configurationManager.set(CONFIG_DAEMON, true);
+    configurationManager.set(CONFIG_SOCKET_READ_TIMEOUT, 80000);
     setTempFileManagerFactory(new DefaultTempFileManagerFactory());
     setAsyncRunner(new DefaultAsyncRunner());
-
     // creates a default handler that redirects to deprecated serviceRequest();
     this.httpHandler = new IHandler<IHTTPSession, Response>() {
-
       @Override
       public Response handle(IHTTPSession input) {
         return HTTPServer.this.serviceRequest(input);
@@ -288,14 +292,6 @@ public abstract class HTTPServer {
     return decodeParameters(parms.get(HTTPServer.QUERY_STRING_PARAMETER));
   }
 
-  // -------------------------------------------------------------------------------
-  // //
-  //
-  // Threading Strategy.
-  //
-  // -------------------------------------------------------------------------------
-  // //
-
   /**
    * Decode parameters from a URL, handing the case where a single parameter
    * name might have been supplied several times, by return lists of values.
@@ -396,7 +392,7 @@ public abstract class HTTPServer {
   }
 
   public final int getPort() {
-    return this.myServerSocket == null ? -1 : this.myServerSocket.getLocalPort();
+    return this.myServerSocket == null ? configuration.get(CONFIG_PORT) : this.myServerSocket.getLocalPort();
   }
 
   public final boolean isAlive() {
@@ -412,7 +408,7 @@ public abstract class HTTPServer {
   }
 
   public String getHost() {
-    return configuration.get(HOST_KEY);
+    return configuration.get(CONFIG_HOST);
   }
 
   public IFactory<ITempFileManager> getTempFileManagerFactory() {
@@ -508,12 +504,17 @@ public abstract class HTTPServer {
    */
   public void start() throws IOException {
 
+    configurationManager.get(CONFIG_HOST).setWritable(false);
+    configurationManager.get(CONFIG_PORT).setWritable(false);
+    configurationManager.get(CONFIG_SOCKET_READ_TIMEOUT).setWritable(false);
+    configurationManager.get(CONFIG_DAEMON).setWritable(false);
+
     this.myServerSocket = this.getServerSocketFactory().create();
     this.myServerSocket.setReuseAddress(true);
 
-    HTTPService httpService = createServerRunnable(configuration.get(SOCKET_TIMEOUT_KEY));
+    HTTPService httpService = createServerRunnable(configuration.get(CONFIG_SOCKET_READ_TIMEOUT));
     this.myThread = new Thread(httpService);
-    this.myThread.setDaemon(configuration.get(DAEMON_KEY));
+    this.myThread.setDaemon(configuration.get(CONFIG_DAEMON));
     this.myThread.setName("HTTPServer Run Listener");
     this.myThread.start();
     while (!httpService.hasBoundSocketConnection() && httpService.getSocketBindingException() == null) {
@@ -730,23 +731,6 @@ public abstract class HTTPServer {
       }
     }
     return newUri;
-  }
-
-  public static class ServiceConfiguration extends Configuration<String, Serializable> {
-    private static final long serialVersionUID = 1978528942625555272L;
-
-    public ServiceConfiguration() {
-      super(ServiceConfiguration.class.getSimpleName());
-      this.set(HOST_KEY, "localhost");
-      this.set(PORT_KEY, 8080);
-      this.set(DAEMON_KEY, true);
-      /**
-       * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
-       * This is required as the Keep-Alive HTTP connections would otherwise block
-       * the socket reading thread forever (or as long the browser is open).
-       */
-      this.set(SOCKET_TIMEOUT_KEY, 80000);
-    }
   }
 
   public static final class ResponseException extends Exception {
