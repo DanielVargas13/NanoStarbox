@@ -55,23 +55,14 @@ public class ZipSiteDriver extends ContentProvider implements Closeable {
   @Override
   public ServerContent getContent(IHTTPSession session) {
     String target = session.getUri();
-    if (target.equals(getBaseUri()) && !target.endsWith("/")){
-      target += "/";
-      Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + target + "\">" + target + "</a></body></html>");
-      r.addHeader("Location", target);
-      return new ServerContent(r);
-    }
+    if (target.equals(getBaseUri()) && !target.endsWith("/")) return redirect(target + "/");
     if (file.exists()){
       if (zipTime < file.lastModified()) loadZipEntries();
     } else if (zipFile == null) return null;
     try {
       if (vfs.containsKey(target)){
         ZipEntry ze = vfs.get(target);
-        if (ze.isDirectory() && !target.endsWith("/")){
-          Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + target + "\">" + target + "</a></body></html>");
-          r.addHeader("Location", target);
-          return new ServerContent(r);
-        }
+        if (ze.isDirectory() && !target.endsWith("/")) return redirect(target + "/");
         InputStream inputStream = this.zipFile.getInputStream(ze);
         return new ServerContent(session, getMimeType(ze.getName()), inputStream, ze.getSize(), zipTime);
       }
@@ -88,6 +79,12 @@ public class ZipSiteDriver extends ContentProvider implements Closeable {
     zipFile = null;
     vfs = null;
     zipTime = 0;
+  }
+
+  private ServerContent redirect(String location){
+    Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
+    r.addHeader("Location", location);
+    return new ServerContent(r);
   }
 
 }
