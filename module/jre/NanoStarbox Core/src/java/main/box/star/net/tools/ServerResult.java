@@ -6,6 +6,7 @@ import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
+import java.util.Map;
 
 import static box.star.net.http.HTTPServer.MIME_PLAINTEXT;
 
@@ -43,7 +44,7 @@ public class ServerResult extends ServerContent {
     this(session, status, MIME_PLAINTEXT, string);
   }
 
-  public Response response(){
+  public Response getResponse(){
 
     if (status == Status.NOT_FOUND){
       return Response.newFixedLengthResponse(status, "text/plain", "File not found");
@@ -72,7 +73,7 @@ public class ServerResult extends ServerContent {
 
     else if (data instanceof File) {
       try {
-        return Response.newChunkedResponse(status, mimeType, new FileInputStream((File)data));
+        return newFixedFileResponse(mimeType, (File) data);
       }
       catch (FileNotFoundException e) {
         // this should not be happening.
@@ -88,6 +89,13 @@ public class ServerResult extends ServerContent {
     Response response = Response.newFixedLengthResponse(status, mimeType, message);
     response.addHeader("Accept-Ranges", "bytes");
     return response;
+  }
+
+  public static Response newFixedFileResponse(String mimeType, File file) throws FileNotFoundException {
+    Response res;
+    res = Response.newFixedLengthResponse(Status.OK, mimeType, new FileInputStream(file), (int) file.length());
+    res.addHeader("Accept-Ranges", "bytes");
+    return res;
   }
 
 }
