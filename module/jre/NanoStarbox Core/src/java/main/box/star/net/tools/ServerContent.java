@@ -62,7 +62,7 @@ public class ServerContent {
 
   public BufferedInputStream getStream(){
     if (!isOkay())
-      throw new IllegalStateException("status is not okay: "+status);
+      throw new IllegalStateException("status is: "+status);
     if (isFile()) {
       data = new BufferedInputStream(Streams.getInputStream(get()));
       return (BufferedInputStream) data;
@@ -83,9 +83,13 @@ public class ServerContent {
     return status == Status.OK;
   }
 
+  public boolean isResponse() { return data instanceof Response; }
+
   public boolean isEmpty(){
     return status == Status.NO_CONTENT;
   }
+
+  public boolean isRedirect() { return status == Status.REDIRECT; }
 
   public boolean isNotFound(){
     return status == Status.NOT_FOUND;
@@ -108,7 +112,7 @@ public class ServerContent {
   }
 
   public boolean isUnknown(){
-    return ! (isFile() || isBufferedInputStream() || isString() || isByteArray());
+    return ! (isResponse() || isFile() || isBufferedInputStream() || isString() || isByteArray());
   }
 
   public <ANY> ANY get(){ return (ANY) data; }
