@@ -67,7 +67,7 @@ public class ServerResult extends ServerContent {
     }
 
     else if (data instanceof byte[]) {
-      return Response.newFixedLengthResponse(status, mimeType, (byte[])data);
+      return newFixedLengthResponse(status, mimeType, (byte[])data);
     }
 
     else if (data instanceof File) {
@@ -83,4 +83,11 @@ public class ServerResult extends ServerContent {
     throw new RuntimeException("unknown mime type request object: "+data.getClass());
 
   }
+
+  public static Response newFixedLengthResponse(IStatus status, String mimeType, byte[] message) {
+    Response response = Response.newFixedLengthResponse(status, mimeType, message);
+    response.addHeader("Accept-Ranges", "bytes");
+    return response;
+  }
+
 }

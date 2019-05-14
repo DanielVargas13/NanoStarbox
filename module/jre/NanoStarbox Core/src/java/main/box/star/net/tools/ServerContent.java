@@ -2,6 +2,7 @@ package box.star.net.tools;
 
 import box.star.io.Streams;
 import box.star.net.http.IHTTPSession;
+import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
@@ -51,6 +52,12 @@ public class ServerContent {
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream){
     this(session, mimeType, stream, 0, System.currentTimeMillis());
+  }
+
+  public ServerContent(Response response){
+    this.data = response;
+    this.mimeType = response.getMimeType();
+    this.status = (Status) response.getStatus();
   }
 
   public BufferedInputStream getStream(){

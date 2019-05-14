@@ -3,7 +3,10 @@ package box.star.net.tools;
 import box.star.content.MimeTypeMap;
 import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
+import box.star.net.http.response.Response;
+import box.star.net.http.response.Status;
 
+import java.io.File;
 import java.util.List;
 
 public class ContentProvider {
@@ -12,6 +15,7 @@ public class ContentProvider {
   private final String baseUri;
 
   final public String getMimeType(String uri){
+
     return mimeTypeMap.get(mimeTypeMap.getFileExtension(uri));
   }
   final public String getBaseUri() { return baseUri; }

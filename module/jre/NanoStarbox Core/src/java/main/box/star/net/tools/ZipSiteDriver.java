@@ -2,6 +2,8 @@ package box.star.net.tools;
 
 import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
+import box.star.net.http.response.Response;
+import box.star.net.http.response.Status;
 
 import java.io.Closeable;
 import java.io.File;
@@ -53,14 +55,25 @@ public class ZipSiteDriver extends ContentProvider implements Closeable {
   @Override
   public ServerContent getContent(IHTTPSession session) {
     String target = session.getUri();
+    if (target.equals(getBaseUri()) && !target.endsWith("/")){
+      target += "/";
+      Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + target + "\">" + target + "</a></body></html>");
+      r.addHeader("Location", target);
+      return new ServerContent(r);
+    }
     if (file.exists()){
       if (zipTime < file.lastModified()) loadZipEntries();
     } else if (zipFile == null) return null;
     try {
       if (vfs.containsKey(target)){
         ZipEntry ze = vfs.get(target);
+        if (ze.isDirectory() && !target.endsWith("/")){
+          Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + target + "\">" + target + "</a></body></html>");
+          r.addHeader("Location", target);
+          return new ServerContent(r);
+        }
         InputStream inputStream = this.zipFile.getInputStream(ze);
-        return new ServerContent(session, getMimeType(target), inputStream, ze.getSize(), zipTime);
+        return new ServerContent(session, getMimeType(ze.getName()), inputStream, ze.getSize(), zipTime);
       }
       return null;
     }
