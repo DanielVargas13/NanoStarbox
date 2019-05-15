@@ -1,5 +1,8 @@
 package box.star.state;
 
+import box.star.contract.NotNull;
+import box.star.contract.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,13 +144,13 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
 
   private Manager<K, V> manager;
 
-  Configuration(Manager<K, V> manager){
+  Configuration(@NotNull Manager<K, V> manager){
     this.manager = manager;
   }
 
   public String toString(){return this.manager.name;}
 
-  public void set(K k, V v){
+  public void set(@NotNull K k, @Nullable V v){
     Entry<V> entry = manager.resolve(k);
     if (entry != null) {
       if (entry.isWritable()) entry.setValue(v);
@@ -156,7 +159,13 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
     }
   }
 
-  public <ANY> ANY get(K k){
+  @Nullable public Class classOf(@NotNull K k){
+    Entry<V> entry = manager.resolve(k);
+    if (entry != null) return entry.getValueClass();
+    else return null;
+  }
+
+  @Nullable public <ANY> ANY get(@NotNull K k){
     Entry<V> e = manager.resolve(k);
     if (e == null) return null;
     return (ANY) e.getValue();
@@ -164,17 +173,17 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
 
   public int size() {return keyList().size();}
 
-  public void addAll(Map<K, V> map){
+  public void addAll(@NotNull Map<K, V> map){
     for (K k:map.keySet()) set(k, map.get(k));
   }
 
   public boolean isEmpty() {return keyList().size() == 0;}
 
-  public boolean containsKey(K key) {
+  public boolean containsKey(@NotNull K key) {
     return manager.resolveKey(key);
   }
 
-  public V remove(K key) {
+  @Nullable public V remove(@NotNull K key) {
     Entry<V> e = manager.remove(key);
     if (e != null){ return e.getValue(); }
     else return null;
@@ -184,11 +193,11 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
     for (K k:keyList()) remove(k);
   }
 
-  public List<K> keyList() {
+  @NotNull public List<K> keyList() {
     return manager.resolveKeys();
   }
 
-  public List<V> valueList() {
+  @NotNull public List<V> valueList() {
     List<K> all = keyList();
     List<V>out = new ArrayList<>();
     for(K k: all) {
