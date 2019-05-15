@@ -28,8 +28,22 @@ class WebServiceTest {
 
     JavaScriptServerPageBuilder serverPageBuilder = new JavaScriptServerPageBuilder(ws.mimeTypeMap);
 
+    // this enables automatic *.jsp to text/html
     ws.addMimeTypeDriver(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, serverPageBuilder);
 
+    /*
+      JavaScriptPageBuilder includes a mime-type-scanner, but we don't need to register it,
+      because we only use its functionality to parse specialized text/html content-types:
+
+      ws.mimeTypeMap.addMimeTypeScanner(serverPageBuilder);
+
+      using this method instead of the above code, ensures we will only parse server content
+      that is specified as text/html, and includes our mime-type-directive at the head of the
+      content:
+
+      "<!MIME "+ NANO_STARBOX_JAVASCRIPT_SERVER_PAGE+">"
+
+     */
     // a driver that conditionally calls the above driver
     ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
       @Override
