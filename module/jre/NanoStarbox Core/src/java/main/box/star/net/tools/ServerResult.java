@@ -1,14 +1,10 @@
 package box.star.net.tools;
 
-import box.star.Tools;
-import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
-import box.star.net.http.response.IStatus;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
-import java.util.Map;
 
 import static box.star.net.http.HTTPServer.MIME_PLAINTEXT;
 
@@ -41,7 +37,7 @@ public class ServerResult extends ServerContent {
 
   public Response getResponse(){
 
-    if (status == Status.NOT_FOUND){ return WebService.notFoundResponse(); }
+    if (status == Status.NOT_FOUND){ return Response.notFoundResponse(); }
 
     else if (data instanceof Response){ return (Response) data; }
 
@@ -59,12 +55,12 @@ public class ServerResult extends ServerContent {
     }
 
     else if (data instanceof byte[]) {
-      return WebService.newFixedLengthResponse(status, mimeType, (byte[])data);
+      return Response.newFixedLengthResponse(status, mimeType, (byte[])data);
     }
 
     else if (data instanceof File) {
       try {
-        return WebService.newFixedFileResponse(mimeType, (File) data);
+        return Response.newFixedFileResponse(mimeType, (File) data);
       }
       catch (FileNotFoundException e) {
         // this should not be happening.

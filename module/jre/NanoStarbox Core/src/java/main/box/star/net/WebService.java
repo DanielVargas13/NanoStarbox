@@ -4,10 +4,8 @@ import box.star.content.MimeTypeMap;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
-import box.star.net.http.response.Status;
 import box.star.net.tools.*;
 
-import java.io.BufferedInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -89,7 +87,7 @@ public class WebService extends HTTPServer {
 
     try {
       ServerResult serverResult = getResult(getContent(session));
-      if (serverResult == null) return notFoundResponse();
+      if (serverResult == null) return Response.notFoundResponse();
       return serverResult.getResponse();
     } catch (Exception e){
       return this.serverExceptionResponse(e);

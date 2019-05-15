@@ -33,13 +33,16 @@ package box.star.net.http.response;
  * #L%
  */
 
+import box.star.Tools;
 import box.star.net.http.HTTPServer;
+import box.star.net.http.IHTTPSession;
 import box.star.net.http.content.ContentType;
 import box.star.net.http.request.Method;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
@@ -166,6 +169,76 @@ public class Response implements Closeable {
    */
   public static Response newFixedLengthResponse(String msg) {
     return newFixedLengthResponse(Status.OK, HTTPServer.MIME_HTML, msg);
+  }
+
+  public static Response blankResponse(Status status) {
+    return plainTextResponse(status, "");
+  }
+
+  public static Response forbiddenResponse() {
+    return blankResponse(Status.FORBIDDEN);
+  }
+
+  public static  Response notFoundResponse(){
+    return notFoundResponse(null, null);
+  }
+
+  public static  Response notFoundResponse(String mimeType, String content) {
+    return newFixedLengthResponse(Status.NOT_FOUND, Tools.makeNotNull(mimeType,"text/plain"), Tools.makeNotNull(content, "File not found"));
+  }
+
+  public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {
+    Response response = newFixedLengthResponse(status, mimeType, message);
+    response.addHeader("Accept-Ranges", "bytes");
+    return response;
+  }
+
+  public static Response newFixedFileResponse(String mimeType, File file) throws FileNotFoundException {
+    Response res;
+    res = newFixedLengthResponse(Status.OK, mimeType, new FileInputStream(file), (int) file.length());
+    res.addHeader("Accept-Ranges", "bytes");
+    return res;
+  }
+
+  public static Response redirect(String location) {
+    Response redirection = newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
+    redirection.addHeader("Location", location);
+    return redirection;
+  }
+
+  public static Response plainTextResponse(Status status, String text) {
+    return Response.newFixedLengthResponse(status, HTTPServer.MIME_PLAINTEXT, text);
+  }
+
+  public static Response stringResponse(Status status, String mimeType, String text) {
+    return newFixedLengthResponse(status, mimeType, text);
+  }
+
+  public static Response htmlResponse(Status status, String source) {
+    return Response.newFixedLengthResponse(status, HTTPServer.MIME_HTML, source);
+  }
+
+  public static String getBasicUserCredentials(IHTTPSession query) {
+    if (query.getHeaders().containsKey("authorization")) {
+      String authorization = query.getHeaders().get("authorization");
+      if (authorization != null && authorization.toLowerCase().startsWith("basic")) {
+        // Authorization: Basic base64credentials
+        String base64Credentials = authorization.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        //final String[] values = credentials.split(":", 2);
+        return credentials;
+      }
+    }
+    return null;
+  }
+
+  public static Response basicAuthenticationResponse(String realm, String title) {
+    Response r = newFixedLengthResponse("");
+    r.addHeader("WWW-Authenticate", "Basic title=\"" + title + "\", realm=\"" + realm + "\", charset=\"UTF-8\"");
+    r.setStatus(Status.UNAUTHORIZED);
+    return r;
   }
 
   @Override

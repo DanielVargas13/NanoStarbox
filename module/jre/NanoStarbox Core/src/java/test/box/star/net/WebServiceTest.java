@@ -22,7 +22,7 @@ class WebServiceTest {
       public ServerContent getContent(IHTTPSession session) {
         String uri = session.getUri();
         File data = new File(root, uri.substring(1));
-        return new ServerContent(session, getMimeType(uri), data);
+        return new ServerContent(session, getUriMimeType(uri), data);
       }
     });
 

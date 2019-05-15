@@ -59,11 +59,11 @@ public class ZipSiteProvider extends ContentProvider implements Closeable {
     } else if (zipFile == null) return notFound(target);
     try {
       if (vfs.containsKey(target)){
-        ZipEntry ze = vfs.get(target);
-        if (ze.isDirectory() && !target.endsWith("/")) return redirect(target + "/");
-        if (ze.isDirectory()) return notFound(target);
-        InputStream inputStream = this.zipFile.getInputStream(ze);
-        return new ServerContent(session, getMimeType(ze.getName()), inputStream, ze.getSize(), zipTime);
+        ZipEntry content = vfs.get(target);
+        if (content.isDirectory() && !target.endsWith("/")) return redirect(target + "/");
+        if (content.isDirectory()) return notFound(target);
+        InputStream inputStream = this.zipFile.getInputStream(content);
+        return new ServerContent(session, getUriMimeType(content.getName()), inputStream, content.getSize(), zipTime);
       }
       return notFound(target);
     }

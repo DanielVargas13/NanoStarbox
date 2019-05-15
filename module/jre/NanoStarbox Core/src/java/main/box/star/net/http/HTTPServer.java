@@ -33,9 +33,7 @@ package box.star.net.http;
  * #L%
  */
 
-import box.star.Tools;
 import box.star.net.http.content.CookieHandler;
-import box.star.net.http.response.IStatus;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 import box.star.net.http.sockets.DefaultServerSocketFactory;
@@ -55,7 +53,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.util.*;
 import java.util.logging.Level;
@@ -487,7 +484,7 @@ public abstract class HTTPServer {
    */
   @SuppressWarnings("Deprecated")
   protected Response serviceRequest(IHTTPSession session) {
-    return plainTextResponse(Status.NOT_FOUND, "Not Found");
+    return Response.plainTextResponse(Status.NOT_FOUND, "Not Found");
   }
 
   /**
@@ -556,7 +553,7 @@ public abstract class HTTPServer {
 
   public Response staticFileResponse(File file, String mimeType, IHTTPSession query) {
 
-    if (!file.exists()) return notFoundResponse();
+    if (!file.exists()) return Response.notFoundResponse();
 
     Response res;
     Map<String, String> header = query.getHeaders();
@@ -654,84 +651,14 @@ public abstract class HTTPServer {
       }
     }
     catch (IOException ioe) {
-      res = plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(ioe));
+      res = Response.plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(ioe));
     }
 
     return res;
   }
 
-  public static Response stringResponse(Status status, String mimeType, String text) {
-    return Response.newFixedLengthResponse(status, mimeType, text);
-  }
-
-  public static Response blankResponse(Status status) {
-    return plainTextResponse(status, "");
-  }
-
-  public static Response forbiddenResponse() {
-    return blankResponse(Status.FORBIDDEN);
-  }
-
-  public static  Response notFoundResponse(){
-    return notFoundResponse(null, null);
-  }
-
-  public static  Response notFoundResponse(String mimeType, String content) {
-    return Response.newFixedLengthResponse(Status.NOT_FOUND, Tools.makeNotNull(mimeType,"text/plain"), Tools.makeNotNull(content, "File not found"));
-  }
-
-  public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {
-    Response response = Response.newFixedLengthResponse(status, mimeType, message);
-    response.addHeader("Accept-Ranges", "bytes");
-    return response;
-  }
-
-  public static Response newFixedFileResponse(String mimeType, File file) throws FileNotFoundException {
-    Response res;
-    res = Response.newFixedLengthResponse(Status.OK, mimeType, new FileInputStream(file), (int) file.length());
-    res.addHeader("Accept-Ranges", "bytes");
-    return res;
-  }
-
-  public static Response redirect(String location) {
-    Response redirection = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
-    redirection.addHeader("Location", location);
-    return redirection;
-  }
-
-  public static Response plainTextResponse(Status status, String text) {
-    return Response.newFixedLengthResponse(status, MIME_PLAINTEXT, text);
-  }
-
-  public Response htmlResponse(Status status, String source) {
-    return Response.newFixedLengthResponse(status, MIME_HTML, source);
-  }
-
-  public String getBasicUserCredentials(IHTTPSession query) {
-    if (query.getHeaders().containsKey("authorization")) {
-      String authorization = query.getHeaders().get("authorization");
-      if (authorization != null && authorization.toLowerCase().startsWith("basic")) {
-        // Authorization: Basic base64credentials
-        String base64Credentials = authorization.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // credentials = username:password
-        //final String[] values = credentials.split(":", 2);
-        return credentials;
-      }
-    }
-    return null;
-  }
-
-  public Response basicAuthenticationResponse(String realm, String title) {
-    Response r = Response.newFixedLengthResponse("");
-    r.addHeader("WWW-Authenticate", "Basic title=\"" + title + "\", realm=\"" + realm + "\", charset=\"UTF-8\"");
-    r.setStatus(Status.UNAUTHORIZED);
-    return r;
-  }
-
-  public Response serverExceptionResponse(Exception e) {
-    return plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(e));
+  public static Response serverExceptionResponse(Exception e) {
+    return Response.plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(e));
   }
 
   /**

@@ -1,10 +1,8 @@
 package box.star.net.tools;
 
 import box.star.content.MimeTypeMap;
-import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
-import box.star.net.http.response.Status;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +19,7 @@ public class ContentProvider {
     mimeTypePaths.put(uri, mimeType);
   }
 
-  final protected String getMimeType(String uri){
+  final protected String getUriMimeType(String uri){
     if (mimeTypePaths.containsKey(uri)) return mimeTypePaths.get(uri);
     return mimeTypeMap.get(mimeTypeMap.scanFileExtension(uri));
   }
@@ -29,11 +27,11 @@ public class ContentProvider {
   final public String getBaseUri() { return baseUri; }
 
   final protected ServerContent redirect(String location){
-    return new ServerContent(WebService.redirect(location));
+    return new ServerContent(Response.redirect(location));
   }
 
   final protected ServerContent notFound(String location){
-    return new ServerContent(WebService.notFoundResponse());
+    return new ServerContent(Response.notFoundResponse());
   }
 
   // </user-methods>
