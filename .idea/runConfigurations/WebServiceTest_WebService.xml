@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WebServiceTest.WebService" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="NanoStarbox Core" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="box.star.net.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="box.star.net" />
+    <option name="MAIN_CLASS_NAME" value="box.star.net.WebServiceTest" />
+    <option name="METHOD_NAME" value="WebService" />
+    <option name="TEST_OBJECT" value="method" />
+    <option name="PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="module/jre/NanoStarbox Core" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
