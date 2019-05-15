@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="WebServiceTest.WebService" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="NanoStarbox WebService Test" type="JUnit" factoryName="JUnit">
     <module name="NanoStarbox Core" />
     <extension name="coverage">
       <pattern>

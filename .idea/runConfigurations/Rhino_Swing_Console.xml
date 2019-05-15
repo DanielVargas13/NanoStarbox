@@ -1,7 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name=": Rhino Swing Console" type="JarApplication">
+  <configuration default="false" name="Rhino Swing Console" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/jar/nano-starbox-rhino-console.jar" />
-    <option name="WORKING_DIRECTORY" value="C:\Users\XT3-ONE\Documents\GitHub\NanoStarbox" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="BuildArtifacts" enabled="true">
