@@ -19,10 +19,12 @@ import org.mozilla.javascript.tools.shell.Global;
 import java.io.BufferedInputStream;
 import java.util.Stack;
 
-public class JavaScriptServerPageBuilder implements MimeTypeDriver<WebService>, MimeTypeScanner {
+import static box.star.net.http.HTTPServer.MIME_HTML;
+
+public class JavaScriptPageBuilder implements MimeTypeDriver<WebService>, MimeTypeScanner {
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
   private Global global;
-  public JavaScriptServerPageBuilder(MimeTypeMap mimeTypeMap){
+  public JavaScriptPageBuilder(MimeTypeMap mimeTypeMap){
     mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
     global = new Global();
     Context cx = Context.enter();
@@ -63,6 +65,7 @@ public class JavaScriptServerPageBuilder implements MimeTypeDriver<WebService>, 
       });
       String output = macroShell.start(scanner);
       scanner.close();
+      if (content.mimeType.equals(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) content.mimeType = MIME_HTML;
       return new ServerResult(content.session, Status.OK, content.mimeType, output);
     } catch (Exception e){throw new RuntimeException(e);}
     finally {
