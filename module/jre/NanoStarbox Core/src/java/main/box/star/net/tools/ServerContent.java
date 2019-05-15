@@ -41,7 +41,7 @@ public class ServerContent {
     this.lastModified = lastModified;
     if (stream == null) this.status = Status.NO_CONTENT;
     else {
-      this.data = new BufferedInputStream(stream);
+      this.data = (stream instanceof BufferedInputStream)?stream:new BufferedInputStream(stream);
       this.status = Status.OK;
     }
   }
@@ -69,11 +69,11 @@ public class ServerContent {
     }
     else if (isBufferedInputStream()) return get();
     else if (isString()) {
-      data = new BufferedInputStream(new ByteArrayInputStream(String.class.cast(data).getBytes()));
+      data = new BufferedInputStream(new ByteArrayInputStream(((String) data).getBytes()));
       return (BufferedInputStream) data;
     }
     else if (isByteArray()) {
-      data = new BufferedInputStream(new ByteArrayInputStream(byte[].class.cast(data)));
+      data = new BufferedInputStream(new ByteArrayInputStream((byte[]) data));
       return (BufferedInputStream) data;
     }
     throw new RuntimeException("unknown data type: "+data.getClass());
