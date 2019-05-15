@@ -1,5 +1,7 @@
 #### NSR6
 
+* Added Web Sockets Port (e3f3222c405d08a61b2512b45bcc82d2d550130c)
+
 * Content Provider: Local Path Mime Types Support (9809c084e2b8301a42dbd3f2c0348b8dce859788)
 
 * Server Pages and UTF-8 project encoding (e959e74026229af3f9dacc32adbbed1f72758bba)
