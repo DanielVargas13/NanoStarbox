@@ -10,8 +10,28 @@ import java.util.*;
 
 public class WebService extends HTTPServer {
 
+  /**
+   * <p>{@link ContentProvider}s provide content for URIs.</p>
+   * <br>
+   * <p>Specifically: Response, byte[], File, String, or InputStream</p>
+   * <br>
+   */
   public final List<ContentProvider> contentProviders = new ArrayList<ContentProvider>();
+  /**
+   * <p>{@link MimeTypeDriver}s manipulate {@link ServerContent}.</p>
+   * <br>
+   * <p>All of the types that content providers can provide, can be read by a Mime Type
+   * driver. Drivers can call other drivers and perform custom-driver-chaining.</p>
+   * <br>
+   * <p>The return type of a driver ({@link ServerResult}) inherits from {@link ServerContent},
+   * and uses the same internal fields; such that a ServerResult object may function
+   * as a ServerContent object.</p>
+   * <br>
+   */
   public final Map<String, MimeTypeDriver<WebService>> mimeTypeDrivers = new Hashtable<>();
+  /**
+   * See the {@link MimeTypeMap} for details
+   */
   public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
 
   public WebService() { super(); }
