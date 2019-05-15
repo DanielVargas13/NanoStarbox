@@ -145,6 +145,10 @@ public abstract class HTTPServer {
   private final Configuration.Manager<String, Serializable> configurationManager = new Configuration.Manager<>(getClass().getName());
   public final Configuration<String, Serializable> configuration = configurationManager.getConfiguration();
 
+  public String getAddress() {
+    return "http://"+getHost()+":"+getPort();
+  }
+
   protected List<IHandler<IHTTPSession, Response>> interceptors = new ArrayList<IHandler<IHTTPSession, Response>>(4);
   /**
    * Pluggable strategy for asynchronously executing requests.

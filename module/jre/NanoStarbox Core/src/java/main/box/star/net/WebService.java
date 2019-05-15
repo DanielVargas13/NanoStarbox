@@ -8,6 +8,7 @@ import box.star.net.http.request.Method;
 import box.star.net.http.response.Response;
 import box.star.net.tools.*;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +55,7 @@ public class WebService extends HTTPServer {
 
   public static class FileRequest implements IHTTPSession {
     String uri;
-    FileRequest(String uri){this.uri =uri;}
+    FileRequest(String uri){this.uri = uri;}
     @Override public void execute() throws IOException {}
     @Override public CookieHandler getCookies() { return null; }
     @Override public Map<String, String> getHeaders() { return null; }
@@ -87,7 +88,9 @@ public class WebService extends HTTPServer {
         String path = provider.getBaseUri();
         if (path.equals(uri)){
           ServerContent content = provider.getContent(session);
-          if (content != null && content.isFile()) return (File) content.data;
+          if (content != null && content.isOkay() && content.isFile()) {
+            return (File) content.data;
+          }
         }
       }
     }

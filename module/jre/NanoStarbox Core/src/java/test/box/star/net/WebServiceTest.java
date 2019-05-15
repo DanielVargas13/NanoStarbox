@@ -15,6 +15,7 @@ class WebServiceTest {
   @Test void WebService(){
 
     ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/jna", new File("site/jna-4.5.2.jar")));
+    ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/test", new File("site/site.zip")));
 
     ws.mountContentProvider(new ContentProvider(ws.mimeTypeMap, "/") {
       File root = new File("site");

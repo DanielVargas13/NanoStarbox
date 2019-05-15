@@ -17,6 +17,7 @@ import org.mozilla.javascript.tools.shell.Main;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,8 +61,14 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
     Context cx = Context.enter();
     try {
-      File location = server.getFile(content.session.getUri());
-      if (location != null) location = location.getParentFile();
+      String uri = content.session.getUri();
+      Object location = server.getFile(uri);
+      if (location != null) {
+        if (((File)location).isDirectory());
+        else location = ((File)location).getParentFile();
+      } else {
+        location = URI.create(server.getAddress() +"/"+ uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1)).toURL();
+      }
       Scriptable jsThis = getScriptShell(cx, global);
       ScriptRuntime.setObjectProp(jsThis, "global", global, cx);
       ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
