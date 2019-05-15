@@ -6,20 +6,18 @@ import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.tools.*;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class WebService extends HTTPServer {
 
-  public final Map<String, ContentProvider> contentProviders = new Hashtable<>();
+  public final List<ContentProvider> contentProviders = new ArrayList<ContentProvider>();
   public final Map<String, MimeTypeDriver<WebService>> mimeTypeDrivers = new Hashtable<>();
   public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
 
   public WebService() { super(); }
 
   public WebService mountContentProvider(ContentProvider contentProvider){
-    contentProviders.put(contentProvider.getBaseUri(), contentProvider);
+    contentProviders.add(contentProvider);
     return this;
   }
 
@@ -36,16 +34,16 @@ public class WebService extends HTTPServer {
   public ServerContent getContent(IHTTPSession session){
     String uri = session.getUri();
     // first: uri-equality
-    for (String path:contentProviders.keySet()){
-      ContentProvider provider = contentProviders.get(path);
+    for (ContentProvider provider:contentProviders){
+      String path = provider.getBaseUri();
       if (path.equals(uri)) return provider.getContent(session);
     }
     // second: parent-uri-equality
     while (! uri.equals("/") ) {
       uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
       if (uri.equals("")) uri = "/";
-      for (String path:contentProviders.keySet()){
-        ContentProvider provider = contentProviders.get(path);
+      for (ContentProvider provider:contentProviders){
+        String path = provider.getBaseUri();
         if (path.equals(uri)){
           ServerContent content = provider.getContent(session);
           if (content != null) return content;

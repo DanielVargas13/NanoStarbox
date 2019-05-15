@@ -1,5 +1,7 @@
 #### NSR6
 
+* Allow Directory Content Provider Layering (bdfef015ac780de976ab7ea04e63d37d64584ace)
+
 * Server Side Tricks (82fbc57a5f14181bca3d5553a2fb528a43d583ad)
 
 * Added Web Sockets Port (e3f3222c405d08a61b2512b45bcc82d2d550130c)
