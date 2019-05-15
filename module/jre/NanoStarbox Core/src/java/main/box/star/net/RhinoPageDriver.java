@@ -67,7 +67,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
         if (((File)location).isDirectory());
         else location = ((File)location).getParentFile();
       } else {
-        location = URI.create(server.getAddress() +"/"+ uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1)).toURL();
+        location = URI.create(server.getAddress() + server.getParentUri(uri)).toURL();
       }
       Scriptable jsThis = getScriptShell(cx, global);
       ScriptRuntime.setObjectProp(jsThis, "global", global, cx);
