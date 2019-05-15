@@ -29,12 +29,6 @@ public class JavaScriptPageBuilder implements MimeTypeDriver<WebService>, MimeTy
     global = new Global();
     Context cx = Context.enter();
     global.init(cx);
-    addGlobalObject("global", global);
-    Context.exit();
-  }
-  public void addGlobalObject(String name, Object javaObject) {
-    Context cx = Context.enter();
-    ScriptRuntime.setObjectProp(global, name, Context.javaToJS(javaObject, global), cx);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
@@ -44,26 +38,27 @@ public class JavaScriptPageBuilder implements MimeTypeDriver<WebService>, MimeTy
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
     Context cx = Context.enter();
     try {
-      Scriptable shell = getScriptShell(cx, global);
-      ScriptRuntime.setObjectProp(shell, "server", Context.javaToJS(server, shell), cx);
-      ScriptRuntime.setObjectProp(shell, "session", Context.javaToJS(content.session, shell), cx);
+      Scriptable jsThis = getScriptShell(cx, global);
+      ScriptRuntime.setObjectProp(jsThis, "global", global, cx);
+      ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       Scanner scanner = new Scanner(content.session.getUri(), content.getStream());
-      MacroShell macroShell = new MacroShell(System.getenv());
-      ScriptRuntime.setObjectProp(shell, "shell", Context.javaToJS(macroShell, shell), cx);
-      macroShell.addCommand("js", new MacroShell.Command(){
+      MacroShell documentBuilder = new MacroShell(System.getenv());
+      ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
+      documentBuilder.addCommand("js", new MacroShell.Command(){
         @Override
         protected String run(String command, Stack<String> parameters) {
           StringBuilder output = new StringBuilder();
           for (String p: parameters) output.append((String)
               Context.jsToJava(
-                  cx.evaluateString(shell, p,
+                  cx.evaluateString(jsThis, p,
                       scanner.getPath(), (int) scanner.getLine(),
                       null), String.class)
           );
           return output.toString();
         }
       });
-      String output = macroShell.start(scanner);
+      String output = documentBuilder.start(scanner);
       scanner.close();
       if (content.mimeType.equals(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) content.mimeType = MIME_HTML;
       return new ServerResult(content.session, Status.OK, content.mimeType, output);
