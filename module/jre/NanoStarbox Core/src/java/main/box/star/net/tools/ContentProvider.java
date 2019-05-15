@@ -1,13 +1,7 @@
 package box.star.net.tools;
 
 import box.star.content.MimeTypeMap;
-import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
-import box.star.net.http.response.Response;
-import box.star.net.http.response.Status;
-
-import java.io.File;
-import java.util.List;
 
 public class ContentProvider {
 
@@ -15,15 +9,14 @@ public class ContentProvider {
   private final String baseUri;
 
   final public String getMimeType(String uri){
-
-    return mimeTypeMap.get(mimeTypeMap.getFileExtension(uri));
+    return mimeTypeMap.get(mimeTypeMap.scanFileExtension(uri));
   }
+
   final public String getBaseUri() { return baseUri; }
 
-  public ContentProvider(WebService webService, String baseUri){
+  public ContentProvider(MimeTypeMap mimeTypeMap, String baseUri){
     this.baseUri = baseUri;
-    this.mimeTypeMap = webService.getMimeTypeMap();
-    webService.mountContentProvider(this);
+    this.mimeTypeMap = mimeTypeMap;
   }
 
   public ServerContent getContent(IHTTPSession session) {

@@ -1,8 +1,6 @@
 package box.star.net;
 
-import box.star.content.MimeTypeDriver;
 import box.star.content.MimeTypeMap;
-import box.star.content.MimeTypeProvider;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
@@ -13,7 +11,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-public class WebService extends HTTPServer implements MimeTypeProvider {
+public class WebService extends HTTPServer {
 
   public final Map<String, ContentProvider> contentProviders = new Hashtable<>();
   public final Map<String, MimeTypeDriver> mimeTypeDrivers = new Hashtable<>();
@@ -32,8 +30,11 @@ public class WebService extends HTTPServer implements MimeTypeProvider {
     configuration.set(CONFIG_PORT, port);
   }
 
-  public MimeTypeMap getMimeTypeMap() {
-    return mimeTypeMap;
+  final public String scanMimeType(BufferedInputStream stream) {
+    return mimeTypeMap.scanMimeType(stream);
+  }
+  final public void addMimeTypeDriver(String mimeType, MimeTypeDriver driver) {
+    mimeTypeDrivers.put(mimeType, driver);
   }
 
   public ServerContent getContent(IHTTPSession session){
@@ -59,7 +60,7 @@ public class WebService extends HTTPServer implements MimeTypeProvider {
   protected ServerResult getResult(ServerContent content) {
     if (content == null) return null;
     MimeTypeDriver driver = mimeTypeDrivers.get(content.mimeType);
-    if (driver != null) return driver.createMimeTypeResult(content);
+    if (driver != null) return driver.createMimeTypeResult(this, content);
     return new ServerResult(content);
   }
 
@@ -93,14 +94,6 @@ public class WebService extends HTTPServer implements MimeTypeProvider {
     } catch (Exception e){
       return this.serverExceptionResponse(e);
     }
-  }
-
-  public String readMimeTypeMagic(BufferedInputStream stream) {
-    return mimeTypeMap.readMimeTypeMagic(stream);
-  }
-
-  public void addMimeTypeDriver(String mimeType, MimeTypeDriver driver) {
-    mimeTypeDrivers.put(mimeType, driver);
   }
 
 }

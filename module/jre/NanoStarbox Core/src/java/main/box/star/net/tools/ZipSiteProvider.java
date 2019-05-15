@@ -1,5 +1,6 @@
 package box.star.net.tools;
 
+import box.star.content.MimeTypeMap;
 import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
@@ -18,15 +19,15 @@ import java.util.zip.ZipFile;
 /**
  * Load the zip archive at the given virtual directory.
  */
-public class ZipSiteDriver extends ContentProvider implements Closeable {
+public class ZipSiteProvider extends ContentProvider implements Closeable {
 
   protected ZipFile zipFile;
   protected File file;
   protected long zipTime;
   public Map<String, ZipEntry> vfs;
 
-  public ZipSiteDriver(WebService webService, String virtualDirectory, File zipFile){
-    super(webService, virtualDirectory);
+  public ZipSiteProvider(MimeTypeMap mimeTypeMap, String baseUri, File zipFile){
+    super(mimeTypeMap, baseUri);
     this.file = zipFile;
   }
 

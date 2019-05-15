@@ -7,8 +7,8 @@ import java.util.*;
 
 public class MimeTypeMap extends HashMap<String, String> {
 
-  private static final Map<String, String> pathMimeType = new HashMap<>();
-  private static final List<MagicMimeTypeReader> magicReaders = new ArrayList<>();
+  private static final Map<String, String> mimeTypePaths = new HashMap<>();
+  private static final List<MimeTypeScanner> mimeTypeScanners = new ArrayList<>();
 
   public static final String MIME_SEPARATOR = " ";
   public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
@@ -46,17 +46,16 @@ public class MimeTypeMap extends HashMap<String, String> {
   }
 
   public void setPathMimeType(String path, String mimeType){
-    pathMimeType.put(path, mimeType);
+    mimeTypePaths.put(path, mimeType);
   }
 
   @Override
   public String get(Object key) {
     if (this.containsKey(key)) return super.get(key);
-    if (pathMimeType.containsKey(key)) return pathMimeType.get(key);
-    return DEFAULT_MIME_TYPE;
+    else return mimeTypePaths.getOrDefault((String)key, DEFAULT_MIME_TYPE);
   }
 
-  public String getFileExtension(String fileName) {
+  public String scanFileExtension(String fileName) {
     String name = new java.io.File(fileName).getName();
     if (name.contains(".")) {
       for (String extension : super.keySet())
@@ -74,20 +73,20 @@ public class MimeTypeMap extends HashMap<String, String> {
     return DEFAULT_MIME_TYPE;
   }
 
-//  public String readMimeTypeMagic(File file){
+//  public String scanMimeType(File file){
 //    try {
 //      FileInputStream fr = new FileInputStream(file);
 //      BufferedInputStream br = new BufferedInputStream(fr);
-//      String mimeType = readMimeTypeMagic(br);
+//      String mimeType = scanMimeType(br);
 //      br.close();
 //      return mimeType;
 //    } catch (Exception e){throw new RuntimeException(e);}
 //  }
 
-  public String readMimeTypeMagic(BufferedInputStream stream){
+  public String scanMimeType(BufferedInputStream stream){
     String mimeType;
-    for (MagicMimeTypeReader reader:magicReaders){
-      mimeType = reader.getMimeType(stream);
+    for (MimeTypeScanner scanner: mimeTypeScanners){
+      mimeType = scanner.scanMimeType(stream);
       if (mimeType != null) return mimeType;
     }
     return DEFAULT_MIME_TYPE;
@@ -97,8 +96,8 @@ public class MimeTypeMap extends HashMap<String, String> {
     return mimeType.split(MIME_SEPARATOR);
   }
 
-  public MimeTypeMap addMagicReader(MagicMimeTypeReader magicReader){
-    magicReaders.add(magicReader);
+  public MimeTypeMap addMimeTypeScanner(MimeTypeScanner magicReader){
+    mimeTypeScanners.add(magicReader);
     return this;
   }
 

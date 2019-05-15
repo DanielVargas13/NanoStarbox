@@ -1,6 +1,5 @@
 package box.star.net;
 
-import box.star.content.MimeTypeDriver;
 import box.star.net.http.IHTTPSession;
 import box.star.net.tools.*;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,9 @@ class WebServiceTest {
 
   @Test void WebService(){
 
-    ZipSiteDriver zipSiteDriver = new ZipSiteDriver(ws, "/jna", new File("site/jna-4.5.2.jar"));
-    RhinoMacroDriver rhinoMacroDriver = new RhinoMacroDriver(ws);
+    ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/jna", new File("site/jna-4.5.2.jar")));
 
-    new ContentProvider(ws, "/") {
+    ws.mountContentProvider(new ContentProvider(ws.mimeTypeMap, "/") {
       File root = new File("site");
       @Override
       public ServerContent getContent(IHTTPSession session) {
@@ -26,15 +24,17 @@ class WebServiceTest {
         File data = new File(root, uri.substring(1));
         return new ServerContent(session, getMimeType(uri), data);
       }
-    };
+    });
 
-    ws.addMimeTypeDriver("text/html", new MimeTypeDriver() {
+    RhinoMacroDriver rhinoMacroDriver = new RhinoMacroDriver(ws.mimeTypeMap);
+    // a driver that conditionally calls the above driver,
+    ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
       @Override
-      public ServerResult createMimeTypeResult(ServerContent content) {
+      public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
         if (content.isOkay()){
-          String mimeType = ws.readMimeTypeMagic(content.getStream());
+          String mimeType = ws.scanMimeType(content.getStream());
           if (RHINO_MACRO_DRIVER_MIME_TYPE.equals(mimeType)){
-            return rhinoMacroDriver.createMimeTypeResult(content);
+            return rhinoMacroDriver.createMimeTypeResult(ws, content);
           }
         }
         return new ServerResult(content);
