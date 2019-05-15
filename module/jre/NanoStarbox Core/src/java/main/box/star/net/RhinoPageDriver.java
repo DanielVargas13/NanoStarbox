@@ -46,7 +46,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
           System.getProperty("box.star.net.jsp.require.module.uris"),
           System.getenv("JSP_REQUIRE_MODULE_URIS"));
       if (modulePath != null)
-        global.installRequire(cx, Arrays.asList(modulePath.split("|")), false);
+        global.installRequire(cx, Arrays.asList(modulePath.split("\\|")), false);
       else
         global.installRequire(cx, null, false);
     } else global.installRequire(cx, moduleDirectories, false);
