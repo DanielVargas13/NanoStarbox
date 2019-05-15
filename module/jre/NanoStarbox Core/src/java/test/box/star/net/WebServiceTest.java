@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static box.star.net.JavaScriptPageBuilder.NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
+import static box.star.net.JavaScriptPageDriver.NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
 
 class WebServiceTest {
 
@@ -26,7 +26,7 @@ class WebServiceTest {
       }
     });
 
-    JavaScriptPageBuilder serverPageBuilder = new JavaScriptPageBuilder(ws.mimeTypeMap);
+    JavaScriptPageDriver serverPageBuilder = new JavaScriptPageDriver(ws.mimeTypeMap);
 
     // this enables automatic *.jsp to text/html
     ws.addMimeTypeDriver(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, serverPageBuilder);
