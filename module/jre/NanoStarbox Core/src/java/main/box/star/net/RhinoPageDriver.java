@@ -4,6 +4,7 @@ import box.star.Tools;
 import box.star.content.MimeTypeMap;
 import box.star.content.MimeTypeScanner;
 import box.star.contract.Nullable;
+import box.star.io.Streams;
 import box.star.net.http.response.Status;
 import box.star.net.tools.MimeTypeDriver;
 import box.star.net.tools.ServerContent;
@@ -17,6 +18,7 @@ import org.mozilla.javascript.tools.shell.Global;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +76,9 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
-      Scanner scanner = new Scanner(content.session.getUri(), content.getStream());
+      InputStream sourceStream = content.getStream();
+      Scanner scanner = new Scanner(content.session.getUri(), Streams.readWholeString(sourceStream));
+      sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
       documentBuilder.addCommand("js", new MacroShell.Command(){
@@ -90,11 +94,8 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
           return output.toString();
         }
       });
-
-      String output = documentBuilder.start(scanner);
-      scanner.close();
       if (content.mimeType.equals(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) content.mimeType = MIME_HTML;
-      return new ServerResult(content.session, Status.OK, content.mimeType, output);
+      return new ServerResult(content.session, Status.OK, content.mimeType, documentBuilder.start(scanner));
     } catch (Exception e){throw new RuntimeException(e);}
     finally {
       Context.exit();

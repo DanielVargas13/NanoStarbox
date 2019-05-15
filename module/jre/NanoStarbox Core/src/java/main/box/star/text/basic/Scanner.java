@@ -137,6 +137,8 @@ public class Scanner implements Closeable {
 
   /**
    * <p>call this to close the reader.</p>
+   * <br>
+   *   <p>If using a string source, it's okay to let this happen during finalize.</p>
    */
   @Override
   public void close() {
