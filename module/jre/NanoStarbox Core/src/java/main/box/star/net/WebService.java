@@ -46,7 +46,10 @@ public class WebService extends HTTPServer {
       if (uri.equals("")) uri = "/";
       for (String path:contentProviders.keySet()){
         ContentProvider provider = contentProviders.get(path);
-        if (path.equals(uri))return provider.getContent(session);
+        if (path.equals(uri)){
+          ServerContent content = provider.getContent(session);
+          if (content != null) return content;
+        }
       }
     }
     // third: fail-silently
