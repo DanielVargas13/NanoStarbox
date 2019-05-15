@@ -44,7 +44,7 @@ public class ZipSiteProvider extends ContentProvider implements Closeable {
       ZipEntry entry = entries.nextElement();
       vfs.put(virtualDirectory + "/" + entry.getName(), entry);
       String eName = entry.getName();
-      if (eName.endsWith("index.html") || eName.endsWith("index.htm")){
+      if (eName.matches("^([^\0]*(index)\\.[^\0]+)$")){
         vfs.put(virtualDirectory+"/"+eName.substring(0, Math.max(0, eName.lastIndexOf("/"))), entry);
       }
     }
