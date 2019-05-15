@@ -79,7 +79,7 @@ public class WebService extends HTTPServer {
   final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {
     mimeTypeDrivers.put(mimeType, driver);
     if (driver instanceof MimeTypeDriver.WithMediaMapControlPort)
-      ((MimeTypeDriver.WithMediaMapControlPort)driver).openMimeTypeMap(mimeTypeMap);
+      ((MimeTypeDriver.WithMediaMapControlPort)driver).configureMimeTypeController(mimeTypeMap);
   }
 
   public ServerContent getContent(IHTTPSession session){

@@ -13,7 +13,7 @@ import box.star.net.tools.ServerResult;
 public interface MimeTypeDriver<SERVICE> {
 
   interface WithMediaMapControlPort {
-    void openMimeTypeMap(MimeTypeMap controlPort);
+    void configureMimeTypeController(MimeTypeMap controlPort);
   }
 
   /**

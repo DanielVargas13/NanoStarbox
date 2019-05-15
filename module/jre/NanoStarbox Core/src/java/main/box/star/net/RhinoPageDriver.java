@@ -35,7 +35,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     this.global = global;
   }
   @Override
-  public void openMimeTypeMap(MimeTypeMap controlPort) {
+  public void configureMimeTypeController(MimeTypeMap controlPort) {
     controlPort.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
   }
 
