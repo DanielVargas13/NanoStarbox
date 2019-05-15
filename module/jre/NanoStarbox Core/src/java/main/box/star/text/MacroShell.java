@@ -229,7 +229,7 @@ public class MacroShell {
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>)parameters[1];
-      PARAMETER_TEXT_MAP = assembler.map(context.macroTrigger).toArray();
+      PARAMETER_TEXT_MAP = assembler.map(context.macroTrigger, ENTER_PROCEDURE).toArray();
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
 
@@ -306,6 +306,8 @@ public class MacroShell {
       }
       while (true){
         c = scanner.next();
+        if (c == ENTER_PROCEDURE)
+          throw scanner.syntaxError("ambiguous symbol usage: '(' must be quoted or escaped");
         if (!Char.mapContains(c, BREAK_PROCEDURE_MAP)){
           data.append(getParameter(scanner, c));
         } else {
