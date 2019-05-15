@@ -5,7 +5,6 @@ import box.star.content.MimeTypeMap;
 import box.star.content.MimeTypeScanner;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
-import box.star.js.ClassPathLoader;
 import box.star.net.http.response.Status;
 import box.star.net.tools.MimeTypeDriver;
 import box.star.net.tools.ServerContent;
@@ -23,8 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -47,20 +44,23 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     return global;
   }
 
+  ContextFactory contextFactory = new ContextFactory();
+  Context mainContext;
+
   public RhinoPageDriver(){this((List)null);}
   public RhinoPageDriver(@Nullable List<String> moduleDirectories){
-    Context cx = Context.enter();
+    mainContext = Context.enter();
     global = Main.global;
-    global.init(cx);
+    global.init(contextFactory);
     if (moduleDirectories == null){
       String modulePath = Tools.switchNull(
           System.getProperty("box.star.net.jsp.require.module.uris"),
           System.getenv("JSP_REQUIRE_MODULE_URIS"));
       if (modulePath != null)
-        global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
+        global.installRequire(mainContext, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
       else
-        global.installRequire(cx, null, false);
-    } else global.installRequire(cx, moduleDirectories, false);
+        global.installRequire(mainContext, null, false);
+    } else global.installRequire(mainContext, moduleDirectories, false);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
@@ -68,10 +68,8 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
   }
   @Override
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
-    Context cx = Context.enter();
-    // TODO: FIX THIS SUPER UGLY HACK
-    cx.setApplicationClassLoader(ScriptRuntime.classPathLoader);
-    cx.setOptimizationLevel(-1);
+    Context cx = contextFactory.enterContext(mainContext);
+    cx.setOptimizationLevel(9);
     try {
       String uri = content.session.getUri();
       Object location = server.getFile(uri);
