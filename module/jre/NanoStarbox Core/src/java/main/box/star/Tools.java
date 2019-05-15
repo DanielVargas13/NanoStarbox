@@ -43,9 +43,16 @@ public class Tools {
     }
   }
 
-  @NotNull
-  public static <T> T switchNull(@Nullable T test, @NotNull T notNull) {
+  @Nullable
+  public static <T> T switchNull(@Nullable T test, @Nullable T notNull) {
     return ((test == null) ? notNull : test);
+  }
+
+  @NotNull
+  public static <T> T throwIsNull(@Nullable T a, @Nullable T b) {
+    T which = ((a == null) ? b : a);
+    assert which != null;
+    return which;
   }
 
   @NotNull
