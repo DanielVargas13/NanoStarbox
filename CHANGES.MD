@@ -1,5 +1,7 @@
 #### NSR6
 
+* Allow custom globals (9d51aaf648462b0daf7a86a0c58c3a30ad3f9e5e)
+
 * Add String and byte array content initializers (289fc1357fec94d563b368c11f311ecc576c0c79)
 
 * Allow Directory Content Provider Layering (bdfef015ac780de976ab7ea04e63d37d64584ace)

@@ -24,6 +24,10 @@ import static box.star.net.http.HTTPServer.MIME_HTML;
 public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTypeScanner {
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
   private Global global;
+  public JavaScriptPageDriver(Global global, MimeTypeMap mimeTypeMap){
+    this.global = global;
+    mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
+  }
   public JavaScriptPageDriver(MimeTypeMap mimeTypeMap){
     mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
     global = new Global();
