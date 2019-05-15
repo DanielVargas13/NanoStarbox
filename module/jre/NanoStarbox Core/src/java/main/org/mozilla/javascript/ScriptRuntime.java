@@ -271,7 +271,7 @@ public class ScriptRuntime {
         return scope;
     }
 
-    private static ClassPathLoader classPathLoader = null;
+    public static ClassPathLoader classPathLoader = null;
 
     public static ScriptableObject initStandardObjects(Context cx,
                                                        ScriptableObject scope,
