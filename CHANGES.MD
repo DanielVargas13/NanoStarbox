@@ -1,5 +1,7 @@
 #### NSR6
 
+* server-wide-matrix scripting integration (5f71212cada1bc90e57c73a62fd41e94e7465fb9)
+
 * Use Transfer Stream, Close Source (be728f77c220e9927cd76d92725e379c465d40b2)
 
 * Mime Type Service Integration (4126d01ef87853fd5b5217e17de0df9a237b0269)
