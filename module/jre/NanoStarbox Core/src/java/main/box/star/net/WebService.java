@@ -53,31 +53,14 @@ public class WebService extends HTTPServer {
     configuration.set(CONFIG_PORT, port);
   }
 
-  public static class FileRequest implements IHTTPSession {
-    String uri;
-    FileRequest(String uri){this.uri = uri;}
-    @Override public void execute() throws IOException {}
-    @Override public CookieHandler getCookies() { return null; }
-    @Override public Map<String, String> getHeaders() { return null; }
-    @Override public InputStream getInputStream() { return null; }
-    @Override public Method getMethod() { return Method.GET; }
-    @Override public Map<String, String> getParms() { return null; }
-    @Override public Map<String, List<String>> getParameters() { return null; }
-    @Override public String getQueryParameterString() { return null; }
-    @Override public String getUri() { return uri; }
-    @Override public void parseBody(Map<String, String> files) throws IOException, ResponseException { }
-    @Override public String getRemoteIpAddress() { return null; }
-    @Override public String getRemoteHostName() { return null; }
-  }
-
   final public File getFile(String uri){
-    IHTTPSession session = new FileRequest(uri);
     // first: uri-equality
     for (ContentProvider provider:contentProviders){
+      if (! (provider instanceof NativeContentProvider)) continue;
       String path = provider.getBaseUri();
       if (path.equals(uri)) {
-        ServerContent c = provider.getContent(session);
-        if (c != null && c.isFile()) return (File) c.data;
+        File c = ((NativeContentProvider)provider).getFile(uri);
+        if (c != null && c.exists()) return c;
       }
     }
     // second: parent-uri-equality
@@ -85,12 +68,11 @@ public class WebService extends HTTPServer {
       uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
       if (uri.equals("")) uri = "/";
       for (ContentProvider provider:contentProviders){
+        if (! (provider instanceof NativeContentProvider)) continue;
         String path = provider.getBaseUri();
         if (path.equals(uri)){
-          ServerContent content = provider.getContent(session);
-          if (content != null && content.isOkay() && content.isFile()) {
-            return (File) content.data;
-          }
+          File f = ((NativeContentProvider)provider).getFile(uri);
+          if (f != null && f.exists()) return f;
         }
       }
     }

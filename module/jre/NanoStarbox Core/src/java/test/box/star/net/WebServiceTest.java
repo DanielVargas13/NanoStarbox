@@ -1,6 +1,5 @@
 package box.star.net;
 
-import box.star.net.http.IHTTPSession;
 import box.star.net.tools.*;
 import org.junit.jupiter.api.Test;
 
@@ -17,15 +16,7 @@ class WebServiceTest {
     ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/jna", new File("site/jna-4.5.2.jar")));
     ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/test", new File("site/site.zip")));
 
-    ws.mountContentProvider(new ContentProvider(ws.mimeTypeMap, "/") {
-      File root = new File("site");
-      @Override
-      public ServerContent getContent(IHTTPSession session) {
-        String uri = session.getUri();
-        File data = new File(root, uri.substring(1));
-        return new ServerContent(session, getUriMimeType(uri), data);
-      }
-    });
+    ws.mountContentProvider(new FileContentProvider(ws.mimeTypeMap, "/", new File("site")));
 
     JavaScriptPageDriver serverPageBuilder = new JavaScriptPageDriver(ws.mimeTypeMap);
 

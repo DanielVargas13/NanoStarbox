@@ -1,5 +1,7 @@
 #### NSR6
 
+* Native Content Providers (bf83c5534154782814e2c6cff224eeb62e1e5195)
+
 * Server Side Includes (7eecf27f93774109b9525bf2c14534cb505cc7f5)
 
 * Allow custom globals (9d51aaf648462b0daf7a86a0c58c3a30ad3f9e5e)
