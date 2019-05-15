@@ -271,23 +271,13 @@ public class ScriptRuntime {
         return scope;
     }
 
-    public static ClassPathLoader classPathLoader = null;
-
     public static ScriptableObject initStandardObjects(Context cx,
                                                        ScriptableObject scope,
                                                        boolean sealed)
     {
         ScriptableObject s = initSafeStandardObjects(cx, scope, sealed);
 
-        if (classPathLoader == null){
-            URL[] urls = new URL[]{ClassPathLoader.toURL(System.getProperty("user.dir"))};
-            ClassLoader classLoader = cx.getApplicationClassLoader();
-            if (classLoader == null) classPathLoader = new ClassPathLoader(urls);
-            classPathLoader = new ClassPathLoader(urls, classLoader);
-        }
-
-        cx.setApplicationClassLoader(classPathLoader);
-        Java.initObjects(cx, scope, classPathLoader);
+        Java.initObjects(cx, scope, (ClassPathLoader) cx.getApplicationClassLoader());
 
         new LazilyLoadedCtor(s, "Packages",
                 "org.mozilla.javascript.NativeJavaTopPackage", sealed, true);

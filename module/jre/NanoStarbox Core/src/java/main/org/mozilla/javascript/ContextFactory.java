@@ -8,6 +8,9 @@
 
 package org.mozilla.javascript;
 
+import box.star.js.ClassPathLoader;
+
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -200,6 +203,7 @@ public class ContextFactory
         }
         return new GlobalSetterImpl();
     }
+    private static ClassPathLoader classPathLoader = null;
 
     /**
      * Create new {@link Context} instance to be associated with the current
@@ -212,7 +216,15 @@ public class ContextFactory
      */
     protected Context makeContext()
     {
-        return new Context(this);
+        if (classPathLoader == null){
+            URL[] urls = new URL[]{ClassPathLoader.toURL(System.getProperty("user.dir"))};
+            ClassLoader classLoader = getApplicationClassLoader();
+            if (classLoader == null) classPathLoader = new ClassPathLoader(urls);
+            else classPathLoader = new ClassPathLoader(urls, classLoader);
+        }
+        Context cx = new Context(this);
+        cx.setApplicationClassLoader(classPathLoader);
+        return cx;
     }
 
     /**

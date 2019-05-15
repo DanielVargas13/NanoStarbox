@@ -44,23 +44,20 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     return global;
   }
 
-  ContextFactory contextFactory = new ContextFactory();
-  Context mainContext;
-
   public RhinoPageDriver(){this((List)null);}
   public RhinoPageDriver(@Nullable List<String> moduleDirectories){
-    mainContext = Context.enter();
+    Context cx = Context.enter();
     global = Main.global;
-    global.init(contextFactory);
+    global.init(cx);
     if (moduleDirectories == null){
       String modulePath = Tools.switchNull(
           System.getProperty("box.star.net.jsp.require.module.uris"),
           System.getenv("JSP_REQUIRE_MODULE_URIS"));
       if (modulePath != null)
-        global.installRequire(mainContext, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
+        global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
       else
-        global.installRequire(mainContext, null, false);
-    } else global.installRequire(mainContext, moduleDirectories, false);
+        global.installRequire(cx, null, false);
+    } else global.installRequire(cx, moduleDirectories, false);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
@@ -68,7 +65,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
   }
   @Override
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
-    Context cx = contextFactory.enterContext(mainContext);
+    Context cx = Context.enter();
     cx.setOptimizationLevel(9);
     try {
       String uri = content.session.getUri();
