@@ -44,7 +44,7 @@ public class Tools {
   }
 
   @NotNull
-  public static <T> T makeNotNull(@Nullable T test, @NotNull T notNull) {
+  public static <T> T switchNull(@Nullable T test, @NotNull T notNull) {
     return ((test == null) ? notNull : test);
   }
 

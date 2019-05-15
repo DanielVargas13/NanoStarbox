@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -43,7 +42,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     Context cx = Context.enter();
     global.init(cx);
     if (moduleDirectories == null){
-      String modulePath = Tools.makeNotNull(System.getenv("JSP_MODULE_URIS"), System.getProperty("box.star.net.jsp.module.uris"));
+      String modulePath = Tools.switchNull(System.getenv("JSP_MODULE_URIS"), System.getProperty("box.star.net.jsp.module.uris"));
       if (modulePath != null)
         global.installRequire(cx, Arrays.asList(modulePath.split(";")), false);
       else
@@ -54,7 +53,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
-    return ScriptRuntime.newObject(cx, Tools.makeNotNull(parent, global), "Object", null);
+    return ScriptRuntime.newObject(cx, Tools.switchNull(parent, global), "Object", null);
   }
   @Override
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {

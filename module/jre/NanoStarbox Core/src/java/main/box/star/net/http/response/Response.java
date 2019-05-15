@@ -184,7 +184,7 @@ public class Response implements Closeable {
   }
 
   public static  Response notFoundResponse(String mimeType, String content) {
-    return newFixedLengthResponse(Status.NOT_FOUND, Tools.makeNotNull(mimeType,"text/plain"), Tools.makeNotNull(content, "File not found"));
+    return newFixedLengthResponse(Status.NOT_FOUND, Tools.switchNull(mimeType,"text/plain"), Tools.switchNull(content, "File not found"));
   }
 
   public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {

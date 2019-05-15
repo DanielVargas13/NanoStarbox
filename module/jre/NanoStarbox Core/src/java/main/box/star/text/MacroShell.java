@@ -148,7 +148,7 @@ public class MacroShell {
     char next = scanner.next();
     switch (next){
       case ENTER_OBJECT: {
-        return(Tools.makeNotNull(
+        return(Tools.switchNull(
             context.objects.get(nextMacroBody(scanner, EXIT_OBJECT)
             ), "undefined").toString());
       }
