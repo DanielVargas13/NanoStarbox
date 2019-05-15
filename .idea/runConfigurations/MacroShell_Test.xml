@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MacroShell Test" type="JUnit" factoryName="JUnit">
+    <module name="NanoStarbox Core" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="box.star.text.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="box.star.text" />
+    <option name="MAIN_CLASS_NAME" value="box.star.text.MacroShellTest" />
+    <option name="METHOD_NAME" value="main" />
+    <option name="TEST_OBJECT" value="method" />
+    <option name="PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="module/jre/NanoStarbox Core" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
