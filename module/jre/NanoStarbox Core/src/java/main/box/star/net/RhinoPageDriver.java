@@ -49,9 +49,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
         global.installRequire(cx, Arrays.asList(modulePath.split("|")), false);
       else
         global.installRequire(cx, null, false);
-    } else {
-      global.installRequire(cx, moduleDirectories, false);
-    }
+    } else global.installRequire(cx, moduleDirectories, false);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
