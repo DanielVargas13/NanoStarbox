@@ -21,6 +21,7 @@ public final class Char {
   public final static char META_DOCUMENT_TAG_END = '>';
 
   public final static char BACKSLASH = '\\';
+  public static final char PIPE = '|';
   public final static char SINGLE_QUOTE = '\'';
   public final static char DOUBLE_QUOTE = '"';
   public final static char SOLIDUS = '/';
@@ -159,6 +160,10 @@ public final class Char {
 
   public static char toUpperCase(char c) {
     return toUpperCase(c+Tools.EMPTY_STRING)[0];
+  }
+
+  public static char[] toMap(char... elements){
+    return elements;
   }
 
   public static String toString(char... elements){

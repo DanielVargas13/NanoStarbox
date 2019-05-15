@@ -9,6 +9,7 @@ import box.star.net.http.response.Status;
 import box.star.net.tools.MimeTypeDriver;
 import box.star.net.tools.ServerContent;
 import box.star.net.tools.ServerResult;
+import box.star.text.Char;
 import box.star.text.MacroShell;
 import box.star.text.basic.Scanner;
 
@@ -28,6 +29,7 @@ import static box.star.net.http.HTTPServer.MIME_HTML;
 
 public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriver.WithMediaMapControlPort, MimeTypeScanner {
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
+  public static final String URI_LIST_SPLITTER = Char.toString(Char.BACKSLASH, Char.PIPE);
   private Global global;
   public RhinoPageDriver(Global global){
     this.global = global;
@@ -46,7 +48,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
           System.getProperty("box.star.net.jsp.require.module.uris"),
           System.getenv("JSP_REQUIRE_MODULE_URIS"));
       if (modulePath != null)
-        global.installRequire(cx, Arrays.asList(modulePath.split("\\|")), false);
+        global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
       else
         global.installRequire(cx, null, false);
     } else global.installRequire(cx, moduleDirectories, false);
