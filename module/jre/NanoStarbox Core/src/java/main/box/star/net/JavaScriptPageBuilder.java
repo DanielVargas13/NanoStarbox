@@ -75,11 +75,12 @@ public class JavaScriptPageBuilder implements MimeTypeDriver<WebService>, MimeTy
   @Override
   public String scanMimeType(BufferedInputStream source) {
     String scan;
+    String MAGIC = "<!MIME "+ NANO_STARBOX_JAVASCRIPT_SERVER_PAGE+">";
     try {
-      source.mark(59);
-      scan = new Scanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextField('>');
+      source.mark(MAGIC.length());
+      scan = new Scanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextFieldLength(MAGIC.length(),'>') + ">";
       source.reset();
-      if (scan.equals("<!MIME "+ NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) {
+      if (scan.equals(MAGIC)) {
         //noinspection ResultOfMethodCallIgnored
         source.skip(scan.length()+1);
         return NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
