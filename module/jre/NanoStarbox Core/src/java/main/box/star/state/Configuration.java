@@ -58,7 +58,7 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
       this.update();
       this.value = value;
     }
-    public V getValue() {
+    @Nullable public V getValue() {
       return value;
     }
   }

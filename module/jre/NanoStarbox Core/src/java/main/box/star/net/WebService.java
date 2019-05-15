@@ -13,7 +13,7 @@ import java.util.Map;
 public class WebService extends HTTPServer {
 
   public final Map<String, ContentProvider> contentProviders = new Hashtable<>();
-  public final Map<String, MimeTypeDriver> mimeTypeDrivers = new Hashtable<>();
+  public final Map<String, MimeTypeDriver<WebService>> mimeTypeDrivers = new Hashtable<>();
   public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
 
   public WebService() { super(); }
@@ -29,7 +29,7 @@ public class WebService extends HTTPServer {
     configuration.set(CONFIG_PORT, port);
   }
 
-  final public void addMimeTypeDriver(String mimeType, MimeTypeDriver driver) {
+  final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {
     mimeTypeDrivers.put(mimeType, driver);
   }
 
@@ -59,7 +59,7 @@ public class WebService extends HTTPServer {
   protected ServerResult getResult(ServerContent content) {
     if (content == null) return null;
     if (content.isOkay()){
-      MimeTypeDriver driver = mimeTypeDrivers.get(content.mimeType);
+      MimeTypeDriver<WebService> driver = mimeTypeDrivers.get(content.mimeType);
       if (driver != null) return driver.createMimeTypeResult(this, content);
     }
     return new ServerResult(content);
@@ -93,7 +93,7 @@ public class WebService extends HTTPServer {
       if (serverResult == null) return Response.notFoundResponse();
       return serverResult.getResponse();
     } catch (Exception e){
-      return this.serverExceptionResponse(e);
+      return serverExceptionResponse(e);
     }
   }
 
