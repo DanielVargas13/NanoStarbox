@@ -57,15 +57,24 @@ public class MimeTypeMap extends HashMap<String, String> {
 
   public String scanFileExtension(String fileName) {
     String name = new java.io.File(fileName).getName();
+    List<String> extensions = new ArrayList<>();
     if (name.contains(".")) {
-      for (String extension : super.keySet())
-        if (name.endsWith(extension)) return extension;
+      for (String extension : super.keySet()) {
+        if (name.endsWith(extension)) extensions.add(extension);
+      }
+      if (!extensions.isEmpty()) {
+        String longest="";
+        for(String e:extensions){
+          if (e.length() > longest.length()) longest = e;
+        }
+        return longest;
+      }
       return name.substring(name.lastIndexOf('.') + 1);
     }
     return "";
   }
 
-  public String getMimeTypeExtension(String mimeType) {
+  public String getFileExtensionForMimeType(String mimeType) {
     if (mimeType != null || mimeType.length() != 0) {
       for (String extension : super.keySet())
         if (super.get(extension).contains(mimeType)) return extension;
