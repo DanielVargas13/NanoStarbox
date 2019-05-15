@@ -3,9 +3,14 @@ package box.star.net;
 import box.star.content.MimeTypeMap;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
+import box.star.net.http.content.CookieHandler;
+import box.star.net.http.request.Method;
 import box.star.net.http.response.Response;
 import box.star.net.tools.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class WebService extends HTTPServer {
@@ -45,6 +50,49 @@ public class WebService extends HTTPServer {
     super();
     configuration.set(CONFIG_HOST, host);
     configuration.set(CONFIG_PORT, port);
+  }
+
+  public static class FileRequest implements IHTTPSession {
+    String uri;
+    FileRequest(String uri){this.uri =uri;}
+    @Override public void execute() throws IOException {}
+    @Override public CookieHandler getCookies() { return null; }
+    @Override public Map<String, String> getHeaders() { return null; }
+    @Override public InputStream getInputStream() { return null; }
+    @Override public Method getMethod() { return Method.GET; }
+    @Override public Map<String, String> getParms() { return null; }
+    @Override public Map<String, List<String>> getParameters() { return null; }
+    @Override public String getQueryParameterString() { return null; }
+    @Override public String getUri() { return uri; }
+    @Override public void parseBody(Map<String, String> files) throws IOException, ResponseException { }
+    @Override public String getRemoteIpAddress() { return null; }
+    @Override public String getRemoteHostName() { return null; }
+  }
+
+  final public File getFile(String uri){
+    IHTTPSession session = new FileRequest(uri);
+    // first: uri-equality
+    for (ContentProvider provider:contentProviders){
+      String path = provider.getBaseUri();
+      if (path.equals(uri)) {
+        ServerContent c = provider.getContent(session);
+        if (c != null && c.isFile()) return (File) c.data;
+      }
+    }
+    // second: parent-uri-equality
+    while (! uri.equals("/") ) {
+      uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
+      if (uri.equals("")) uri = "/";
+      for (ContentProvider provider:contentProviders){
+        String path = provider.getBaseUri();
+        if (path.equals(uri)){
+          ServerContent content = provider.getContent(session);
+          if (content != null && content.isFile()) return (File) content.data;
+        }
+      }
+    }
+    // third: fail-silently
+    return null;
   }
 
   final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {

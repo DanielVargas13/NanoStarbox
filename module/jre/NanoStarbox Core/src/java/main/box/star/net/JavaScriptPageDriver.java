@@ -11,12 +11,15 @@ import box.star.net.tools.ServerResult;
 import box.star.text.MacroShell;
 import box.star.text.basic.Scanner;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ScriptRuntime;
-import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.*;
 import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.tools.shell.Main;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 import static box.star.net.http.HTTPServer.MIME_HTML;
@@ -28,12 +31,27 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
     this.global = global;
     mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
   }
-  public JavaScriptPageDriver(MimeTypeMap mimeTypeMap){
+  public JavaScriptPageDriver(MimeTypeMap mimeTypeMap, @Nullable List<String> moduleDirectories){
     mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
     global = new Global();
     Context cx = Context.enter();
     global.init(cx);
+    if (moduleDirectories == null){
+      String modulePath = Tools.makeNotNull(System.getenv("JSP_MODULE_URIS"), System.getProperty("box.star.net.jsp.module.uris"));
+      if (modulePath != null) {
+        List<String> uris = new ArrayList<>();
+        uris.addAll(Arrays.asList(modulePath.split("[^\\\\];")));
+        global.installRequire(cx, uris, false);
+      } else {
+        global.installRequire(cx, null, false);
+      }
+    } else {
+      global.installRequire(cx, moduleDirectories, false);
+    }
     Context.exit();
+  }
+  public JavaScriptPageDriver(MimeTypeMap mimeTypeMap){
+    this(mimeTypeMap, null);
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
     return ScriptRuntime.newObject(cx, Tools.makeNotNull(parent, global), "Object", null);
@@ -42,8 +60,11 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
     Context cx = Context.enter();
     try {
+      File location = server.getFile(content.session.getUri());
+      if (location != null) location = location.getParentFile();
       Scriptable jsThis = getScriptShell(cx, global);
       ScriptRuntime.setObjectProp(jsThis, "global", global, cx);
+      ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       Scanner scanner = new Scanner(content.session.getUri(), content.getStream());
@@ -62,6 +83,7 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
           return output.toString();
         }
       });
+
       String output = documentBuilder.start(scanner);
       scanner.close();
       if (content.mimeType.equals(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) content.mimeType = MIME_HTML;

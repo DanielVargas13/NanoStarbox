@@ -1,6 +1,7 @@
 <!MIME text/html, application/x-nano-starbox-javascript-server-page>
-<html>
-<body>
+<html>%(js '
+    load(directory+"/server-page.js");
+')<body>
 <h1>%(js "server.host+':'+server.port")</h1>
 <p>Local Resource: %(js session.uri)</p>
 <p>JavaScript Object Keys in global object: "session":</p>
@@ -10,6 +11,8 @@
 ')
 <p>Server-Side-Hacking: <strong>Mozilla Rhino powered Java Object Hosting and Document Generation with Android JIT Support and Runtime Class Path Loader; powered by NanoStarbox Core</strong>
 </p>
-<p>Analysis: EXPERT-LEVEL-SYSTEM-HACKING</p>
+<p>Analysis: %(js '
+    result();
+')</p>
 </body>
 </html>
