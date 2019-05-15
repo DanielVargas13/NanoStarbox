@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static box.star.net.tools.RhinoMacroDriver.RHINO_MACRO_DRIVER_MIME_TYPE;
+import static box.star.net.JavaScriptServerPageBuilder.NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
 
 class WebServiceTest {
 
@@ -26,17 +26,18 @@ class WebServiceTest {
       }
     });
 
-    RhinoMacroDriver rhinoMacroDriver = new RhinoMacroDriver(ws.mimeTypeMap);
-    ws.addMimeTypeDriver(RHINO_MACRO_DRIVER_MIME_TYPE, rhinoMacroDriver);
+    JavaScriptServerPageBuilder serverPageBuilder = new JavaScriptServerPageBuilder(ws.mimeTypeMap);
 
-    // a driver that conditionally calls the above driver,
+    ws.addMimeTypeDriver(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, serverPageBuilder);
+
+    // a driver that conditionally calls the above driver
     ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
       @Override
       public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
         if (content.isOkay()){
-          String mimeType = ws.scanMimeType(content.getStream());
-          if (RHINO_MACRO_DRIVER_MIME_TYPE.equals(mimeType)){
-            return rhinoMacroDriver.createMimeTypeResult(ws, content);
+          String mimeType = serverPageBuilder.scanMimeType(content.getStream());
+          if (NANO_STARBOX_JAVASCRIPT_SERVER_PAGE.equals(mimeType)){
+            return serverPageBuilder.createMimeTypeResult(ws, content);
           }
         }
         return new ServerResult(content);

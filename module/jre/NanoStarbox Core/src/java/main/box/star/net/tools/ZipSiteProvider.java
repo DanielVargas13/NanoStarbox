@@ -1,10 +1,7 @@
 package box.star.net.tools;
 
 import box.star.content.MimeTypeMap;
-import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
-import box.star.net.http.response.Response;
-import box.star.net.http.response.Status;
 
 import java.io.Closeable;
 import java.io.File;
@@ -80,12 +77,6 @@ public class ZipSiteProvider extends ContentProvider implements Closeable {
     zipFile = null;
     vfs = null;
     zipTime = 0;
-  }
-
-  private ServerContent redirect(String location){
-    Response r = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
-    r.addHeader("Location", location);
-    return new ServerContent(r);
   }
 
 }
