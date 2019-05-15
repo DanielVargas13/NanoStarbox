@@ -1,5 +1,7 @@
 package box.star.net.tools;
 
+import box.star.Tools;
+import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.IStatus;
 import box.star.net.http.response.Response;
@@ -26,13 +28,6 @@ public class ServerResult extends ServerContent {
     }
   }
 
-//  public ServerResult(IHTTPSession session, Status status, String mimeType, Object data, long length, long lastModified){
-//    this.status = status;
-//    this.mimeType = mimeType;
-//    this.data = data;
-//    this.session = session;
-//  }
-
   public ServerResult(IHTTPSession session, Status status, String mimeType, String string){
     this.status = status;
     this.mimeType = mimeType;
@@ -46,13 +41,9 @@ public class ServerResult extends ServerContent {
 
   public Response getResponse(){
 
-    if (status == Status.NOT_FOUND){
-      return Response.newFixedLengthResponse(status, "text/plain", "File not found");
-    }
+    if (status == Status.NOT_FOUND){ return WebService.notFoundResponse(); }
 
-    if (data instanceof Response){
-      return (Response) data;
-    }
+    else if (data instanceof Response){ return (Response) data; }
 
     else if (data instanceof String){
       String output = (String) data;
@@ -68,12 +59,12 @@ public class ServerResult extends ServerContent {
     }
 
     else if (data instanceof byte[]) {
-      return newFixedLengthResponse(status, mimeType, (byte[])data);
+      return WebService.newFixedLengthResponse(status, mimeType, (byte[])data);
     }
 
     else if (data instanceof File) {
       try {
-        return newFixedFileResponse(mimeType, (File) data);
+        return WebService.newFixedFileResponse(mimeType, (File) data);
       }
       catch (FileNotFoundException e) {
         // this should not be happening.
@@ -83,19 +74,6 @@ public class ServerResult extends ServerContent {
 
     throw new RuntimeException("unknown mime type request object: "+data.getClass());
 
-  }
-
-  public static Response newFixedLengthResponse(IStatus status, String mimeType, byte[] message) {
-    Response response = Response.newFixedLengthResponse(status, mimeType, message);
-    response.addHeader("Accept-Ranges", "bytes");
-    return response;
-  }
-
-  public static Response newFixedFileResponse(String mimeType, File file) throws FileNotFoundException {
-    Response res;
-    res = Response.newFixedLengthResponse(Status.OK, mimeType, new FileInputStream(file), (int) file.length());
-    res.addHeader("Accept-Ranges", "bytes");
-    return res;
   }
 
 }

@@ -1,10 +1,10 @@
 package box.star.net;
 
 import box.star.content.MimeTypeMap;
-import box.star.content.MimeTypeScanner;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
+import box.star.net.http.response.Status;
 import box.star.net.tools.*;
 
 import java.io.BufferedInputStream;
@@ -29,10 +29,6 @@ public class WebService extends HTTPServer {
     super();
     configuration.set(CONFIG_HOST, host);
     configuration.set(CONFIG_PORT, port);
-  }
-
-  final public String scanMimeType(BufferedInputStream stream) {
-    return mimeTypeMap.scanMimeType(stream);
   }
 
   final public void addMimeTypeDriver(String mimeType, MimeTypeDriver driver) {

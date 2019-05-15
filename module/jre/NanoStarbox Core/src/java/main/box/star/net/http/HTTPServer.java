@@ -33,7 +33,9 @@ package box.star.net.http;
  * #L%
  */
 
+import box.star.Tools;
 import box.star.net.http.content.CookieHandler;
+import box.star.net.http.response.IStatus;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 import box.star.net.http.sockets.DefaultServerSocketFactory;
@@ -658,23 +660,46 @@ public abstract class HTTPServer {
     return res;
   }
 
-  public Response stringResponse(Status status, String mimeType, String text) {
+  public static Response stringResponse(Status status, String mimeType, String text) {
     return Response.newFixedLengthResponse(status, mimeType, text);
   }
 
-  public Response blankResponse(Status status) {
+  public static Response blankResponse(Status status) {
     return plainTextResponse(status, "");
   }
 
-  public Response forbiddenResponse() {
+  public static Response forbiddenResponse() {
     return blankResponse(Status.FORBIDDEN);
   }
 
-  public Response notFoundResponse() {
-    return blankResponse(Status.NOT_FOUND);
+  public static  Response notFoundResponse(){
+    return notFoundResponse(null, null);
   }
 
-  public Response plainTextResponse(Status status, String text) {
+  public static  Response notFoundResponse(String mimeType, String content) {
+    return Response.newFixedLengthResponse(Status.NOT_FOUND, Tools.makeNotNull(mimeType,"text/plain"), Tools.makeNotNull(content, "File not found"));
+  }
+
+  public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {
+    Response response = Response.newFixedLengthResponse(status, mimeType, message);
+    response.addHeader("Accept-Ranges", "bytes");
+    return response;
+  }
+
+  public static Response newFixedFileResponse(String mimeType, File file) throws FileNotFoundException {
+    Response res;
+    res = Response.newFixedLengthResponse(Status.OK, mimeType, new FileInputStream(file), (int) file.length());
+    res.addHeader("Accept-Ranges", "bytes");
+    return res;
+  }
+
+  public static Response redirect(String location) {
+    Response redirection = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
+    redirection.addHeader("Location", location);
+    return redirection;
+  }
+
+  public static Response plainTextResponse(Status status, String text) {
     return Response.newFixedLengthResponse(status, MIME_PLAINTEXT, text);
   }
 

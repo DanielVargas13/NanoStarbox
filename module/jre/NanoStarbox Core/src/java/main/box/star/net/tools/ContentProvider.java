@@ -1,6 +1,7 @@
 package box.star.net.tools;
 
 import box.star.content.MimeTypeMap;
+import box.star.net.WebService;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
@@ -28,9 +29,11 @@ public class ContentProvider {
   final public String getBaseUri() { return baseUri; }
 
   final protected ServerContent redirect(String location){
-    Response redirection = Response.newFixedLengthResponse(Status.REDIRECT, "text/html", "<html><body>Redirected: <a href=\"" + location + "\">" + location + "</a></body></html>");
-    redirection.addHeader("Location", location);
-    return new ServerContent(redirection);
+    return new ServerContent(WebService.redirect(location));
+  }
+
+  final protected ServerContent notFound(String location){
+    return new ServerContent(WebService.notFoundResponse());
   }
 
   // </user-methods>

@@ -1,5 +1,7 @@
 #### NSR6
 
+* Server Side Tricks (82fbc57a5f14181bca3d5553a2fb528a43d583ad)
+
 * Added Web Sockets Port (e3f3222c405d08a61b2512b45bcc82d2d550130c)
 
 * Content Provider: Local Path Mime Types Support (9809c084e2b8301a42dbd3f2c0348b8dce859788)
