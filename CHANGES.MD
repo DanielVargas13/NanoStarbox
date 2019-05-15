@@ -1,6 +1,6 @@
 #### NSR6
 
-* Servere Side Includes (2c403babf5e1e661fe80f0eeeceb5be161d7550a)
+* Server Side Includes (2c403babf5e1e661fe80f0eeeceb5be161d7550a)
 
 * Allow custom globals (9d51aaf648462b0daf7a86a0c58c3a30ad3f9e5e)
 
