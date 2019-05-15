@@ -15,7 +15,11 @@ public class ServerContent {
   public String mimeType;
   public long length, lastModified;
 
-  ServerContent(){}
+  /**
+   * <p></p>Allows {@link ServerResult} and the like to emulate {@link ServerContent} with it's
+   * own initialization parameters.</p>
+   */
+  protected ServerContent(){}
 
   public ServerContent(IHTTPSession session, String mimeType, File path){
     this.session = session;
@@ -32,6 +36,20 @@ public class ServerContent {
         this.status = Status.NOT_FOUND;
       }
     }
+  }
+
+  public ServerContent(IHTTPSession session, String mimeType, String content){
+    this.session = session;
+    this.mimeType = mimeType;
+    this.data = content;
+    this.status = (content == null)?Status.NO_CONTENT:Status.OK;
+  }
+
+  public ServerContent(IHTTPSession session, String mimeType, byte[] content){
+    this.session = session;
+    this.mimeType = mimeType;
+    this.data = content;
+    this.status = (content == null)?Status.NO_CONTENT:Status.OK;
   }
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream, long length, long lastModified){
