@@ -52,15 +52,15 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     Context cx = Context.enter();
     global = Main.global;
     global.init(cx);
-//    if (moduleDirectories == null){
-//      String modulePath = Tools.switchNull(
-//          System.getProperty("box.star.net.jsp.require.module.uris"),
-//          System.getenv("JSP_REQUIRE_MODULE_URIS"));
-//      if (modulePath != null)
-//        global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
-//      else
-//        global.installRequire(cx, null, false);
-//    } else global.installRequire(cx, moduleDirectories, false);
+    if (moduleDirectories == null){
+      String modulePath = Tools.switchNull(
+          System.getProperty("box.star.net.jsp.require.module.uris"),
+          System.getenv("JSP_REQUIRE_MODULE_URIS"));
+      if (modulePath != null)
+        global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
+      else
+        global.installRequire(cx, null, false);
+    } else global.installRequire(cx, moduleDirectories, false);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
