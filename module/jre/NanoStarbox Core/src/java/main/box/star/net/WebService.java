@@ -61,8 +61,10 @@ public class WebService extends HTTPServer {
 
   protected ServerResult getResult(ServerContent content) {
     if (content == null) return null;
-    MimeTypeDriver driver = mimeTypeDrivers.get(content.mimeType);
-    if (driver != null) return driver.createMimeTypeResult(this, content);
+    if (content.isOkay()){
+      MimeTypeDriver driver = mimeTypeDrivers.get(content.mimeType);
+      if (driver != null) return driver.createMimeTypeResult(this, content);
+    }
     return new ServerResult(content);
   }
 
