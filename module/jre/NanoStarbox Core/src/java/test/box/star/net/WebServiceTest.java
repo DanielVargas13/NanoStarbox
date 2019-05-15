@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static box.star.net.JavaScriptPageDriver.NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
+import static box.star.net.RhinoPageDriver.NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
 
 class WebServiceTest {
 
@@ -13,15 +13,15 @@ class WebServiceTest {
 
   @Test void WebService(){
 
-    ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/jna", new File("site/jna-4.5.2.jar")));
-    ws.mountContentProvider(new ZipSiteProvider(ws.mimeTypeMap, "/test", new File("site/site.zip")));
+    ws.mount(new ZipSiteProvider("/jna", new File("site/jna-4.5.2.jar")));
+    ws.mount(new ZipSiteProvider("/test", new File("site/site.zip")));
 
-    ws.mountContentProvider(new FileContentProvider(ws.mimeTypeMap, "/", new File("site")));
+    ws.mount(new FileContentProvider("/", new File("site")));
 
-    JavaScriptPageDriver serverPageBuilder = new JavaScriptPageDriver(ws.mimeTypeMap);
+    RhinoPageDriver rhinoPageDriver = new RhinoPageDriver();
 
     // this enables automatic *.jsp to text/html
-    ws.addMimeTypeDriver(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, serverPageBuilder);
+    ws.addMimeTypeDriver(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, rhinoPageDriver);
 
     /*
       JavaScriptPageBuilder includes a mime-type-scanner, but we don't need to register it,
@@ -41,9 +41,9 @@ class WebServiceTest {
       @Override
       public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
         if (content.isOkay()){
-          String mimeType = serverPageBuilder.scanMimeType(content.getStream());
+          String mimeType = rhinoPageDriver.scanMimeType(content.getStream());
           if (NANO_STARBOX_JAVASCRIPT_SERVER_PAGE.equals(mimeType)){
-            return serverPageBuilder.createMimeTypeResult(ws, content);
+            return rhinoPageDriver.createMimeTypeResult(ws, content);
           }
         }
         return new ServerResult(content);

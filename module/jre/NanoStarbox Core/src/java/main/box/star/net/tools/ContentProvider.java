@@ -10,10 +10,14 @@ import java.util.Map;
 public class ContentProvider {
 
   private static final Map<String, String> mimeTypePaths = new HashMap<>();
-  private final MimeTypeMap mimeTypeMap;
+  private MimeTypeMap mimeTypeMap;
   private final String baseUri;
 
   // <user-methods>
+
+  final public void setMimeTypeMap(MimeTypeMap mimeTypeMap) {
+    this.mimeTypeMap = mimeTypeMap;
+  }
 
   final public void setUriMimeType(String uri, String mimeType){
     mimeTypePaths.put(uri, mimeType);
@@ -21,7 +25,8 @@ public class ContentProvider {
 
   final protected String getUriMimeType(String uri){
     if (mimeTypePaths.containsKey(uri)) return mimeTypePaths.get(uri);
-    return mimeTypeMap.get(mimeTypeMap.scanFileExtension(uri));
+    else if (mimeTypeMap != null) return mimeTypeMap.get(mimeTypeMap.scanFileExtension(uri));
+    else return MimeTypeMap.DEFAULT_MIME_TYPE;
   }
 
   final public String getBaseUri() { return baseUri; }
@@ -36,9 +41,8 @@ public class ContentProvider {
 
   // </user-methods>
 
-  public ContentProvider(MimeTypeMap mimeTypeMap, String baseUri){
+  public ContentProvider(String baseUri){
     this.baseUri = baseUri;
-    this.mimeTypeMap = mimeTypeMap;
   }
 
   public ServerContent getContent(IHTTPSession session) {

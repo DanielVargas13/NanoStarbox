@@ -1,5 +1,6 @@
 package box.star.net.tools;
 
+import box.star.content.MimeTypeMap;
 import box.star.net.WebService;
 import box.star.net.tools.ServerContent;
 import box.star.net.tools.ServerResult;
@@ -10,6 +11,11 @@ import box.star.net.tools.ServerResult;
  * @param <SERVICE> the server environment
  */
 public interface MimeTypeDriver<SERVICE> {
+
+  interface WithMediaMapControlPort {
+    void openMimeTypeMap(MimeTypeMap controlPort);
+  }
+
   /**
    * <p>Creates a mime-formatted {@link ServerResult} from a {@link ServerContent} source.</p>
    * @param server the server environment

@@ -13,10 +13,10 @@ import box.star.text.basic.Scanner;
 
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.tools.shell.Global;
-import org.mozilla.javascript.tools.shell.Main;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,15 +25,18 @@ import java.util.Stack;
 
 import static box.star.net.http.HTTPServer.MIME_HTML;
 
-public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTypeScanner {
+public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriver.WithMediaMapControlPort, MimeTypeScanner {
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
   private Global global;
-  public JavaScriptPageDriver(Global global, MimeTypeMap mimeTypeMap){
+  public RhinoPageDriver(Global global){
     this.global = global;
-    mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
   }
-  public JavaScriptPageDriver(MimeTypeMap mimeTypeMap, @Nullable List<String> moduleDirectories){
-    mimeTypeMap.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
+  @Override
+  public void openMimeTypeMap(MimeTypeMap controlPort) {
+    controlPort.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
+  }
+  public RhinoPageDriver(){this((List)null);}
+  public RhinoPageDriver(@Nullable List<String> moduleDirectories){
     global = new Global();
     Context cx = Context.enter();
     global.init(cx);
@@ -50,9 +53,6 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
       global.installRequire(cx, moduleDirectories, false);
     }
     Context.exit();
-  }
-  public JavaScriptPageDriver(MimeTypeMap mimeTypeMap){
-    this(mimeTypeMap, null);
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
     return ScriptRuntime.newObject(cx, Tools.makeNotNull(parent, global), "Object", null);
@@ -100,21 +100,29 @@ public class JavaScriptPageDriver implements MimeTypeDriver<WebService>, MimeTyp
       Context.exit();
     }
   }
+
+  private final static String HTML_MAGIC = "<!MIME "+ NANO_STARBOX_JAVASCRIPT_SERVER_PAGE+">";
+
+  private boolean detectHtmlDocument(BufferedInputStream source) throws IOException {
+    String scan;
+    int SEEK = HTML_MAGIC.length();
+    source.mark(SEEK);
+    scan = new Scanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextFieldLength(SEEK,'>');
+    source.reset();
+    if ((scan + '>').equals(HTML_MAGIC)){
+      //noinspection ResultOfMethodCallIgnored
+      source.skip(SEEK);
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public String scanMimeType(BufferedInputStream source) {
-    String scan;
-    String MAGIC = "<!MIME "+ NANO_STARBOX_JAVASCRIPT_SERVER_PAGE+">";
     try {
-      source.mark(MAGIC.length());
-      scan = new Scanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextFieldLength(MAGIC.length(),'>') + ">";
-      source.reset();
-      if (scan.equals(MAGIC)) {
-        //noinspection ResultOfMethodCallIgnored
-        source.skip(scan.length()+1);
-        return NANO_STARBOX_JAVASCRIPT_SERVER_PAGE;
-      }
-      return null;
-    }
-    catch (Exception e) { throw new RuntimeException(e); }
+      if (detectHtmlDocument(source))
+        return NANO_STARBOX_JAVASCRIPT_SERVER_PAGE; else return null;
+    } catch (Exception e) { throw new RuntimeException(e); }
   }
+
 }

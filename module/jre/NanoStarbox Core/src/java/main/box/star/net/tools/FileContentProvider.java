@@ -9,8 +9,8 @@ public class FileContentProvider extends ContentProvider implements NativeConten
 
   protected File root;
 
-  public FileContentProvider(MimeTypeMap mimeTypeMap, String baseUri, File root) {
-    super(mimeTypeMap, baseUri);
+  public FileContentProvider(String baseUri, File root) {
+    super(baseUri);
     this.root = root;
   }
 

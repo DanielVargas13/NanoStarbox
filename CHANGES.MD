@@ -1,5 +1,7 @@
 #### NSR6
 
+* Mime Type Service Integration (4126d01ef87853fd5b5217e17de0df9a237b0269)
+
 * Native Content Providers (bf83c5534154782814e2c6cff224eeb62e1e5195)
 
 * Server Side Includes (7eecf27f93774109b9525bf2c14534cb505cc7f5)

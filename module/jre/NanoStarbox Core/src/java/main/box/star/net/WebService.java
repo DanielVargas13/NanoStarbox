@@ -3,15 +3,10 @@ package box.star.net;
 import box.star.content.MimeTypeMap;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
-import box.star.net.http.content.CookieHandler;
-import box.star.net.http.request.Method;
 import box.star.net.http.response.Response;
 import box.star.net.tools.*;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class WebService extends HTTPServer {
@@ -42,8 +37,9 @@ public class WebService extends HTTPServer {
 
   public WebService() { super(); }
 
-  public WebService mountContentProvider(ContentProvider contentProvider){
+  public WebService mount(ContentProvider contentProvider){
     contentProviders.add(contentProvider);
+    contentProvider.setMimeTypeMap(mimeTypeMap);
     return this;
   }
 
@@ -82,6 +78,8 @@ public class WebService extends HTTPServer {
 
   final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {
     mimeTypeDrivers.put(mimeType, driver);
+    if (driver instanceof MimeTypeDriver.WithMediaMapControlPort)
+      ((MimeTypeDriver.WithMediaMapControlPort)driver).openMimeTypeMap(mimeTypeMap);
   }
 
   public ServerContent getContent(IHTTPSession session){

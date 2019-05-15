@@ -23,8 +23,8 @@ public class ZipSiteProvider extends ContentProvider implements Closeable {
   protected long zipTime;
   public Map<String, ZipEntry> vfs;
 
-  public ZipSiteProvider(MimeTypeMap mimeTypeMap, String baseUri, File zipFile){
-    super(mimeTypeMap, baseUri);
+  public ZipSiteProvider(String baseUri, File zipFile){
+    super(baseUri);
     this.file = zipFile;
   }
 
