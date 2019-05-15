@@ -1,12 +1,9 @@
-<!MIMETYPE javascript/x-nano-starbox-rhino-macro-document>
 <html>
 <body>
 <h1>%(js "server.host+':'+server.port")</h1>
 <p>Local Resource: %(js session.uri)</p>
-<p>
-    JavaScript Object Keys in global object: "session":<br>
-    <ul><li>%(js "Object.keys(session).join('\\n');")</li></ul>
-</p>
+<p>JavaScript Object Keys in global object: "session":</p>
+<ul><li>%(js "Object.keys(session).join('\\n');")</li></ul>
 %(js '
     help() || "<br>JavaScript help has been printed on the console.";
 ')

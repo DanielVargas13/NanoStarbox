@@ -27,6 +27,8 @@ class WebServiceTest {
     });
 
     RhinoMacroDriver rhinoMacroDriver = new RhinoMacroDriver(ws.mimeTypeMap);
+    ws.addMimeTypeDriver(RHINO_MACRO_DRIVER_MIME_TYPE, rhinoMacroDriver);
+
     // a driver that conditionally calls the above driver,
     ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
       @Override

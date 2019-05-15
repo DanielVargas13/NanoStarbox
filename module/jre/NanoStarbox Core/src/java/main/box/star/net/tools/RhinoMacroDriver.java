@@ -17,6 +17,8 @@ import org.mozilla.javascript.tools.shell.Global;
 import java.io.BufferedInputStream;
 import java.util.Stack;
 
+import static box.star.net.http.HTTPServer.MIME_HTML;
+
 public class RhinoMacroDriver implements MimeTypeDriver<WebService>, MimeTypeScanner {
   public final static String RHINO_MACRO_DRIVER_MIME_TYPE = "javascript/x-nano-starbox-rhino-macro-document";
   Global global;
@@ -59,7 +61,10 @@ public class RhinoMacroDriver implements MimeTypeDriver<WebService>, MimeTypeSca
           return output.toString();
         }
       });
-      return new ServerResult(content.session, Status.OK, content.mimeType, macroShell.start(scanner));
+      String mimeType = (content.mimeType.equals(RHINO_MACRO_DRIVER_MIME_TYPE))? MIME_HTML: content.mimeType;
+      String output = macroShell.start(scanner);
+      scanner.close();
+      return new ServerResult(content.session, Status.OK, mimeType, output);
     } catch (Exception e){throw new RuntimeException(e);}
     finally {
       Context.exit();
