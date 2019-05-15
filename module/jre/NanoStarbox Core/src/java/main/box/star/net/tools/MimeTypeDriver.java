@@ -12,7 +12,6 @@ import box.star.net.tools.ServerResult;
 public interface MimeTypeDriver<SERVICE> {
   /**
    * <p>Creates a mime-formatted {@link ServerResult} from a {@link ServerContent} source.</p>
-   * <br>
    * @param server the server environment
    * @param content the server content
    * @return the mime formatted server result
