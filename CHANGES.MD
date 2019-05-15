@@ -1,5 +1,7 @@
 #### NSR6
 
+* Content Provider: Local Path Mime Types Support (9809c084e2b8301a42dbd3f2c0348b8dce859788)
+
 * Server Pages and UTF-8 project encoding (e959e74026229af3f9dacc32adbbed1f72758bba)
 
 * Deprecated Web Server, Added Web Service (7b25fb436fdec24c37df42a18de83af9e60ed342)
