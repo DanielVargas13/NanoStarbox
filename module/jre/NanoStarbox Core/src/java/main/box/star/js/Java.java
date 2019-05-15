@@ -23,9 +23,6 @@ public class Java {
     new Java(cx, global, loader);
   }
 
-  // TODO: regular rhino loading should be working
-  //public Object loadClass(String name) throws ClassNotFoundException {return archiveLoader.get(globalObject, name);}
-
   public Object getKnownPackages() {
     List<String> packages = (classPathLoader.getOwnPackages());
     packages.addAll(classPathLoader.getRuntimePackages());
