@@ -33,33 +33,101 @@ public class RhinoPageDriver implements
     MimeTypeDriver.WithMediaMapControlPort,
     MimeTypeDriver.WithMimeTypeScanner
 {
+  /**
+   * <p>{@link MimeTypeDriver} mime-type</p>
+   *<br>
+   */
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE =
       "text/html, application/x-nano-starbox-javascript-server-page";
+  /**
+   * <p>System property name pointing to a string-list of URIs separated by {@link #URI_LIST_SPLITTER}</p>
+   * <br>
+   */
   public final static String REQUIRE_MODULE_URIS_PROPERTY = "box.star.net.jsp.require.module.uris";
+  /**
+   * <p>System property name pointing to a Java Regular expression String splitter</p>
+   * <br>
+   */
   public final static String URI_LIST_SPLITTER_PROPERTY = "box.star.net.jsp.uri.list.splitter";
+  /**
+   * <p>System environment name pointing to a string-list of URIs separated by {@link #URI_LIST_SPLITTER}</p>
+   * <br>
+   */
   public final static String REQUIRE_MODULE_URIS_VAR = "JSP_REQUIRE_MODULE_URIS";
+  /**
+   * <p>System environment name pointing to a Java Regular expression String splitter to use as {@link #URI_LIST_SPLITTER}</p>
+   * <br>
+   */
   public final static String URI_LIST_SPLITTER_VAR = "JSP_URI_LIST_SPLITTER";
+  /**
+   * <p>Java Regular Expression {@link String} for splitting URIs using {@link String#split(String)}.</p>
+   * <br>
+   * <b>Required by:</b>
+   * <ul>
+   *   <li>{@link RhinoPageDriver#RhinoPageDriver(List)} to split uris</li>
+   * </ul>
+   * <br>
+   *   <b>Inherits From:</b>
+   *   <ol>
+   *     <li>System override through: {@link #URI_LIST_SPLITTER_PROPERTY}</li>
+   *     <li>Environment override through: {@link #URI_LIST_SPLITTER_VAR}</li>
+   *     <li><b>Default</b>: "\|"</li>
+   *   </ol>
+   */
   public final static String URI_LIST_SPLITTER =
       Tools.switchNull(
           // System property or environment var
           Tools.switchNull(System.getProperty(URI_LIST_SPLITTER_PROPERTY), System.getenv(URI_LIST_SPLITTER_VAR)),
-          Char.toString(Char.PIPE)); // default
+          Char.toString(Char.BACKSLASH, Char.PIPE)); // default
+  /**
+   * <p>The global JavaScript object/environment</p>
+   * <br>
+   */
   private Global global;
+  /**
+   * <p>Creates a new page-driver with the specified script environment</p>
+   * <br>
+   * @param global the global JavaScript environment to use for this page-driver
+   */
   public RhinoPageDriver(Global global){
     this.global = global;
   }
+  /**
+   * <p>Called by media map controllers to integrate media map control configuration</p>
+   * <br>
+   * @param controlPort
+   */
   @Override public void configureMimeTypeController(MimeTypeMap controlPort) {
     controlPort.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
   }
-  public Global getGlobal() {
-    return global;
-  }
+  /**
+   * <p>Provides access to the global scripting environment</p>
+   * <br>
+   * @return
+   */
+  public Global getGlobal() { return global; }
+  /**
+   * <p>Creates a new page-driver</p>
+   * <br>
+   */
   public RhinoPageDriver(){this((List)null);}
-  public RhinoPageDriver(@Nullable List<String> moduleDirectories){
+  /**
+   * <p>Creates a new rhino page driver with the specified REQUIRE.JS module paths</p>
+   * <br>
+   *   <p>The currrent design and testing model of this class is for a single instance to support
+   *   multiple requests. Other usages are of a foreign nature with respect to this
+   *   documentation.
+   *   </p>
+   * @param moduleURIs a list of modules and directories to initialize the REQUIRE.JS module with. <br><br><b>Default Values:</b> the value of the system property identified by: {@link #REQUIRE_MODULE_URIS_PROPERTY} or the value of the system environment variable identified by: {@link #REQUIRE_MODULE_URIS_VAR} if this parameter is null. If this parameter is not provided or resolved, it is ignored.
+   * @see #URI_LIST_SPLITTER
+   * @see #URI_LIST_SPLITTER_PROPERTY
+   * @see #URI_LIST_SPLITTER_VAR
+   */
+  public RhinoPageDriver(@Nullable List<String> moduleURIs){
     Context cx = Context.enter();
     global = Main.global;
     global.init(cx);
-    if (moduleDirectories == null){
+    if (moduleURIs == null){
       String modulePath = Tools.switchNull(
           System.getProperty(REQUIRE_MODULE_URIS_PROPERTY),
           System.getenv(REQUIRE_MODULE_URIS_VAR));
@@ -67,7 +135,7 @@ public class RhinoPageDriver implements
         global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
       else
         global.installRequire(cx, null, false);
-    } else global.installRequire(cx, moduleDirectories, false);
+    } else global.installRequire(cx, moduleURIs, false);
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
