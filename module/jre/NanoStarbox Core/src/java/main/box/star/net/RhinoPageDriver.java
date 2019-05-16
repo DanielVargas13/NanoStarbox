@@ -88,6 +88,13 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
       Object finalLocation = location;
+      documentBuilder.addCommand("*", new MacroShell.Command(){
+        @Override
+        protected String run(String command, Stack<String> parameters) {
+          if (command.equals("<script>")) return call("val", parameters);
+          throw new IllegalArgumentException("unknown command: "+command);
+        }
+      });
       documentBuilder.addCommand("src", new MacroShell.Command(){
         @Override protected String run(String command, Stack<String> parameters) {
           for (String file : parameters) try {

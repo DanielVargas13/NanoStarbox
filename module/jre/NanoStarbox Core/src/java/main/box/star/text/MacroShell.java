@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import static box.star.text.Char.BACKSLASH;
-import static box.star.text.Char.SOLIDUS;
 
 public class MacroShell {
 
@@ -36,6 +35,11 @@ public class MacroShell {
       new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
           .map(EXIT_PROCEDURE)
             .toArray();
+
+  private static final char[] BREAK_COMMAND_MAP =
+      new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
+          .map(EXIT_PROCEDURE, '>')
+          .toArray();
 
   public char macroTrigger = '%';
 
@@ -206,7 +210,13 @@ public class MacroShell {
     protected boolean scan(@NotNull Scanner scanner) {
       if (current() == EXIT_PROCEDURE){ backStep(scanner); }
       else {
-        String name = current()+scanner.nextField(BREAK_PROCEDURE_MAP);
+        String name = current()+scanner.nextField(BREAK_COMMAND_MAP);
+        char c = scanner.next();
+        if (c == '>') {
+          name = name + c;
+          int i = name.length();
+          while (i > 0) {scanner.back();i--;}
+        } else scanner.back();
         Stack<String> parameters = new Stack<>();
         scanner.run(parameterBuilder, context, parameters);
         swap(context.doCommand(scanner, name, parameters));
@@ -302,15 +312,10 @@ public class MacroShell {
         data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
       } else {
-        if (character == SOLIDUS){
-          c = scanner.next();
-          if (c == context.macroTrigger) {
-            data.append(scanner.nextString("%/", true));
-          } else {
-            scanner.back();
-            data.append(character);
-            data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
-          }
+        if (character == '<'){
+          String tag = scanner.nextField('>');
+          scanner.nextCharacter('>');
+          data.append(scanner.nextSequence("</"+tag+">"));
         } else {
           scanner.back();
           data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));

@@ -5,8 +5,12 @@
 <p>Directory: %(val directory)</p>
 <p>Local Resource: %(val session.uri)</p>
 <p>Session Headers:</p>
-<ul><li>%(val "new JSONObject(session.headers).toString();")</li></ul>
-<p>Java Packages:</p><ul><li>%(val 'Java.toArray(Java.knownPackages).join("\n");')</li></ul>
+<ul><li>%(<script>
+    new JSONObject(session.headers).toString()
+</script>)</li></ul>
+<p>Java Packages:</p><ul><li>%(<script>
+    Java.toArray(Java.knownPackages).join("\n");
+</script>)</li></ul>
 %(do 'help()')<br>JavaScript help has been printed on the console.
 <p>Server-Side-Hacking: <strong>Mozilla Rhino powered Java Object Hosting and
     Document Generation with Android JIT Support and Runtime Class Path Loader;

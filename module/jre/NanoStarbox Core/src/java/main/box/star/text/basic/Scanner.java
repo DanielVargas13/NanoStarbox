@@ -324,6 +324,34 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * Scans for a sequence match at the end of the string.
+   *
+   * The found part is discarded.
+   *
+   * @param sequence
+   * @return
+   * @throws SyntaxError if not found
+   */
+  @NotNull
+  public String nextSequence(String sequence) throws SyntaxError {
+    char c;
+    int sl = sequence.length(), bl = 0;
+    if (sl == 0) return "";
+    StringBuilder sb = new StringBuilder();
+    String match;
+    do {
+      c = this.next();
+      ++bl;
+      if (c == 0)
+        throw syntaxError("Expected `" + sequence + "' and found end of text stream");
+      sb.append(c);
+      match = sb.substring(Math.max(0, bl - sl));
+      if (match.equals(sequence)) break;
+    } while (true);
+    return sb.substring(0, bl - sl);
+  }
+
+  /**
    * Scan and assemble characters while scan is not in map.
    *
    * @param map
