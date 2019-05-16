@@ -1,3 +1,7 @@
+#### NSR7
+
+* Only compile \<script\> commands and source files (optimization)
+
 #### NSR6
 
 * Storyteller (27fcdba6b79fab471b737ff723d2bdb5d99db698)

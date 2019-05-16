@@ -69,7 +69,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
   @Override
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
     Context cx = Context.enter();
-    cx.setOptimizationLevel(9);
+    cx.setOptimizationLevel(-1);
     try {
       String uri = content.session.getUri();
       Object location = server.getFile(uri);
@@ -128,16 +128,31 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
 
   private final static MacroShell.Command srcCommand = new MacroShell.Command(){
     @Override protected String run(String command, Stack<String> parameters) {
-      for (String file : parameters) try {
-        Main.processFile(Context.getCurrentContext(), (Scriptable) main.objects.get("this"), main.objects.get("directory")+"/"+file);
-      } catch (Exception ioex) { throw new RuntimeException(ioex); }
+      Context cx = Context.enter();
+      cx.setOptimizationLevel(9);
+      try {
+        for (String file : parameters)
+          Main.processFileNoThrow(cx, (Scriptable) main.objects.get("this"), main.objects.get("directory")+"/"+file);
+      } finally {
+        Context.exit();
+      }
       return "";
     }
   };
   private final static MacroShell.Command starCommand = new MacroShell.Command(){
     @Override
     protected String run(String command, Stack<String> parameters) {
-      if (command.equalsIgnoreCase("<script>")) return call("val", parameters);
+      if (command.equalsIgnoreCase("<script>")) {
+        Context cx = Context.enter();
+        cx.setOptimizationLevel(9);
+        String result;
+        try {
+          result = call("val", parameters);
+        } finally {
+          Context.exit();
+        }
+        return result;
+      }
       throw new IllegalArgumentException("unknown command: "+command);
     }
   };
