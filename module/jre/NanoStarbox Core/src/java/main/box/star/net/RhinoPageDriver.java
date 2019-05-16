@@ -14,7 +14,6 @@ import box.star.text.MacroShell;
 import box.star.text.basic.Scanner;
 
 import org.mozilla.javascript.*;
-import org.mozilla.javascript.tools.ToolErrorReporter;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 
@@ -29,22 +28,23 @@ import java.util.Stack;
 
 import static box.star.net.http.HTTPServer.MIME_HTML;
 
-public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriver.WithMediaMapControlPort, MimeTypeScanner {
+public class RhinoPageDriver implements
+    MimeTypeDriver<WebService>,
+    MimeTypeDriver.WithMediaMapControlPort,
+    MimeTypeDriver.WithMimeTypeScanner
+{
   public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
   public static final String URI_LIST_SPLITTER = Char.toString(Char.BACKSLASH, Char.PIPE);
   private Global global;
   public RhinoPageDriver(Global global){
     this.global = global;
   }
-  @Override
-  public void configureMimeTypeController(MimeTypeMap controlPort) {
+  @Override public void configureMimeTypeController(MimeTypeMap controlPort) {
     controlPort.putIfAbsent("jsp", NANO_STARBOX_JAVASCRIPT_SERVER_PAGE);
   }
-
   public Global getGlobal() {
     return global;
   }
-
   public RhinoPageDriver(){this((List)null);}
   public RhinoPageDriver(@Nullable List<String> moduleDirectories){
     Context cx = Context.enter();
@@ -131,6 +131,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       Context cx = Context.enter();
       cx.setOptimizationLevel(9);
       try {
+        // TODO: optimize this loop's cache request
         for (String file : parameters)
           Main.processFileNoThrow(cx, (Scriptable) main.objects.get("this"), main.objects.get("directory")+"/"+file);
       } finally {

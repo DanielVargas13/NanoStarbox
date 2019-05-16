@@ -1,6 +1,7 @@
 package box.star.net.tools;
 
 import box.star.content.MimeTypeMap;
+import box.star.content.MimeTypeScanner;
 import box.star.net.WebService;
 import box.star.net.tools.ServerContent;
 import box.star.net.tools.ServerResult;
@@ -15,6 +16,8 @@ public interface MimeTypeDriver<SERVICE> {
   interface WithMediaMapControlPort {
     void configureMimeTypeController(MimeTypeMap controlPort);
   }
+
+  interface WithMimeTypeScanner extends MimeTypeScanner {}
 
   /**
    * <p>Creates a mime-formatted {@link ServerResult} from a {@link ServerContent} source.</p>
