@@ -62,7 +62,9 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
     Context.exit();
   }
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
-    return ScriptRuntime.newObject(cx, Tools.switchNull(parent, global), "Object", null);
+    Scriptable o = ScriptRuntime.newObject(cx, Tools.switchNull(parent, global), "Object", null);
+    ScriptRuntime.setObjectProp(o, "global", global, cx);
+    return o;
   }
   @Override
   public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
@@ -78,7 +80,6 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
         location = URI.create(server.getAddress() + server.getParentUri(uri)).toURL();
       }
       Scriptable jsThis = getScriptShell(cx, global);
-      ScriptRuntime.setObjectProp(jsThis, "global", global, cx);
       ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
@@ -87,44 +88,12 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
-      Object finalLocation = location;
-      documentBuilder.addCommand("*", new MacroShell.Command(){
-        @Override
-        protected String run(String command, Stack<String> parameters) {
-          if (command.equals("<script>")) return call("val", parameters);
-          throw new IllegalArgumentException("unknown command: "+command);
-        }
-      });
-      documentBuilder.addCommand("src", new MacroShell.Command(){
-        @Override protected String run(String command, Stack<String> parameters) {
-          for (String file : parameters) try {
-              Main.processFile(cx, jsThis, finalLocation+"/"+file);
-            } catch (Exception ioex) { throw new RuntimeException(ioex); }
-          return "";
-        }
-      });
-      documentBuilder.addCommand("do", new MacroShell.Command(){
-        @Override
-        protected String run(String command, Stack<String> parameters) {
-          for (String p: parameters)
-            cx.evaluateString(jsThis, p,
-                scanner.getPath(), (int) scanner.getLine(),
-                null);
-          return "";
-      }});
-      documentBuilder.addCommand("val", new MacroShell.Command(){
-        @Override
-        protected String run(String command, Stack<String> parameters) {
-          StringBuilder output = new StringBuilder();
-          for (String p: parameters) output.append((String)
-              Context.jsToJava(
-                  cx.evaluateString(jsThis, p,
-                      scanner.getPath(), (int) scanner.getLine(),
-                      null), String.class)
-          );
-          return output.toString();
-        }
-      });
+      documentBuilder.objects.put("this", jsThis);
+      documentBuilder.objects.put("directory", location);
+      documentBuilder.addCommand("*", starCommand);
+      documentBuilder.addCommand("src", srcCommand);
+      documentBuilder.addCommand("do", doCommand);
+      documentBuilder.addCommand("val", valCommand);
       if (content.mimeType.equals(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE)) content.mimeType = MIME_HTML;
       return new ServerResult(content.session, Status.OK, content.mimeType, documentBuilder.start(scanner));
     } catch (Exception e){throw new RuntimeException(e);}
@@ -156,5 +125,47 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
         return NANO_STARBOX_JAVASCRIPT_SERVER_PAGE; else return null;
     } catch (Exception e) { throw new RuntimeException(e); }
   }
+
+  private final static MacroShell.Command srcCommand = new MacroShell.Command(){
+    @Override protected String run(String command, Stack<String> parameters) {
+      for (String file : parameters) try {
+        Main.processFile(Context.getCurrentContext(), (Scriptable) main.objects.get("this"), main.objects.get("directory")+"/"+file);
+      } catch (Exception ioex) { throw new RuntimeException(ioex); }
+      return "";
+    }
+  };
+  private final static MacroShell.Command starCommand = new MacroShell.Command(){
+    @Override
+    protected String run(String command, Stack<String> parameters) {
+      if (command.equals("<script>")) return call("val", parameters);
+      throw new IllegalArgumentException("unknown command: "+command);
+    }
+  };
+  private final static MacroShell.Command doCommand = new MacroShell.Command(){
+    @Override
+    protected String run(String command, Stack<String> parameters) {
+      Context cx = Context.getCurrentContext();
+      Scriptable jsThis = (Scriptable) main.objects.get("this");
+      for (String p: parameters)
+        cx.evaluateString(jsThis, p,
+            scanner.getPath(), (int) scanner.getLine(),
+            null);
+      return "";
+    }};
+  private final static MacroShell.Command valCommand = new MacroShell.Command(){
+    @Override
+    protected String run(String command, Stack<String> parameters) {
+      Context cx = Context.getCurrentContext();
+      Scriptable jsThis = (Scriptable) main.objects.get("this");
+      StringBuilder output = new StringBuilder();
+      for (String p: parameters) output.append((String)
+          Context.jsToJava(
+              cx.evaluateString(jsThis, p,
+                  scanner.getPath(), (int) scanner.getLine(),
+                  null), String.class)
+      );
+      return output.toString();
+    }
+  };
 
 }
