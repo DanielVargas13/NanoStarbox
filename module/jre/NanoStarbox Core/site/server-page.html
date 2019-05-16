@@ -1,15 +1,14 @@
 <!MIME text/html, application/x-nano-starbox-javascript-server-page>
 <html>
-<body>%(do ' /*
+<body>%(do "/*
 
-the page-boot-strappings
-for some reason, load is not allowing access to 'this'.* member variables.
+ the page-boot-strappings
+ for some reason, load is not allowing access to this.* member variables.
 
-use eval since we don't have the drivers written yet.
+ use eval since we don't have the drivers written yet.
 
-*/ if (directory.toString().startsWith("http")) eval(readUrl(directory+"/server-page.js"));
-else eval(readFile(directory+"/server-page.js"));
-
+*/"'if (directory.toString().startsWith("http")) eval(readUrl(directory+"/server-page.js"));
+    else eval(readFile(directory+"/server-page.js"));
 ')
 <h1>%(js server.address)</h1>
 <p>Directory: %(js directory)</p>
