@@ -80,13 +80,13 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
         location = URI.create(server.getAddress() + server.getParentUri(uri)).toURL();
       }
       Scriptable jsThis = getScriptShell(cx, global);
-      ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
-      ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
-      ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       InputStream sourceStream = content.getStream();
       Scanner scanner = new Scanner(content.session.getUri(), Streams.readWholeString(sourceStream));
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
+      ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
       documentBuilder.objects.put("this", jsThis);
       documentBuilder.objects.put("directory", location);
