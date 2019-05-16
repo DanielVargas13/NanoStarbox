@@ -2,9 +2,9 @@ package box.star.net;
 
 import box.star.Tools;
 import box.star.content.MimeTypeMap;
-import box.star.content.MimeTypeScanner;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
+import box.star.net.http.HTTPServer;
 import box.star.net.http.response.Status;
 import box.star.net.tools.MimeTypeDriver;
 import box.star.net.tools.ServerContent;
@@ -150,25 +150,18 @@ public class RhinoPageDriver implements
     Context cx = Context.enter();
     cx.setOptimizationLevel(-1);
     try {
-      String uri = content.session.getUri();
-      Object location = server.getFile(uri);
-      if (location != null) {
-        if (((File)location).isDirectory());
-        else location = ((File)location).getParentFile();
-      } else {
-        location = URI.create(server.getAddress() + server.getParentUri(uri)).toURL();
-      }
       Scriptable jsThis = getScriptShell(cx, global);
       InputStream sourceStream = content.getStream();
       Scanner scanner = new Scanner(content.session.getUri(), Streams.readWholeString(sourceStream));
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
-      ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(location, jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(content.getDirectory(), jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "content", Context.javaToJS(content, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
       documentBuilder.objects.put("this", jsThis);
-      documentBuilder.objects.put("directory", location);
+      documentBuilder.objects.put("directory", content.getDirectory());
       documentBuilder.addCommand("*", starCommand);
       documentBuilder.addCommand("src", srcCommand);
       documentBuilder.addCommand("do", doCommand);
