@@ -45,7 +45,9 @@ import java.util.Map;
 /**
  * Handles one session, i.e. parses the HTTP request and returns the response.
  */
-public interface IHTTPSession {
+public interface IHTTPSession<TYPE> {
+
+  String getAddress();
 
   void execute() throws IOException;
 
@@ -56,6 +58,8 @@ public interface IHTTPSession {
   InputStream getInputStream();
 
   Method getMethod();
+
+  TYPE getServer();
 
   /**
    * This method will only return the first value for a given parameter. You

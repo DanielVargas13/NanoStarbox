@@ -53,7 +53,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 
-public class HTTPSession implements IHTTPSession {
+public class HTTPSession implements IHTTPSession<Object> {
 
   public static final String POST_DATA = "postData";
   public static final int BUFSIZE = 8192;
@@ -89,6 +89,16 @@ public class HTTPSession implements IHTTPSession {
   private String remoteHostname;
 
   private String protocolVersion;
+
+  @Override
+  public HTTPServer getServer() {
+    return httpd;
+  }
+
+  @Override
+  public String getAddress(){
+    return httpd.getAddress();
+  }
 
   public HTTPSession(HTTPServer httpd, ITempFileManager tempFileManager, InputStream inputStream, OutputStream outputStream) {
     this.httpd = httpd;
