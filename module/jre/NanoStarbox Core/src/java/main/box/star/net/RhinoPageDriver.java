@@ -33,8 +33,17 @@ public class RhinoPageDriver implements
     MimeTypeDriver.WithMediaMapControlPort,
     MimeTypeDriver.WithMimeTypeScanner
 {
-  public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE = "text/html, application/x-nano-starbox-javascript-server-page";
-  public static final String URI_LIST_SPLITTER = Char.toString(Char.BACKSLASH, Char.PIPE);
+  public final static String NANO_STARBOX_JAVASCRIPT_SERVER_PAGE =
+      "text/html, application/x-nano-starbox-javascript-server-page";
+  public final static String REQUIRE_MODULE_URIS_PROPERTY = "box.star.net.jsp.require.module.uris";
+  public final static String URI_LIST_SPLITTER_PROPERTY = "box.star.net.jsp.uri.list.splitter";
+  public final static String REQUIRE_MODULE_URIS_VAR = "JSP_REQUIRE_MODULE_URIS";
+  public final static String URI_LIST_SPLITTER_VAR = "JSP_URI_LIST_SPLITTER";
+  public final static String URI_LIST_SPLITTER =
+      Tools.switchNull(
+          // System property or environment var
+          Tools.switchNull(System.getProperty(URI_LIST_SPLITTER_PROPERTY), System.getenv(URI_LIST_SPLITTER_VAR)),
+          Char.toString(Char.PIPE)); // default
   private Global global;
   public RhinoPageDriver(Global global){
     this.global = global;
@@ -52,8 +61,8 @@ public class RhinoPageDriver implements
     global.init(cx);
     if (moduleDirectories == null){
       String modulePath = Tools.switchNull(
-          System.getProperty("box.star.net.jsp.require.module.uris"),
-          System.getenv("JSP_REQUIRE_MODULE_URIS"));
+          System.getProperty(REQUIRE_MODULE_URIS_PROPERTY),
+          System.getenv(REQUIRE_MODULE_URIS_VAR));
       if (modulePath != null)
         global.installRequire(cx, Arrays.asList(modulePath.split(URI_LIST_SPLITTER)), false);
       else
