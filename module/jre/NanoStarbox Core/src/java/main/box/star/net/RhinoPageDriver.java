@@ -14,6 +14,7 @@ import box.star.text.MacroShell;
 import box.star.text.basic.Scanner;
 
 import org.mozilla.javascript.*;
+import org.mozilla.javascript.tools.ToolErrorReporter;
 import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 
@@ -86,6 +87,15 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
+      documentBuilder.addCommand("do", new MacroShell.Command(){
+        @Override
+        protected String run(String command, Stack<String> parameters) {
+          for (String p: parameters)
+            cx.evaluateString(jsThis, p,
+                scanner.getPath(), (int) scanner.getLine(),
+                null);
+          return "";
+      }});
       documentBuilder.addCommand("js", new MacroShell.Command(){
         @Override
         protected String run(String command, Stack<String> parameters) {
