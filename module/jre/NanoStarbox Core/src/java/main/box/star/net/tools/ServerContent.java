@@ -1,20 +1,41 @@
 package box.star.net.tools;
 
+import box.star.Tools;
+import box.star.contract.NotNull;
 import box.star.io.Streams;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
+import java.net.URI;
 
 public class ServerContent {
 
   public IHTTPSession session;
   public Object data;
+  private Object directory;
   public Status status;
   public String mimeType;
   public long length, lastModified;
 
+  final public boolean directoryIsURI(){ return directory instanceof URI;}
+  final public boolean directoryIsFile(){ return directory instanceof File; }
+  final public boolean hasDirectory(){ return directory != null; }
+  final public ServerContent setDirectory(URI directory){
+    this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
+    return this;
+  }
+  final private void setDirectory(IHTTPSession session){
+    setDirectory(URI.create(session.getAddress() +"/"+ session.getUri()));
+  }
+  final private ServerContent setDirectory(File directory){
+    this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
+    return this;
+  }
+  @NotNull public <URI_OR_FILE> URI_OR_FILE getDirectory() {
+    return Tools.arrestIsNull((URI_OR_FILE) directory);
+  }
   /**
    * <p></p>Allows {@link ServerResult} and the like to emulate {@link ServerContent} with it's
    * own initialization parameters.</p>
@@ -29,6 +50,7 @@ public class ServerContent {
       this.status = Status.NO_CONTENT;
     } else {
       if (path.exists()) {
+        setDirectory(path.getParentFile());
         this.length = path.length();
         this.lastModified = path.lastModified();
         this.status = Status.OK;
@@ -43,6 +65,7 @@ public class ServerContent {
     this.mimeType = mimeType;
     this.data = content;
     this.status = (content == null)?Status.NO_CONTENT:Status.OK;
+    setDirectory(session);
   }
 
   public ServerContent(IHTTPSession session, String mimeType, byte[] content){
@@ -50,6 +73,7 @@ public class ServerContent {
     this.mimeType = mimeType;
     this.data = content;
     this.status = (content == null)?Status.NO_CONTENT:Status.OK;
+    setDirectory(session);
   }
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream, long length, long lastModified){
@@ -62,6 +86,7 @@ public class ServerContent {
       this.data = (stream instanceof BufferedInputStream)?stream:new BufferedInputStream(stream);
       this.status = Status.OK;
     }
+    setDirectory(session);
   }
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream, long length){
@@ -112,6 +137,8 @@ public class ServerContent {
   public boolean isNotFound(){
     return status == Status.NOT_FOUND;
   }
+
+  final public boolean isVirtual(){ return ! isFile(); }
 
   public boolean isFile(){
     return data instanceof File;
