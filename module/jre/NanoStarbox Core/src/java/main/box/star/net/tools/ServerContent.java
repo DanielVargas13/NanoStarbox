@@ -15,10 +15,18 @@ public class ServerContent {
   public IHTTPSession session;
   public Object data;
   private Object directory;
+  private boolean serverGenerated;
   public Status status;
   public String mimeType;
   public long length, lastModified;
 
+  final private void setModificationTime(long time){
+    if (time == 0){
+      time = System.currentTimeMillis();
+      serverGenerated = true;
+    }
+    this.lastModified = time;
+  }
   final public boolean directoryIsURI(){ return directory instanceof URI;}
   final public boolean directoryIsFile(){ return directory instanceof File; }
   final public boolean hasDirectory(){ return directory != null; }
@@ -47,31 +55,43 @@ public class ServerContent {
     this.mimeType = mimeType;
     this.data = path;
     if (path == null) {
+      setModificationTime(0);
       this.status = Status.NO_CONTENT;
     } else {
       if (path.exists()) {
         setDirectory(path.getParentFile());
         this.length = path.length();
-        this.lastModified = path.lastModified();
+        setModificationTime(path.lastModified());
         this.status = Status.OK;
       } else {
+        setModificationTime(0);
         this.status = Status.NOT_FOUND;
       }
     }
   }
 
   public ServerContent(IHTTPSession session, String mimeType, String content){
+    this(session, mimeType, content, 0);
+  }
+
+  public ServerContent(IHTTPSession session, String mimeType, String content, long lastModified){
     this.session = session;
     this.mimeType = mimeType;
     this.data = content;
+    setModificationTime(lastModified);
     this.status = (content == null)?Status.NO_CONTENT:Status.OK;
     setDirectory(session);
   }
 
   public ServerContent(IHTTPSession session, String mimeType, byte[] content){
+    this(session, mimeType, content, 0);
+  }
+
+  public ServerContent(IHTTPSession session, String mimeType, byte[] content, long lastModified){
     this.session = session;
     this.mimeType = mimeType;
     this.data = content;
+    setModificationTime(lastModified);
     this.status = (content == null)?Status.NO_CONTENT:Status.OK;
     setDirectory(session);
   }
@@ -80,7 +100,7 @@ public class ServerContent {
     this.session = session;
     this.mimeType = mimeType;
     this.length = length;
-    this.lastModified = lastModified;
+    setModificationTime(lastModified);
     if (stream == null) this.status = Status.NO_CONTENT;
     else {
       this.data = (stream instanceof BufferedInputStream)?stream:new BufferedInputStream(stream);
@@ -90,17 +110,18 @@ public class ServerContent {
   }
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream, long length){
-    this(session, mimeType, stream, length, System.currentTimeMillis());
+    this(session, mimeType, stream, length, 0);
   }
 
   public ServerContent(IHTTPSession session, String mimeType, InputStream stream){
-    this(session, mimeType, stream, 0, System.currentTimeMillis());
+    this(session, mimeType, stream, 0, 0);
   }
 
   public ServerContent(Response response){
     this.data = response;
     this.mimeType = response.getMimeType();
     this.status = (Status) response.getStatus();
+    setModificationTime(0);
   }
 
   public BufferedInputStream getStream(){
@@ -122,44 +143,21 @@ public class ServerContent {
     throw new RuntimeException("unknown data type: "+data.getClass());
   }
 
-  public boolean isOkay(){
-    return status == Status.OK;
-  }
-
-  public boolean isResponse() { return data instanceof Response; }
-
-  public boolean isEmpty(){
-    return status == Status.NO_CONTENT;
-  }
-
-  public boolean isRedirect() { return status == Status.REDIRECT; }
-
-  public boolean isNotFound(){
-    return status == Status.NOT_FOUND;
-  }
-
+  final public boolean isOkay(){ return status == Status.OK; }
+  final public boolean isResponse() { return data instanceof Response; }
+  final public boolean isEmpty(){ return status == Status.NO_CONTENT; }
+  final public boolean isRedirect() { return status == Status.REDIRECT; }
+  final public boolean isNotFound(){ return status == Status.NOT_FOUND; }
   final public boolean isVirtual(){ return ! isFile(); }
-
-  public boolean isFile(){
-    return data instanceof File;
-  }
-
-  public boolean isBufferedInputStream(){
-    return data instanceof BufferedInputStream;
-  }
-
-  public boolean isString(){
-    return data instanceof String;
-  }
-
-  public boolean isByteArray(){
-    return data instanceof byte[];
-  }
-
-  public boolean isUnknown(){
+  final public boolean isFile(){ return data instanceof File; }
+  final public boolean isBufferedInputStream(){ return data instanceof BufferedInputStream; }
+  final public boolean isString(){ return data instanceof String; }
+  final public boolean isByteArray(){ return data instanceof byte[]; }
+  final public boolean isServerGenerated(){ return serverGenerated; }
+  final public boolean isUnknownType(){
     return ! (isResponse() || isFile() || isBufferedInputStream() || isString() || isByteArray());
   }
 
-  public <ANY> ANY get(){ return (ANY) data; }
+  final public <ANY> ANY get(){ return (ANY) data; }
 
 }
