@@ -456,6 +456,19 @@ public class Tools {
     throw ex;
   }
 
+  public static <ANY> ANY arrestIsNull(ANY value) {
+    return throwIsNull(value, null);
+  }
+
+  public static <ANY> ANY arrestIsNull(ANY value, String message) {
+    if (value == null) throw new IllegalStateException(message);
+    return value;
+  }
+
+  public static void arrestNotNull(Object value, String message){
+    if (value != null) throw new IllegalStateException(message);
+  }
+
   private final static class ComplexKey {
     private Object key1;
     private Object key2;
