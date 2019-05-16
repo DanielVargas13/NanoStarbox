@@ -157,7 +157,7 @@ public class ServerContent {
   final public boolean isUnknownType(){
     return ! (isResponse() || isFile() || isBufferedInputStream() || isString() || isByteArray());
   }
-
+  final public boolean isServerResult(){ return this instanceof ServerResult; }
   final public <ANY> ANY get(){ return (ANY) data; }
 
 }
