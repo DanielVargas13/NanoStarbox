@@ -1,5 +1,7 @@
 #### NSR6
 
+* Super Class Path (840479456508cafce03e4036b1d410b358d814a4)
+
 * server-wide-matrix scripting integration (5f71212cada1bc90e57c73a62fd41e94e7465fb9)
 
 * Use Transfer Stream, Close Source (be728f77c220e9927cd76d92725e379c465d40b2)

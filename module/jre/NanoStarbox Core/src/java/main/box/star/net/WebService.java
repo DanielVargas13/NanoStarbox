@@ -59,14 +59,15 @@ public class WebService extends HTTPServer {
         if (c != null && c.exists()) return c;
       }
     }
+    String u = uri;
     // second: parent-uri-equality
-    while (! uri.equals("/") ) {
-      uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
-      if (uri.equals("")) uri = "/";
+    while (! u.equals("/") ) {
+      u = u.substring(0, Math.max(0, u.lastIndexOf('/')));
+      if (u.equals("")) u = "/";
       for (ContentProvider provider:contentProviders){
         if (! (provider instanceof NativeContentProvider)) continue;
         String path = provider.getBaseUri();
-        if (path.equals(uri)){
+        if (path.equals(u)){
           File f = ((NativeContentProvider)provider).getFile(uri);
           if (f != null && f.exists()) return f;
         }
@@ -89,13 +90,14 @@ public class WebService extends HTTPServer {
       String path = provider.getBaseUri();
       if (path.equals(uri)) return provider.getContent(session);
     }
+    String u = uri;
     // second: parent-uri-equality
-    while (! uri.equals("/") ) {
-      uri = uri.substring(0, Math.max(0, uri.lastIndexOf('/')));
-      if (uri.equals("")) uri = "/";
+    while (! u.equals("/") ) {
+      u = u.substring(0, Math.max(0, u.lastIndexOf('/')));
+      if (u.equals("")) u = "/";
       for (ContentProvider provider:contentProviders){
         String path = provider.getBaseUri();
-        if (path.equals(uri)){
+        if (path.equals(u)){
           ServerContent content = provider.getContent(session);
           if (content != null) return content;
         }

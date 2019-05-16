@@ -57,10 +57,7 @@ public class Java {
     return Context.jsToJava(value, cls);
   }
 
-  public void loadClassPath(String path) {
-    if (new File(path).exists()) classPathLoader.addURL(path);
-    else throw new RuntimeException(new FileNotFoundException(path));
-  }
+  public void loadClassPath(String path) { classPathLoader.addURL(path);}
 
 //  public Object getRuntime(){
 //    return toArray(archiveLoader.getRuntime());

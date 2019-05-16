@@ -6,6 +6,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.WrapFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.*;
 import java.util.ArrayList;
@@ -122,7 +123,19 @@ public class ClassPathLoader extends URLClassLoader {
   }
 
   public void addURL(String url) {
-    addURL(toURL(new File(url).toURI()));
+    if (url.startsWith("http")){
+      try {
+        super.addURL(new URL(url));
+        System.err.println(url);
+        return;
+      }
+      catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    File f = new File(url);
+    if (f.exists()) addURL(toURL(new File(url).toURI()));
+    else throw new RuntimeException(new FileNotFoundException(url));
   }
 
   @Override
