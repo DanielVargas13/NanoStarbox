@@ -148,8 +148,4 @@ public class WebService extends HTTPServer {
     }
   }
 
-  public String getParentUri(String uri) {
-    return "/" + uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1);
-  }
-
 }

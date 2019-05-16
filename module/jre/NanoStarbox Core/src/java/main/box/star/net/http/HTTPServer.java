@@ -145,6 +145,10 @@ public abstract class HTTPServer {
   private final Configuration.Manager<String, Serializable> configurationManager = new Configuration.Manager<>(getClass().getName());
   public final Configuration<String, Serializable> configuration = configurationManager.getConfiguration();
 
+  public final static String getParentUri(String uri) {
+    return "/" + uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1);
+  }
+
   public String getAddress() {
     return "http://"+getHost()+":"+getPort();
   }
