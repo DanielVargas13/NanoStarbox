@@ -87,6 +87,15 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
+      Object finalLocation = location;
+      documentBuilder.addCommand("src", new MacroShell.Command(){
+        @Override protected String run(String command, Stack<String> parameters) {
+          for (String file : parameters) try {
+              Main.processFile(cx, jsThis, finalLocation+"/"+file);
+            } catch (Exception ioex) { throw new RuntimeException(ioex); }
+          return "";
+        }
+      });
       documentBuilder.addCommand("do", new MacroShell.Command(){
         @Override
         protected String run(String command, Stack<String> parameters) {
@@ -96,7 +105,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
                 null);
           return "";
       }});
-      documentBuilder.addCommand("js", new MacroShell.Command(){
+      documentBuilder.addCommand("val", new MacroShell.Command(){
         @Override
         protected String run(String command, Stack<String> parameters) {
           StringBuilder output = new StringBuilder();
