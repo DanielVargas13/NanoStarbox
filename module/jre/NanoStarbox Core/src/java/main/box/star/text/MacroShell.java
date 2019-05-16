@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import static box.star.text.Char.BACKSLASH;
+import static box.star.text.Char.SOLIDUS;
 
 public class MacroShell {
 
@@ -301,8 +302,19 @@ public class MacroShell {
         data.append(scanner.nextField(character));
         scanner.nextCharacter(character);
       } else {
-        scanner.back();
-        data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
+        if (character == SOLIDUS){
+          c = scanner.next();
+          if (c == context.macroTrigger) {
+            data.append(scanner.nextString("%/", true));
+          } else {
+            scanner.back();
+            data.append(character);
+            data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
+          }
+        } else {
+          scanner.back();
+          data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
+        }
       }
       while (true){
         c = scanner.next();

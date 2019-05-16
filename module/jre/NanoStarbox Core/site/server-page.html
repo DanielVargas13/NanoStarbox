@@ -1,7 +1,15 @@
 <!MIME text/html, application/x-nano-starbox-javascript-server-page>
 <html>
 <body>%(src server-page.js)
-<h1>%(val server.address)</h1>
+<h1>%(val /%
+
+    /* free world! */
+    // you can't mistake a "quote" for a
+    // block quote, or a comment...
+
+    server.address
+
+%/)</h1>
 <p>Directory: %(val directory)</p>
 <p>Local Resource: %(val session.uri)</p>
 <p>Session Headers:</p>
