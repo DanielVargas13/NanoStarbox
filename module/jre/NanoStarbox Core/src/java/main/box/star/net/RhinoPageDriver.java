@@ -107,8 +107,9 @@ public class RhinoPageDriver implements
    */
   public Global getGlobal() { return global; }
   /**
-   * <p>Creates a new page-driver</p>
-   * <br>
+   * <p>Creates a new rhino page driver with any system or environment specified
+   * REQUIRE.JS modules.</p>
+   * @see RhinoPageDriver#RhinoPageDriver(List)
    */
   public RhinoPageDriver(){this((List)null);}
   /**
@@ -119,6 +120,7 @@ public class RhinoPageDriver implements
    *   documentation.
    *   </p>
    * @param moduleURIs a list of modules and directories to initialize the REQUIRE.JS module with. <br><br><b>Default Values:</b> the value of the system property identified by: {@link #REQUIRE_MODULE_URIS_PROPERTY} or the value of the system environment variable identified by: {@link #REQUIRE_MODULE_URIS_VAR} if this parameter is null. If this parameter is not provided or resolved, it is ignored.
+   *
    * @see #URI_LIST_SPLITTER
    * @see #URI_LIST_SPLITTER_PROPERTY
    * @see #URI_LIST_SPLITTER_VAR
