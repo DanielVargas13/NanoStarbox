@@ -137,7 +137,7 @@ public class RhinoPageDriver implements MimeTypeDriver<WebService>, MimeTypeDriv
   private final static MacroShell.Command starCommand = new MacroShell.Command(){
     @Override
     protected String run(String command, Stack<String> parameters) {
-      if (command.equals("<script>")) return call("val", parameters);
+      if (command.equalsIgnoreCase("<script>")) return call("val", parameters);
       throw new IllegalArgumentException("unknown command: "+command);
     }
   };
