@@ -3,11 +3,13 @@ package box.star.net.tools;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.io.Streams;
+import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 
 public class ServerContent {
@@ -34,15 +36,23 @@ public class ServerContent {
     this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
     return this;
   }
-  final private void setDirectory(IHTTPSession session){
-    setDirectory(URI.create(session.getAddress() +"/"+ session.getUri()));
+  final private void setDirectory(IHTTPSession<HTTPServer> session){
+    setDirectory(URI.create(session.getAddress() + session.getServer().getParentUri(session.getUri())));
   }
   final private ServerContent setDirectory(File directory){
     this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
     return this;
   }
-  @NotNull public <URI_OR_FILE> URI_OR_FILE getDirectory() {
-    return Tools.arrestIsNull((URI_OR_FILE) directory);
+  @NotNull public <URL_OR_FILE> URL_OR_FILE getDirectory() {
+    if (directory instanceof URI) {
+      try {
+        return (URL_OR_FILE) ((URI)directory).toURL();
+      }
+      catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return Tools.arrestIsNull((URL_OR_FILE) directory);
   }
   /**
    * <p></p>Allows {@link ServerResult} and the like to emulate {@link ServerContent} with it's
