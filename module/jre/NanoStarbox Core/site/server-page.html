@@ -2,8 +2,8 @@
 <html>
 <body>%(src server-page.js)
 <h1>%(val server.address)</h1>
-<p>Directory: %(val directory)</p>
-<p>Local Resource: %(val session.uri)</p>
+<p>Content Root: %(val directory)</p>
+<p>Content Path: %(val session.uri)</p>
 <p>Session Headers:</p>
 <ul><li>%(<script>
     new JSONObject(session.headers).toString()
