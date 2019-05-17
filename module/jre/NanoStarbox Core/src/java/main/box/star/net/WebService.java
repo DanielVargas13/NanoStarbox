@@ -49,7 +49,11 @@ public class WebService extends HTTPServer {
     configuration.set(CONFIG_PORT, port);
   }
 
-  final public File getFile(String uri){
+  /**
+   * <p>Content Providers provide ServerContent, and ServerContent
+   * can access the data needed through this method since NSR7.</p>
+   */
+  @Deprecated final public File getFile(String uri){
     // first: uri-equality
     for (ContentProvider provider:contentProviders){
       if (! (provider instanceof NativeContentProvider)) continue;
