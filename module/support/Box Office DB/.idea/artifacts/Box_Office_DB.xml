@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Box Office DB">
+    <output-path>$PROJECT_DIR$/jar</output-path>
+    <root id="archive" name="box-office-db.jar">
+      <element id="module-output" name="Box Office DB" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/java/jar/commons-lang3-3.8.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/java/jar/commons-logging-1.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
