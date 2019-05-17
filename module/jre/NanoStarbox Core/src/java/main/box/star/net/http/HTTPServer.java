@@ -112,8 +112,22 @@ import java.util.regex.Pattern;
  */
 public abstract class HTTPServer {
 
-  public HashSet<String> getPublicIndexFileNames() {
+  public HashSet<String> getIndexFileList() {
     return configuration.get(CONFIG_INDEX_FILES);
+  }
+
+  public String getMimeTypeForPath(String path){
+    path = path.toLowerCase();
+    if (path.matches("^[^\0]*\\.s?html?$")) return MIME_HTML;
+    else if (path.endsWith(".txt")) return MIME_PLAINTEXT;
+    else if (path.endsWith(".xml")) return MIME_XML;
+    else if (path.endsWith(".css")) return MIME_CSS;
+    else if (path.endsWith(".png")) return MIME_PNG;
+    else if (path.endsWith(".gif")) return MIME_GIF;
+    else if (path.endsWith(".svg")) return MIME_SVG;
+    else if (path.matches("^[^\0]*jpe?g$")) return MIME_JPEG;
+    else if (path.endsWith(".ico")) return MIME_ICON;
+    return "application/octet-stream";
   }
 
   public static final String
@@ -137,6 +151,15 @@ public abstract class HTTPServer {
    * Common MIME type for dynamic content: html
    */
   public static final String MIME_HTML = "text/html";
+
+  public static final String MIME_XML = "application/xml";
+  public static final String MIME_CSS = "text/css";
+  public static final String MIME_GIF = "image/gif";
+  public static final String MIME_JPEG = "image/jpeg";
+  public static final String MIME_PNG = "image/png";
+  public static final String MIME_SVG = "image/svg+xml";
+  public static final String MIME_ICON = "image/x-icon";
+
   /**
    * logger to log to.
    */
