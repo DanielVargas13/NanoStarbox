@@ -40,7 +40,7 @@ public class ServerContent {
     this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
     return this;
   }
-  final private void setDirectory(IHTTPSession<HTTPServer> session){
+  final private void setDirectory(IHTTPSession session){
     setDirectory(URI.create(session.getAddress() + session.getServer().getParentUri(session.getUri())));
   }
   final private ServerContent setDirectory(File directory){

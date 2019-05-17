@@ -218,7 +218,7 @@ public class Response implements Closeable {
     return Response.newFixedLengthResponse(status, HTTPServer.MIME_HTML, source);
   }
 
-  public static String getBasicUserCredentials(IHTTPSession<Object> query) {
+  public static String getBasicUserCredentials(IHTTPSession<HTTPServer> query) {
     if (query.getHeaders().containsKey("authorization")) {
       String authorization = query.getHeaders().get("authorization");
       if (authorization != null && authorization.toLowerCase().startsWith("basic")) {

@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * Handles one session, i.e. parses the HTTP request and returns the response.
  */
-public interface IHTTPSession<TYPE> {
+public interface IHTTPSession<TYPE extends HTTPServer> {
 
   String getAddress();
 
