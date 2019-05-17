@@ -29,6 +29,10 @@ public class ServerContent {
     }
     this.lastModified = time;
   }
+  final public ServerContent AsGenerated(){
+    this.serverGenerated = true;
+    return this;
+  }
   final public boolean directoryIsURI(){ return directory instanceof URI;}
   final public boolean directoryIsFile(){ return directory instanceof File; }
   final public boolean hasDirectory(){ return directory != null; }
