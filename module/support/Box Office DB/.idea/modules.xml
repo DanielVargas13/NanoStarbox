@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Box Office DB.iml" filepath="$PROJECT_DIR$/.idea/Box Office DB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Hyper SQL Database/Hyper SQL Database.iml" filepath="$PROJECT_DIR$/../Hyper SQL Database/Hyper SQL Database.iml" />
     </modules>
   </component>
 </project>

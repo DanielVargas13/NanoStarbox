@@ -7,14 +7,15 @@
         <element id="directory" name="META-INF">
           <element id="file-copy" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/resource/main/META-INF/MANIFEST.MF" />
         </element>
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/jna-4.5.2.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/hsqldb-2.4.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/json.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/simple-xml-2.7.1.jar" path-in-jar="/" />
       </element>
-      <element id="archive" name="nano-starbox-android-scripting-support.jar">
+      <element id="archive" name="nano-starbox-android-jit.jar">
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/rhino-android-1.5.jar" path-in-jar="/" />
-      </element>
-      <element id="archive" name="nano-starbox-jna.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/jna-4.5.2.jar" path-in-jar="/" />
       </element>
       <element id="archive" name="nano-starbox-voyager-jfx.jar">
         <element id="module-output" name="NanoStarbox Voyager" />
@@ -25,11 +26,31 @@
       <element id="archive" name="nano-starbox-rhino-console-debug.jar">
         <element id="module-output" name="NanoStarbox Rhino Debugger" />
       </element>
-      <element id="archive" name="nano-starbox-xml.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/simple-xml-2.7.1.jar" path-in-jar="/" />
-      </element>
-      <element id="archive" name="nano-starbox-json.jar">
-        <element id="module-output" name="NanoStarbox JSON" />
+      <element id="archive" name="nano-starbox-javadocs">
+        <element id="directory" name="commons-lang3">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/commons-lang3-3.8.1-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="commons-logging">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/commons-logging-1.2-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="hsqldb">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/hsqldb-2.4.1-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="jackcess">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/jackcess-3.0.1-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="jna">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/jna-4.5.2-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="json">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/json-20180813-javadoc.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="simple-xml">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/simple-xml-javadoc-2.7.1.jar" path-in-jar="/" />
+        </element>
+        <element id="directory" name="ucanaccess">
+          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/ucanaccess-4.0.4-javadoc.jar" path-in-jar="/" />
+        </element>
       </element>
     </root>
   </artifact>

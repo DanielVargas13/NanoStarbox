@@ -14,7 +14,6 @@ class WebServiceTest {
   @Test
   void WebService() {
 
-    ws.mount(new ZipSiteProvider("/jna", new File("site/jna-4.5.2.jar")));
     ws.mount(new ZipSiteProvider("/test", new File("site/site.zip")));
 
     ws.mount(new FileContentProvider("/", new File("site")));

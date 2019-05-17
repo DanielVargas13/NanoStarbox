@@ -12,8 +12,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="com.healthmarketscience.jackcess:jackcess:3.0.1" level="project" />
-    <orderEntry type="library" exported="" name="org.apache.poi:poi:4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="hyper-sql-database-2.4.1" level="project" />
+    <orderEntry type="module" module-name="Hyper SQL Database" exported="" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="com.healthmarketscience.jackcess:jackcess:3.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="org.apache.poi:poi:4.1.0" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="hyper-sql-database-2.4.1" level="project" />
+    <orderEntry type="library" name="net.sf.ucanaccess:ucanaccess:4.0.4" level="project" />
   </component>
 </module>

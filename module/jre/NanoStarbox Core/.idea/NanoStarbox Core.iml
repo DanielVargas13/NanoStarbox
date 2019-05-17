@@ -26,8 +26,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="NanoStarbox JNA Support" level="project" />
     <orderEntry type="library" exported="" name="NanoStarbox Android Support" level="project" />
-    <orderEntry type="library" exported="" name="NanoStarbox Simple XML Support" level="project" />
+    <orderEntry type="library" exported="" name="Nano Core Features" level="project" />
   </component>
 </module>
