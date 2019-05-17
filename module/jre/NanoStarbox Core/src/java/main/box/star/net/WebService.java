@@ -85,6 +85,14 @@ public class WebService extends HTTPServer {
     mimeTypeDrivers.put(mimeType, driver);
     if (driver instanceof MimeTypeDriver.WithMediaMapControlPort)
       ((MimeTypeDriver.WithMediaMapControlPort)driver).configureMimeTypeController(mimeTypeMap);
+    if (driver instanceof MimeTypeDriver.WithIndexFileListControlPort) {
+      ((MimeTypeDriver.WithIndexFileListControlPort)driver).configureIndexFileList(getIndexFileList());
+    }
+  }
+
+  @Override
+  public String getMimeTypeForPath(String path) {
+    return mimeTypeMap.get(mimeTypeMap.scanFileExtension(path));
   }
 
   public ServerContent getContent(IHTTPSession session){

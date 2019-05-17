@@ -4,7 +4,6 @@ import box.star.Tools;
 import box.star.content.MimeTypeMap;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
-import box.star.net.http.HTTPServer;
 import box.star.net.http.response.Status;
 import box.star.net.tools.MimeTypeDriver;
 import box.star.net.tools.ServerContent;
@@ -18,11 +17,10 @@ import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.shell.Main;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
@@ -31,7 +29,8 @@ import static box.star.net.http.HTTPServer.MIME_HTML;
 public class RhinoPageDriver implements
     MimeTypeDriver<WebService>,
     MimeTypeDriver.WithMediaMapControlPort,
-    MimeTypeDriver.WithMimeTypeScanner
+    MimeTypeDriver.WithMimeTypeScanner,
+    MimeTypeDriver.WithIndexFileListControlPort
 {
   private static RhinoPageDriver impl;
   // support a bare-bones-global-system-runtime-configuration
@@ -262,5 +261,10 @@ public class RhinoPageDriver implements
       return output.toString();
     }
   };
+
+  @Override
+  public void configureIndexFileList(HashSet<String> indexFiles) {
+    indexFiles.add("index.jsp");
+  }
 
 }

@@ -6,6 +6,8 @@ import box.star.net.WebService;
 import box.star.net.tools.ServerContent;
 import box.star.net.tools.ServerResult;
 
+import java.util.HashSet;
+
 /**
  * <p>{@link MimeTypeDriver}s create {@link ServerResult}s from {@link ServerContent} using a server environment such as the {@link WebService}.</p>
  * <br>
@@ -15,6 +17,10 @@ public interface MimeTypeDriver<SERVICE> {
 
   interface WithMediaMapControlPort {
     void configureMimeTypeController(MimeTypeMap controlPort);
+  }
+
+  interface WithIndexFileListControlPort {
+    void configureIndexFileList(HashSet<String> indexFiles);
   }
 
   interface WithMimeTypeScanner extends MimeTypeScanner {}
