@@ -79,7 +79,7 @@ public class ServerContent {
           for (String idx:session.getServer().getIndexFileList()){
             test = new File(path, idx);
             if (test.exists()){
-              this.mimeType = session.getServer().getMimeTypeForPath(test.getPath());
+              this.mimeType = session.getServer().getMimeTypeForPath(idx);
               this.data = path = test; break;
             }
           }
