@@ -7,49 +7,48 @@
 package org.mozilla.javascript;
 
 public final class NativeStringIterator extends ES6Iterator {
-    private static final long serialVersionUID = 1L;
-    private static final String ITERATOR_TAG = "StringIterator";
+  private static final long serialVersionUID = 1L;
+  private static final String ITERATOR_TAG = "StringIterator";
+  private String string;
+  private int index;
 
-    static void init(ScriptableObject scope, boolean sealed) {
-        ES6Iterator.init(scope, sealed, new NativeStringIterator(), ITERATOR_TAG);
-    }
+  /**
+   * Only for constructing the prototype object.
+   */
+  private NativeStringIterator() {
+    super();
+  }
 
-    /**
-     * Only for constructing the prototype object.
-     */
-    private NativeStringIterator() {
-        super();
-    }
+  NativeStringIterator(Scriptable scope, Scriptable stringLike) {
+    super(scope);
+    this.index = 0;
+    this.string = ScriptRuntime.toString(stringLike);
+  }
 
-    NativeStringIterator(Scriptable scope, Scriptable stringLike) {
-        super(scope);
-        this.index = 0;
-        this.string  = ScriptRuntime.toString(stringLike);
-    }
+  static void init(ScriptableObject scope, boolean sealed) {
+    ES6Iterator.init(scope, sealed, new NativeStringIterator(), ITERATOR_TAG);
+  }
 
-    @Override
-    public String getClassName() {
-        return "String Iterator";
-    }
+  @Override
+  public String getClassName() {
+    return "String Iterator";
+  }
 
-    @Override
-    protected boolean isDone(Context cx, Scriptable scope) {
-        return index >= string.length();
-    }
+  @Override
+  protected boolean isDone(Context cx, Scriptable scope) {
+    return index >= string.length();
+  }
 
-    @Override
-    protected Object nextValue(Context cx, Scriptable scope) {
-        int newIndex = string.offsetByCodePoints(index, 1);
-        Object value = string.substring(index, newIndex);
-        index = newIndex;
-        return value;
-    }
+  @Override
+  protected Object nextValue(Context cx, Scriptable scope) {
+    int newIndex = string.offsetByCodePoints(index, 1);
+    Object value = string.substring(index, newIndex);
+    index = newIndex;
+    return value;
+  }
 
-    @Override
-    protected String getTag() {
-        return ITERATOR_TAG;
-    }
-
-    private String string;
-    private int index;
+  @Override
+  protected String getTag() {
+    return ITERATOR_TAG;
+  }
 }

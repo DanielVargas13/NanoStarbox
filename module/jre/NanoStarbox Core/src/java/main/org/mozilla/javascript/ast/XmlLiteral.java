@@ -20,71 +20,73 @@ import java.util.List;
  */
 public class XmlLiteral extends AstNode {
 
-    private List<XmlFragment> fragments = new ArrayList<XmlFragment>();
+  private List<XmlFragment> fragments = new ArrayList<XmlFragment>();
 
-    {
-        type = Token.XML;
-    }
+  {
+    type = Token.XML;
+  }
 
-    public XmlLiteral() {
-    }
+  public XmlLiteral() {
+  }
 
-    public XmlLiteral(int pos) {
-        super(pos);
-    }
+  public XmlLiteral(int pos) {
+    super(pos);
+  }
 
-    public XmlLiteral(int pos, int len) {
-        super(pos, len);
-    }
+  public XmlLiteral(int pos, int len) {
+    super(pos, len);
+  }
 
-    /**
-     * Returns fragment list - a list of expression nodes.
-     */
-    public List<XmlFragment> getFragments() {
-        return fragments;
-    }
+  /**
+   * Returns fragment list - a list of expression nodes.
+   */
+  public List<XmlFragment> getFragments() {
+    return fragments;
+  }
 
-    /**
-     * Sets fragment list, removing any existing fragments first.
-     * Sets the parent pointer for each fragment in the list to this node.
-     * @param fragments fragment list.  Replaces any existing fragments.
-     * @throws IllegalArgumentException} if {@code fragments} is {@code null}
-     */
-    public void setFragments(List<XmlFragment> fragments) {
-        assertNotNull(fragments);
-        this.fragments.clear();
-        for (XmlFragment fragment : fragments)
-            addFragment(fragment);
-    }
+  /**
+   * Sets fragment list, removing any existing fragments first.
+   * Sets the parent pointer for each fragment in the list to this node.
+   *
+   * @param fragments fragment list.  Replaces any existing fragments.
+   * @throws IllegalArgumentException} if {@code fragments} is {@code null}
+   */
+  public void setFragments(List<XmlFragment> fragments) {
+    assertNotNull(fragments);
+    this.fragments.clear();
+    for (XmlFragment fragment : fragments)
+      addFragment(fragment);
+  }
 
-    /**
-     * Adds a fragment to the fragment list.  Sets its parent to this node.
-     * @throws IllegalArgumentException} if {@code fragment} is {@code null}
-     */
-    public void addFragment(XmlFragment fragment) {
-        assertNotNull(fragment);
-        fragments.add(fragment);
-        fragment.setParent(this);
-    }
+  /**
+   * Adds a fragment to the fragment list.  Sets its parent to this node.
+   *
+   * @throws IllegalArgumentException} if {@code fragment} is {@code null}
+   */
+  public void addFragment(XmlFragment fragment) {
+    assertNotNull(fragment);
+    fragments.add(fragment);
+    fragment.setParent(this);
+  }
 
-    @Override
-    public String toSource(int depth) {
-        StringBuilder sb = new StringBuilder(250);
-        for (XmlFragment frag : fragments) {
-            sb.append(frag.toSource(0));
-        }
-        return sb.toString();
+  @Override
+  public String toSource(int depth) {
+    StringBuilder sb = new StringBuilder(250);
+    for (XmlFragment frag : fragments) {
+      sb.append(frag.toSource(0));
     }
+    return sb.toString();
+  }
 
-    /**
-     * Visits this node, then visits each child fragment in lexical order.
-     */
-    @Override
-    public void visit(NodeVisitor v) {
-        if (v.visit(this)) {
-            for (XmlFragment frag : fragments) {
-                frag.visit(v);
-            }
-        }
+  /**
+   * Visits this node, then visits each child fragment in lexical order.
+   */
+  @Override
+  public void visit(NodeVisitor v) {
+    if (v.visit(this)) {
+      for (XmlFragment frag : fragments) {
+        frag.visit(v);
+      }
     }
+  }
 }

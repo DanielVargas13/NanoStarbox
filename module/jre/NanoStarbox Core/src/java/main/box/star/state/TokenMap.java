@@ -11,36 +11,36 @@ public class TokenMap<T> {
   protected TokenGenerator tokenGenerator = new TokenGenerator();
   protected ConcurrentHashMap<String, T> map;
 
-  public TokenMap(int... lengths){
+  public TokenMap(int... lengths) {
     tokenFormat = lengths;
     map = new ConcurrentHashMap<>();
   }
 
-  public TokenMap(int tokenLength){
+  public TokenMap(int tokenLength) {
     tokenFormat = new int[]{tokenLength};
     map = new ConcurrentHashMap<>();
   }
 
-  private String getNextToken(){
+  private String getNextToken() {
     String token;
     do { token = tokenGenerator.createNewToken(tokenFormat); }
     while (map.containsKey(token));
     return token;
   }
 
-  synchronized public String put(T value){
+  synchronized public String put(T value) {
     String token = getNextToken();
     map.put(token, value);
     return token;
   }
 
-  public void set(String key, T value){
-    if ( ! map.containsKey(key) ) throw new RuntimeException(new IllegalAccessException("trying to set foreign key data"));
+  public void set(String key, T value) {
+    if (!map.containsKey(key)) throw new RuntimeException(new IllegalAccessException("trying to set foreign key data"));
     map.put(key, value);
   }
 
-  public T get(String token){ return map.get(token); }
+  public T get(String token) { return map.get(token); }
 
-  public void eraseToken(String token){ map.remove(token); }
+  public void eraseToken(String token) { map.remove(token); }
 
 }

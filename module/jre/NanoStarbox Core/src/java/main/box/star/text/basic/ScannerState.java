@@ -26,7 +26,7 @@ public class ScannerState implements Cloneable, Serializable {
     state.clearHistory();
   }
 
-  public void trimHistoryLength(int length){
+  public void trimHistoryLength(int length) {
     if (haveNext()) {
       // in any case, we don't want to move the user's cursor (bufferPosition).
       throw new IllegalStateException("trying to trim history while browsing history");
@@ -36,15 +36,17 @@ public class ScannerState implements Cloneable, Serializable {
     if (length >= max) {return;}
     // zero or less means clear-all
     if (length <= 0) {
-      clearHistory(); return;
+      clearHistory();
+      return;
     }
     Stack<Long> cHist = new Stack<>();
     // collect the column positions for back-stepping through lines
     for (int i = 0, y = max, z = columnHistory.size(); i < length; i++) {
-      switch (buffer.charAt(--y)){
+      switch (buffer.charAt(--y)) {
         case LINE_FEED:
         case CARRIAGE_RETURN:
-          cHist.add(0, columnHistory.get(--z)); break;
+          cHist.add(0, columnHistory.get(--z));
+          break;
       }
     }
     StringBuilder cbuffer = new StringBuilder(historySize);

@@ -20,35 +20,30 @@ package org.mozilla.javascript;
  * @see NativeJavaClass
  */
 
-public class NativeJavaConstructor extends BaseFunction
-{
-    static final long serialVersionUID = -8149253217482668463L;
+public class NativeJavaConstructor extends BaseFunction {
+  static final long serialVersionUID = -8149253217482668463L;
 
-    MemberBox ctor;
+  MemberBox ctor;
 
-    public NativeJavaConstructor(MemberBox ctor)
-    {
-        this.ctor = ctor;
-    }
+  public NativeJavaConstructor(MemberBox ctor) {
+    this.ctor = ctor;
+  }
 
-    @Override
-    public Object call(Context cx, Scriptable scope, Scriptable thisObj,
-                       Object[] args)
-    {
-        return NativeJavaClass.constructSpecific(cx, scope, args, ctor);
-    }
+  @Override
+  public Object call(Context cx, Scriptable scope, Scriptable thisObj,
+                     Object[] args) {
+    return NativeJavaClass.constructSpecific(cx, scope, args, ctor);
+  }
 
-    @Override
-    public String getFunctionName()
-    {
-        String sig = JavaMembers.liveConnectSignature(ctor.argTypes);
-        return "<init>".concat(sig);
-    }
+  @Override
+  public String getFunctionName() {
+    String sig = JavaMembers.liveConnectSignature(ctor.argTypes);
+    return "<init>".concat(sig);
+  }
 
-    @Override
-    public String toString()
-    {
-        return "[JavaConstructor " + ctor.getName() + "]";
-    }
+  @Override
+  public String toString() {
+    return "[JavaConstructor " + ctor.getName() + "]";
+  }
 }
 

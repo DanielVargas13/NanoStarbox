@@ -16,57 +16,59 @@ import org.mozilla.javascript.Token;
  */
 public class ArrayComprehensionLoop extends ForInLoop {
 
-    public ArrayComprehensionLoop() {
-    }
+  public ArrayComprehensionLoop() {
+  }
 
-    public ArrayComprehensionLoop(int pos) {
-        super(pos);
-    }
+  public ArrayComprehensionLoop(int pos) {
+    super(pos);
+  }
 
-    public ArrayComprehensionLoop(int pos, int len) {
-        super(pos, len);
-    }
-    
-    /**
-     * Returns {@code null} for loop body
-     * @return loop body (always {@code null} for this node type)
-     */
-    @Override
-    public AstNode getBody() {
-        return null;
-    }
+  public ArrayComprehensionLoop(int pos, int len) {
+    super(pos, len);
+  }
 
-    /**
-     * Throws an exception on attempts to set the loop body.
-     * @param body loop body
-     * @throws UnsupportedOperationException
-     */
-    @Override
-    public void setBody(AstNode body) {
-        throw new UnsupportedOperationException("this node type has no body");
-    }
+  /**
+   * Returns {@code null} for loop body
+   *
+   * @return loop body (always {@code null} for this node type)
+   */
+  @Override
+  public AstNode getBody() {
+    return null;
+  }
 
-    @Override
-    public String toSource(int depth) {
-        return makeIndent(depth)
-                + " for "
-                + (isForEach()?"each ":"")
-                + "("
-                + iterator.toSource(0)
-                + (isForOf()?" of ":" in ")
-                + iteratedObject.toSource(0)
-                + ")";
-    }
+  /**
+   * Throws an exception on attempts to set the loop body.
+   *
+   * @param body loop body
+   * @throws UnsupportedOperationException
+   */
+  @Override
+  public void setBody(AstNode body) {
+    throw new UnsupportedOperationException("this node type has no body");
+  }
 
-    /**
-     * Visits the iterator expression and the iterated object expression.
-     * There is no body-expression for this loop type.
-     */
-    @Override
-    public void visit(NodeVisitor v) {
-        if (v.visit(this)) {
-            iterator.visit(v);
-            iteratedObject.visit(v);
-        }
+  @Override
+  public String toSource(int depth) {
+    return makeIndent(depth)
+        + " for "
+        + (isForEach() ? "each " : "")
+        + "("
+        + iterator.toSource(0)
+        + (isForOf() ? " of " : " in ")
+        + iteratedObject.toSource(0)
+        + ")";
+  }
+
+  /**
+   * Visits the iterator expression and the iterated object expression.
+   * There is no body-expression for this loop type.
+   */
+  @Override
+  public void visit(NodeVisitor v) {
+    if (v.visit(this)) {
+      iterator.visit(v);
+      iteratedObject.visit(v);
     }
+  }
 }

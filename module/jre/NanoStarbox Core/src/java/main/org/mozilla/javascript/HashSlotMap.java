@@ -22,108 +22,107 @@ import static org.mozilla.javascript.ScriptableObject.SlotAccess.*;
 public class HashSlotMap
     implements SlotMap {
 
-    private final LinkedHashMap<Object, ScriptableObject.Slot> map =
-        new LinkedHashMap<Object, ScriptableObject.Slot>();
+  private final LinkedHashMap<Object, ScriptableObject.Slot> map =
+      new LinkedHashMap<Object, ScriptableObject.Slot>();
 
-    @Override
-    public int size() {
-        return map.size();
+  @Override
+  public int size() {
+    return map.size();
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return map.isEmpty();
+  }
+
+  @Override
+  public ScriptableObject.Slot query(Object key, int index) {
+    Object name = key == null ? String.valueOf(index) : key;
+    return map.get(name);
+  }
+
+  @Override
+  public ScriptableObject.Slot get(Object key, int index, ScriptableObject.SlotAccess accessType) {
+    Object name = key == null ? String.valueOf(index) : key;
+    ScriptableObject.Slot slot = map.get(name);
+    switch (accessType) {
+      case QUERY:
+        return slot;
+      case MODIFY:
+      case MODIFY_CONST:
+        if (slot != null)
+          return slot;
+        break;
+      case MODIFY_GETTER_SETTER:
+        if (slot instanceof ScriptableObject.GetterSlot)
+          return slot;
+        break;
+      case CONVERT_ACCESSOR_TO_DATA:
+        if (!(slot instanceof ScriptableObject.GetterSlot))
+          return slot;
+        break;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return map.isEmpty();
+    return createSlot(key, index, name, accessType);
+  }
+
+  private ScriptableObject.Slot createSlot(Object key, int index,
+                                           Object name, ScriptableObject.SlotAccess accessType) {
+    ScriptableObject.Slot slot = map.get(name);
+    if (slot != null) {
+      ScriptableObject.Slot newSlot;
+
+      if (accessType == MODIFY_GETTER_SETTER
+          && !(slot instanceof ScriptableObject.GetterSlot)) {
+        newSlot = new ScriptableObject.GetterSlot(name, slot.indexOrHash, slot.getAttributes());
+      } else if (accessType == CONVERT_ACCESSOR_TO_DATA
+          && (slot instanceof ScriptableObject.GetterSlot)) {
+        newSlot = new ScriptableObject.Slot(name, slot.indexOrHash, slot.getAttributes());
+      } else if (accessType == MODIFY_CONST) {
+        return null;
+      } else {
+        return slot;
+      }
+      newSlot.value = slot.value;
+      map.put(name, newSlot);
+      return newSlot;
     }
 
-    @Override
-    public ScriptableObject.Slot query(Object key, int index)
-    {
-        Object name = key == null ? String.valueOf(index) : key;
-        return map.get(name);
+    ScriptableObject.Slot newSlot = (accessType == MODIFY_GETTER_SETTER
+        ? new ScriptableObject.GetterSlot(key, index, 0)
+        : new ScriptableObject.Slot(key, index, 0));
+    if (accessType == MODIFY_CONST) {
+      newSlot.setAttributes(ScriptableObject.CONST);
     }
+    addSlot(newSlot);
+    return newSlot;
+  }
 
-    @Override
-    public ScriptableObject.Slot get(Object key, int index, ScriptableObject.SlotAccess accessType) {
-        Object name = key == null ? String.valueOf(index) : key;
-        ScriptableObject.Slot slot = map.get(name);
-        switch (accessType) {
-            case QUERY:
-                return slot;
-            case MODIFY:
-            case MODIFY_CONST:
-                if (slot != null)
-                    return slot;
-                break;
-            case MODIFY_GETTER_SETTER:
-                if (slot instanceof ScriptableObject.GetterSlot)
-                    return slot;
-                break;
-            case CONVERT_ACCESSOR_TO_DATA:
-                if ( !(slot instanceof ScriptableObject.GetterSlot) )
-                    return slot;
-                break;
+  @Override
+  public void addSlot(ScriptableObject.Slot newSlot) {
+    Object name = newSlot.name == null ? String.valueOf(newSlot.indexOrHash) : newSlot.name;
+    map.put(name, newSlot);
+  }
+
+  @Override
+  public void remove(Object key, int index) {
+    Object name = key == null ? String.valueOf(index) : key;
+    ScriptableObject.Slot slot = map.get(name);
+    if (slot != null) {
+      // non-configurable
+      if ((slot.getAttributes() & ScriptableObject.PERMANENT) != 0) {
+        Context cx = Context.getContext();
+        if (cx.isStrictMode()) {
+          throw ScriptRuntime.typeError1("msg.delete.property.with.configurable.false", key);
         }
-
-        return createSlot(key, index, name, accessType);
+        return;
+      }
+      map.remove(name);
     }
+  }
 
-    private ScriptableObject.Slot createSlot(Object key, int index,
-        Object name, ScriptableObject.SlotAccess accessType) {
-        ScriptableObject.Slot slot = map.get(name);
-        if (slot != null) {
-            ScriptableObject.Slot newSlot;
-
-            if (accessType == MODIFY_GETTER_SETTER
-                    && !(slot instanceof ScriptableObject.GetterSlot)) {
-                newSlot = new ScriptableObject.GetterSlot(name, slot.indexOrHash, slot.getAttributes());
-            } else if (accessType == CONVERT_ACCESSOR_TO_DATA
-                    && (slot instanceof ScriptableObject.GetterSlot)) {
-                newSlot = new ScriptableObject.Slot(name, slot.indexOrHash, slot.getAttributes());
-            } else if (accessType == MODIFY_CONST) {
-                return null;
-            } else {
-                return slot;
-            }
-            newSlot.value = slot.value;
-            map.put(name, newSlot);
-            return newSlot;
-        }
-
-        ScriptableObject.Slot newSlot = (accessType == MODIFY_GETTER_SETTER
-                ? new ScriptableObject.GetterSlot(key, index, 0)
-                : new ScriptableObject.Slot(key, index, 0));
-        if (accessType == MODIFY_CONST) {
-            newSlot.setAttributes(ScriptableObject.CONST);
-        }
-        addSlot(newSlot);
-        return newSlot;
-    }
-
-    @Override
-    public void addSlot(ScriptableObject.Slot newSlot) {
-        Object name = newSlot.name == null ? String.valueOf(newSlot.indexOrHash) : newSlot.name;
-        map.put(name, newSlot);
-    }
-
-    @Override
-    public void remove(Object key, int index) {
-        Object name = key == null ? String.valueOf(index) : key;
-        ScriptableObject.Slot slot = map.get(name);
-        if (slot != null) {
-            // non-configurable
-            if ((slot.getAttributes() & ScriptableObject.PERMANENT) != 0) {
-                Context cx = Context.getContext();
-                if (cx.isStrictMode()) {
-                    throw ScriptRuntime.typeError1("msg.delete.property.with.configurable.false", key);
-                }
-                return;
-            }
-            map.remove(name);
-        }
-    }
-
-    @Override
-    public Iterator<ScriptableObject.Slot> iterator() {
-        return map.values().iterator();
-    }
+  @Override
+  public Iterator<ScriptableObject.Slot> iterator() {
+    return map.values().iterator();
+  }
 }

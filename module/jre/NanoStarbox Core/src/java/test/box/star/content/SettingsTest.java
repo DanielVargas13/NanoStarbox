@@ -1,10 +1,5 @@
 package box.star.content;
 
-import box.star.state.Settings;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class SettingsTest {
 
 //  static enum Configuration {

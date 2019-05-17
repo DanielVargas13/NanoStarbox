@@ -10,22 +10,21 @@ import java.util.concurrent.TimeUnit;
 
 public class Function extends Process implements FunctionMain, FunctionFactory, FactoryFunction, VariableCatalog<Function>, Runnable, Cloneable {
 
-  @Override
-  public String getHelpUri() {
-    return null;
-  }
-
-  private String name;
-
   protected ShellHost shell;
   protected SharedMap<String, String> local;
   protected BufferedInputStream stdin;
   protected BufferedOutputStream stdout, stderr;
+  private String name;
   private Thread thread;
   private String[] parameters;
   private int status;
   private Pipe p_stdin, p_stdout, p_stderr;
   private boolean destroying, running;
+
+  @Override
+  public String getHelpUri() {
+    return null;
+  }
 
   @Override
   protected Function clone() {
@@ -99,14 +98,14 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     return thread.isAlive();
   }
 
-  private void hostAccessOnly(String context){
-    if (Thread.currentThread().equals(thread)){
+  private void hostAccessOnly(String context) {
+    if (Thread.currentThread().equals(thread)) {
       throw new RuntimeException(context, new IllegalThreadStateException("this method cannot be accessed from within its own thread."));
     }
   }
 
-  private void clientAccessOnly(String context){
-    if (!Thread.currentThread().equals(thread)){
+  private void clientAccessOnly(String context) {
+    if (!Thread.currentThread().equals(thread)) {
       throw new RuntimeException(context, new IllegalThreadStateException("this method cannot be accessed from its host."));
     }
   }
@@ -122,6 +121,7 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     hostAccessOnly("getInputStream");
     return new BufferedInputStream(p_stdout.input);
   }
+
   @Override
   final public InputStream getErrorStream() {
     hostAccessOnly("getErrorStream");
@@ -239,6 +239,16 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
     return local;
   }
 
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public boolean matchName(String name) {
+    return false;
+  }
+
   private class Pipe {
 
     PipedOutputStream output = new PipedOutputStream();
@@ -259,16 +269,6 @@ public class Function extends Process implements FunctionMain, FunctionFactory, 
       }
       catch (Exception e) {}
     }
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean matchName(String name) {
-    return false;
   }
 
 }

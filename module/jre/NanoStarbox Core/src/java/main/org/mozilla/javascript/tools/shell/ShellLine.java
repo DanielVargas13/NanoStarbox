@@ -18,10 +18,10 @@ import java.nio.charset.Charset;
  */
 @Deprecated
 public class ShellLine {
-    @Deprecated
-    public static InputStream getStream(Scriptable scope) {
-        ShellConsole console = ShellConsole.getConsole(scope,
-                Charset.defaultCharset());
-        return (console != null ? console.getIn() : null);
-    }
+  @Deprecated
+  public static InputStream getStream(Scriptable scope) {
+    ShellConsole console = ShellConsole.getConsole(scope,
+        Charset.defaultCharset());
+    return (console != null ? console.getIn() : null);
+  }
 }

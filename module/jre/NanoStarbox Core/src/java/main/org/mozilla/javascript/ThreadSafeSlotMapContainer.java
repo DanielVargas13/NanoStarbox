@@ -17,19 +17,17 @@ import java.util.concurrent.locks.StampedLock;
  * the properties of an object.
  */
 class ThreadSafeSlotMapContainer
-  extends SlotMapContainer {
+    extends SlotMapContainer {
 
   private final StampedLock lock = new StampedLock();
 
 
-  ThreadSafeSlotMapContainer(int initialSize)
-  {
+  ThreadSafeSlotMapContainer(int initialSize) {
     super(initialSize);
   }
 
   @Override
-  public int size()
-  {
+  public int size() {
     long stamp = lock.tryOptimisticRead();
     int s = map.size();
     if (lock.validate(stamp)) {
@@ -39,52 +37,51 @@ class ThreadSafeSlotMapContainer
     stamp = lock.readLock();
     try {
       return map.size();
-    } finally {
+    }
+    finally {
       lock.unlockRead(stamp);
     }
   }
 
   @Override
-  public int dirtySize()
-  {
-    assert(lock.isReadLocked());
+  public int dirtySize() {
+    assert (lock.isReadLocked());
     return map.size();
   }
 
   @Override
-  public boolean isEmpty()
-  {
+  public boolean isEmpty() {
     long stamp = lock.tryOptimisticRead();
     boolean e = map.isEmpty();
     if (lock.validate(stamp)) {
-       return e;
+      return e;
     }
 
     stamp = lock.readLock();
     try {
       return map.isEmpty();
-    } finally {
+    }
+    finally {
       lock.unlockRead(stamp);
     }
   }
 
   @Override
-  public Slot get(Object key, int index, SlotAccess accessType)
-  {
+  public Slot get(Object key, int index, SlotAccess accessType) {
     final long stamp = lock.writeLock();
     try {
       if (accessType != SlotAccess.QUERY) {
         checkMapSize();
       }
       return map.get(key, index, accessType);
-    } finally {
+    }
+    finally {
       lock.unlockWrite(stamp);
     }
   }
 
   @Override
-  public Slot query(Object key, int index)
-  {
+  public Slot query(Object key, int index) {
     long stamp = lock.tryOptimisticRead();
     Slot s = map.query(key, index);
     if (lock.validate(stamp)) {
@@ -94,30 +91,31 @@ class ThreadSafeSlotMapContainer
     stamp = lock.readLock();
     try {
       return map.query(key, index);
-    } finally {
+    }
+    finally {
       lock.unlockRead(stamp);
     }
   }
 
   @Override
-  public void addSlot(Slot newSlot)
-  {
+  public void addSlot(Slot newSlot) {
     final long stamp = lock.writeLock();
     try {
       checkMapSize();
       map.addSlot(newSlot);
-    } finally {
+    }
+    finally {
       lock.unlockWrite(stamp);
     }
   }
 
   @Override
-  public void remove(Object key, int index)
-  {
+  public void remove(Object key, int index) {
     final long stamp = lock.writeLock();
     try {
       map.remove(key, index);
-    } finally {
+    }
+    finally {
       lock.unlockWrite(stamp);
     }
   }
@@ -127,8 +125,7 @@ class ThreadSafeSlotMapContainer
    * this method before using the iterator, and MUST NOT call this method otherwise.
    */
   @Override
-  public long readLock()
-  {
+  public long readLock() {
     return lock.readLock();
   }
 
@@ -138,15 +135,13 @@ class ThreadSafeSlotMapContainer
    * @param stamp the value returned by readLock.
    */
   @Override
-  public void unlockRead(long stamp)
-  {
+  public void unlockRead(long stamp) {
     lock.unlockRead(stamp);
   }
 
   @Override
-  public Iterator<Slot> iterator()
-  {
-    assert(lock.isReadLocked());
+  public Iterator<Slot> iterator() {
+    assert (lock.isReadLocked());
     return map.iterator();
   }
 
@@ -154,9 +149,8 @@ class ThreadSafeSlotMapContainer
    * Before inserting a new item in the map, check and see if we need to expand from the embedded
    * map to a HashMap that is more robust against large numbers of hash collisions.
    */
-  protected void checkMapSize()
-  {
-    assert(lock.isWriteLocked());
+  protected void checkMapSize() {
+    assert (lock.isWriteLocked());
     super.checkMapSize();
   }
 }

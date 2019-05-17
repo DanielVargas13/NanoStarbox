@@ -73,10 +73,10 @@ public class Streams {
   public Streams createLayer(Streams overlay) {
     Streams copy = copy();
     if (overlay != null) {
-      for(Integer c:overlay.streams.keySet()) set(c, overlay.get(c));
-      if (! overlay.hasStream(0)) copy.remove(0);
-      if (! overlay.hasStream(1)) copy.remove(1);
-      if (! overlay.hasStream(2)) copy.remove(2);
+      for (Integer c : overlay.streams.keySet()) set(c, overlay.get(c));
+      if (!overlay.hasStream(0)) copy.remove(0);
+      if (!overlay.hasStream(1)) copy.remove(1);
+      if (!overlay.hasStream(2)) copy.remove(2);
     }
     return copy;
   }

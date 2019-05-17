@@ -90,16 +90,6 @@ public class HTTPSession implements IHTTPSession<HTTPServer> {
 
   private String protocolVersion;
 
-  @Override
-  public HTTPServer getServer() {
-    return httpd;
-  }
-
-  @Override
-  public String getAddress(){
-    return httpd.getAddress();
-  }
-
   public HTTPSession(HTTPServer httpd, ITempFileManager tempFileManager, InputStream inputStream, OutputStream outputStream) {
     this.httpd = httpd;
     this.tempFileManager = tempFileManager;
@@ -115,6 +105,16 @@ public class HTTPSession implements IHTTPSession<HTTPServer> {
     this.remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress();
     this.remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName();
     this.headers = new HashMap<String, String>();
+  }
+
+  @Override
+  public HTTPServer getServer() {
+    return httpd;
+  }
+
+  @Override
+  public String getAddress() {
+    return httpd.getAddress();
   }
 
   /**

@@ -14,8 +14,6 @@ package org.mozilla.classfile;
  * always in bits 0-7.
  */
 final class TypeInfo {
-  private TypeInfo() { }
-
   static final int TOP = 0;
   static final int INTEGER = 1;
   static final int FLOAT = 2;
@@ -25,6 +23,7 @@ final class TypeInfo {
   static final int UNINITIALIZED_THIS = 6;
   static final int OBJECT_TAG = 7;
   static final int UNINITIALIZED_VAR_TAG = 8;
+  private TypeInfo() { }
 
   static final int OBJECT(int constantPoolIndex) {
     return ((constantPoolIndex & 0xFFFF) << 8) | OBJECT_TAG;
@@ -49,7 +48,7 @@ final class TypeInfo {
   /**
    * Treat the result of getPayload as a constant pool index and fetch the
    * corresponding String mapped to it.
-   *
+   * <p>
    * Only works on OBJECT types.
    */
   static final String getPayloadAsType(int typeInfo, ConstantPool pool) {
@@ -90,17 +89,17 @@ final class TypeInfo {
 
   /**
    * Merge two verification types.
-   *
+   * <p>
    * In most cases, the verification types must be the same. For example,
    * INTEGER and DOUBLE cannot be merged and an exception will be thrown.
    * The basic rules are:
-   *
+   * <p>
    * - If the types are equal, simply return one.
    * - If either type is TOP, return TOP.
    * - If either type is NULL, return the other type.
    * - If both types are objects, find the lowest common ancestor in the
-   *   class hierarchy.
-   *
+   * class hierarchy.
+   * <p>
    * This method uses reflection to traverse the class hierarchy. Therefore,
    * it is assumed that the current class being generated is never the target
    * of a full object-object merge, which would need to load the current
@@ -202,14 +201,15 @@ final class TypeInfo {
   /**
    * Take an internal name and return a java.lang.Class instance that
    * represents it.
-   *
+   * <p>
    * For example, given "java/lang/Object", returns the equivalent of
    * Class.forName("java.lang.Object"), but also handles exceptions.
    */
   private static Class<?> getClassFromInternalName(String internalName) {
     try {
       return Class.forName(internalName.replace('/', '.'));
-    } catch (ClassNotFoundException e) {
+    }
+    catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
@@ -232,7 +232,7 @@ final class TypeInfo {
   }
 
   static void print(int[] locals, int localsTop, int[] stack, int stackTop,
-      ConstantPool pool) {
+                    ConstantPool pool) {
     System.out.print("locals: ");
     System.out.println(toString(locals, localsTop, pool));
     System.out.print("stack: ");

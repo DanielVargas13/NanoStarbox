@@ -14,6 +14,14 @@ package org.mozilla.classfile;
  * start.
  */
 final class SuperBlock {
+  private int index;
+  private int start;
+  private int end;
+  private int[] locals;
+  private int[] stack;
+  private boolean isInitialized;
+  private boolean isInQueue;
+
   SuperBlock(int index, int start, int end, int[] initialLocals) {
     this.index = index;
     this.start = start;
@@ -37,7 +45,7 @@ final class SuperBlock {
 
   /**
    * Get a copy of the super block's locals without any trailing TOP types.
-   *
+   * <p>
    * This is useful for actual writing stack maps; during the computation of
    * stack map types, all local arrays have the same size; the max locals for
    * the method. In addition, DOUBLE and LONG types have trailing TOP types
@@ -76,7 +84,7 @@ final class SuperBlock {
   }
 
   boolean merge(int[] locals, int localsTop, int[] stack, int stackTop,
-      ConstantPool pool) {
+                ConstantPool pool) {
     if (!isInitialized) {
       System.arraycopy(locals, 0, this.locals, 0, localsTop);
       this.stack = new int[stackTop];
@@ -104,14 +112,14 @@ final class SuperBlock {
 
   /**
    * Merge an operand stack or local variable array with incoming state.
-   *
+   * <p>
    * They are treated the same way; by this point, it should already be
    * ensured that the array sizes are the same, which is the only additional
    * constraint that is imposed on merging operand stacks (the local variable
    * array is always the same size).
    */
   private boolean mergeState(int[] current, int[] incoming, int size,
-      ConstantPool pool) {
+                             ConstantPool pool) {
     boolean changed = false;
     for (int i = 0; i < size; i++) {
       int currentType = current[i];
@@ -152,12 +160,4 @@ final class SuperBlock {
   void setInQueue(boolean b) {
     isInQueue = b;
   }
-
-  private int index;
-  private int start;
-  private int end;
-  private int[] locals;
-  private int[] stack;
-  private boolean isInitialized;
-  private boolean isInQueue;
 }

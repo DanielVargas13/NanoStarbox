@@ -14,18 +14,18 @@ import org.mozilla.javascript.Token;
  */
 public abstract class XmlFragment extends AstNode {
 
-    {
-        type = Token.XML;
-    }
+  {
+    type = Token.XML;
+  }
 
-    public XmlFragment() {
-    }
+  public XmlFragment() {
+  }
 
-    public XmlFragment(int pos) {
-        super(pos);
-    }
+  public XmlFragment(int pos) {
+    super(pos);
+  }
 
-    public XmlFragment(int pos, int len) {
-        super(pos, len);
-    }
+  public XmlFragment(int pos, int len) {
+    super(pos, len);
+  }
 }

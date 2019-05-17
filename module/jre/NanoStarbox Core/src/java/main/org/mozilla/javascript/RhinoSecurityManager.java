@@ -14,20 +14,21 @@ package org.mozilla.javascript;
  */
 public class RhinoSecurityManager extends SecurityManager {
 
-    /**
-     * Get the class of the top-most stack element representing a script.
-     * @return The class of the top-most script in the current stack,
-     *         or null if no script is currently running
-     */
-    protected Class<?> getCurrentScriptClass() {
-        Class<?>[] context = getClassContext();
-        for (Class<?> c : context) {
-            if (c != InterpretedFunction.class && NativeFunction.class.isAssignableFrom(c) ||
-                    PolicySecurityController.SecureCaller.class.isAssignableFrom(c)) {
-                return c;
-            }
-        }
-        return null;
+  /**
+   * Get the class of the top-most stack element representing a script.
+   *
+   * @return The class of the top-most script in the current stack,
+   * or null if no script is currently running
+   */
+  protected Class<?> getCurrentScriptClass() {
+    Class<?>[] context = getClassContext();
+    for (Class<?> c : context) {
+      if (c != InterpretedFunction.class && NativeFunction.class.isAssignableFrom(c) ||
+          PolicySecurityController.SecureCaller.class.isAssignableFrom(c)) {
+        return c;
+      }
     }
+    return null;
+  }
 
 }

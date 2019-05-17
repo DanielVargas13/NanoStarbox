@@ -2,16 +2,17 @@ package box.star.content;
 
 import box.star.io.Streams;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class MimeTypeMap extends HashMap<String, String> {
 
-  private static final Map<String, String> mimeTypePaths = new HashMap<>();
-  private static final List<MimeTypeScanner> mimeTypeScanners = new ArrayList<>();
-
   public static final String MIME_SEPARATOR = " ";
   public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
+  private static final Map<String, String> mimeTypePaths = new HashMap<>();
+  private static final List<MimeTypeScanner> mimeTypeScanners = new ArrayList<>();
 
   public MimeTypeMap() {
     super(64);
@@ -45,14 +46,14 @@ public class MimeTypeMap extends HashMap<String, String> {
     for (String key : map.keySet()) this.put(key, map.get(key));
   }
 
-  public void setPathMimeType(String path, String mimeType){
+  public void setPathMimeType(String path, String mimeType) {
     mimeTypePaths.put(path, mimeType);
   }
 
   @Override
   public String get(Object key) {
     if (this.containsKey(key)) return super.get(key);
-    else return mimeTypePaths.getOrDefault((String)key, DEFAULT_MIME_TYPE);
+    else return mimeTypePaths.getOrDefault(key, DEFAULT_MIME_TYPE);
   }
 
   public String scanFileExtension(String fileName) {
@@ -63,8 +64,8 @@ public class MimeTypeMap extends HashMap<String, String> {
         if (name.endsWith(extension)) extensions.add(extension);
       }
       if (!extensions.isEmpty()) {
-        String longest="";
-        for(String e:extensions){
+        String longest = "";
+        for (String e : extensions) {
           if (e.length() > longest.length()) longest = e;
         }
         return longest;
@@ -92,9 +93,9 @@ public class MimeTypeMap extends HashMap<String, String> {
 //    } catch (Exception e){throw new RuntimeException(e);}
 //  }
 
-  public String scanMimeType(BufferedInputStream stream){
+  public String scanMimeType(BufferedInputStream stream) {
     String mimeType;
-    for (MimeTypeScanner scanner: mimeTypeScanners){
+    for (MimeTypeScanner scanner : mimeTypeScanners) {
       mimeType = scanner.scanMimeType(stream);
       if (mimeType != null) return mimeType;
     }
@@ -105,7 +106,7 @@ public class MimeTypeMap extends HashMap<String, String> {
     return mimeType.split(MIME_SEPARATOR);
   }
 
-  public MimeTypeMap addMimeTypeScanner(MimeTypeScanner magicReader){
+  public MimeTypeMap addMimeTypeScanner(MimeTypeScanner magicReader) {
     mimeTypeScanners.add(magicReader);
     return this;
   }

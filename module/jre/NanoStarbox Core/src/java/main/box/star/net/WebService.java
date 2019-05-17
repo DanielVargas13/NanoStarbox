@@ -34,45 +34,47 @@ public class WebService extends HTTPServer {
    * See the {@link MimeTypeMap} for details
    */
   public final MimeTypeMap mimeTypeMap = new MimeTypeMap();
+  private boolean quiet = true;
 
   public WebService() { super(); }
 
-  public WebService mount(ContentProvider contentProvider){
-    contentProviders.add(contentProvider);
-    contentProvider.setMimeTypeMap(mimeTypeMap);
-    return this;
-  }
-
-  public WebService(String host, int port){
+  public WebService(String host, int port) {
     super();
     configuration.set(CONFIG_HOST, host);
     configuration.set(CONFIG_PORT, port);
+  }
+
+  public WebService mount(ContentProvider contentProvider) {
+    contentProviders.add(contentProvider);
+    contentProvider.setMimeTypeMap(mimeTypeMap);
+    return this;
   }
 
   /**
    * <p>Content Providers provide ServerContent, and ServerContent
    * can access the data needed through this method since NSR7.</p>
    */
-  @Deprecated final public File getFile(String uri){
+  @Deprecated
+  final public File getFile(String uri) {
     // first: uri-equality
-    for (ContentProvider provider:contentProviders){
-      if (! (provider instanceof NativeContentProvider)) continue;
+    for (ContentProvider provider : contentProviders) {
+      if (!(provider instanceof NativeContentProvider)) continue;
       String path = provider.getBaseUri();
       if (path.equals(uri)) {
-        File c = ((NativeContentProvider)provider).getFile(uri);
+        File c = ((NativeContentProvider) provider).getFile(uri);
         if (c != null && c.exists()) return c;
       }
     }
     String u = uri;
     // second: parent-uri-equality
-    while (! u.equals("/") ) {
+    while (!u.equals("/")) {
       u = u.substring(0, Math.max(0, u.lastIndexOf('/')));
       if (u.equals("")) u = "/";
-      for (ContentProvider provider:contentProviders){
-        if (! (provider instanceof NativeContentProvider)) continue;
+      for (ContentProvider provider : contentProviders) {
+        if (!(provider instanceof NativeContentProvider)) continue;
         String path = provider.getBaseUri();
-        if (path.equals(u)){
-          File f = ((NativeContentProvider)provider).getFile(uri);
+        if (path.equals(u)) {
+          File f = ((NativeContentProvider) provider).getFile(uri);
           if (f != null && f.exists()) return f;
         }
       }
@@ -84,9 +86,9 @@ public class WebService extends HTTPServer {
   final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {
     mimeTypeDrivers.put(mimeType, driver);
     if (driver instanceof MimeTypeDriver.WithMediaMapControlPort)
-      ((MimeTypeDriver.WithMediaMapControlPort)driver).configureMimeTypeController(mimeTypeMap);
+      ((MimeTypeDriver.WithMediaMapControlPort) driver).configureMimeTypeController(mimeTypeMap);
     if (driver instanceof MimeTypeDriver.WithIndexFileListControlPort) {
-      ((MimeTypeDriver.WithIndexFileListControlPort)driver).configureIndexFileList(getIndexFileList());
+      ((MimeTypeDriver.WithIndexFileListControlPort) driver).configureIndexFileList(getIndexFileList());
     }
   }
 
@@ -95,21 +97,21 @@ public class WebService extends HTTPServer {
     return mimeTypeMap.get(mimeTypeMap.scanFileExtension(path));
   }
 
-  public ServerContent getContent(IHTTPSession session){
+  public ServerContent getContent(IHTTPSession session) {
     String uri = session.getUri();
     // first: uri-equality
-    for (ContentProvider provider:contentProviders){
+    for (ContentProvider provider : contentProviders) {
       String path = provider.getBaseUri();
       if (path.equals(uri)) return provider.getContent(session);
     }
     String u = uri;
     // second: parent-uri-equality
-    while (! u.equals("/") ) {
+    while (!u.equals("/")) {
       u = u.substring(0, Math.max(0, u.lastIndexOf('/')));
       if (u.equals("")) u = "/";
-      for (ContentProvider provider:contentProviders){
+      for (ContentProvider provider : contentProviders) {
         String path = provider.getBaseUri();
-        if (path.equals(u)){
+        if (path.equals(u)) {
           ServerContent content = provider.getContent(session);
           if (content != null) return content;
         }
@@ -121,14 +123,12 @@ public class WebService extends HTTPServer {
 
   protected ServerResult getResult(ServerContent content) {
     if (content == null) return null;
-    if (content.isOkay()){
+    if (content.isOkay()) {
       MimeTypeDriver<WebService> driver = mimeTypeDrivers.get(content.mimeType);
       if (driver != null) return driver.createMimeTypeResult(this, content);
     }
     return new ServerResult(content);
   }
-
-  private boolean quiet = true;
 
   @Override
   protected Response serviceRequest(IHTTPSession session) {
@@ -155,7 +155,8 @@ public class WebService extends HTTPServer {
       ServerResult serverResult = getResult(getContent(session));
       if (serverResult == null) return Response.notFoundResponse();
       return serverResult.getResponse();
-    } catch (Exception e){
+    }
+    catch (Exception e) {
       return serverExceptionResponse(e);
     }
   }

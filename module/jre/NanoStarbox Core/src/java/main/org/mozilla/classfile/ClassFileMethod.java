@@ -6,11 +6,16 @@
 
 package org.mozilla.classfile;
 
-final class ClassFileMethod
-{
+final class ClassFileMethod {
+  private String itsName;
+  private String itsType;
+  private short itsNameIndex;
+  private short itsTypeIndex;
+  private short itsFlags;
+  private byte[] itsCodeAttribute;
+
   ClassFileMethod(String name, short nameIndex, String type, short typeIndex,
-      short flags)
-  {
+                  short flags) {
     itsName = name;
     itsNameIndex = nameIndex;
     itsType = type;
@@ -18,13 +23,11 @@ final class ClassFileMethod
     itsFlags = flags;
   }
 
-  void setCodeAttribute(byte codeAttribute[])
-  {
+  void setCodeAttribute(byte[] codeAttribute) {
     itsCodeAttribute = codeAttribute;
   }
 
-  int write(byte[] data, int offset)
-  {
+  int write(byte[] data, int offset) {
     offset = ClassFileWriter.putInt16(itsFlags, data, offset);
     offset = ClassFileWriter.putInt16(itsNameIndex, data, offset);
     offset = ClassFileWriter.putInt16(itsTypeIndex, data, offset);
@@ -36,31 +39,20 @@ final class ClassFileMethod
     return offset;
   }
 
-  int getWriteSize()
-  {
+  int getWriteSize() {
     return 2 * 4 + itsCodeAttribute.length;
   }
 
-  String getName()
-  {
+  String getName() {
     return itsName;
   }
 
-  String getType()
-  {
+  String getType() {
     return itsType;
   }
 
-  short getFlags()
-  {
+  short getFlags() {
     return itsFlags;
   }
-
-  private String itsName;
-  private String itsType;
-  private short itsNameIndex;
-  private short itsTypeIndex;
-  private short itsFlags;
-  private byte[] itsCodeAttribute;
 
 }

@@ -8,8 +8,9 @@ package box.star.state;
  * @param <V>
  */
 public interface CacheMapMonitor<K, V> {
-    enum CacheEvent {
-        CREATE, UPDATE, EXPIRE, REMOVE, RENEW
-    }
-    void onCacheEvent(CacheEvent action, long timeStamp, K key, V value);
+  void onCacheEvent(CacheEvent action, long timeStamp, K key, V value);
+
+  enum CacheEvent {
+    CREATE, UPDATE, EXPIRE, REMOVE, RENEW
+  }
 }

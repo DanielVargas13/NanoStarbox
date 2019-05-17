@@ -18,18 +18,33 @@ public class ClassPathTable implements Serializable {
   private URL source;
   private long timestamp;
 
-  private Collection<String> processDirectory(File directory){
+  public ClassPathTable(URL source) {
+    this.source = source;
+    File sourceFile = new File(source.getFile());
+    Collection<String> entries;
+    if (sourceFile.getName().endsWith(".jar")) entries = processJar(sourceFile);
+    else if (sourceFile.isDirectory()) entries = processDirectory(sourceFile);
+    else throw new RuntimeException("URL not supported: " + source);
+    timestamp = new Date().getTime();
+    Stack<String> pkgs = enumRoots(entries);
+    roots = new Hashtable<>(pkgs.size());
+    for (String pkg : pkgs) {
+      roots.put(pkg, enumClasses(entries, pkg));
+    }
+  }
+
+  private Collection<String> processDirectory(File directory) {
     Collection<String> entries = new ArrayList();
     if (directory.getName().equals("META-INF")) {
       return entries;
     }
     String packageName = directory.getPath().replaceAll("/", "\\.") + ".";
-    for (File f: directory.listFiles()){
+    for (File f : directory.listFiles()) {
       String path = f.getPath();
       if (f.isDirectory()) entries.addAll(processDirectory(f));
       else {
         if (path.endsWith(".class")) {
-          if (! entries.contains(packageName)) entries.add(packageName);
+          if (!entries.contains(packageName)) entries.add(packageName);
           entries.add(path.replaceAll("/", "\\."));
         }
       }
@@ -37,7 +52,7 @@ public class ClassPathTable implements Serializable {
     return entries;
   }
 
-  private Collection<String> processJar(File archive){
+  private Collection<String> processJar(File archive) {
     Collection<String> entries = new ArrayList();
     try {
       JarInputStream jarFile = new JarInputStream(new FileInputStream(new File(source.toURI().getPath())));
@@ -52,21 +67,6 @@ public class ClassPathTable implements Serializable {
     }
     catch (Exception e) {throw new RuntimeException("error processing jar file", e);}
     return entries;
-  }
-
-  public ClassPathTable(URL source) {
-    this.source = source;
-    File sourceFile = new File(source.getFile());
-    Collection<String> entries;
-    if (sourceFile.getName().endsWith(".jar")) entries = processJar(sourceFile);
-    else if (sourceFile.isDirectory()) entries = processDirectory(sourceFile);
-    else throw new RuntimeException("URL not supported: "+source);
-    timestamp = new Date().getTime();
-    Stack<String> pkgs = enumRoots(entries);
-    roots = new Hashtable<>(pkgs.size());
-    for (String pkg : pkgs) {
-      roots.put(pkg, enumClasses(entries, pkg));
-    }
   }
 
   public long getTimestamp() {

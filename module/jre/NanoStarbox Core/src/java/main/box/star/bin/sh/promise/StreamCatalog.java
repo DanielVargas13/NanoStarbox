@@ -11,14 +11,24 @@ import java.util.List;
 
 public interface StreamCatalog<Host> {
   Host writeErrorTo(@Nullable OutputStream os);
+
   Host writeOutputTo(@Nullable OutputStream os);
+
   Host readInputFrom(@Nullable InputStream is);
+
   Host remove(Integer key);
+
   Host resetStreams();
+
   Host applyStreams(@Nullable Streams overlay);
+
   Host set(Integer key, @Nullable Closeable stream);
+
   <ANY> ANY get(Integer key);
+
   List<Integer> streams();
+
   boolean haveStream(Integer key);
+
   SharedMap<Integer, Closeable> exportStreams();
 }

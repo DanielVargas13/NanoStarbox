@@ -11,74 +11,73 @@ package org.mozilla.javascript.ast;
  */
 public class ParseProblem {
 
-    public static enum Type {Error, Warning}
+  private Type type;
+  private String message;
+  private String sourceName;
+  private int offset;
+  private int length;
+  /**
+   * Constructs a new ParseProblem.
+   */
+  public ParseProblem(Type type, String message,
+                      String sourceName, int offset, int length) {
+    setType(type);
+    setMessage(message);
+    setSourceName(sourceName);
+    setFileOffset(offset);
+    setLength(length);
+  }
 
-    private Type type;
-    private String message;
-    private String sourceName;
-    private int offset;
-    private int length;
+  public Type getType() {
+    return type;
+  }
 
-    /**
-     * Constructs a new ParseProblem.
-     */
-    public ParseProblem(Type type, String message,
-                        String sourceName, int offset, int length) {
-        setType(type);
-        setMessage(message);
-        setSourceName(sourceName);
-        setFileOffset(offset);
-        setLength(length);
-    }
+  public void setType(Type type) {
+    this.type = type;
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
+  public void setMessage(String msg) {
+    this.message = msg;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getSourceName() {
+    return sourceName;
+  }
 
-    public void setMessage(String msg) {
-        this.message = msg;
-    }
+  public void setSourceName(String name) {
+    this.sourceName = name;
+  }
 
-    public String getSourceName() {
-        return sourceName;
-    }
+  public int getFileOffset() {
+    return offset;
+  }
 
-    public void setSourceName(String name) {
-        this.sourceName = name;
-    }
+  public void setFileOffset(int offset) {
+    this.offset = offset;
+  }
 
-    public int getFileOffset() {
-        return offset;
-    }
+  public int getLength() {
+    return length;
+  }
 
-    public void setFileOffset(int offset) {
-        this.offset = offset;
-    }
+  public void setLength(int length) {
+    this.length = length;
+  }
 
-    public int getLength() {
-        return length;
-    }
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder(200);
+    sb.append(sourceName).append(":");
+    sb.append("offset=").append(offset).append(",");
+    sb.append("length=").append(length).append(",");
+    sb.append(type == Type.Error ? "error: " : "warning: ");
+    sb.append(message);
+    return sb.toString();
+  }
 
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(200);
-        sb.append(sourceName).append(":");
-        sb.append("offset=").append(offset).append(",");
-        sb.append("length=").append(length).append(",");
-        sb.append(type == Type.Error ? "error: " : "warning: ");
-        sb.append(message);
-        return sb.toString();
-    }
+  public enum Type {Error, Warning}
 }

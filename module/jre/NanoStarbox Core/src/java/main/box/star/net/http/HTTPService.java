@@ -58,8 +58,8 @@ public class HTTPService implements Runnable {
   @Override
   public void run() {
     try {
-      String host = (String) httpd.configuration.get(HTTPServer.CONFIG_HOST);
-      int port = (int) httpd.configuration.get(HTTPServer.CONFIG_PORT);
+      String host = httpd.configuration.get(HTTPServer.CONFIG_HOST);
+      int port = httpd.configuration.get(HTTPServer.CONFIG_PORT);
       httpd.getMyServerSocket().bind(host != null ? new InetSocketAddress(host, port) : new InetSocketAddress(port));
       boundSocketConnection = true;
     }

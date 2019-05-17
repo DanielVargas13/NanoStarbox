@@ -15,10 +15,7 @@ import java.util.Locale;
  */
 public final class OS {
 
-  private OS() throws OperationNotSupportedException {throw new OperationNotSupportedException();}
-  
   private static Kind thisKind;
-  
   private static String
       lineSeparator = System.getProperty("line.separator"),
       pathSeparator = File.pathSeparator,
@@ -41,7 +38,8 @@ public final class OS {
     }
 
   }
-  
+
+  private OS() throws OperationNotSupportedException {throw new OperationNotSupportedException();}
 
   public static boolean isWindows() { return thisKind.equals(Kind.Windows); }
 
@@ -62,11 +60,11 @@ public final class OS {
     return thisKind;
   }
 
-  public static String getLineSeparator(){
+  public static String getLineSeparator() {
     return lineSeparator;
   }
 
-  public static String getPathSeparator(){
+  public static String getPathSeparator() {
     return pathSeparator;
   }
 

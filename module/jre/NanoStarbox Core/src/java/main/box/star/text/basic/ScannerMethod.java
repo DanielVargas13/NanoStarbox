@@ -3,9 +3,8 @@ package box.star.text.basic;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
-import box.star.text.Char;
 
-import static box.star.text.Char.*;
+import static box.star.text.Char.SPACE;
 
 /**
  * <h2>ScannerMethod</h2>
@@ -36,7 +35,7 @@ import static box.star.text.Char.*;
  *
  * <h3>lifecycle</h3>
  * <ul>
- *   {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminate(Scanner, char)} and {@link #scan(Scanner)}</li>
+ * {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminate(Scanner, char)} and {@link #scan(Scanner)}</li>
  * </ul>
  */
 public class ScannerMethod implements Cloneable {
@@ -134,12 +133,9 @@ public class ScannerMethod implements Cloneable {
    * @return
    */
   protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
-    if (character == 0) {
-      //pop();
-      //backStep(scanner);
-      return true;
-    }
-    return false;
+    //pop();
+    //backStep(scanner);
+    return character == 0;
   }
 
   /**

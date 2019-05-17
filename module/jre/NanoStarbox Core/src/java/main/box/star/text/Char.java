@@ -11,15 +11,10 @@ import java.util.stream.IntStream;
 
 public final class Char {
 
-  private static Locale locale;
-
   public final static int CHAR_MAX = '\uffff';
-
   public final static char NULL_CHARACTER = 0;
-
   public final static char META_DOCUMENT_TAG_START = '<';
   public final static char META_DOCUMENT_TAG_END = '>';
-
   public final static char BACKSLASH = '\\';
   public static final char PIPE = '|';
   public final static char SINGLE_QUOTE = '\'';
@@ -27,39 +22,38 @@ public final class Char {
   public final static char SOLIDUS = '/';
   public final static char SPACE = ' ';
   public final static char
-  START_OF_HEADING = 1,
-  START_OF_TEXT = 2,
-  END_OF_TEXT = 3,
-  END_OF_TRANSMISSION = 4,
-  ENQUIRY = 5,
-  ACKNOWLEDGEMENT = 6,
-  BELL = 7,
-  BACKSPACE = 8,
-  HORIZONTAL_TAB = 9,
-  LINE_FEED = 10,
-  VERTICAL_TAB = 11,
-  FORM_FEED = 12,
-  CARRIAGE_RETURN = 13,
-  SHIFT_OUT = 14,
-  SHIFT_IN = 15,
-  DATA_LINK_ESCAPE = 16,
-  DEVICE_CONTROL_1 = 17,
-  DEVICE_CONTROL_2 = 18,
-  DEVICE_CONTROL_3 = 19,
-  DEVICE_CONTROL_4 = 20,
-  NEGATIVE_ACKNOWLEDGEMENT = 21,
-  SYNCHRONOUS_IDLE = 22,
-  END_OF_TRANSMISSION_BLOCK = 23,
-  CANCEL = 24,
-  END_OF_MEDIUM = 25,
-  SUBSTITUTE = 26,
-  ESCAPE = 27,
-  FILE_SEPARATOR = 28,
-  GROUP_SEPARATOR = 29,
-  RECORD_SEPARATOR = 30,
-  UNIT_SEPARATOR = 31,
-  DELETE = 127;
-
+      START_OF_HEADING = 1,
+      START_OF_TEXT = 2,
+      END_OF_TEXT = 3,
+      END_OF_TRANSMISSION = 4,
+      ENQUIRY = 5,
+      ACKNOWLEDGEMENT = 6,
+      BELL = 7,
+      BACKSPACE = 8,
+      HORIZONTAL_TAB = 9,
+      LINE_FEED = 10,
+      VERTICAL_TAB = 11,
+      FORM_FEED = 12,
+      CARRIAGE_RETURN = 13,
+      SHIFT_OUT = 14,
+      SHIFT_IN = 15,
+      DATA_LINK_ESCAPE = 16,
+      DEVICE_CONTROL_1 = 17,
+      DEVICE_CONTROL_2 = 18,
+      DEVICE_CONTROL_3 = 19,
+      DEVICE_CONTROL_4 = 20,
+      NEGATIVE_ACKNOWLEDGEMENT = 21,
+      SYNCHRONOUS_IDLE = 22,
+      END_OF_TRANSMISSION_BLOCK = 23,
+      CANCEL = 24,
+      END_OF_MEDIUM = 25,
+      SUBSTITUTE = 26,
+      ESCAPE = 27,
+      FILE_SEPARATOR = 28,
+      GROUP_SEPARATOR = 29,
+      RECORD_SEPARATOR = 30,
+      UNIT_SEPARATOR = 31,
+      DELETE = 127;
   public final static char[] MAP_ASCII = new Assembler(NULL_CHARACTER, 255).toArray();
   public final static char[] MAP_ASCII_EXTENDED = new Assembler.RangeMap(128, 255).compile();
   public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).map(SPACE).toArray();
@@ -70,27 +64,32 @@ public final class Char {
   public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
   public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toArray();
   public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toArray();
+  private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
+  private static Locale locale;
+  private static Hashtable<Character, String> TRANSLATION;
+
+  static {
+    setLocale(Locale.ENGLISH);
+    importLocaleEnglishASCII();
+  }
 
   private Char() {}
 
-  private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
-  private static Hashtable<Character, String> TRANSLATION;
-
   public static void setLocale(Locale locale) {
     Char.locale = locale;
-    if (!TRANSLATIONS.containsKey(locale)) TRANSLATIONS.put(locale, new Hashtable<>((int)SPACE));
+    if (!TRANSLATIONS.containsKey(locale)) TRANSLATIONS.put(locale, new Hashtable<>((int) SPACE));
     TRANSLATION = TRANSLATIONS.get(locale);
   }
 
-  public static char[] toLowerCase(String source){
+  public static char[] toLowerCase(String source) {
     return source.toLowerCase(locale).toCharArray();
   }
 
-  public static char[] toUpperCase(String source){
+  public static char[] toUpperCase(String source) {
     return source.toUpperCase(locale).toCharArray();
   }
 
-  public static void importLocaleEnglishASCII(){
+  public static void importLocaleEnglishASCII() {
     translate(DELETE, "delete (\\d)");
     translate(ESCAPE, "escape (\\e)");
     translate(BELL, "bell");
@@ -104,14 +103,14 @@ public final class Char {
     translate(SPACE, "space");
   }
 
-  public static String translate(char c, String translation){
+  public static String translate(char c, String translation) {
     Char.TRANSLATION.put(c, translation);
     return translation;
   }
 
-  public static String translate(char c){
+  public static String translate(char c) {
     if (c == 0) return "null";
-    else if (TRANSLATION.containsKey(c))return TRANSLATION.get(c);
+    else if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
     else return String.valueOf(c);
   }
 
@@ -126,9 +125,9 @@ public final class Char {
     return false;
   }
 
-  public static boolean stringContains(String search, char... range){
+  public static boolean stringContains(String search, char... range) {
     char[] data = search.toCharArray();
-    for (char c: data) if (mapContains(c, range)) return true;
+    for (char c : data) if (mapContains(c, range)) return true;
     return false;
   }
 
@@ -146,27 +145,27 @@ public final class Char {
     return Integer.parseInt(c + Tools.EMPTY_STRING, base);
   }
 
-  public static char valueOf(int c){
-    return (char)c;
+  public static char valueOf(int c) {
+    return (char) c;
   }
 
-  public static char[] valueOf(@NotNull String source){
+  public static char[] valueOf(@NotNull String source) {
     return source.toCharArray();
   }
 
   public static char toLowerCase(char c) {
-    return toLowerCase(c+Tools.EMPTY_STRING)[0];
+    return toLowerCase(c + Tools.EMPTY_STRING)[0];
   }
 
   public static char toUpperCase(char c) {
-    return toUpperCase(c+Tools.EMPTY_STRING)[0];
+    return toUpperCase(c + Tools.EMPTY_STRING)[0];
   }
 
-  public static char[] toMap(char... elements){
+  public static char[] toMap(char... elements) {
     return elements;
   }
 
-  public static String toString(char... elements){
+  public static String toString(char... elements) {
     return String.valueOf(elements);
   }
 
@@ -175,20 +174,20 @@ public final class Char {
     private static final long serialVersionUID = 8454376662352328447L;
     StringBuilder chars = new StringBuilder();
 
-    public Assembler(){
-      chars = new StringBuilder((int) SPACE );
-    };
+    public Assembler() {
+      chars = new StringBuilder((int) SPACE);
+    }
 
-    public Assembler(int capacity){
+    public Assembler(int capacity) {
       chars = new StringBuilder(capacity);
     }
 
-    public Assembler(CharSequence sequence){
+    public Assembler(CharSequence sequence) {
       chars = new StringBuilder(sequence.length());
       merge(sequence.toString());
     }
 
-    public Assembler(Iterable<Character> stream){
+    public Assembler(Iterable<Character> stream) {
       merge(stream);
     }
 
@@ -217,6 +216,7 @@ public final class Char {
       final char[] data = this.toArray();
       return new Iterator<Character>() {
         int i = 0;
+
         @Override
         public boolean hasNext() { return i < data.length; }
 
@@ -225,14 +225,14 @@ public final class Char {
       };
     }
 
-    public Assembler merge(CharSequence sequence){
+    public Assembler merge(CharSequence sequence) {
       return merge(sequence.toString());
     }
 
     public Assembler merge(int... integer) {
-      for (int i: integer){
+      for (int i : integer) {
         char c = (char) sanitizeRangeValue(i);
-        if (! contains(c)) chars.append(c);
+        if (!contains(c)) chars.append(c);
       }
       return this;
     }
@@ -242,12 +242,12 @@ public final class Char {
       return this;
     }
 
-    public Assembler merge(Iterable<Character> stream){
-      for (char c: stream) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
+    public Assembler merge(Iterable<Character> stream) {
+      for (char c : stream) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       return this;
     }
 
-    public Assembler merge(String source){
+    public Assembler merge(String source) {
       return map(source.toCharArray());
     }
 
@@ -259,7 +259,7 @@ public final class Char {
       return map(map.compile());
     }
 
-    public Assembler filter(String source){
+    public Assembler filter(String source) {
       return filterMap(source.toCharArray());
     }
 
@@ -270,13 +270,13 @@ public final class Char {
       return filterMap(chars);
     }
 
-    public Assembler filter(CharSequence sequence){
+    public Assembler filter(CharSequence sequence) {
       return filter(sequence.toString());
     }
 
-    public Assembler filter(Iterable<Character> stream){
+    public Assembler filter(Iterable<Character> stream) {
       StringBuilder out = new StringBuilder(chars.length());
-      for (char c: stream) out.append(c);
+      for (char c : stream) out.append(c);
       return filterMap(out.toString().toCharArray());
     }
 
@@ -415,11 +415,6 @@ public final class Char {
       }
     }
 
-  }
-
-  static {
-    setLocale(Locale.ENGLISH);
-    importLocaleEnglishASCII();
   }
 
 }

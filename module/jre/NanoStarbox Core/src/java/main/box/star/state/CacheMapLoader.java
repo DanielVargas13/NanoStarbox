@@ -9,6 +9,7 @@ import java.util.Map;
  * any {@link CacheMap.Entry#value()} that is not serializable,
  * and to inflate these objects when the cache is loaded from a
  * serializable source.
+ *
  * @param <K>
  * @param <V>
  */
@@ -20,9 +21,9 @@ public class CacheMapLoader<K, V> {
    * @param map
    * @return
    */
-  public Serializable saveMap(Map<K, CacheMap.Entry<V>>map){
-    for (K k:map.keySet()){
-      CacheMap.Entry<V>e = map.get(k);
+  public Serializable saveMap(Map<K, CacheMap.Entry<V>> map) {
+    for (K k : map.keySet()) {
+      CacheMap.Entry<V> e = map.get(k);
       if (e.value() instanceof Serializable) continue;
       e.setValue(null);
     }
@@ -31,11 +32,12 @@ public class CacheMapLoader<K, V> {
 
   /**
    * Convert each map Entry.value to runtime object form, and return the map.
+   *
    * @param output
    * @return
    */
   Map<K, CacheMap.Entry<V>> loadMap(Map<K, CacheMap.Entry<V>> output) {
     return output;
-  };
+  }
 
 }

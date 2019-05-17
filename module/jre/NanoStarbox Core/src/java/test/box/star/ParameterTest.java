@@ -12,8 +12,8 @@ class ParameterTest {
 
   Parameter.Parser parameterParser = new Parameter.Parser() {
 
-    Stack<String>switches = new Stack<>();
-    Stack<String>flags = new Stack<>();
+    Stack<String> switches = new Stack<>();
+    Stack<String> flags = new Stack<>();
 
     {
       switches.addAll(Arrays.asList("-a", "-b", "-c", "-d"));
@@ -25,13 +25,13 @@ class ParameterTest {
     public boolean parseReference(Reference parameter) {
       System.err.println(parameter.value);
       if (switches.contains(parameter.value)) {
-        System.err.println("got switch: "+parameter.value+"; value: "+Parameter.getNextParameterValue(parameter));
+        System.err.println("got switch: " + parameter.value + "; value: " + Parameter.getNextParameterValue(parameter));
         return true;
-      } else if (flags.contains(parameter.value)){
-        System.err.println("got flag: "+ parameter.value);
+      } else if (flags.contains(parameter.value)) {
+        System.err.println("got flag: " + parameter.value);
         return true;
       } else if (parameter.value.matches("^[+|-][a-zA-Z0-9][a-zA-Z0-9].*")) {
-        System.err.println("got parameter-set: "+ parameter.value);
+        System.err.println("got parameter-set: " + parameter.value);
         Parameter.parse(parameterParser, parameter);
         return true;
       }
@@ -40,7 +40,7 @@ class ParameterTest {
   };
 
   @Test
-  void parameterParsing(){
+  void parameterParsing() {
     Parameter.parse(parameterParser, parameters);
   }
 

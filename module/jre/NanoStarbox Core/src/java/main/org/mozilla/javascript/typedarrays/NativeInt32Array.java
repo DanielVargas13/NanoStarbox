@@ -14,95 +14,82 @@ import org.mozilla.javascript.*;
  */
 
 public class NativeInt32Array
-    extends NativeTypedArrayView<Integer>
-{
-    private static final long serialVersionUID = -8963461831950499340L;
+    extends NativeTypedArrayView<Integer> {
+  private static final long serialVersionUID = -8963461831950499340L;
 
-    private static final String CLASS_NAME = "Int32Array";
-    private static final int BYTES_PER_ELEMENT = 4;
+  private static final String CLASS_NAME = "Int32Array";
+  private static final int BYTES_PER_ELEMENT = 4;
 
-    public NativeInt32Array()
-    {
+  public NativeInt32Array() {
+  }
+
+  public NativeInt32Array(NativeArrayBuffer ab, int off, int len) {
+    super(ab, off, len, len * BYTES_PER_ELEMENT);
+  }
+
+  public NativeInt32Array(int len) {
+    this(new NativeArrayBuffer(len * BYTES_PER_ELEMENT), 0, len);
+  }
+
+  public static void init(Context cx, Scriptable scope, boolean sealed) {
+    NativeInt32Array a = new NativeInt32Array();
+    a.exportAsJSClass(MAX_PROTOTYPE_ID, scope, sealed);
+  }
+
+  @Override
+  public String getClassName() {
+    return CLASS_NAME;
+  }
+
+  @Override
+  protected NativeTypedArrayView construct(NativeArrayBuffer ab, int off, int len) {
+    return new NativeInt32Array(ab, off, len);
+  }
+
+  @Override
+  public int getBytesPerElement() {
+    return BYTES_PER_ELEMENT;
+  }
+
+  @Override
+  protected NativeTypedArrayView realThis(Scriptable thisObj, IdFunctionObject f) {
+    if (!(thisObj instanceof NativeInt32Array)) {
+      throw incompatibleCallError(f);
     }
+    return (NativeInt32Array) thisObj;
+  }
 
-    public NativeInt32Array(NativeArrayBuffer ab, int off, int len)
-    {
-        super(ab, off, len, len * BYTES_PER_ELEMENT);
+  @Override
+  protected Object js_get(int index) {
+    if (checkIndex(index)) {
+      return Undefined.instance;
     }
+    return ByteIo.readInt32(arrayBuffer.buffer, (index * BYTES_PER_ELEMENT) + offset, false);
+  }
 
-    public NativeInt32Array(int len)
-    {
-        this(new NativeArrayBuffer(len * BYTES_PER_ELEMENT), 0, len);
+  @Override
+  protected Object js_set(int index, Object c) {
+    if (checkIndex(index)) {
+      return Undefined.instance;
     }
+    int val = ScriptRuntime.toInt32(c);
+    ByteIo.writeInt32(arrayBuffer.buffer, (index * BYTES_PER_ELEMENT) + offset, val, false);
+    return null;
+  }
 
-    @Override
-    public String getClassName()
-    {
-        return CLASS_NAME;
+  @Override
+  public Integer get(int i) {
+    if (checkIndex(i)) {
+      throw new IndexOutOfBoundsException();
     }
+    return (Integer) js_get(i);
+  }
 
-    public static void init(Context cx, Scriptable scope, boolean sealed)
-    {
-        NativeInt32Array a = new NativeInt32Array();
-        a.exportAsJSClass(MAX_PROTOTYPE_ID, scope, sealed);
+  @Override
+  public Integer set(int i, Integer aByte) {
+    if (checkIndex(i)) {
+      throw new IndexOutOfBoundsException();
     }
-
-    @Override
-    protected NativeTypedArrayView construct(NativeArrayBuffer ab, int off, int len)
-    {
-        return new NativeInt32Array(ab, off, len);
-    }
-
-    @Override
-    public int getBytesPerElement()
-    {
-        return BYTES_PER_ELEMENT;
-    }
-
-    @Override
-    protected NativeTypedArrayView realThis(Scriptable thisObj, IdFunctionObject f)
-    {
-        if (!(thisObj instanceof NativeInt32Array)) {
-            throw incompatibleCallError(f);
-        }
-        return (NativeInt32Array)thisObj;
-    }
-
-    @Override
-    protected Object js_get(int index)
-    {
-        if (checkIndex(index)) {
-            return Undefined.instance;
-        }
-        return ByteIo.readInt32(arrayBuffer.buffer, (index * BYTES_PER_ELEMENT) + offset, false);
-    }
-
-    @Override
-    protected Object js_set(int index, Object c)
-    {
-        if (checkIndex(index)) {
-            return Undefined.instance;
-        }
-        int val = ScriptRuntime.toInt32(c);
-        ByteIo.writeInt32(arrayBuffer.buffer, (index * BYTES_PER_ELEMENT) + offset, val, false);
-        return null;
-    }
-
-    @Override
-    public Integer get(int i)
-    {
-        if (checkIndex(i)) {
-            throw new IndexOutOfBoundsException();
-        }
-        return (Integer)js_get(i);
-    }
-
-    @Override
-    public Integer set(int i, Integer aByte)
-    {
-        if (checkIndex(i)) {
-            throw new IndexOutOfBoundsException();
-        }
-        return (Integer)js_set(i, aByte);
-    }
+    return (Integer) js_set(i, aByte);
+  }
 }

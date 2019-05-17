@@ -9,29 +9,34 @@ import box.star.text.Char;
 import java.io.*;
 
 import static box.star.text.Char.*;
-import static box.star.text.Char.MAP_ASCII_NUMBERS;
 
 /**
  * <h2>Basic Text Scanner</h2>
  * <p>Provides the facilities to scan text.</p>
  * <br>
- *   <p>Quick Overview</p>
- *   <ul>
- *     <li>Master Batch Operation State Restore through {@link #getStateLock()}</li>
- *     <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}</li>
- *     <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
- *     <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
- *     <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
- *     <li>Character Field Boundary Searching through {@link #nextField(char...)} and {@link #nextFieldLength(int, char...)}</li>
- *     <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
- *     <li>Integral Line and Character Escape interface through {@link #setLineEscape(boolean)}, {@link #setLineEscape(boolean, boolean)}, {@link #backSlashMode()}, and {@link #escapeMode()}</li>
- *   </ul>
+ * <p>Quick Overview</p>
+ * <ul>
+ * <li>Master Batch Operation State Restore through {@link #getStateLock()}</li>
+ * <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}</li>
+ * <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
+ * <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
+ * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
+ * <li>Character Field Boundary Searching through {@link #nextField(char...)} and {@link #nextFieldLength(int, char...)}</li>
+ * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
+ * <li>Integral Line and Character Escape interface through {@link #setLineEscape(boolean)}, {@link #setLineEscape(boolean, boolean)}, {@link #backSlashMode()}, and {@link #escapeMode()}</li>
+ * </ul>
  * <br>
  * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA</tt>
  * <p></p>
  */
 public class Scanner implements Closeable {
 
+  private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
+    @Override
+    public String expand(Scanner scanner, char c) {
+      return Char.toString(c);
+    }
+  };
   /**
    * Reader for the input.
    */
@@ -107,17 +112,18 @@ public class Scanner implements Closeable {
 
   /**
    * Determines the size of the current history buffer.
+   *
    * @return
    */
-  public int historySize(){
+  public int historySize() {
     return state.getHistoryLength();
   }
 
   /**
-   *  Trims the size of the history buffer to the amount given.
-   *
-   *  if the amount is zero or less, the history is flushed.
-   *  if the amount is not reached, nothing is done.
+   * Trims the size of the history buffer to the amount given.
+   * <p>
+   * if the amount is zero or less, the history is flushed.
+   * if the amount is not reached, nothing is done.
    *
    * @param size
    * @throws IllegalStateException if the current position is within the history.
@@ -138,7 +144,7 @@ public class Scanner implements Closeable {
   /**
    * <p>call this to close the reader.</p>
    * <br>
-   *   <p>If using a string source, it's okay to let this happen during finalize.</p>
+   * <p>If using a string source, it's okay to let this happen during finalize.</p>
    */
   @Override
   public void close() {
@@ -325,7 +331,7 @@ public class Scanner implements Closeable {
 
   /**
    * Scans for a sequence match at the end of the string.
-   *
+   * <p>
    * The found part is discarded.
    *
    * @param sequence
@@ -364,7 +370,7 @@ public class Scanner implements Closeable {
     StringBuilder sb = new StringBuilder();
     do {
       c = this.next();
-      if (Char.mapContains(c, map)){
+      if (Char.mapContains(c, map)) {
         this.back();
         break;
       }
@@ -372,13 +378,6 @@ public class Scanner implements Closeable {
     } while (c != 0);
     return sb.toString();
   }
-
-  private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
-    @Override
-    public String expand(Scanner scanner, char c) {
-      return Char.toString(c);
-    }
-  };
 
   /**
    * Performs all right-hand-side-backslash operations.
@@ -463,7 +462,7 @@ public class Scanner implements Closeable {
 
       char c = next();
 
-     if (c == BACKSLASH && ! escapeMode()) continue;
+      if (c == BACKSLASH && !escapeMode()) continue;
 
       if (c == 0) {
         if (escapeMode())
@@ -477,7 +476,10 @@ public class Scanner implements Closeable {
         continue;
       }
 
-      if (Char.mapContains(c, map)){ this.back(); break; }
+      if (Char.mapContains(c, map)) {
+        this.back();
+        break;
+      }
 
       sb.append(c);
 

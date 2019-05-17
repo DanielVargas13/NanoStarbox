@@ -5,22 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mozilla.javascript.tools.idswitch;
 
-public class IdValuePair
-{
-    public final int idLength;
-    public final String id;
-    public final String value;
+public class IdValuePair {
+  public final int idLength;
+  public final String id;
+  public final String value;
 
-    private int lineNumber;
+  private int lineNumber;
 
-    public IdValuePair(String id, String value) {
-        this.idLength = id.length();
-        this.id = id;
-        this.value = value;
-    }
+  public IdValuePair(String id, String value) {
+    this.idLength = id.length();
+    this.id = id;
+    this.value = value;
+  }
 
-    public int getLineNumber() { return lineNumber; }
+  public int getLineNumber() { return lineNumber; }
 
-    public void setLineNumber(int value) { lineNumber = value; }
+  public void setLineNumber(int value) { lineNumber = value; }
 }
 

@@ -1,6 +1,5 @@
 package box.star.net.tools;
 
-import box.star.content.MimeTypeMap;
 import box.star.net.http.IHTTPSession;
 
 import java.io.File;

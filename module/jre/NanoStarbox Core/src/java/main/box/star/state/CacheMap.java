@@ -2,16 +2,19 @@ package box.star.state;
 
 import box.star.io.Streams;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Runtime Object Cache
- *
+ * <p>
  * Capable of synchronizing serializable values to disk.
- *
+ * <p>
  * Capable of synchronizing with disk based cache services
  * through the {@link CacheMapMonitor} interface.
  *
@@ -31,14 +34,39 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
   private CacheMapMonitor<K, V> cacheMapMonitor = (CacheMapMonitor<K, V>) defaultCacheMapMonitor;
   private CacheMapLoader<K, V> cacheMapLoader;
   private File synchronizationFile;
+  private long maxAge;
+  private Map<K, Entry<V>> map;
+  // Clear out old entries every few queries
+  private int queryCount;
+  private int queryOverflow = 300;
+  private int MAX_ENTRIES = 200;
+  private boolean updateExpirationByRequest;
+  /**
+   * Creates a shareable runtime state cache where entries expire after an elapsed time.
+   * <p>
+   * When an entry expires it is removed from the cache.
+   *
+   * @param cacheDuration             how long to keep items in the cache.
+   * @param updateExpirationByRequest if true, updates the expiration timestamp for every get request.
+   */
+  @SuppressWarnings("serial")
+  public CacheMap(long cacheDuration, boolean updateExpirationByRequest) {
+    this.maxAge = cacheDuration;
+    this.updateExpirationByRequest = updateExpirationByRequest;
+
+    map = new LinkedHashMap<K, Entry<V>>() {
+      protected boolean removeEldestEntry(Map.Entry<K, Entry<V>> eldest) {
+        return size() > MAX_ENTRIES;
+      }
+    };
+  }
 
   /**
-   *
    * @param monitor
    * @throws IllegalStateException if monitor already set
    */
   public void setMonitor(CacheMapMonitor<K, V> monitor) {
-    if (this.cacheMapMonitor != defaultCacheMapMonitor){
+    if (this.cacheMapMonitor != defaultCacheMapMonitor) {
       throw new IllegalStateException("cache monitor already set");
     }
     this.cacheMapMonitor = monitor;
@@ -46,19 +74,19 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
   /**
    * Disk synchronization setup function.
-   *
+   * <p>
    * Make sure you set the monitor before calling this function, so you can
    * synchronize with external cache handlers during the cleanup phase.
    *
    * @param synchronization a file in which to synchronize data.
-   * @param loader a class to transform non serializable values during load and save.
+   * @param loader          a class to transform non serializable values during load and save.
    */
-  public void setSynchronization(File synchronization, CacheMapLoader<K, V> loader){
+  public void setSynchronization(File synchronization, CacheMapLoader<K, V> loader) {
     if (cacheMapLoader != null)
       throw new IllegalStateException("cache map loader already set");
     cacheMapLoader = loader;
     synchronizationFile = synchronization;
-    if (synchronizationFile.exists()){
+    if (synchronizationFile.exists()) {
       try {
         FileInputStream fis = new FileInputStream(synchronizationFile);
         map = loader.loadMap((Map<K, CacheMap.Entry<V>>) Streams.readSerializable(fis));
@@ -73,17 +101,16 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
 
   /**
    * Run the synchronization function.
-   *
+   * <p>
    * Culls expired entries and optionally saves the data to disk in a reloadable
    * format.
-   *
+   * <p>
    * If there is no cache map loader set, then only expired entries
    * are culled from the cache.
-   *
+   * <p>
    * This feature does not notify the monitor of any events. It is assumed
    * that the monitor and loader are a feature-set, quite possibly the same
    * object.
-   *
    */
   synchronized public void synchronize() {
     cleanup();
@@ -92,40 +119,10 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
       FileOutputStream os = new FileOutputStream(synchronizationFile);
       Streams.writeSerializable(os, cacheMapLoader.saveMap(map));
       os.close();
-    } catch (Exception e){
+    }
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private long maxAge;
-  private Map<K, Entry<V>> map;
-
-  // Clear out old entries every few queries
-  private int queryCount;
-  private int queryOverflow = 300;
-  private int MAX_ENTRIES = 200;
-
-  private boolean updateExpirationByRequest;
-
-  /**
-   * Creates a shareable runtime state cache where entries expire after an elapsed time.
-   *
-   * When an entry expires it is removed from the cache.
-   *
-   * @param cacheDuration how long to keep items in the cache.
-   * @param updateExpirationByRequest if true, updates the expiration timestamp for every get request.
-   *
-   */
-  @SuppressWarnings("serial")
-  public CacheMap(long cacheDuration, boolean updateExpirationByRequest) {
-    this.maxAge = cacheDuration;
-    this.updateExpirationByRequest = updateExpirationByRequest;
-
-    map = new LinkedHashMap<K, Entry<V>>() {
-      protected boolean removeEldestEntry(Map.Entry<K, Entry<V>> eldest) {
-        return size() > MAX_ENTRIES;
-      }
-    };
   }
 
   public synchronized V get(K key) {
@@ -190,9 +187,24 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     queryCount = 0;
   }
 
+  public boolean containsKey(Object key) {return map.containsKey(key);}
+
+  public synchronized V remove(Object key) {
+    if (map.containsKey(key)) {
+      Entry<V> entry = map.get(key);
+      cacheMapMonitor.onCacheEvent(CacheEvent.REMOVE, entry.timestamp, (K) key, map.get(key).value);
+      return map.remove(key).value;
+    }
+    return null;
+  }
+
+  @Override
+  public void onCacheEvent(CacheEvent action, long timeStamp, K key, V value) {}
+
   /**
    * This class is serializable but it's values may not be. The {@link CacheMapLoader}
    * class allows transformation of the cache to a serializable format.
+   *
    * @param <T>
    */
   public static class Entry<T> implements Serializable {
@@ -218,19 +230,5 @@ public class CacheMap<K, V> implements CacheMapMonitor<K, V> {
     public void setValue(T val) { this.value = val; }
 
   }
-
-  public boolean containsKey(Object key) {return map.containsKey(key);}
-
-  public synchronized V remove(Object key) {
-    if (map.containsKey(key)) {
-      Entry<V> entry = map.get(key);
-      cacheMapMonitor.onCacheEvent(CacheEvent.REMOVE, entry.timestamp, (K)key, map.get(key).value);
-      return map.remove(key).value;
-    }
-    return null;
-  }
-
-  @Override
-  public void onCacheEvent(CacheEvent action, long timeStamp, K key, V value) {}
 
 }

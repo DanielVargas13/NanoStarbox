@@ -465,7 +465,7 @@ public class Tools {
     return value;
   }
 
-  public static void arrestNotNull(Object value, String message){
+  public static void arrestNotNull(Object value, String message) {
     if (value != null) throw new IllegalStateException(message);
   }
 

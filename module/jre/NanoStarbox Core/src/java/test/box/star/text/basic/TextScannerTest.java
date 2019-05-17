@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static box.star.text.Char.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,7 +31,8 @@ class TextScannerTest {
     assertEquals("<!DOCTYPE html>", result);
   }
 
-  @Test void snapshot_lifecycle() {
+  @Test
+  void snapshot_lifecycle() {
     Scanner x = new Scanner("test-string", "0123456789");
     assertEquals(false, x.hasStateRecordLock());
     ScannerStateRecord s = x.getStateLock();
@@ -55,7 +55,8 @@ class TextScannerTest {
     assertEquals("01", x.nextMapLength(2, MAP_ASCII_NUMBERS));
   }
 
-  @Test void string_comparisons() {
+  @Test
+  void string_comparisons() {
     String s = "0123456789";
     String s2 = s + "A";
     String s3 = s + "a";
@@ -79,14 +80,15 @@ class TextScannerTest {
     sx.free();
   }
 
-  @Test void location_tracking(){
+  @Test
+  void location_tracking() {
     String s = "0123456789";
     Scanner x = new Scanner("test-string", s);
     x.next();
     assertEquals(1, x.getColumn());
     x.back();
     assertEquals(0, x.getColumn());
-    System.err.println(x.run(new ScannerMethod(){}));
+    System.err.println(x.run(new ScannerMethod() {}));
     assertEquals(s.indexOf("9"), x.getIndex());
     assertEquals(s.length(), x.getColumn());
     assertTrue(x.endOfSource());
@@ -94,7 +96,7 @@ class TextScannerTest {
     x.back();
     x.back();
     assertEquals(s.length() - 3, x.getColumn());
-    System.err.println(x.run(new ScannerMethod(){
+    System.err.println(x.run(new ScannerMethod() {
       @Override
       protected @NotNull String compile(@NotNull Scanner scanner) {
         if (scanner.getIndex() == 9) {

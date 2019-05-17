@@ -27,74 +27,73 @@ import java.util.ArrayDeque;
  */
 public class ConsString implements CharSequence, Serializable {
 
-    private static final long serialVersionUID = -8432806714471372570L;
+  private static final long serialVersionUID = -8432806714471372570L;
+  private final int length;
+  private CharSequence left, right;
+  private boolean isFlat;
 
-    private CharSequence left, right;
-    private final int length;
-    private boolean isFlat;
+  public ConsString(CharSequence str1, CharSequence str2) {
+    left = str1;
+    right = str2;
+    length = left.length() + right.length();
+    isFlat = false;
+  }
 
-    public ConsString(CharSequence str1, CharSequence str2) {
-        left = str1;
-        right = str2;
-        length = left.length() + right.length();
-        isFlat = false;
-    }
+  // Replace with string representation when serializing
+  private Object writeReplace() {
+    return this.toString();
+  }
 
-    // Replace with string representation when serializing
-    private Object writeReplace() {
-        return this.toString();
-    }
-    
-    @Override
-    public String toString() {
-        return isFlat ? (String)left : flatten();
-    }
+  @Override
+  public String toString() {
+    return isFlat ? (String) left : flatten();
+  }
 
-    private synchronized String flatten() {
-        if (!isFlat) {
-            final char[] chars = new char[length];
-            int charPos = length;
+  private synchronized String flatten() {
+    if (!isFlat) {
+      final char[] chars = new char[length];
+      int charPos = length;
 
-            ArrayDeque<CharSequence> stack = new ArrayDeque<CharSequence>();
-            stack.addFirst(left);
+      ArrayDeque<CharSequence> stack = new ArrayDeque<CharSequence>();
+      stack.addFirst(left);
 
-            CharSequence next = right;
-            do {
-                if (next instanceof ConsString) {
-                    ConsString casted = (ConsString) next;
-                    if (casted.isFlat) {
-                        next = casted.left;
-                    } else {
-                        stack.addFirst(casted.left);
-                        next = casted.right;
-                        continue;
-                    }
-                }
-
-                final String str = (String) next;
-                charPos -= str.length();
-                str.getChars(0, str.length(), chars, charPos);
-                next = stack.isEmpty() ? null : stack.removeFirst();
-            } while (next != null);
-
-            left = new String(chars);
-            right = "";
-            isFlat = true;
+      CharSequence next = right;
+      do {
+        if (next instanceof ConsString) {
+          ConsString casted = (ConsString) next;
+          if (casted.isFlat) {
+            next = casted.left;
+          } else {
+            stack.addFirst(casted.left);
+            next = casted.right;
+            continue;
+          }
         }
-        return (String)left;
-    }
 
-    public int length() {
-        return length;
-    }
+        final String str = (String) next;
+        charPos -= str.length();
+        str.getChars(0, str.length(), chars, charPos);
+        next = stack.isEmpty() ? null : stack.removeFirst();
+      } while (next != null);
 
-    public char charAt(int index) {
-        String str = isFlat ? (String)left : flatten();
-        return str.charAt(index);
+      left = new String(chars);
+      right = "";
+      isFlat = true;
     }
+    return (String) left;
+  }
 
-    public CharSequence subSequence(int start, int end) {
-        String str = isFlat ? (String)left : flatten();
-        return str.substring(start, end);
-    }
+  public int length() {
+    return length;
+  }
+
+  public char charAt(int index) {
+    String str = isFlat ? (String) left : flatten();
+    return str.charAt(index);
+  }
+
+  public CharSequence subSequence(int start, int end) {
+    String str = isFlat ? (String) left : flatten();
+    return str.substring(start, end);
+  }
 }

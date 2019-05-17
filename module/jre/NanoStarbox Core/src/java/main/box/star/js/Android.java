@@ -11,11 +11,11 @@ public class Android {
   private static Class dalvikClassLoader;
   private static Constructor<ClassLoader> dalvikConstructor;
 
-  public static boolean isNotLoaded(){
+  public static boolean isNotLoaded() {
     return dalvikConstructor == null;
   }
 
-  public static boolean isPlatform(){
+  public static boolean isPlatform() {
     if (tryDalvik) {
       try {
         dalvikClassLoader = Class.forName("dalvik.system.PathClassLoader");
@@ -24,17 +24,18 @@ public class Android {
       catch (Exception ignored) {}
       finally { tryDalvik = false; }
     }
-    return  dalvikConstructor != null;
+    return dalvikConstructor != null;
   }
 
   public static Context init() {
     try {
       Class rhinoHelper = Class.forName("com.faendir.rhino_android.RhinoAndroidHelper");
-      Constructor<?>  constructor = rhinoHelper.getConstructor();
+      Constructor<?> constructor = rhinoHelper.getConstructor();
       Object rh = constructor.newInstance();
       Method m = rhinoHelper.getDeclaredMethod("enterContext");
       return (Context) m.invoke(rh);
-    } catch (Exception e) {throw new RuntimeException(e);}
+    }
+    catch (Exception e) {throw new RuntimeException(e);}
   }
 
 }

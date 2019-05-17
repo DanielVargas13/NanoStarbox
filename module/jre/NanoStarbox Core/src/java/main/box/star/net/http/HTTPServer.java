@@ -112,31 +112,12 @@ import java.util.regex.Pattern;
  */
 public abstract class HTTPServer {
 
-  public HashSet<String> getIndexFileList() {
-    return configuration.get(CONFIG_INDEX_FILES);
-  }
-
-  public String getMimeTypeForPath(String path){
-    path = path.toLowerCase();
-    if (path.matches("^[^\0]*\\.s?html?$")) return MIME_HTML;
-    else if (path.endsWith(".txt")) return MIME_PLAINTEXT;
-    else if (path.endsWith(".xml")) return MIME_XML;
-    else if (path.endsWith(".css")) return MIME_CSS;
-    else if (path.endsWith(".png")) return MIME_PNG;
-    else if (path.endsWith(".gif")) return MIME_GIF;
-    else if (path.endsWith(".svg")) return MIME_SVG;
-    else if (path.matches("^[^\0]*jpe?g$")) return MIME_JPEG;
-    else if (path.endsWith(".ico")) return MIME_ICON;
-    return "application/octet-stream";
-  }
-
   public static final String
       CONFIG_HOST = "host",
       CONFIG_PORT = "port",
       CONFIG_DAEMON = "daemon",
       CONFIG_INDEX_FILES = "index-files",
       CONFIG_SOCKET_READ_TIMEOUT = "socket-read-timeout";
-
   public static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
   public static final Pattern CONTENT_DISPOSITION_PATTERN = Pattern.compile(CONTENT_DISPOSITION_REGEX, Pattern.CASE_INSENSITIVE);
   public static final String CONTENT_TYPE_REGEX = "([ |\t]*content-type[ |\t]*:)(.*)";
@@ -151,7 +132,6 @@ public abstract class HTTPServer {
    * Common MIME type for dynamic content: html
    */
   public static final String MIME_HTML = "text/html";
-
   public static final String MIME_XML = "application/xml";
   public static final String MIME_CSS = "text/css";
   public static final String MIME_GIF = "image/gif";
@@ -159,7 +139,6 @@ public abstract class HTTPServer {
   public static final String MIME_PNG = "image/png";
   public static final String MIME_SVG = "image/svg+xml";
   public static final String MIME_ICON = "image/x-icon";
-
   /**
    * logger to log to.
    */
@@ -169,18 +148,8 @@ public abstract class HTTPServer {
    * parameters map for later re-processing.
    */
   private static final String QUERY_STRING_PARAMETER = "HTTPServer.QUERY_STRING";
-
   private final Configuration.Manager<String, Serializable> configurationManager = new Configuration.Manager<>(getClass().getName());
   public final Configuration<String, Serializable> configuration = configurationManager.getConfiguration();
-
-  public final static String getParentUri(String uri) {
-    return "/" + uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1);
-  }
-
-  public String getAddress() {
-    return "http://"+getHost()+":"+getPort();
-  }
-
   protected List<IHandler<IHTTPSession, Response>> interceptors = new ArrayList<IHandler<IHTTPSession, Response>>(4);
   /**
    * Pluggable strategy for asynchronously executing requests.
@@ -194,9 +163,7 @@ public abstract class HTTPServer {
    * Pluggable strategy for creating and cleaning up temporary files.
    */
   private IFactory<ITempFileManager> tempFileManagerFactory;
-
   private long lastAccessTime = 0;
-
   /**
    * Constructs an HTTP server on given hostname and port.
    */
@@ -218,6 +185,10 @@ public abstract class HTTPServer {
         return HTTPServer.this.serviceRequest(input);
       }
     };
+  }
+
+  public final static String getParentUri(String uri) {
+    return "/" + uri.substring(0, Math.max(0, uri.lastIndexOf("/"))).substring(1);
   }
 
   /**
@@ -385,6 +356,32 @@ public abstract class HTTPServer {
     return sw.toString();
   }
 
+  public static Response serverExceptionResponse(Exception e) {
+    return Response.plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(e));
+  }
+
+  public HashSet<String> getIndexFileList() {
+    return configuration.get(CONFIG_INDEX_FILES);
+  }
+
+  public String getMimeTypeForPath(String path) {
+    path = path.toLowerCase();
+    if (path.matches("^[^\0]*\\.s?html?$")) return MIME_HTML;
+    else if (path.endsWith(".txt")) return MIME_PLAINTEXT;
+    else if (path.endsWith(".xml")) return MIME_XML;
+    else if (path.endsWith(".css")) return MIME_CSS;
+    else if (path.endsWith(".png")) return MIME_PNG;
+    else if (path.endsWith(".gif")) return MIME_GIF;
+    else if (path.endsWith(".svg")) return MIME_SVG;
+    else if (path.matches("^[^\0]*jpe?g$")) return MIME_JPEG;
+    else if (path.endsWith(".ico")) return MIME_ICON;
+    return "application/octet-stream";
+  }
+
+  public String getAddress() {
+    return "http://" + getHost() + ":" + getPort();
+  }
+
   public ServerSocket getMyServerSocket() {
     return myServerSocket;
   }
@@ -397,15 +394,15 @@ public abstract class HTTPServer {
     interceptors.add(interceptor);
   }
 
+  // -------------------------------------------------------------------------------
+  // //
+
   /**
    * Forcibly closes all connections that are open.
    */
   public synchronized void closeAllConnections() {
     stop();
   }
-
-  // -------------------------------------------------------------------------------
-  // //
 
   /**
    * create a instance of the client handler, subclasses can return a subclass
@@ -695,10 +692,6 @@ public abstract class HTTPServer {
     }
 
     return res;
-  }
-
-  public static Response serverExceptionResponse(Exception e) {
-    return Response.plainTextResponse(Status.INTERNAL_ERROR, getErrorStackText(e));
   }
 
   /**

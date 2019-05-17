@@ -6,125 +6,125 @@ import java.security.Permission;
 
 final class Security extends java.lang.SecurityManager {
 
-    private Security() {}
+  private static SecurityManager defaultManager = System.getSecurityManager();
+  private static Security manager;
 
-    @Override
-    public void checkPermission(Permission perm) {
-    }
+  private Security() {}
 
-    @Override
-    public void checkPermission(Permission perm, Object context) {
-    }
+  public static boolean install() {
+    if (manager != null) return true;
+    manager = new Security();
+    System.setSecurityManager(manager);
+    return true;
+  }
 
-    @Override
-    public void checkCreateClassLoader() {
-    }
+  public static SecurityManager getManager() {
+    if (manager == null) return defaultManager;
+    return manager;
+  }
 
-    @Override
-    public void checkAccess(Thread t) {
-    }
+  @Override
+  public void checkPermission(Permission perm) {
+  }
 
-    @Override
-    public void checkAccess(ThreadGroup g) {
-    }
+  @Override
+  public void checkPermission(Permission perm, Object context) {
+  }
 
-    @Override
-    public void checkExit(int status) {
-    }
+  @Override
+  public void checkCreateClassLoader() {
+  }
 
-    @Override
-    public void checkExec(String cmd) {
-    }
+  @Override
+  public void checkAccess(Thread t) {
+  }
 
-    @Override
-    public void checkLink(String lib) {
-    }
+  @Override
+  public void checkAccess(ThreadGroup g) {
+  }
 
-    @Override
-    public void checkRead(FileDescriptor fd) {
-    }
+  @Override
+  public void checkExit(int status) {
+  }
 
-    @Override
-    public void checkRead(String file) {
-    }
+  @Override
+  public void checkExec(String cmd) {
+  }
 
-    @Override
-    public void checkRead(String file, Object context) {
-    }
+  @Override
+  public void checkLink(String lib) {
+  }
 
-    @Override
-    public void checkWrite(FileDescriptor fd) {
-    }
+  @Override
+  public void checkRead(FileDescriptor fd) {
+  }
 
-    @Override
-    public void checkWrite(String file) {
-    }
+  @Override
+  public void checkRead(String file) {
+  }
 
-    @Override
-    public void checkDelete(String file) {
-    }
+  @Override
+  public void checkRead(String file, Object context) {
+  }
 
-    @Override
-    public void checkConnect(String host, int port) {
-    }
+  @Override
+  public void checkWrite(FileDescriptor fd) {
+  }
 
-    @Override
-    public void checkConnect(String host, int port, Object context) {
-    }
+  @Override
+  public void checkWrite(String file) {
+  }
 
-    @Override
-    public void checkListen(int port) {
-    }
+  @Override
+  public void checkDelete(String file) {
+  }
 
-    @Override
-    public void checkAccept(String host, int port) {
-    }
+  @Override
+  public void checkConnect(String host, int port) {
+  }
 
-    @Override
-    public void checkMulticast(InetAddress maddr) {
-    }
+  @Override
+  public void checkConnect(String host, int port, Object context) {
+  }
 
-    @Override
-    public void checkPropertiesAccess() {
-    }
+  @Override
+  public void checkListen(int port) {
+  }
 
-    @Override
-    public void checkPropertyAccess(String key) {
-    }
+  @Override
+  public void checkAccept(String host, int port) {
+  }
 
-    @Override
-    public void checkPrintJobAccess() {
-    }
+  @Override
+  public void checkMulticast(InetAddress maddr) {
+  }
 
-    @Override
-    public void checkPackageAccess(String pkg) {
-    }
+  @Override
+  public void checkPropertiesAccess() {
+  }
 
-    @Override
-    public void checkPackageDefinition(String pkg) {
-    }
+  @Override
+  public void checkPropertyAccess(String key) {
+  }
 
-    @Override
-    public void checkSetFactory() {
-    }
+  @Override
+  public void checkPrintJobAccess() {
+  }
 
-    @Override
-    public void checkSecurityAccess(String target) {
-    }
+  @Override
+  public void checkPackageAccess(String pkg) {
+  }
 
-    private static SecurityManager defaultManager = System.getSecurityManager();
-    private static Security manager;
+  @Override
+  public void checkPackageDefinition(String pkg) {
+  }
 
-    public static boolean install() {
-        if (manager != null) return true;
-        manager = new Security();
-        System.setSecurityManager(manager);
-        return true;
-    }
+  @Override
+  public void checkSetFactory() {
+  }
 
-    public static SecurityManager getManager(){
-        if (manager == null) return  defaultManager;
-        return manager;
-    }
+  @Override
+  public void checkSecurityAccess(String target) {
+  }
 
 }

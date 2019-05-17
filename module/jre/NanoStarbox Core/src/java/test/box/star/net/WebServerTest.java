@@ -1,15 +1,6 @@
 package box.star.net;
 
 //import box.star.net.tools.RhinoWebDriver;
-import box.star.text.basic.Scanner;
-import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.Console;
-import java.io.File;
-import java.io.InputStreamReader;
-
-import static box.star.text.Char.LINE_FEED;
 
 class WebServerTest {
 

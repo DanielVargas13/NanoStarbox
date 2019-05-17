@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @param <Shell> the class using this interface
  */
 public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<Shell>, VariableCatalog<Shell> {
@@ -73,8 +72,8 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
    * <p>If the target-command-name is: (a): function; then execution is a function or an error.</p>
    * <p>If the target-command-name is: (b): command; then execution is a system command or an error.</p>
    *
-   * @param locals the local process environment.
-   * @param streams the stream configuration for this execution.
+   * @param locals     the local process environment.
+   * @param streams    the stream configuration for this execution.
    * @param parameters the target-command-name and parameters for the execution.
    * @return the execution Executive
    */
@@ -116,7 +115,7 @@ public interface ShellHost<Shell> extends FunctionCatalog<Shell>, StreamCatalog<
    * @param parameters
    * @return
    */
-   Executive execCommand(@Nullable SharedMap<String, String> locals, String... parameters);
+  Executive execCommand(@Nullable SharedMap<String, String> locals, String... parameters);
 
   /**
    * <p>Locates the target-function-name and executes the function with locals

@@ -16,7 +16,7 @@ import java.util.List;
  * AST node for an Array literal.  The elements list will always be
  * non-{@code null}, although the list will have no elements if the Array literal
  * is empty.<p>
- *
+ * <p>
  * Node type is {@link Token#ARRAYLIT}.<p>
  *
  * <pre><i>ArrayLiteral</i> :
@@ -32,163 +32,169 @@ import java.util.List;
  */
 public class ArrayLiteral extends AstNode implements DestructuringForm {
 
-    private static final List<AstNode> NO_ELEMS =
-        Collections.unmodifiableList(new ArrayList<AstNode>());
+  private static final List<AstNode> NO_ELEMS =
+      Collections.unmodifiableList(new ArrayList<AstNode>());
 
-    private List<AstNode> elements;
-    private int destructuringLength;
-    private int skipCount;
-    private boolean isDestructuring;
+  private List<AstNode> elements;
+  private int destructuringLength;
+  private int skipCount;
+  private boolean isDestructuring;
 
-    {
-        type = Token.ARRAYLIT;
+  {
+    type = Token.ARRAYLIT;
+  }
+
+  public ArrayLiteral() {
+  }
+
+  public ArrayLiteral(int pos) {
+    super(pos);
+  }
+
+  public ArrayLiteral(int pos, int len) {
+    super(pos, len);
+  }
+
+  /**
+   * Returns the element list
+   *
+   * @return the element list.  If there are no elements, returns an immutable
+   * empty list.  Elisions are represented as {@link EmptyExpression}
+   * nodes.
+   */
+  public List<AstNode> getElements() {
+    return elements != null ? elements : NO_ELEMS;
+  }
+
+  /**
+   * Sets the element list, and sets each element's parent to this node.
+   *
+   * @param elements the element list.  Can be {@code null}.
+   */
+  public void setElements(List<AstNode> elements) {
+    if (elements == null) {
+      this.elements = null;
+    } else {
+      if (this.elements != null)
+        this.elements.clear();
+      for (AstNode e : elements)
+        addElement(e);
     }
+  }
 
-    public ArrayLiteral() {
-    }
+  /**
+   * Adds an element to the list, and sets its parent to this node.
+   *
+   * @param element the element to add
+   * @throws IllegalArgumentException if element is {@code null}.  To indicate
+   *                                  an empty element, use an {@link EmptyExpression} node.
+   */
+  public void addElement(AstNode element) {
+    assertNotNull(element);
+    if (elements == null)
+      elements = new ArrayList<AstNode>();
+    elements.add(element);
+    element.setParent(this);
+  }
 
-    public ArrayLiteral(int pos) {
-        super(pos);
-    }
+  /**
+   * Returns the number of elements in this {@code Array} literal,
+   * including empty elements.
+   */
+  public int getSize() {
+    return elements == null ? 0 : elements.size();
+  }
 
-    public ArrayLiteral(int pos, int len) {
-        super(pos, len);
-    }
+  /**
+   * Returns element at specified index.
+   *
+   * @param index the index of the element to retrieve
+   * @return the element
+   * @throws IndexOutOfBoundsException if the index is invalid
+   */
+  public AstNode getElement(int index) {
+    if (elements == null)
+      throw new IndexOutOfBoundsException("no elements");
+    return elements.get(index);
+  }
 
-    /**
-     * Returns the element list
-     * @return the element list.  If there are no elements, returns an immutable
-     *         empty list.  Elisions are represented as {@link EmptyExpression}
-     *         nodes.
-     */
-    public List<AstNode> getElements() {
-        return elements != null ? elements : NO_ELEMS;
-    }
+  /**
+   * Returns destructuring length
+   */
+  public int getDestructuringLength() {
+    return destructuringLength;
+  }
 
-    /**
-     * Sets the element list, and sets each element's parent to this node.
-     * @param elements the element list.  Can be {@code null}.
-     */
-    public void setElements(List<AstNode> elements) {
-        if (elements == null) {
-            this.elements = null;
-        } else {
-            if (this.elements != null)
-                this.elements.clear();
-            for (AstNode e : elements)
-                addElement(e);
-        }
-    }
+  /**
+   * Sets destructuring length.  This is set by the parser and used
+   * by the code generator.  {@code for ([a,] in obj)} is legal,
+   * but {@code for ([a] in obj)} is not since we have both key and
+   * value supplied.  The difference is only meaningful in array literals
+   * used in destructuring-assignment contexts.
+   */
+  public void setDestructuringLength(int destructuringLength) {
+    this.destructuringLength = destructuringLength;
+  }
 
-    /**
-     * Adds an element to the list, and sets its parent to this node.
-     * @param element the element to add
-     * @throws IllegalArgumentException if element is {@code null}.  To indicate
-     *         an empty element, use an {@link EmptyExpression} node.
-     */
-    public void addElement(AstNode element) {
-        assertNotNull(element);
-        if (elements == null)
-            elements = new ArrayList<AstNode>();
-        elements.add(element);
-        element.setParent(this);
-    }
+  /**
+   * Used by code generator.
+   *
+   * @return the number of empty elements
+   */
+  public int getSkipCount() {
+    return skipCount;
+  }
 
-    /**
-     * Returns the number of elements in this {@code Array} literal,
-     * including empty elements.
-     */
-    public int getSize() {
-        return elements == null ? 0 : elements.size();
-    }
+  /**
+   * Used by code generator.
+   *
+   * @param count the count of empty elements
+   */
+  public void setSkipCount(int count) {
+    skipCount = count;
+  }
 
-    /**
-     * Returns element at specified index.
-     * @param index the index of the element to retrieve
-     * @return the element
-     * @throws IndexOutOfBoundsException if the index is invalid
-     */
-    public AstNode getElement(int index) {
-        if (elements == null)
-            throw new IndexOutOfBoundsException("no elements");
-        return elements.get(index);
-    }
+  /**
+   * Marks this node as being a destructuring form - that is, appearing
+   * in a context such as {@code for ([a, b] in ...)} where it's the
+   * target of a destructuring assignment.
+   */
+  public void setIsDestructuring(boolean destructuring) {
+    isDestructuring = destructuring;
+  }
 
-    /**
-     * Returns destructuring length
-     */
-    public int getDestructuringLength() {
-      return destructuringLength;
-    }
+  /**
+   * Returns true if this node is in a destructuring position:
+   * a function parameter, the target of a variable initializer, the
+   * iterator of a for..in loop, etc.
+   */
+  public boolean isDestructuring() {
+    return isDestructuring;
+  }
 
-    /**
-     * Sets destructuring length.  This is set by the parser and used
-     * by the code generator.  {@code for ([a,] in obj)} is legal,
-     * but {@code for ([a] in obj)} is not since we have both key and
-     * value supplied.  The difference is only meaningful in array literals
-     * used in destructuring-assignment contexts.
-     */
-    public void setDestructuringLength(int destructuringLength) {
-      this.destructuringLength = destructuringLength;
+  @Override
+  public String toSource(int depth) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(makeIndent(depth));
+    sb.append("[");
+    if (elements != null) {
+      printList(elements, sb);
     }
+    sb.append("]");
+    return sb.toString();
+  }
 
-    /**
-     * Used by code generator.
-     * @return the number of empty elements
-     */
-    public int getSkipCount() {
-        return skipCount;
+  /**
+   * Visits this node, then visits its element expressions in order.
+   * Any empty elements are represented by {@link EmptyExpression}
+   * objects, so the callback will never be passed {@code null}.
+   */
+  @Override
+  public void visit(NodeVisitor v) {
+    if (v.visit(this)) {
+      for (AstNode e : getElements()) {
+        e.visit(v);
+      }
     }
-
-    /**
-     * Used by code generator.
-     * @param count the count of empty elements
-     */
-    public void setSkipCount(int count) {
-        skipCount = count;
-    }
-
-    /**
-     * Marks this node as being a destructuring form - that is, appearing
-     * in a context such as {@code for ([a, b] in ...)} where it's the
-     * target of a destructuring assignment.
-     */
-    public void setIsDestructuring(boolean destructuring) {
-        isDestructuring = destructuring;
-    }
-
-    /**
-     * Returns true if this node is in a destructuring position:
-     * a function parameter, the target of a variable initializer, the
-     * iterator of a for..in loop, etc.
-     */
-    public boolean isDestructuring() {
-        return isDestructuring;
-    }
-
-    @Override
-    public String toSource(int depth) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(makeIndent(depth));
-        sb.append("[");
-        if (elements != null) {
-            printList(elements, sb);
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    /**
-     * Visits this node, then visits its element expressions in order.
-     * Any empty elements are represented by {@link EmptyExpression}
-     * objects, so the callback will never be passed {@code null}.
-     */
-    @Override
-    public void visit(NodeVisitor v) {
-        if (v.visit(this)) {
-            for (AstNode e : getElements()) {
-                e.visit(v);
-            }
-        }
-    }
+  }
 }

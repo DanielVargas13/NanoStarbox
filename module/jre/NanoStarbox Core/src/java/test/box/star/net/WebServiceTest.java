@@ -11,7 +11,8 @@ class WebServiceTest {
 
   WebService ws = new WebService();
 
-  @Test void WebService(){
+  @Test
+  void WebService() {
 
     ws.mount(new ZipSiteProvider("/jna", new File("site/jna-4.5.2.jar")));
     ws.mount(new ZipSiteProvider("/test", new File("site/site.zip")));
@@ -40,9 +41,9 @@ class WebServiceTest {
     ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
       @Override
       public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
-        if (content.isOkay()){
+        if (content.isOkay()) {
           String mimeType = rhinoPageDriver.scanMimeType(content.getStream());
-          if (NANO_STARBOX_JAVASCRIPT_SERVER_PAGE.equals(mimeType)){
+          if (NANO_STARBOX_JAVASCRIPT_SERVER_PAGE.equals(mimeType)) {
             return rhinoPageDriver.createMimeTypeResult(ws, content);
           }
         }
@@ -56,7 +57,8 @@ class WebServiceTest {
     }
     catch (Exception e) {
       e.printStackTrace();
-    } finally {
+    }
+    finally {
       ws.stop();
     }
 

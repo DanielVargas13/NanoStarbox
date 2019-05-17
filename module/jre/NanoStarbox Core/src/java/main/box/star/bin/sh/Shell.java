@@ -1,9 +1,9 @@
 package box.star.bin.sh;
 
+import box.star.OS;
 import box.star.bin.sh.promise.FactoryFunction;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
-import box.star.OS;
 
 import java.io.*;
 import java.util.*;
@@ -13,23 +13,11 @@ import java.util.*;
  */
 public class Shell implements ShellHost<Shell> {
 
-  private static void fault(Exception x) throws RuntimeException {
-    throw new RuntimeException(x);
-  }
-
-  public static String[] shiftParameter(String[] parameters){
-    return Arrays.copyOfRange(parameters, 1, parameters.length);
-  }
-
+  private final static String LINE_SEPARATOR = "LINE_SEPARATOR";
   int status;
   SharedMap<String, String> variables;
   SharedMap<String, FunctionFactory> functions;
   Streams streams;
-
-  public int getStatus() {
-    return status;
-  }
-
   public Shell() {
     this(System.getProperty("user.dir"), System.getenv(), null);
   }
@@ -47,6 +35,18 @@ public class Shell implements ShellHost<Shell> {
     functions = shell.exportFunctions();
     streams = new Streams(shell.exportStreams());
     setCurrentDirectory(shell.getCurrentDirectory());
+  }
+
+  private static void fault(Exception x) throws RuntimeException {
+    throw new RuntimeException(x);
+  }
+
+  public static String[] shiftParameter(String[] parameters) {
+    return Arrays.copyOfRange(parameters, 1, parameters.length);
+  }
+
+  public int getStatus() {
+    return status;
   }
 
   @Override
@@ -196,7 +196,7 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public FunctionFactory getFunctionFactory(String name) {
     if (haveFunction(name)) return functions.get(name);
-    for (FunctionFactory main:functions.values()){
+    for (FunctionFactory main : functions.values()) {
       if (main.matchName(name)) return main;
     }
     throw new RuntimeException("Function " + name + " is not defined in this scope");
@@ -216,14 +216,16 @@ public class Shell implements ShellHost<Shell> {
     catch (InterruptedException e) { throw new RuntimeException(e);}
   }
 
-  public Executive execFunction(SharedMap<String, String> locals, String... parameters){
+  public Executive execFunction(SharedMap<String, String> locals, String... parameters) {
     FactoryFunction f = getFunctionFactory(parameters[0]).createFunction(this, locals);
     return new Executive(f.exec(parameters));
   }
 
-  public Executive execCommand(SharedMap<String, String> locals, String... parameters){
+  public Executive execCommand(SharedMap<String, String> locals, String... parameters) {
     Process p = null;
-    try { p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));}
+    try {
+      p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
+    }
     catch (IOException e) {throw new RuntimeException(e);}
     return new Executive(p);
   }
@@ -237,14 +239,14 @@ public class Shell implements ShellHost<Shell> {
   public Executive exec(SharedMap<String, String> locals, Streams streams, String... parameters) {
     Executive executive;
     String commandName = parameters[0];
-    if ("function".equals(commandName)){
+    if ("function".equals(commandName)) {
       parameters = shiftParameter(parameters);
       String target = parameters[0];
-      if (! haveFunction(target)) {
-        throw new IllegalArgumentException("command: "+target+" is not a function");
+      if (!haveFunction(target)) {
+        throw new IllegalArgumentException("command: " + target + " is not a function");
       }
       executive = execFunction(locals, parameters);
-    } else if ("command".equals(commandName)){
+    } else if ("command".equals(commandName)) {
       parameters = shiftParameter(parameters);
       executive = execCommand(locals, parameters);
     } else {
@@ -270,15 +272,15 @@ public class Shell implements ShellHost<Shell> {
   public Executive execPipe(SharedMap<String, String> locals, Streams streams, List<String[]> commands) {
     Streams pipe_streams = this.streams.createLayer(streams);
     Streams common_streams = new Streams(pipe_streams.get(0), null, pipe_streams.get(2));
-    Stack<Executive>executives = new Stack<>();
+    Stack<Executive> executives = new Stack<>();
     executives.add(exec(locals, common_streams, commands.remove(0)));
     common_streams.set(0, null);
-    for (String[] command: commands){
+    for (String[] command : commands) {
       Executive next = exec(locals, common_streams, command);
       next.readInputFrom(executives.peek().get(0));
       executives.add(next);
     }
-   return executives.peek().writeOutputTo(pipe_streams.get(1));
+    return executives.peek().writeOutputTo(pipe_streams.get(1));
   }
 
   public Command build(String... parameters) {
@@ -327,9 +329,9 @@ public class Shell implements ShellHost<Shell> {
     return os;
   }
 
-  public File getFile(String file){
+  public File getFile(String file) {
     File directory;
-    if (System.getProperty("user.dir").equals(getCurrentDirectory())){
+    if (System.getProperty("user.dir").equals(getCurrentDirectory())) {
       directory = new File(".");
     } else {
       directory = new File(getCurrentDirectory());
@@ -340,8 +342,6 @@ public class Shell implements ShellHost<Shell> {
     if (file.equals(".")) return directory;
     return new File(directory, file);
   }
-
-  private final static String LINE_SEPARATOR = "LINE_SEPARATOR";
 
   @Override
   public String getLineSeparator() {

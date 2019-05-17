@@ -11,6 +11,31 @@ import java.util.*;
 
 public class Command implements VariableCatalog<Command>, StreamCatalog<Command> {
 
+  String[] parameters;
+  Shell shell;
+  SharedMap<String, String> locals = new SharedMap<>();
+  Streams streams;
+  Stack<Command> pipeChain = new Stack<>();
+
+  public Command(Shell shell, String... parameters) {
+    this.shell = shell;
+    this.streams = shell.streams.copy();
+    this.parameters = parameters;
+    this.pipeChain.push(this);
+  }
+
+  private Command(Command command, String... parameters) {
+    this.shell = command.shell;
+    this.locals.merge(command.locals);
+    List<String> p = new ArrayList<>();
+    p.addAll(Arrays.asList(command.parameters));
+    p.addAll(Arrays.asList(parameters));
+    String[] n = new String[p.size()];
+    this.parameters = p.toArray(n);
+    this.streams = shell.streams.copy();
+    this.pipeChain.push(this);
+  }
+
   @Override
   public Command applyVariables(Map<String, String> variables) {
     locals.putAll(variables);
@@ -59,32 +84,6 @@ public class Command implements VariableCatalog<Command>, StreamCatalog<Command>
   @Override
   public SharedMap<String, String> exportVariables() {
     return locals;
-  }
-
-  String[] parameters;
-  Shell shell;
-  SharedMap<String, String> locals = new SharedMap<>();
-  Streams streams;
-
-  Stack<Command> pipeChain = new Stack<>();
-
-  public Command(Shell shell, String... parameters) {
-    this.shell = shell;
-    this.streams = shell.streams.copy();
-    this.parameters = parameters;
-    this.pipeChain.push(this);
-  }
-
-  private Command(Command command, String... parameters) {
-    this.shell = command.shell;
-    this.locals.merge(command.locals);
-    List<String> p = new ArrayList<>();
-    p.addAll(Arrays.asList(command.parameters));
-    p.addAll(Arrays.asList(parameters));
-    String[] n = new String[p.size()];
-    this.parameters = p.toArray(n);
-    this.streams = shell.streams.copy();
-    this.pipeChain.push(this);
   }
 
   public Command pipe(Command cmd) {
@@ -167,8 +166,8 @@ public class Command implements VariableCatalog<Command>, StreamCatalog<Command>
   }
 
   public List<String[]> getPipeChain() {
-    List<String[]>out = new ArrayList<>();
-    for (Command c: pipeChain){
+    List<String[]> out = new ArrayList<>();
+    for (Command c : pipeChain) {
       out.add(c.parameters);
     }
     return out;
@@ -189,12 +188,12 @@ public class Command implements VariableCatalog<Command>, StreamCatalog<Command>
 
   public Executive execPipe() {
     Streams common_streams = new Streams(streams.get(0), null, streams.get(2));
-    Stack<Command>chain = (Stack<Command>) pipeChain.clone();
-    Stack<Executive>executives = new Stack<>();
+    Stack<Command> chain = (Stack<Command>) pipeChain.clone();
+    Stack<Executive> executives = new Stack<>();
     Command link = chain.remove(0);
     executives.add(shell.exec(link.exportVariables(), common_streams, link.parameters));
     common_streams.set(0, null);
-    for (Command command: chain){
+    for (Command command : chain) {
       Executive next = shell.exec(command.exportVariables(), common_streams, command.parameters);
       next.readInputFrom(executives.peek().get(0));
       executives.add(next);

@@ -33,6 +33,26 @@ public class ClassPathLoader extends URLClassLoader {
     loadRuntimePackages();
   }
 
+  @Nullable
+  public static URL toURL(@NotNull String uri) {
+    return toURL(new File(uri));
+  }
+
+  @Nullable
+  public static URL toURL(@NotNull File file) {
+    return toURL(file.toURI());
+  }
+
+  @Nullable
+  public static URL toURL(URI uri) {
+    try {
+      return uri.toURL();
+    }
+    catch (MalformedURLException e) {
+      return null;
+    }
+  }
+
   private void loadRuntimePackages() {
     context.runtimePackages = new ArrayList<>();
     for (Package p : getRuntime()) context.runtimePackages.add(p.getName());
@@ -65,28 +85,8 @@ public class ClassPathLoader extends URLClassLoader {
     context.tableEntries.put(entries.getSource(), entries);
   }
 
-  @Nullable
-  public static URL toURL(@NotNull String uri){
-    return toURL(new File(uri));
-  }
-
-  @Nullable
-  public static URL toURL(@NotNull File file){
-    return toURL(file.toURI());
-  }
-
-  @Nullable
-  public static URL toURL(URI uri){
-    try{
-      return uri.toURL();
-    }
-    catch (MalformedURLException e) {
-      return null;
-    }
-  }
-
   private void processDirectory(File directory) {
-    if (new File(directory, "META-INF").exists()){
+    if (new File(directory, "META-INF").exists()) {
       processFile(toURL(directory.toURI()));
       return;
     }
@@ -123,7 +123,7 @@ public class ClassPathLoader extends URLClassLoader {
   }
 
   public void addURL(String url) {
-    if (url.startsWith("http")){
+    if (url.startsWith("http")) {
       try {
         super.addURL(new URL(url));
         System.err.println(url);

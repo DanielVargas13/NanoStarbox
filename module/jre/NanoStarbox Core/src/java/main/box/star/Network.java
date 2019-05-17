@@ -11,7 +11,8 @@ public class Network {
     try {
       ip = InetAddress.getLocalHost();
       return ip.toString();
-    } catch (UnknownHostException e) {
+    }
+    catch (UnknownHostException e) {
       e.printStackTrace();
     }
     return null;

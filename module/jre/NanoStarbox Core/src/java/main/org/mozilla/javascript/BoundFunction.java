@@ -9,20 +9,20 @@ package org.mozilla.javascript;
 /**
  * The class for results of the Function.bind operation
  * EcmaScript 5 spec, 15.3.4.5
+ *
  * @author Raphael Speyer
  */
 public class BoundFunction extends BaseFunction {
-    
+
   static final long serialVersionUID = 2118137342826470729L;
-    
+
   private final Callable targetFunction;
   private final Scriptable boundThis;
   private final Object[] boundArgs;
   private final int length;
 
   public BoundFunction(Context cx, Scriptable scope, Callable targetFunction, Scriptable boundThis,
-                       Object[] boundArgs)
-  {
+                       Object[] boundArgs) {
     this.targetFunction = targetFunction;
     this.boundThis = boundThis;
     this.boundArgs = boundArgs;
@@ -47,8 +47,7 @@ public class BoundFunction extends BaseFunction {
   }
 
   @Override
-  public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] extraArgs)
-  {
+  public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] extraArgs) {
     Scriptable callThis = boundThis != null ? boundThis : ScriptRuntime.getTopCallScope(cx);
     return targetFunction.call(cx, scope, callThis, concat(boundArgs, extraArgs));
   }

@@ -13,13 +13,13 @@ import org.mozilla.javascript.Token;
  * Node type is {@link Token#COMMENT}.<p>
  *
  * <p>JavaScript effectively has five comment types:
- *   <ol>
- *     <li>// line comments</li>
- *     <li>/<span class="none">* block comments *\/</li>
- *     <li>/<span class="none">** jsdoc comments *\/</li>
- *     <li>&lt;!-- html-open line comments</li>
- *     <li>^\\s*--&gt; html-close line comments</li>
- *   </ol>
+ * <ol>
+ * <li>// line comments</li>
+ * <li>/<span class="none">* block comments *\/</li>
+ * <li>/<span class="none">** jsdoc comments *\/</li>
+ * <li>&lt;!-- html-open line comments</li>
+ * <li>^\\s*--&gt; html-close line comments</li>
+ * </ol>
  *
  * <p>The first three should be familiar to Java programmers.  JsDoc comments
  * are really just block comments with some conventions about the formatting
@@ -33,70 +33,72 @@ import org.mozilla.javascript.Token;
  * then the line is considered a line comment.  This is to support parsing
  * JavaScript in &lt;script&gt; HTML tags that has been "hidden" from very old
  * browsers by surrounding it with HTML comment delimiters. <p>
- *
+ * <p>
  * Note the node start position for Comment nodes is still relative to the
  * parent, but Comments are always stored directly in the AstRoot node, so
  * they are also effectively absolute offsets.
  */
 public class Comment extends AstNode {
 
-    private String value;
-    private Token.CommentType commentType;
+  private String value;
+  private Token.CommentType commentType;
 
-    {
-        type = Token.COMMENT;
-    }
+  {
+    type = Token.COMMENT;
+  }
 
-    /**
-     * Constructs a new Comment
-     * @param pos the start position
-     * @param len the length including delimiter(s)
-     * @param type the comment type
-     * @param value the value of the comment, as a string
-     */
-    public Comment(int pos, int len, Token.CommentType type, String value) {
-        super(pos, len);
-        commentType = type;
-        this.value = value;
-    }
+  /**
+   * Constructs a new Comment
+   *
+   * @param pos   the start position
+   * @param len   the length including delimiter(s)
+   * @param type  the comment type
+   * @param value the value of the comment, as a string
+   */
+  public Comment(int pos, int len, Token.CommentType type, String value) {
+    super(pos, len);
+    commentType = type;
+    this.value = value;
+  }
 
-    /**
-     * Returns the comment style
-     */
-    public Token.CommentType getCommentType() {
-        return commentType;
-    }
+  /**
+   * Returns the comment style
+   */
+  public Token.CommentType getCommentType() {
+    return commentType;
+  }
 
-    /**
-     * Sets the comment style
-     * @param type the comment style, a
-     * {@link Token.CommentType}
-     */
-    public void setCommentType(Token.CommentType type) {
-        this.commentType = type;
-    }
+  /**
+   * Sets the comment style
+   *
+   * @param type the comment style, a
+   *             {@link Token.CommentType}
+   */
+  public void setCommentType(Token.CommentType type) {
+    this.commentType = type;
+  }
 
-    /**
-     * Returns a string of the comment value.
-     */
-    public String getValue() {
-        return value;
-    }
+  /**
+   * Returns a string of the comment value.
+   */
+  public String getValue() {
+    return value;
+  }
 
-    @Override
-    public String toSource(int depth) {
-        StringBuilder sb = new StringBuilder(getLength() + 10);
-        sb.append(makeIndent(depth));
-        sb.append(value);
-        return sb.toString();
-    }
+  @Override
+  public String toSource(int depth) {
+    StringBuilder sb = new StringBuilder(getLength() + 10);
+    sb.append(makeIndent(depth));
+    sb.append(value);
+    return sb.toString();
+  }
 
-    /**
-     * Comment nodes are not visited during normal visitor traversals,
-     * but comply with the {@link AstNode#visit} interface.
-     */
-    @Override
-    public void visit(NodeVisitor v) {
-        v.visit(this);
-    }
+  /**
+   * Comment nodes are not visited during normal visitor traversals,
+   * but comply with the {@link AstNode#visit} interface.
+   */
+  @Override
+  public void visit(NodeVisitor v) {
+    v.visit(this);
+  }
 }

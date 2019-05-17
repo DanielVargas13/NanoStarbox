@@ -179,12 +179,12 @@ public class Response implements Closeable {
     return blankResponse(Status.FORBIDDEN);
   }
 
-  public static  Response notFoundResponse(){
+  public static Response notFoundResponse() {
     return notFoundResponse(null, null);
   }
 
-  public static  Response notFoundResponse(String mimeType, String content) {
-    return newFixedLengthResponse(Status.NOT_FOUND, Tools.switchNull(mimeType,"text/plain"), Tools.switchNull(content, "File not found"));
+  public static Response notFoundResponse(String mimeType, String content) {
+    return newFixedLengthResponse(Status.NOT_FOUND, Tools.switchNull(mimeType, "text/plain"), Tools.switchNull(content, "File not found"));
   }
 
   public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {
