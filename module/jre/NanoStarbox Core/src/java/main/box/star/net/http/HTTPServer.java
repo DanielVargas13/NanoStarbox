@@ -112,10 +112,15 @@ import java.util.regex.Pattern;
  */
 public abstract class HTTPServer {
 
+  public HashSet<String> getPublicIndexFileNames() {
+    return configuration.get(CONFIG_INDEX_FILES);
+  }
+
   public static final String
       CONFIG_HOST = "host",
       CONFIG_PORT = "port",
       CONFIG_DAEMON = "daemon",
+      CONFIG_INDEX_FILES = "index-files",
       CONFIG_SOCKET_READ_TIMEOUT = "socket-read-timeout";
 
   public static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
@@ -173,6 +178,10 @@ public abstract class HTTPServer {
    * Constructs an HTTP server on given hostname and port.
    */
   public HTTPServer() {
+    HashSet<String> cif = new HashSet<>();
+    cif.add("index.htm");
+    cif.add("index.html");
+    configurationManager.set(CONFIG_INDEX_FILES, cif);
     configurationManager.set(CONFIG_HOST, "localhost");
     configurationManager.set(CONFIG_PORT, 8080);
     configurationManager.set(CONFIG_DAEMON, true);
