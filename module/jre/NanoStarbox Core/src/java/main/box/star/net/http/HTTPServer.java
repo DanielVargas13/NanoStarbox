@@ -373,7 +373,7 @@ public abstract class HTTPServer {
     else if (path.endsWith(".png")) return MIME_PNG;
     else if (path.endsWith(".gif")) return MIME_GIF;
     else if (path.endsWith(".svg")) return MIME_SVG;
-    else if (path.matches("^[^\0]*jpe?g$")) return MIME_JPEG;
+    else if (path.matches("^[^\0]*\\.jpe?g$")) return MIME_JPEG;
     else if (path.endsWith(".ico")) return MIME_ICON;
     return "application/octet-stream";
   }
