@@ -33,6 +33,13 @@ public class RhinoPageDriver implements
     MimeTypeDriver.WithMediaMapControlPort,
     MimeTypeDriver.WithMimeTypeScanner
 {
+  private static RhinoPageDriver impl;
+  // support a bare-bones-global-system-runtime-configuration
+  public final static RhinoPageDriver getInstance(){
+    if (impl != null) return impl;
+    impl = new RhinoPageDriver();
+    return impl;
+  }
   /**
    * <p>{@link MimeTypeDriver} mime-type</p>
    *<br>
