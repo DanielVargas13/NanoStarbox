@@ -3,7 +3,6 @@ package box.star.net.tools;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.io.Streams;
-import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.response.Response;
 import box.star.net.http.response.Status;
@@ -13,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 public class ServerContent {
+
+  private final static String QA_MESSAGE_NULL_DIRECTORY_ARREST = "cannot set directory of server content to null";
 
   public IHTTPSession session;
   public Object data;
@@ -37,14 +38,14 @@ public class ServerContent {
   final public boolean directoryIsFile(){ return directory instanceof File; }
   final public boolean hasDirectory(){ return directory != null; }
   final public ServerContent setDirectory(URI directory){
-    this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
+    this.directory = Tools.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
     return this;
   }
   final private void setDirectory(IHTTPSession session){
     setDirectory(URI.create(session.getAddress() + session.getServer().getParentUri(session.getUri())));
   }
   final private ServerContent setDirectory(File directory){
-    this.directory = Tools.arrestIsNull(directory, "cannot set server content directory to null");
+    this.directory = Tools.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
     return this;
   }
   @NotNull public <URL_OR_FILE> URL_OR_FILE getDirectory() {
