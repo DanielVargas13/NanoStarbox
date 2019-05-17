@@ -10,9 +10,6 @@ import box.star.net.http.response.Status;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 public class ServerContent {
 
@@ -79,13 +76,15 @@ public class ServerContent {
       if (path.exists()) {
         if (path.isDirectory()){
           File test = null;
-          for (String idx:session.getServer().getPublicIndexFileNames()){
+          for (String idx:session.getServer().getIndexFileList()){
             test = new File(path, idx);
             if (test.exists()){
-              path = test; break;
+              this.mimeType = session.getServer().getMimeTypeForPath(test.getPath());
+              this.data = path = test; break;
             }
           }
           if (!path.equals(test)){
+            this.data = null;
             setModificationTime(0);
             this.status = Status.NOT_FOUND;
             return;
