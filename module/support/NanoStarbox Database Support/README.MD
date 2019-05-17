@@ -4,11 +4,11 @@
 
 **Feature Target**: Database Suite<br>
 **Solution Features**: MS Access 2016 Compatibility<br>
-**Feature Size:**: 2.3MB
+**Feature Size:**: 2.93MB
 
 This project is an optional support pack.
 
-*MS Access 2016 Compatibility Suite provided by [ucanaccess](net.sf.ucanaccess)*.
+*MS Access 2016 Compatibility Suite provided by [ucanaccess 4.0.4](http://ucanaccess.sourceforge.net/site.html#home)*.
 
 Feature Support Libraries: [HSQLDB 2.3.1](https://en.wikipedia.org/wiki/HSQLDB), [Commons Logging 2.6](https://www.google.com/search?client=markdown-provider&q=Commons+Logging+2.6), [Commons Lang 1.13](https://www.google.com/search?client=markdown-provider&q=Commons+Lang+1.13), and [jackcess 2.1.11](https://www.google.com/search?client=markdown-provider&q=maven+jackcess+2.1.11).
 
