@@ -38,13 +38,13 @@ class WebServiceTest {
 
      */
     // a driver that conditionally calls the above driver
-    ws.addMimeTypeDriver("text/html", new MimeTypeDriver<WebService>() {
+    ws.addMimeTypeDriver("text/html", new MimeTypeDriver() {
       @Override
       public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
         if (content.isOkay()) {
           String mimeType = rhinoPageDriver.scanMimeType(content.getStream());
           if (NANO_STARBOX_JAVASCRIPT_SERVER_PAGE.equals(mimeType)) {
-            return rhinoPageDriver.createMimeTypeResult(ws, content);
+            return rhinoPageDriver.createMimeTypeResult(content);
           }
         }
         return new ServerResult(content);

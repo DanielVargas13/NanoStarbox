@@ -28,7 +28,7 @@ import java.util.Stack;
 import static box.star.net.http.HTTPServer.MIME_HTML;
 
 public class RhinoPageDriver implements
-    MimeTypeDriver<WebService>,
+    MimeTypeDriver,
     MimeTypeDriver.WithMediaMapControlPort,
     MimeTypeDriver.WithMimeTypeScanner,
     MimeTypeDriver.WithIndexFileListControlPort {
@@ -228,7 +228,7 @@ public class RhinoPageDriver implements
   }
 
   @Override
-  public ServerResult createMimeTypeResult(WebService server, ServerContent content) {
+  public ServerResult createMimeTypeResult(ServerContent content) {
     Context cx = Context.enter();
     cx.setOptimizationLevel(-1);
     try {
@@ -239,7 +239,7 @@ public class RhinoPageDriver implements
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(content.getDirectory(), jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "content", Context.javaToJS(content, jsThis), cx);
-      ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(server, jsThis), cx);
+      ScriptRuntime.setObjectProp(jsThis, "server", Context.javaToJS(content.session.getServer(), jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "session", Context.javaToJS(content.session, jsThis), cx);
       ScriptRuntime.setObjectProp(jsThis, "shell", Context.javaToJS(documentBuilder, jsThis), cx);
       documentBuilder.objects.put("this", jsThis);

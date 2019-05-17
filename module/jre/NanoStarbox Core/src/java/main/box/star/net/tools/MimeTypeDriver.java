@@ -10,18 +10,16 @@ import java.util.HashSet;
  * <p>{@link MimeTypeDriver}s create {@link ServerResult}s from {@link ServerContent} using a server environment such as the {@link WebService}.</p>
  * <br>
  *
- * @param <SERVICE> the server environment
  */
-public interface MimeTypeDriver<SERVICE> {
+public interface MimeTypeDriver {
 
   /**
    * <p>Creates a mime-formatted {@link ServerResult} from a {@link ServerContent} source.</p>
    *
-   * @param server  the server environment
    * @param content the server content
    * @return the mime formatted server result
    */
-  ServerResult createMimeTypeResult(SERVICE server, ServerContent content);
+  ServerResult createMimeTypeResult(ServerContent content);
 
   interface WithMediaMapControlPort {
     void configureMimeTypeController(MimeTypeMap controlPort);

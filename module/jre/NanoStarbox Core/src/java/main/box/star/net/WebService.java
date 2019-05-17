@@ -29,7 +29,7 @@ public class WebService extends HTTPServer {
    * as a ServerContent object.</p>
    * <br>
    */
-  public final Map<String, MimeTypeDriver<WebService>> mimeTypeDrivers = new Hashtable<>();
+  public final Map<String, MimeTypeDriver> mimeTypeDrivers = new Hashtable<>();
   /**
    * See the {@link MimeTypeMap} for details
    */
@@ -83,7 +83,7 @@ public class WebService extends HTTPServer {
     return null;
   }
 
-  final public void addMimeTypeDriver(String mimeType, MimeTypeDriver<WebService> driver) {
+  final public void addMimeTypeDriver(String mimeType, MimeTypeDriver driver) {
     mimeTypeDrivers.put(mimeType, driver);
     if (driver instanceof MimeTypeDriver.WithMediaMapControlPort)
       ((MimeTypeDriver.WithMediaMapControlPort) driver).configureMimeTypeController(mimeTypeMap);
@@ -124,8 +124,8 @@ public class WebService extends HTTPServer {
   protected ServerResult getResult(ServerContent content) {
     if (content == null) return null;
     if (content.isOkay()) {
-      MimeTypeDriver<WebService> driver = mimeTypeDrivers.get(content.mimeType);
-      if (driver != null) return driver.createMimeTypeResult(this, content);
+      MimeTypeDriver driver = mimeTypeDrivers.get(content.mimeType);
+      if (driver != null) return driver.createMimeTypeResult(content);
     }
     return new ServerResult(content);
   }
