@@ -16,6 +16,6 @@
     <orderEntry type="library" exported="" scope="PROVIDED" name="com.healthmarketscience.jackcess:jackcess:3.0.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="org.apache.poi:poi:4.1.0" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="hyper-sql-database-2.4.1" level="project" />
-    <orderEntry type="library" name="net.sf.ucanaccess:ucanaccess:4.0.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="net.sf.ucanaccess:ucanaccess:4.0.4" level="project" />
   </component>
 </module>
