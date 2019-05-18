@@ -2,9 +2,11 @@
   <artifact build-on-make="true" name="JSON">
     <output-path>$PROJECT_DIR$/../archive</output-path>
     <root id="root">
-      <element id="file-copy" path="$PROJECT_DIR$/src/java/jar/json-20180813.jar" output-file-name="json.jar" />
       <element id="directory" name="doc">
         <element id="file-copy" path="$PROJECT_DIR$/src/java/jar/json-20180813-javadoc.jar" />
+      </element>
+      <element id="directory" name="core-built-in">
+        <element id="file-copy" path="$PROJECT_DIR$/src/java/jar/json-20180813.jar" output-file-name="json.jar" />
       </element>
     </root>
   </artifact>
