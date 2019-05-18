@@ -5,7 +5,6 @@
       <element id="archive" name="nano-starbox-core.jar">
         <element id="module-output" name="NanoStarbox Core" />
         <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/jna-4.5.2.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/hsqldb-2.4.1.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/json.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/simple-xml-2.7.1.jar" path-in-jar="/" />
       </element>

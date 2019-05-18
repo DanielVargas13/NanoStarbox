@@ -7,10 +7,10 @@
         <element id="directory" name="META-INF">
           <element id="file-copy" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/resource/main/META-INF/MANIFEST.MF" />
         </element>
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/jna-4.5.2.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/hsqldb-2.4.1.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/json.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/simple-xml-2.7.1.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/nano-ucanaccess.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/nano-jna-4.5.2.jar" path-in-jar="/" />
       </element>
       <element id="archive" name="nano-starbox-android-jit.jar">
         <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
@@ -27,15 +27,6 @@
         <element id="module-output" name="NanoStarbox Rhino Debugger" />
       </element>
       <element id="archive" name="nano-starbox-javadocs.jar">
-        <element id="directory" name="commons-lang3">
-          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/commons-lang3-3.8.1-javadoc.jar" path-in-jar="/" />
-        </element>
-        <element id="directory" name="commons-logging">
-          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/commons-logging-1.2-javadoc.jar" path-in-jar="/" />
-        </element>
-        <element id="directory" name="hsqldb">
-          <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/hsqldb-2.4.1-javadoc.jar" path-in-jar="/" />
-        </element>
         <element id="directory" name="jackcess">
           <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/jackcess-3.0.1-javadoc.jar" path-in-jar="/" />
         </element>
