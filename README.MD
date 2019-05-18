@@ -12,9 +12,6 @@ Each working draft specification is guaranteed to be compatible with itself.
 working drafts may or may not be compatible with working drafts of the future or past.
 Compatibility is an issue of expert systems knowledge.
 
-For Android JIT scripting there is a required scripting module. See the release page 
-[on the github site](https://github.com/hypersoft/NanoStarbox/releases) for details.
-
 Additionally there are several provided support packages for desktops:
 
 Java [Swing Kits](module/swing/):

@@ -11,11 +11,7 @@
         <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/simple-xml-2.7.1.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/nano-ucanaccess.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/nano-jna-4.5.2.jar" path-in-jar="/" />
-      </element>
-      <element id="archive" name="nano-starbox-android-jit.jar">
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/dalvik-dx-7.1.0_r7.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/libcore-dex-7.1.0_r7.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/lib/feature/rhino-android-1.5.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/core-built-in/nano-android-jit.jar" path-in-jar="/" />
       </element>
       <element id="archive" name="nano-starbox-voyager-jfx.jar">
         <element id="module-output" name="NanoStarbox Voyager" />
