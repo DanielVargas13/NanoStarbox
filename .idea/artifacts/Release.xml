@@ -26,7 +26,7 @@
       <element id="archive" name="nano-starbox-rhino-console-debug.jar">
         <element id="module-output" name="NanoStarbox Rhino Debugger" />
       </element>
-      <element id="archive" name="nano-starbox-javadocs">
+      <element id="archive" name="nano-starbox-javadocs.jar">
         <element id="directory" name="commons-lang3">
           <element id="extracted-dir" path="$PROJECT_DIR$/module/support/archive/doc/commons-lang3-3.8.1-javadoc.jar" path-in-jar="/" />
         </element>

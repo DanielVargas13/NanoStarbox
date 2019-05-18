@@ -4,4 +4,4 @@ Box Office DB combines [Jackcess 3.0.1](https://jackcess.sourceforge.io/index.ht
 which provides MS Access 2016 Database tools for all Java 8 environments.
 
 This library requires [Hyper SQL DB 2.4.1](../Hyper+SQL+Database/) support,
-which must be compiled to build this project.
+which is a NanoStarbox Core builtin.
