@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Nano Core Features">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../support/archive/builtins" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/../support/archive/doc" />
+    </JAVADOC>
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../support/archive/builtins" recursive="false" />
+  </library>
+</component>
