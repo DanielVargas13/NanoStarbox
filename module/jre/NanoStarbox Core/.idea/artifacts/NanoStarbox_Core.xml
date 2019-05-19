@@ -4,11 +4,11 @@
     <root id="root">
       <element id="archive" name="nano-starbox-core.jar">
         <element id="module-output" name="NanoStarbox Core" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/json.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/simple-xml-2.7.1.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/nano-android-jit.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/nano-jna-4.5.2.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/core-built-in/nano-ucanaccess.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/builtins/json.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/builtins/nano-android-jit.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/builtins/nano-jna-4.5.2.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/builtins/nano-ucanaccess.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/../../support/archive/builtins/simple-xml-2.7.1.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>
