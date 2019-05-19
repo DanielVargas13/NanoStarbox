@@ -50,7 +50,6 @@ public class Voyager extends Application {
   }
 
   public static class FXControl implements Initializable, Parameter.Parser {
-
     private final static int SOURCE_STDIN = 0, SOURCE_HTML = 1, SOURCE_FILE = 2, SOURCE_URL = 3, SOURCE_XML = 4, SOURCE_TEXT = 5;
 
     private Stage stage;
