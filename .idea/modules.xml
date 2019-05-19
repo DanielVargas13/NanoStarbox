@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NanoStarbox.iml" filepath="$PROJECT_DIR$/NanoStarbox.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" filepath="$PROJECT_DIR$/module/jre/NanoStarbox Core/src/java/NanoStarbox Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" filepath="$PROJECT_DIR$/module/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" filepath="$PROJECT_DIR$/module/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" filepath="$PROJECT_DIR$/module/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module/NanoStarbox Core/src/java/NanoStarbox Core.iml" filepath="$PROJECT_DIR$/module/NanoStarbox Core/src/java/NanoStarbox Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module/ui/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" filepath="$PROJECT_DIR$/module/ui/swing/NanoStarbox Rhino Console/src/java/NanoStarbox Rhino Console.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module/ui/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" filepath="$PROJECT_DIR$/module/ui/swing/NanoStarbox Rhino Debugger/src/java/NanoStarbox Rhino Debugger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module/ui/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" filepath="$PROJECT_DIR$/module/ui/jfx/NanoStarbox Voyager/src/java/NanoStarbox Voyager.iml" />
     </modules>
   </component>
 </project>
