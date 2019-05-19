@@ -2,25 +2,31 @@
 
 This JDK 1.8 API Level 8 [project](LICENSE) is managed with IntelliJ IDEA 
 using [git](https://github.com/hypersoft/NanoStarboox/) VCS 
-(version-control-system).
+(version-control-system), and requires Apache Maven, to fetch
+external build specifications and toolsets.
 
 NanoStarbox is a working draft specification composed of a headless core module:
 
 * [NanoStarbox Core](module/NanoStarbox+Core)
 
-Each working draft specification is guaranteed to be compatible with itself.
-working drafts may or may not be compatible with working drafts of the future or past.
-Compatibility is an issue of expert systems knowledge.
+Browse the core module for an overview of current features. Each NanoStarbox 
+working draft specification is guaranteed to be compatible with itself.
+working drafts may or may not be compatible with working drafts of the 
+future or past. Specification Compatibility is an issue of expert 
+NanoStarbox Core specification knowledge. If you are not requiring a custom
+build, you can head over to the [secure release section](https://github.com/hypersoft/NanoStarbox/releases)
+on [Github](https://github.com) to download compiled specification artifacts.
 
-Additionally there are several provided support packages for desktops:
+Additionally there are several provided support modules for desktop
+environments:
 
-Java [Swing Kits](module/ui/swing/):
+Java [Swing Modules](module/ui/swing/):
 * [NanoStarbox Rhino Console](module/ui/swing/NanoStarbox+Rhino+Console)
 * [NanoStarbox Rhino Debugger](module/ui/swing/NanoStarbox+Rhino+Debugger)
 
-Java [JFX Kits](module/ui/jfx/):
+Java [JFX Modules](module/ui/jfx/):
 * [NanoStarbox Voyager](module/ui/jfx/NanoStarbox+Voyager)
 
-Each kit is configured for independent usage with IntelliJ IDEA however, the filing-structure must remain in tact for this automatic code dependency feature to remain operational.
+Each module is configured for independent usage with IntelliJ IDEA as a single project, however, the filing-structure must remain in tact for this automatic code dependency feature to remain operational within the main project.
 
-The default build method for this IntelliJ IDEA project builds all modules in the [project's jar directory](jar/).
+The main project build method for this IntelliJ IDEA project builds all modules in the [project's jar directory](jar/).
