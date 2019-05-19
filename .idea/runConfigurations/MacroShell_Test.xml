@@ -12,7 +12,7 @@
     <option name="METHOD_NAME" value="main" />
     <option name="TEST_OBJECT" value="method" />
     <option name="PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="module/jre/NanoStarbox Core" />
+    <option name="WORKING_DIRECTORY" value="module/NanoStarbox Core" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
