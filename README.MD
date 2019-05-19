@@ -13,7 +13,7 @@ Browse the core module for an overview of current features. Each NanoStarbox
 working draft specification is guaranteed to be compatible with itself.
 working drafts may or may not be compatible with working drafts of the 
 future or past. Specification Compatibility is an issue of expert 
-NanoStarbox Core specification knowledge. If you are not requiring a custom
+NanoStarbox specification knowledge. If you are not requiring a custom
 build, you can head over to the [secure release section](https://github.com/hypersoft/NanoStarbox/releases)
 on [Github](https://github.com) to download compiled specification artifacts.
 
