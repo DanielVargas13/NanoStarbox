@@ -17,7 +17,7 @@ NanoStarbox Core specification knowledge. If you are not requiring a custom
 build, you can head over to the [secure release section](https://github.com/hypersoft/NanoStarbox/releases)
 on [Github](https://github.com) to download compiled specification artifacts.
 
-Additionally there are several provided support modules for desktop
+In this specification there are several provided support modules for desktop
 environments:
 
 Java [Swing Modules](module/ui/swing/):
