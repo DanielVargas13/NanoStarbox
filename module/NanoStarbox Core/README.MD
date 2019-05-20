@@ -29,6 +29,8 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 
 *Nano HSQLDB and Nano Jackcess do not feature any support not required by UCanAccess, such as HTTP SQL Server.*
 
+*Nano Libraries are safe for use alongside their full-featured-equivalents*
+
 *Nano Packages provided courtesy of Hypersoft-Systems: U.-S.-A. NanoStarbox Project*
 
 *Rhino Android JIT Extensions and Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classloading Hacks provided courtesy of [Android Dalvik](https://source.android.com/devices/tech/dalvik), [Faendir](https://www.faendir.com/wordpress/), and Hypersoft-Systems: U.-S.-A. NanoStarbox Project*
