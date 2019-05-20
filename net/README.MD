@@ -16,7 +16,7 @@ the core.
 
 *NSR7 jna support was not officially enabled until NSR8*.
 
-The [NSR8 Specification](https://github.com/hypersoft/NanoStarbox/releases/tag/NSR8) introduced machine architecture archives,
+The [NSR8 Specification](https://github.com/hypersoft/NanoStarbox/releases/tag/NSR8) introduced single machine architecture archives,
 which includes all specifications not included with the core. Each machine dependent
 archive is listed of the form: 'nano-jna-OS_NAME-OS_ARCH-4.5.2.jar', except in the case
 of "darwin" OS which is located at 'nano-jna-darwin-4.5.2.jar'.
