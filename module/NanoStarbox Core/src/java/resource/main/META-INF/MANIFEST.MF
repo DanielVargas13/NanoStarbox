@@ -49,10 +49,10 @@ Bundle-NativeCode:  com/sun/jna/win32-x86/jnidispatch.dll; processor=x
  jnidispatch.jnilib; osname=macosx;processor=x86;processor=x86-64;proc
  essor=ppc
 Class-Path: nano-jna-aix-ppc-4.5.2.jar nano-jna-aix-ppc64-4.5.2.jar na
- no-jna-darwin-4.5.2.jar nano-jna-freebsd-x6-64-4.5.2.jar nano-jna-fre
- ebsd-x86-4.5.2.jar nano-jna-linux-aarch64-4.5.2.jar nano-jna-linux-pp
- c-4.5.2.jar nano-jna-linux-ppc64le-4.5.2.jar nano-jna-linux-s390x-4.5
- .2.jar nano-jna-openbsd-x86-4.5.2.jar nano-jna-openbsd-x86-64-4.5.2.j
- ar nano-jna-sunos-sparc-4.5.2.jar nano-jna-sunos-sparcv9-4.5.2.jar na
- no-jna-sunos-x86-4.5.2.jar nano-jna-sunos-x86-64-4.5.2.jar byte-buddy
- -1.9.13.jar byte-buddy-agent-1.9.13.jar byte-buddy-android-1.9.13.jar
+ no-jna-freebsd-x86-64-4.5.2.jar nano-jna-freebsd-x86-4.5.2.jar nano-j
+ na-linux-aarch64-4.5.2.jar nano-jna-linux-ppc-4.5.2.jar nano-jna-linu
+ x-ppc64le-4.5.2.jar nano-jna-linux-s390x-4.5.2.jar nano-jna-openbsd-x
+ 86-4.5.2.jar nano-jna-openbsd-x86-64-4.5.2.jar nano-jna-sunos-sparc-4
+ .5.2.jar nano-jna-sunos-sparcv9-4.5.2.jar nano-jna-sunos-x86-4.5.2.ja
+ r nano-jna-sunos-x86-64-4.5.2.jar byte-buddy-1.9.13.jar byte-buddy-ag
+ ent-1.9.13.jar byte-buddy-android-1.9.13.jar
