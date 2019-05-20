@@ -3,7 +3,9 @@
 *[Extended Library Class Path](./)*
 
 This directory houses functionality which may be required by an
-implementation that is not featured in the core library.
+implementation that is not featured in the core library. The core library
+will load functionality from any of these archives, preferentially,
+when found in the jvm-user-classpath, which requires a local-file-source.
 
 These libraries can be used via their official repository access URLs,
 however any URL classloading should cache the downloaded data to an
