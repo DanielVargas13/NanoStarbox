@@ -5,7 +5,9 @@
 Some NanoStarbox modules require shrinking to fit within the 5MB
 limit of the current specification. Each of these modules, are
 pre-shrunk, and will require custom-pre-shrinking with every 
-library source update to maintain specification parameters.
+library source update to maintain specification parameters. Each
+of these so-called "shrunken" libraries are prefixed with the name
+'nano' to signify their form.
 
 [archive](./archive) is the directory which houses the core libraries,
 their development sources, and documentation for this NanoStarbox
