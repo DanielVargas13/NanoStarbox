@@ -12,7 +12,7 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * HTTPServer Interface Library (Core/[NanoHTTPD](https://github.com/NanoHttpd/nanohttpd))
 * HTTPServer Content Provider Interface Library (Core, uses HTTPServer Interface)
 * WebServer Interface Library (Core, uses HTTPServer Interface)
-* WebServer Archive Mounting (Core, uses HTTPServer Content Provider Interface)
+* WebServer Archive/Directory Mounting (Core, uses HTTPServer Content Provider Interface)
 * Command Interface Library (Core)
 * TextScanner Library (Core)
 * Text Macro Shell Library (Core, uses TextScanner)
