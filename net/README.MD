@@ -35,3 +35,10 @@ to the NanoStarbox Core user, providing a simple upgrade path from
 Web Commander, to JVM/Web Commander. The inclusion of this library is a
 mere courtesy provided due to the size and complexity of the project.
 No source level modifications have been made to this snapshot.
+
+It should be duly noted that the byte-buddy library combined with the
+macro scripting and command shell capabilities of the core, provide a
+wide range of code opportunities, which make this NanoSDK a formidable
+library for any systems engineer. The compact size of the SDK ensures
+a quick learning curve with a toolset that won't change its stripes
+on the developer.
