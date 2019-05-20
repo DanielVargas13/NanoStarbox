@@ -20,4 +20,4 @@ Voyager does not feature any Java/Rhino scripting extensions. If you need a Voya
 application profile such as Microsoft HTML Application, you should seek
 another product OR use the NanoStarbox WebServer to provide your
 application user interface. The latter is the ideal profile, which is
-portable to all platforms, regardless of voyager availability.
+portable to all platforms, regardless of Voyager/JFX availability.
