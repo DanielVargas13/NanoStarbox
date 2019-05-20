@@ -7,15 +7,14 @@ Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: JNA Development Team
-Class-Path: nano-jna-4.5.2-extended.jar nano-jna-aix-ppc-4.5.2.jar nan
- o-jna-aix-ppc64-4.5.2.jar nano-jna-darwin-4.5.2.jar nano-jna-freebsd-
- x6-64-4.5.2.jar nano-jna-freebsd-x86-4.5.2.jar nano-jna-linux-aarch64
- -4.5.2.jar nano-jna-linux-ppc-4.5.2.jar nano-jna-linux-ppc64le-4.5.2.
- jar nano-jna-linux-s390x-4.5.2.jar nano-jna-openbsd-x86-4.5.2.jar nan
- o-jna-openbsd-x86-64-4.5.2.jar nano-jna-sunos-sparc-4.5.2.jar nano-jn
- a-sunos-sparcv9-4.5.2.jar nano-jna-sunos-x86-4.5.2.jar nano-jna-sunos
- -x86-64-4.5.2.jar byte-buddy-1.9.13.jar byte-buddy-agent-1.9.13.jar b
- yte-buddy-android-1.9.13.jar
+Class-Path: nano-jna-aix-ppc-4.5.2.jar nano-jna-aix-ppc64-4.5.2.jar na
+ no-jna-darwin-4.5.2.jar nano-jna-freebsd-x6-64-4.5.2.jar nano-jna-fre
+ ebsd-x86-4.5.2.jar nano-jna-linux-aarch64-4.5.2.jar nano-jna-linux-pp
+ c-4.5.2.jar nano-jna-linux-ppc64le-4.5.2.jar nano-jna-linux-s390x-4.5
+ .2.jar nano-jna-openbsd-x86-4.5.2.jar nano-jna-openbsd-x86-64-4.5.2.j
+ ar nano-jna-sunos-sparc-4.5.2.jar nano-jna-sunos-sparcv9-4.5.2.jar na
+ no-jna-sunos-x86-4.5.2.jar nano-jna-sunos-x86-64-4.5.2.jar byte-buddy
+ -1.9.13.jar byte-buddy-agent-1.9.13.jar byte-buddy-android-1.9.13.jar
 Implementation-Specification: NSR8
 Main-Class: org.mozilla.javascript.tools.shell.Main
 Implementation-Vendor: Hypersoft-Systems
