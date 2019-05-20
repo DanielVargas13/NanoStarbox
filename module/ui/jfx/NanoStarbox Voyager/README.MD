@@ -6,12 +6,10 @@ a small foot print, but require modern ui capabilities. Combined with
 the NanoStarbox Core, the realistic capabilities of Voyager are as endless as the
 Java Platform and beyond combined with the power of JNA.
 
-At this time, Voyager does not have a "kiosk" mode, but it should
-have one. The current windowing profile is "simple/html-viewer".
-
 HTML content to be displayed by the Voyager application is specified by
 a user, using the <tt>-s URL, FILE or SOURCE-TEXT</tt> command line
-switch.
+switch. You may specify <tt>-</tt> as the parameter to this switch to
+signify standard-input as the source, which is the default.
 
 Additional command switches are available for this application.
 See the source code for more options.
@@ -22,6 +20,8 @@ another product OR use the NanoStarbox WebServer to provide your
 application user interface. The latter is the ideal profile, which is
 portable to all platforms, regardless of Voyager/JFX availability.
 
-If you are targeting a headless Unix Environment, there is a wonderful
+If you are targeting a Headless Environment, there is a wonderful
 [selection of text-mode-web-browsers](https://en.wikipedia.org/wiki/Text-based_web_browser)
-that can be found on the web with features such as mouse and JavaScript support.
+that can be found on the web with features such as mouse and JavaScript support
+to deliver your application capabilities to your users wherever they are,
+on whatever device they use.
