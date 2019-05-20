@@ -1,11 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Jar: Rhino Swing Debug" type="JarApplication">
-    <option name="JAR_PATH" value="$PROJECT_DIR$/jar/nano-starbox-rhino-console-debug.jar" />
-    <option name="ALTERNATIVE_JRE_PATH" />
+  <configuration default="false" name="Jar: Rhino Swing Debug" type="Application" factoryName="Application">
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+    <option name="MAIN_CLASS_NAME" value="org.mozilla.javascript.debugger.Main" />
+    <module name="NanoStarbox Rhino Debugger" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.mozilla.javascript.debugger.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <method v="2">
-      <option name="BuildArtifacts" enabled="true">
-        <artifact name="Release" />
-      </option>
+      <option name="Make" enabled="true" />
     </method>
   </configuration>
 </component>
