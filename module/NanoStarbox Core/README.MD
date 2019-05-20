@@ -12,7 +12,7 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * Native Java XML Object Interface Library ([SimpleXML](http://simple.sourceforge.net/) 2.7.1)
 * HTTPServer Interface Library (Core/[NanoHTTPD](https://github.com/NanoHttpd/nanohttpd) 20190515)
 * JDBC SQL Client Library ala (Nano [HSQLDB](http://hsqldb.org/) 2.4.1)
-* JDBC MS Access SQL Client Library ala (Nano [jackcess](https://jackcess.sourceforge.io/) 3.0.1, and Nano [UCanAccess](http://ucanaccess.sourceforge.net/site.html#home) 4.0.4)
+* JDBC MS Access SQL Client Library ala (Nano [Jackcess](https://jackcess.sourceforge.io/) 3.0.1, and Nano [UCanAccess](http://ucanaccess.sourceforge.net/site.html#home) 4.0.4)
 
 ###### Internal Sources
 * HTTPServer Content Provider Interface Library (uses HTTPServer Interface)
@@ -27,7 +27,7 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * Runtime State Library
 * Timer Library
 
-*Nano HSQLDB and Nano jackcess do not feature any support not requried by ucanaccess, such as HTTP SQL Server.*
+*Nano HSQLDB and Nano Jackcess do not feature any support not required by UCanAccess, such as HTTP SQL Server.*
 
 *Nano Packages provided courtesy of Hypersoft-Systems: U.-S.-A. NanoStarbox Project*
 
