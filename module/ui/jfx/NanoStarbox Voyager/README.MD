@@ -8,7 +8,7 @@ Java Platform and beyond combined with the power of JNA.
 
 HTML content to be displayed by the Voyager application is specified by
 a user, using the <tt>-s URL, FILE or SOURCE-TEXT</tt> command line
-switch. You may specify <tt>-</tt> as the parameter to this switch to
+switch. The user may specify <tt>-</tt> as the parameter to this switch to
 signify standard-input as the source, which is the default.
 
 Additional command switches are available for this application.
