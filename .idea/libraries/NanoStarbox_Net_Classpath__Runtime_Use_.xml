@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="NanoStarbox Net Classpath (Runtime Use)">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/net/byte-buddy" />
+      <root url="file://$PROJECT_DIR$/net" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/net" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/net/byte-buddy" recursive="false" />
+  </library>
+</component>
