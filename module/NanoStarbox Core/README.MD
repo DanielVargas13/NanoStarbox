@@ -34,3 +34,8 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 *Nano Packages provided courtesy of Hypersoft-Systems: U.-S.-A. NanoStarbox Project*
 
 *Rhino Android JIT Extensions and Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classloading Hacks provided courtesy of Android [Dalvik](https://source.android.com/devices/tech/dalvik/jit-compiler), [Faendir](https://www.faendir.com/wordpress/), and Hypersoft-Systems: U.-S.-A. NanoStarbox Project*
+
+>The most important characteristic of any blend, is how you process the
+>raw materials, during manufacture AND enjoyment.
+ 
+ -- Triston J. Taylor
