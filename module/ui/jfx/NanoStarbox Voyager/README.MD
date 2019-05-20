@@ -31,3 +31,6 @@ As a cautionary tale, it should be noted that NOT relying on Voyager
 powered capabilities, allows seamless employment and enjoyment of external
 JavaScript Module Platforms like the kind enjoyed by users of
 '[Node.js](https://nodejs.org/en/about/)'.
+
+Voyager employs a feature which allows browsing of
+self-signed-server-certificates, to support secure-p2p-self-service.
