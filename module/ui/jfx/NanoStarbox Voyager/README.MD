@@ -9,8 +9,9 @@ Java Platform and beyond combined with the power of JNA.
 At this time, Voyager does not have a "kiosk" mode, but it should
 have one. The current windowing profile is "simple/html-viewer".
 
-HTML content is specified using the <tt>-s URL, FILE or SOURCE-TEXT</tt>
-command line switch.
+HTML content to be displayed by the Voyager application is specified by
+a user, using the <tt>-s URL, FILE or SOURCE-TEXT</tt> command line
+switch.
 
 Additional command switches are available for this application.
 See the source code for more options.
