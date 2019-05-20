@@ -1,6 +1,6 @@
 #### NanoStarbox: Module: Support
 
-*Specification Staging Area*
+*[Specification Staging Area](./)*
 
 Some NanoStarbox modules require shrinking to fit within the 5MB
 limit of the current specification. Each of these modules, are
