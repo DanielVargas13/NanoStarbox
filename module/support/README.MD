@@ -7,7 +7,7 @@ limit of the current specification. Each of these modules, are
 pre-shrunk, and will require custom-pre-shrinking with every 
 library source update to maintain specification parameters.
 
-[archive](./) is the directory which houses the core libraries,
+[archive](./archive) is the directory which houses the core libraries,
 their development sources, and documentation for this NanoStarbox
 specification's external core libraries.
 
