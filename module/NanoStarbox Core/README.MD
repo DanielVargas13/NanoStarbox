@@ -10,7 +10,7 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * Nano JNA Library ([JNA](https://github.com/java-native-access/jna) 4.5.2)
 * JSON Object Transformation Library ([JSON-java](https://github.com/stleary/JSON-java) 20180813)
 * Native Java XML Object Interface Library ([SimpleXML](http://simple.sourceforge.net/) 2.7.1)
-* HTTPServer Interface Library ([NanoHTTPD](https://github.com/NanoHttpd/nanohttpd) 20190515)
+* HTTPServer Interface Library (Core/[NanoHTTPD](https://github.com/NanoHttpd/nanohttpd) 20190515)
 * JDBC SQL Client Library ala (Nano [HSQLDB](http://hsqldb.org/) 2.4.1)
 * JDBC MS Access SQL Client Library ala (Nano [jackcess](https://jackcess.sourceforge.io/) 3.0.1, and Nano [UCanAccess](http://ucanaccess.sourceforge.net/site.html#home) 4.0.4)
 
