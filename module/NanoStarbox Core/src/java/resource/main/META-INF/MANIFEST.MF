@@ -1,5 +1,7 @@
 Manifest-Version: 1.0
-Implementation-Title: NanoStarbox NSR7
+Implementation-Title: Hypersoft-Systems NanoStarbox
+Implementation-Specification: NSR8
+Implementation-Specification-Profile: Web Commander
 Mozilla-Rhino-Version: 1.7.9
 Implementation-URL: https://github.com/hypersoft/NanoStarbox
 Main-Class: org.mozilla.javascript.tools.shell.Main

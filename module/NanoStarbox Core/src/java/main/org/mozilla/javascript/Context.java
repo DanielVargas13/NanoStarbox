@@ -1233,7 +1233,7 @@ public class Context {
           String version = attrs.getValue("Mozilla-Rhino-Version");
           if (version != null) {
             implementationVersion =
-                "Mozilla Rhino "+version+" on " + attrs.getValue("Implementation-Title");
+                "Mozilla Rhino "+version+" on " + attrs.getValue("Implementation-Title")+" "+attrs.getValue("Implementation-Specification");
             return implementationVersion;
           }
         }
