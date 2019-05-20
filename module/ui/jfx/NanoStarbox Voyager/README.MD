@@ -33,4 +33,6 @@ JavaScript Module Platforms like the kind enjoyed by users of
 '[Node.js](https://nodejs.org/en/about/)'.
 
 Voyager employs a feature which allows browsing of
-self-signed-server-certificates, to support secure-p2p-self-service.
+self-signed-server-certificates, to support secure-p2p-self-service. See
+your browser's documentation for information about secure-p2p-self-service
+support.
