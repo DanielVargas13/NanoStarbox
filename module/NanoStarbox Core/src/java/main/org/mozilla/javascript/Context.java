@@ -1230,9 +1230,10 @@ public class Context {
           is = metaUrl.openStream();
           Manifest mf = new Manifest(is);
           Attributes attrs = mf.getMainAttributes();
-          if ("Mozilla Rhino".equals(attrs.getValue("Implementation-Title"))) {
+          String version = attrs.getValue("Mozilla-Rhino-Version");
+          if (version != null) {
             implementationVersion =
-                "Rhino " + attrs.getValue("Implementation-Version") + " " + attrs.getValue("Built-Date").replaceAll("-", " ");
+                "Mozilla Rhino "+version+" on " + attrs.getValue("Implementation-Title");
             return implementationVersion;
           }
         }
