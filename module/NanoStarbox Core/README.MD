@@ -5,7 +5,7 @@
 ##### Specification Sheet
 
 * Mozilla Rhino JavaScript Library with Android JIT Extensions and 
-Aggressive Runtime Package Loading, Package Introspection and URL Classloading Hacks (Core/[Mozilla Rhino](https://github.com/mozilla/rhino) 1.7.9)
+Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classloading Hacks (Core/[Mozilla Rhino](https://github.com/mozilla/rhino) 1.7.9)
 * Nano JNA Library ([JNA](https://github.com/java-native-access/jna) 4.5.2)
 * JSON Object Transformation Library ([JSON-java](https://github.com/stleary/JSON-java) 20180813)
 * Native Java XML Object Interface Library ([SimpleXML](http://simple.sourceforge.net/) 2.7.1)
