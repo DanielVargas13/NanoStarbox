@@ -21,3 +21,7 @@ application profile such as Microsoft HTML Application, you should seek
 another product OR use the NanoStarbox WebServer to provide your
 application user interface. The latter is the ideal profile, which is
 portable to all platforms, regardless of Voyager/JFX availability.
+
+If you are targeting a headless Unix Environment, there is a wonderful
+[selection of text-mode-web-browsers](https://en.wikipedia.org/wiki/Text-based_web_browser)
+that can be found on the web with features such as mouse and JavaScript support.
