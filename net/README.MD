@@ -29,4 +29,7 @@ without the help of a compiler. This enables a scripting implementation
 to construct classes on the fly. Android support is available. This
 addition seeks to overcome the limitations and shortcomings of the
 Mozilla Rhino Class Compiler Suite, while providing that extensibility
-to the NanoStarbox Core user.
+to the NanoStarbox Core user, providing a simple upgrade path from
+Web Commander, to JVM/Web Commander. The inclusion of this library is a
+mere courtesy provided due to the size and complexity of the project.
+No source level modifications have been made to this snapshot.
