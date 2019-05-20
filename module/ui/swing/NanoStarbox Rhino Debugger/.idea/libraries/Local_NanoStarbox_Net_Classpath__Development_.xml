@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Local NanoStarbox Net Classpath (Development)">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../net" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
