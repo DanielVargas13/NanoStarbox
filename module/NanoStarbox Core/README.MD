@@ -23,7 +23,7 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * Text Macro Shell Library (uses TextScanner)
 * MimeType Map Library
 * MimeType Driver Interface Library
-* JavaScript Server Page Library (for WebServer Interface, uses Mozilla Rhino JavaScript, MimeType Driver Interface and Text Macro Shell, features [REQUIRE.JS](https://requirejs.org/) support for server-side REQUIRE.JS SSI)
+* JavaScript Server Page Library (for WebServer Interface, uses Mozilla Rhino JavaScript, MimeType Driver Interface and Text Macro Shell, features Mozilla-Rhino/[REQUIRE.JS](https://requirejs.org/) support for server-side REQUIRE.JS SSI)
 * Runtime State Library
 * Timer Library
 
