@@ -39,4 +39,4 @@ The [NSR9 Specification](https://github.com/hypersoft/NanoStarbox/blob/NSR9)
 adds Darwin support to the core, consuming it from this directory, as
 well as eliminating the 'nano-jna-4.5.2-extended.jar' provided by NSR7A.
 
-\[(~4.89MB): Net Transfer Load]
+\[(~3.95MB): Net Transfer Load]
