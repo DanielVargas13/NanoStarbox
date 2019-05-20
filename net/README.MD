@@ -40,7 +40,7 @@ It should be duly noted that the byte-buddy library combined with the
 macro scripting and command shell capabilities of the core, provide a
 wide range of code opportunities, which make this NanoSDK a formidable
 library for any systems engineer. The compact size of the SDK ensures
-a quick learning curve with a toolset that won't change its stripes
+a short learning curve with a toolset that won't change its stripes
 on the developer.
 
 \[(~4.89MB - ~859KB): Net Transfer Load]
