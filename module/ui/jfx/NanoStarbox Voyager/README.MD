@@ -26,3 +26,8 @@ If you are targeting a Headless Environment, there is a wonderful
 that can be found on the web with features such as mouse and JavaScript support
 to deliver your application capabilities to your users wherever they are,
 on whatever device they use.
+
+As a cautionary tale, it should be noted that NOT relying on Voyager
+powered capabilities, allows seemless employment and enjoyment of external
+JavaScript Module Platforms like the kind enjoyed with users of
+'[Node.js](https://nodejs.org/en/about/)'.
