@@ -16,5 +16,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Nano Core Features" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="JUnit 5.3 (Jupiter)" level="project" />
+    <orderEntry type="library" exported="" name="Local NanoStarbox Net Classpath (Development)" level="project" />
   </component>
 </module>

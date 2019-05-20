@@ -13,7 +13,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="NanoStarbox Core Features" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="JUnit 5.3 (Jupiter)" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="NanoStarbox Net Classpath (Runtime Use)" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="Local NanoStarbox Net Classpath (Development)" level="project" />
   </component>
 </module>

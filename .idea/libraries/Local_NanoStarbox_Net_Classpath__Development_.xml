@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="NanoStarbox Net Classpath (Runtime Use)">
+  <library name="Local NanoStarbox Net Classpath (Development)">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/net/byte-buddy" />
       <root url="file://$PROJECT_DIR$/net" />
