@@ -5,11 +5,16 @@ using [git](https://github.com/hypersoft/NanoStarboox/) VCS
 (version-control-system), and requires Apache Maven, to fetch
 external build specifications and toolsets.
 
-NanoStarbox is a working draft specification called a NanoSDK with native
-FFI libraries targeting Windows, Mac, Linux, and Android, 
-"out of the box" with a single headless core module:
+NanoStarbox is a working draft specification which is internally referred
+to by this project as a "NanoSDK"; which features builtin native FFI libraries
+targeting Windows, Mac, Linux, and Android, "out of the box" with a 
+single headless core module:
 
 * [NanoStarbox Core](module/NanoStarbox%20Core)
+
+*the term "NanoSDK" refers to the finished-size of the library (<= 5MB), with respect to 
+its capabilities, and the constitution of its externally provided, 
+internalized components.*
 
 Browse the core module for an overview of current features. Each NanoStarbox 
 working draft specification is guaranteed to be compatible with itself.
