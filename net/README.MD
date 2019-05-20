@@ -22,9 +22,9 @@ archive is listed of the form: 'nano-jna-OS_NAME-OS_ARCH-4.5.2.jar', except in t
 of "darwin" OS which is located at 'nano-jna-darwin-4.5.2.jar'.
 
 The [NSR8 Specification](https://github.com/hypersoft/NanoStarbox/releases/tag/NSR8) 
-also introduced [byte-buddy](./byte-buddy), a 
+also introduced [byte-buddy](https://github.com/hypersoft/NanoStarbox/blob/NSR8/net/byte-buddy) 1.9.13, a 
 [code generation utility](https://bytebuddy.net/#/) for creating and 
-modifying Java classes during the runtime of a Java application and 
+modifying Java classes during the runtime of a Java application,  
 without the help of a compiler. This enables a scripting implementation
 to construct classes on the fly. Android support is available. This
 addition seeks to overcome the limitations and shortcomings of the
