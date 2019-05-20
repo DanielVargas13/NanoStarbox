@@ -5,7 +5,9 @@ using [git](https://github.com/hypersoft/NanoStarboox/) VCS
 (version-control-system), and requires Apache Maven, to fetch
 external build specifications and toolsets.
 
-NanoStarbox is a working draft specification composed of a headless core module:
+NanoStarbox is a working draft specification called a NanoSDK with native
+FFI libraries targeting Windows, Mac, Linux, and Android, 
+"out of the box" with a single headless core module:
 
 * [NanoStarbox Core](module/NanoStarbox%20Core)
 
