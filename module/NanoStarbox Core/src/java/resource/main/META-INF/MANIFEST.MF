@@ -10,6 +10,7 @@ Bundle-Category: jni
 Bundle-ManifestVersion: 2
 Bundle-Name: jna
 Bundle-Description: JNA Library
+Bundle-Content: Mozilla Rhino JavaScript Library with Android JIT Extensions and Aggressive Runtime Package Loading, JNA Library, JSON Object Transformation Library, Native Java XML Object Interface Library, HTTPServer Interface Library, Command Interface Library, TextScanner Library, Text Macro Shell Library, JavaScript Server Page Library, MimeType Map Library, Runtime State Library, Timer Library and JDBC SQL Client Library
 Bundle-SymbolicName: com.sun.jna
 Bundle-Version: 4.5.2
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
