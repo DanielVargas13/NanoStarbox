@@ -16,9 +16,10 @@ See the source code for more options.
 
 Voyager does not feature any Java/Rhino scripting extensions. If you need a Voyager
 application profile such as Microsoft HTML Application, you should seek
-another product OR use the NanoStarbox WebServer to provide your
-application user interface. The latter is the ideal profile, which is
-portable to all platforms, regardless of Voyager/JFX availability.
+another product, create a new module, modify the source, OR use the 
+NanoStarbox WebServer to provide your application user interface. The 
+latter is the ideal profile, which is portable to all platforms,
+regardless of Voyager/JFX availability.
 
 If you are targeting a Headless Environment, there is a wonderful
 [selection of text-mode-web-browsers](https://en.wikipedia.org/wiki/Text-based_web_browser)
