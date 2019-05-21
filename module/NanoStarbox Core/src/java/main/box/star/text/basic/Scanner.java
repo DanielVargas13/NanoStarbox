@@ -330,31 +330,44 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scans for a sequence match at the end of the string.
-   * <p>
-   * The found part is discarded.
+   * <p>A rendition of {@link #nextField(char...)} that searches for a character sequence
+   * with case sensitivity and optional backslash detection.</p>
+   * <br>
+   * <p>The found part is discarded from the buffer, and the stream is not rewound;
+   * unlike the character variants of *Field which put the character back into the buffer.
+   * These behaviors follow the logic that:</p>
+   * <ol>
+   *   <li>keywords are consumed by the caller</li>
+   *   <li>symbols are terminals rather than input</li>
+   * </ol>
    *
-   * @param sequence
-   * @return
+   * @param sequence a string to find at the end of the input buffer.
+   * @param caseSensitive true if the search should be case sensitive (exact)
+   * @param detectEscape handle backslash escapes on the head of this sequence (any found escape within sequence, will break the match regardless of this setting)
+   * @return all the text up to but not including sequence
    * @throws SyntaxError if not found
    */
   @NotNull
-  public String nextSequence(String sequence) throws SyntaxError {
-    char c;
-    int sl = sequence.length(), bl = 0;
-    if (sl == 0) return "";
+  public String nextSequence(String sequence, boolean caseSensitive, boolean detectEscape) throws SyntaxError {
+    int sourceLength = sequence.length(), bl = 0, matchIndex = 0;
+    if (sourceLength == 0) return "";
+    char[] search = ((caseSensitive)?sequence:sequence.toLowerCase()).toCharArray();
     StringBuilder sb = new StringBuilder();
-    String match;
     do {
-      c = this.next();
-      ++bl;
-      if (c == 0)
+      char c = this.next(); // step
+      ++bl; // count buffer length
+      if (c == 0) // die
         throw syntaxError("Expected `" + sequence + "' and found end of text stream");
-      sb.append(c);
-      match = sb.substring(Math.max(0, bl - sl));
-      if (match.equals(sequence)) break;
-    } while (true);
-    return sb.substring(0, bl - sl);
+      sb.append(c); // add to collection
+      char find = (caseSensitive?c:Char.toLowerCase(c)); // transliterate if needed
+      if (find == search[matchIndex]) { // got a match at stream, and search-index
+        if (detectEscape && matchIndex == 0 && escapeMode()){ // got a escapable sequence-head-match
+          /* doing this is: escaping */
+        } else matchIndex++; // go to next char
+      } else matchIndex = 0; // no match, go back to start
+    } while (matchIndex != sourceLength);
+    // if we got here, then a match occurred because no error was thrown during seek.
+    return sb.substring(0, bl - sourceLength); // chop off the ending, returning what we scanned.
   }
 
   /**

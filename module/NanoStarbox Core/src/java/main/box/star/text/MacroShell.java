@@ -292,7 +292,7 @@ public class MacroShell {
         if (character == '<') {
           String tag = scanner.nextField('>');
           scanner.nextCharacter('>');
-          data.append(scanner.nextSequence("</" + tag + ">"));
+          data.append(scanner.nextSequence("</" + tag + ">", true, false));
         } else {
           scanner.back();
           data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
