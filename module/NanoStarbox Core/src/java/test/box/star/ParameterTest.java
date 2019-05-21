@@ -23,25 +23,30 @@ class ParameterTest {
 
     @Override
     public boolean parseReference(Reference parameter) {
-      System.err.println(parameter.value);
-      if (switches.contains(parameter.value)) {
-        System.err.println("got switch: " + parameter.value + "; value: " + Parameter.getNextParameterValue(parameter));
+      String value = parameter.getValue();
+      //System.err.println(value);
+      if (switches.contains(value)) {
+        System.err.println("got switch: " + value + "; value: " + Parameter.getNextParameterValue(parameter));
         return true;
-      } else if (flags.contains(parameter.value)) {
-        System.err.println("got flag: " + parameter.value);
+      } else if (flags.contains(value)) {
+        System.err.println("got flag: " + value);
         return true;
-      } else if (parameter.value.matches("^[+|-][a-zA-Z0-9][a-zA-Z0-9].*")) {
-        System.err.println("got parameter-set: " + parameter.value);
+      } else if (parameter.isFlagList()) {
+        System.err.println("got flag-list: " + value);
         Parameter.parse(parameterParser, parameter);
         return true;
       }
-      return false;
+      throw parameter.syntaxError("unknown parameter");
     }
   };
 
   @Test
   void parameterParsing() {
-    Parameter.parse(parameterParser, parameters);
+    try {
+      Parameter.parse(parameterParser, parameters);
+    } catch (RuntimeException e){
+      System.err.println(e.getMessage());
+    }
   }
 
 }

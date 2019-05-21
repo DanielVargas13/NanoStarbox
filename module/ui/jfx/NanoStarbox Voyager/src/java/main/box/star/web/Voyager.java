@@ -106,11 +106,12 @@ public class Voyager extends Application {
 
     @Override
     public boolean parseReference(Reference currentParameter) {
-      if ("-s".equals(currentParameter.value)) {
+      String value = currentParameter.getValue();
+      if ("-s".equals(value)) {
         source = Parameter.getNextParameterValue(currentParameter);
         return true;
       }
-      if ("-h".equals(currentParameter.value)) {return allowRiskySSL = true;}
+      if ("-h".equals(value)) {return allowRiskySSL = true;}
       return false;
     }
 

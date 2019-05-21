@@ -11,7 +11,7 @@ public class Parameter {
 
   public static String getNextParameterValue(Parser.Reference parameter) {
     String thisParameter = parameter.source[parameter.index];
-    if (parameter.split) return trim(thisParameter.substring(parameter.value.length() + 1));
+    if (parameter.split) return trim(parameter.value[1]);
     if (thisParameter.matches("^.+: *.*") || thisParameter.matches("^.+= *.*")) {
       return trim(splitValue(thisParameter)[1]);
     }
@@ -40,8 +40,8 @@ public class Parameter {
     for (currentParameter.index = 0; currentParameter.index < parameters.length; currentParameter.index++) {
       int i = currentParameter.index;
       currentParameter.select(i, 0, parameters[i], i + 1 < parameters.length);
-      if (currentParameter.value.matches("^.+: *.*") || currentParameter.value.matches("^.+= *.*")) {
-        currentParameter.value = splitValue(currentParameter.value)[0];
+      if (currentParameter.value[0].matches("^.+: *.*") || currentParameter.value[0].matches("^.+= *.*")) {
+        currentParameter.value = splitValue(currentParameter.value[0]);
         currentParameter.split = true;
         if (parser.parseReference(currentParameter)) continue;
         else break;
@@ -54,12 +54,12 @@ public class Parameter {
   public static void parse(Parser parser, Parser.Reference parameter) {
     Parser.Reference currentParameter = new Parser.Reference();
     currentParameter.source = parameter.source;
-    char[] switches = parameter.value.substring(1).toCharArray();
-    char type = parameter.value.charAt(0);
-    if (type == '+') currentParameter.plus = true;
+    char[] switches = parameter.value[0].substring(1).toCharArray();
+    currentParameter.type = parameter.value[0].charAt(0);
+    if (currentParameter.type == '+') currentParameter.plus = true;
     for (currentParameter.subIndex = 0; currentParameter.subIndex < switches.length; currentParameter.subIndex++) {
       int i = currentParameter.subIndex;
-      currentParameter.select(parameter.index, i, String.valueOf(type) + switches[i], parameter.dataAvailable);
+      currentParameter.select(parameter.index, i, String.valueOf(currentParameter.type) + switches[i], parameter.dataAvailable);
       if (parser.parseReference(currentParameter)) continue;
       else return;
     }
@@ -71,18 +71,46 @@ public class Parameter {
     boolean parseReference(Reference parameter);
 
     class Reference {
-      public int index, subIndex;
-      public String value;
+      private int index, subIndex;
+      private String[] value;
       public boolean plus;
+      private char type;
       private String[] source;
       private boolean dataAvailable, split;
-
       private void select(int index, int subIndex, String value, boolean dataAvailable) {
         this.index = index;
         this.subIndex = subIndex;
-        this.value = value;
+        this.value = new String[]{value, null};
         this.dataAvailable = dataAvailable;
         this.split = false;
+      }
+      public char getType(){
+        return type;
+      }
+      public boolean isPlus() {
+        return plus;
+      }
+      public int getIndex() {
+        return index;
+      }
+      public int getSubIndex(){
+        return subIndex;
+      }
+      public String getValue() {
+        return value[0];
+      }
+      @Override
+      public boolean equals(Object obj) {
+        return value[0].equals(obj);
+      }
+      public boolean isFlagList(){
+        return value[0].matches("^[+|-][a-zA-Z0-9][a-zA-Z0-9].*");
+      }
+      public RuntimeException syntaxError(String message){
+        if (subIndex > 0){
+          return new RuntimeException(message+" at parameter " + (index + 1) + " switch #"+(subIndex+1)+ " = "+getValue());
+        }
+        return new RuntimeException(message+" at parameter " + (index + 1) + " = "+getValue());
       }
     }
 

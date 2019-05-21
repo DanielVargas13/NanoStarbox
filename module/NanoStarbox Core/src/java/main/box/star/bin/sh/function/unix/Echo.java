@@ -48,22 +48,22 @@ public class Echo extends Function implements Parameter.Parser {
 
   @Override
   public boolean parseReference(Reference parameter) {
-    if (parameter.value.equals(getName())) {
+    if (parameter.equals(getName())) {
       parameterList.remove(0);
       return true;
     }
-    if (!parameter.value.startsWith("-")) return false;
-    if (parameter.value.equals("-n")) {
+    if (!parameter.getValue().startsWith("-")) return false;
+    if (parameter.equals("-n")) {
       parameterList.remove(0);
       printLine = false;
       return true;
     }
-    if (parameter.value.equals("-e")) {
+    if (parameter.equals("-e")) {
       parameterList.remove(0);
       interpretEscapes = true;
       return true;
     }
-    if (parameter.value.equals("-E")) {
+    if (parameter.equals("-E")) {
       interpretEscapes = false;
       return true;
     }
