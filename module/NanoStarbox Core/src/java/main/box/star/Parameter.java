@@ -33,7 +33,14 @@ public class Parameter {
     }
     throw new RuntimeException("failed to split parameters");
   }
-
+  /**
+   * Main parameter parser
+   *
+   * Call this to start parsing parameters with a parameter parser
+   *
+   * @param parser
+   * @param parameters
+   */
   public static void parse(Parser parser, String... parameters) {
     Parser.Reference currentParameter = new Parser.Reference();
     currentParameter.source = parameters;
@@ -50,7 +57,20 @@ public class Parameter {
       else break;
     }
   }
-
+  /**
+   * Sub parameter parser
+   *
+   * Call this from the parameter parser, with a parameter to begin parsing
+   * sub-parameters.
+   *
+   * use parameter.isFlagList() to test if the parameter is suitable for use
+   * with this function.
+   *
+   * @see Parser.Reference#isFlagList()
+   *
+   * @param parser
+   * @param parameter
+   */
   public static void parse(Parser parser, Parser.Reference parameter) {
     Parser.Reference currentParameter = new Parser.Reference();
     currentParameter.source = parameter.source;
@@ -120,7 +140,7 @@ public class Parameter {
         return value[0].equals(obj);
       }
       /**
-       * Performs a test to see if this parameter follow the form of a swet
+       * Performs a test to see if this parameter follow the form of a set
        * of switches.
        * @return true if the parameter starts with a plus or minus followed by two or more letters.
        */
