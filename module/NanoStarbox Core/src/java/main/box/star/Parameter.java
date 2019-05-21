@@ -56,7 +56,6 @@ public class Parameter {
     currentParameter.source = parameter.source;
     char[] switches = parameter.value[0].substring(1).toCharArray();
     currentParameter.type = parameter.value[0].charAt(0);
-    if (currentParameter.type == '+') currentParameter.plus = true;
     for (currentParameter.subIndex = 0; currentParameter.subIndex < switches.length; currentParameter.subIndex++) {
       int i = currentParameter.subIndex;
       currentParameter.select(parameter.index, i, String.valueOf(currentParameter.type) + switches[i], parameter.dataAvailable);
@@ -73,7 +72,6 @@ public class Parameter {
     class Reference {
       private int index, subIndex;
       private String[] value;
-      public boolean plus;
       private char type;
       private String[] source;
       private boolean dataAvailable, split;
@@ -84,28 +82,56 @@ public class Parameter {
         this.dataAvailable = dataAvailable;
         this.split = false;
       }
+      /**
+       * Returns the char that started this sub-index/switch-parameter
+       * @return 0, + or -
+       */
       public char getType(){
         return type;
       }
-      public boolean isPlus() {
-        return plus;
-      }
+      /**
+       * Position in parameter stream
+       * @return
+       */
       public int getIndex() {
         return index;
       }
+      /**
+       * Character position in parameter
+       * @return
+       */
       public int getSubIndex(){
         return subIndex;
       }
+      /**
+       * Parameter value (the actual parameter, not its arguments)
+       * @return
+       */
       public String getValue() {
         return value[0];
       }
+      /**
+       * Compares the parameter value to obj
+       * @param obj
+       * @return
+       */
       @Override
       public boolean equals(Object obj) {
         return value[0].equals(obj);
       }
+      /**
+       * Performs a test to see if this parameter follow the form of a swet
+       * of switches.
+       * @return true if the parameter starts with a plus or minus followed by two or more letters.
+       */
       public boolean isFlagList(){
         return value[0].matches("^[+|-][a-zA-Z0-9][a-zA-Z0-9].*");
       }
+      /**
+       * Constructs a simple syntax error describing this parameter
+       * @param message
+       * @return
+       */
       public RuntimeException syntaxError(String message){
         if (subIndex > 0){
           return new RuntimeException(message+" at parameter " + (index + 1) + " switch #"+(subIndex+1)+ " = "+getValue());
