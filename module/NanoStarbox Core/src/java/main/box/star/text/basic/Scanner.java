@@ -273,8 +273,9 @@ public class Scanner implements Closeable {
   /**
    * <p>Tries to silently fetch the requested sequence match, from the beginning. if it fails
    * it returns a zero-length-string. this allows iteration through known compounds that fit in
-   * certain contexts. failure to resolve 1 of a set should throw a syntax error,
-   * citing the semantic documentation language for the composition set.</p>
+   * certain contexts, and pass-through-[maybe-not]-present-value. failure to resolve 1
+   * of a set should throw a syntax error, citing the semantic documentation
+   * language for the composition set.</p>
    * @param sequence
    * @param caseSensitive
    * @return
