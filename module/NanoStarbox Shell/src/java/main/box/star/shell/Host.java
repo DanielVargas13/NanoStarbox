@@ -18,14 +18,14 @@ import static box.star.text.Char.*;
  * <br>
  *   <h4>Command Model</h4>
  * <code>
- *   ([ENVIRONMENT_OPERATIONS]...) [PROGRAM] ([PARAMETERS]...) ([REDIRECTIONS]...) ([PIPE]?: [COMMAND]...) [TERMINATOR]
+ *   COMMAND: ([ENVIRONMENT_OPERATIONS]...) [PROGRAM]?: (([PARAMETERS]...) ([REDIRECTIONS]...) ([PIPE]?: [COMMAND]...)) [TERMINATOR]
  * </code>
+ * <br><br><p>For the list of command terminators see {@link #COMMAND_TERMINATOR}.</p>
  * <br><p></p>
  */
 public class Host {
 
   private final static char
-      ENTER_SHELL = '(', EXIT_SHELL = ')',
       ENTER_OBJECT = '{', EXIT_OBJECT = '}',
       MACRO_TRIGGER = '$';
 
@@ -33,10 +33,7 @@ public class Host {
       new Char.Assembler(Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')).toArray();
 
   private static final char[] BREAK_PARAMETER_MAP =
-      new Char.Assembler(PIPE, '<', '>').map(COMMAND_TERMINATOR).map(MAP_ASCII_ALL_WHITE_SPACE).toArray();
-
-  private static final char[] BREAK_MACRO_OR_PARAMETER_MAP =
-      new Char.Assembler(MACRO_TRIGGER).map(BREAK_PARAMETER_MAP).toArray();
+      new Char.Assembler(Char.toMap(PIPE, '<', '>')).map(COMMAND_TERMINATOR).map(MAP_ASCII_ALL_WHITE_SPACE).toArray();
 
   Environment environment;
   StreamTable streams;
@@ -105,7 +102,8 @@ public class Host {
       Map<Integer, String> redirects = new Hashtable<>();
       char terminator; // whatever terminated this command
       TextCommandEntry next; // if terminator == pipe
-      TextCommandEntry(String source){this.source = source;}
+
+      TextCommandEntry(String source) {this.source = source;}
     }
 
     Host context;
@@ -124,22 +122,29 @@ public class Host {
 
     Stack<String[]> processEnvironmentOperations(Scanner scanner) {
       Stack<String[]> operations = new Stack<>();
-      do { long start = scanner.getIndex();
+      do {
+        long start = scanner.getIndex();
         scanner.scanAllWhiteSpace();
         String[] op = processEnvironmentOperation(scanner);
-        if (op == null){ scanner.walkBack(start); break; }
-        operations.push(op); } while (true);
+        if (op == null) {
+          scanner.walkBack(start);
+          break;
+        }
+        operations.push(op);
+      } while (true);
       return operations;
     }
 
-    String processEnvironmentLabel(Scanner scanner){
+    String processEnvironmentLabel(Scanner scanner) {
       StringBuilder output = new StringBuilder();
-      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).map('-','_').toArray();
-      do { char c = scanner.next();
+      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).map('-', '_').toArray();
+      do {
+        char c = scanner.next();
         if (c == 0) return null;
         else if (c == '=') break;
         else if (!Char.mapContains(c, okay1)) return null;
-        else output.append(c); } while (true);
+        else output.append(c);
+      } while (true);
       scanner.back();
       return output.toString();
     }
@@ -148,8 +153,10 @@ public class Host {
       String[] operation = new String[3];
       operation[0] = processEnvironmentLabel(scanner);
       if (operation[0] == null) return null;
-      try { operation[1] = Char.toString(scanner.nextCharacter('='));
-      } catch (Exception e){ return null; }
+      try {
+        operation[1] = Char.toString(scanner.nextCharacter('='));
+      }
+      catch (Exception e) { return null; }
       operation[2] = processParameter(scanner);
       return operation;
     }
@@ -157,48 +164,65 @@ public class Host {
     String processLiteralText(Scanner scanner) {
       return scanner.nextField(BREAK_PARAMETER_MAP);
     }
+
     String processQuotedLiteralText(Scanner scanner) {
       return scanner.nextField('\'');
     }
+
     String processQuotedMacroText(Scanner scanner) {
       return scanner.nextBoundField('"');
     }
 
-    String processParameter(Scanner scanner){
+    String processParameter(Scanner scanner) {
       Stack<String> p = new Stack<>();
       if (processParameter(scanner, p)) return String.join(" ", p);
       return null;
     }
 
-    boolean processParameter(Scanner scanner, Stack<String>parameters) {
+    boolean processParameter(Scanner scanner, Stack<String> parameters) {
       scanner.scanLineWhiteSpace();
       StringBuilder builder = new StringBuilder();
       long start = scanner.getIndex();
       char c;
-      do { c = scanner.next();
+      do {
+        c = scanner.next();
         if (Char.mapContains(c, MAP_ASCII_ALL_WHITE_SPACE)) break;
-        switch (c){
-          case '<': case '>': {
+        switch (c) {
+          case '<':
+          case '>': {
             boolean notAnumber = false;
-            try { int v = Integer.parseInt(builder.toString());
-            } catch (NumberFormatException nfe){ notAnumber = true; }
-            if (notAnumber == false){ scanner.walkBack(start); return false; }
+            try {
+              int v = Integer.parseInt(builder.toString());
+            }
+            catch (NumberFormatException nfe) { notAnumber = true; }
+            if (notAnumber == false) {
+              scanner.walkBack(start);
+              return false;
+            }
             scanner.back();
-            return false; }
-          case '\'': { builder.append(c).append(processQuotedLiteralText(scanner));
+            return false;
+          }
+          case '\'': {
+            builder.append(c).append(processQuotedLiteralText(scanner));
             scanner.nextCharacter(c);
             builder.append(c);
-            break; }
-          case '"': { builder.append(c).append(processQuotedMacroText(scanner));
+            break;
+          }
+          case '"': {
+            builder.append(c).append(processQuotedMacroText(scanner));
             scanner.nextCharacter(c);
             builder.append(c);
-            break; }
-          default: { if (Char.mapContains(c, BREAK_PARAMETER_MAP)){
+            break;
+          }
+          default: {
+            if (Char.mapContains(c, BREAK_PARAMETER_MAP)) {
               scanner.back();
               if (builder.length() == 0) return false;
               parameters.push(builder.toString());
-              return true; }
-            builder.append(c).append(processLiteralText(scanner)); }
+              return true;
+            }
+            builder.append(c).append(processLiteralText(scanner));
+          }
         }
       } while (!Char.mapContains(c, BREAK_PARAMETER_MAP));
       parameters.push(builder.toString());
@@ -207,11 +231,13 @@ public class Host {
 
     Stack<String> processParameters(Scanner scanner) {
       Stack<String> parameters = new Stack<>();
-      do { long start = scanner.getIndex();
-        if (!processParameter(scanner, parameters)){
+      do {
+        long start = scanner.getIndex();
+        if (!processParameter(scanner, parameters)) {
           scanner.walkBack(start);
           if (parameters.isEmpty()) { return null; }
-          break; }
+          break;
+        }
       } while (true);
       return parameters;
     }
@@ -221,36 +247,49 @@ public class Host {
       commandEntry.redirects = new Hashtable<>();
       while (Char.mapContains(c, '<', '>', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9')) {
         switch (c) {
-          case '<': { scanner.scanAllWhiteSpace();
-            commandEntry.redirects.put(0, c+scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
-            break; }
-          case '>': { scanner.scanAllWhiteSpace();
-            commandEntry.redirects.put(1, c+scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
-            break; }
-          default: { String scan = c + scanner.nextMap(MAP_ASCII_NUMBERS);
+          case '<': {
+            scanner.scanAllWhiteSpace();
+            commandEntry.redirects.put(0, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
+            break;
+          }
+          case '>': {
+            scanner.scanAllWhiteSpace();
+            commandEntry.redirects.put(1, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
+            break;
+          }
+          default: {
+            String scan = c + scanner.nextMap(MAP_ASCII_NUMBERS);
             int v = Integer.parseInt(scan);
             c = scanner.next();
-            if (!Char.mapContains(c, '<','>')) {
+            if (!Char.mapContains(c, '<', '>')) {
               scanner.back();
-              scanner.nextCharacter("< or >", '\0', true); }
+              scanner.nextCharacter("< or >", '\0', true);
+            }
             scanner.scanAllWhiteSpace();
-            commandEntry.redirects.put(v, c+scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE)); }
+            commandEntry.redirects.put(v, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
+          }
         }
         c = scanner.next();
       }
-      if (c == PIPE){
+      if (c == PIPE) {
         commandEntry.terminator = c;
         commandEntry.next = processCommandLine(scanner);
-        return commandEntry; }
+        return commandEntry;
+      }
       commandEntry.terminator = processCommandEnding(scanner);
       return commandEntry;
     }
 
     char processCommandEnding(Scanner scanner) {
       char c;
-      switch (c = scanner.next()){
-        case ';': case '#': case '\0': case '\n': return c;
-        case '\r': return processCommandEnding(scanner);
+      switch (c = scanner.next()) {
+        case ';':
+        case '#':
+        case '\0':
+        case '\n':
+          return c;
+        case '\r':
+          return processCommandEnding(scanner);
       }
       scanner.back();
       scanner.nextString("semi-colon, hash-mark, carriage-return, line-feed or end of source", true);
@@ -261,179 +300,19 @@ public class Host {
     protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (Char.mapContains(character, Char.MAP_ASCII_ALL_WHITE_SPACE)) {return false;}
       switch (character) {
-        case 0: { if (scanner.escapeMode()) throw new SyntaxError("escaped end of stream");
-          return true; }
-        case '#': { swap(character + scanner.nextField('\n'));
-          return false; }
+        case 0: {
+          if (scanner.escapeMode()) throw new SyntaxError("escaped end of stream");
+          return true;
+        }
+        case '#': {
+          swap(character + scanner.nextField('\n'));
+          return false;
+        }
       }
       backStep(scanner);
       TextCommandEntry tce = processCommandLine(scanner);
       //swap(processCommandLine(scanner));
       return false;
     }
-
-//    public static class CommandScanner extends ScannerMethod {
-//      Host context;
-//      ParameterScanner parameterScanner = new ParameterScanner();
-//      @Override
-//      protected void start(@NotNull Scanner scanner, Object[] parameters) {
-//        context = (Host) parameters[0];
-//      }
-//      @Override
-//      protected boolean terminate(@NotNull Scanner scanner, char character) {
-//        Stack<String> parameters = new Stack<>();
-//        scanner.branch(parameterScanner, character, context, parameters);
-//        char c = scanner.next();
-//        do {
-//          switch (c){
-//            case '&':{
-//              parameters.add("\\&");
-//              break;
-//            }
-//            case ';':{
-//              parameters.add("\\;");
-//              break;
-//            }
-//            default:{
-//              scanner.back();
-//              break;
-//            }
-//          }
-//          break;
-//        } while((c = scanner.next()) != 0);
-//        swap(context.doCommand(scanner, parameters));
-//        return true;
-//      }
-//    }
-//
-//    public static class ParameterScanner extends ScannerMethod {
-//      Host context;
-//      Stack<String> parameters;
-//      // if this is false, no text will be expanded by this scanner
-//      boolean doEvaluation = true;
-//      @Override
-//      protected void start(@NotNull Scanner scanner, Object[] parameters) {
-//        context = (Host) parameters[0];
-//        this.parameters = (Stack<String>) parameters[1];
-//        scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
-//        if (parameters.length > 2) this.doEvaluation = (boolean) parameters[2];
-//      }
-//      @Override
-//      protected boolean scan(@NotNull Scanner scanner) {
-//        scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
-//        return true;
-//      }
-//      @Override
-//      protected boolean terminate(@NotNull Scanner scanner, char character) {
-//        if (Char.mapContains(character, '(', '{')) {
-//          scanner.back();
-//          scanner.nextString("parameter", true);
-//          return true; // ^ throws
-//        }
-//        if (character == MACRO_TRIGGER){
-//          String origin = scanner.toString();
-//          String source = getParameter(scanner, character);
-//          try {
-//            parameters.addAll(split("parameter["+(parameters.size()-1)+"]", source));
-//          } catch (SyntaxError se){
-//            throw new SyntaxError("parameter expansion failure"+origin+"\n\nparameter-expansion-text:\n\n"+source+"\n\nCause: "+se.getMessage());
-//          }
-//          return false;
-//        }
-//        if (Char.mapContains(character, BREAK_PARAMETER_MAP)) {
-//          scanner.back();
-//          return true;
-//        }
-//        String p = getParameter(scanner, character);
-//        parameters.push(p);
-//        return false;
-//      }
-//      protected Stack<String> split(String name, String source) {
-//        Scanner scanner = new Scanner(name, source + EXIT_SHELL);
-//        Stack<String> parameters = new Stack<>();
-//        scanner.run(this, context, parameters, false);
-//        return parameters;
-//      }
-//
-//      /**
-//       * A hack on nextBoundField that allows us to seek-beyond quotes within macro functions.
-//       *
-//       * @param scanner
-//       * @return
-//       * @throws SyntaxError
-//       */
-//      private String extractQuote(Scanner scanner) throws SyntaxError {
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        while (true) {
-//
-//          char c = scanner.next();
-//
-//          if (c == BACKSLASH && !scanner.escapeMode() && doEvaluation) continue;
-//
-//          if (c == 0) {
-//            if (scanner.escapeMode()) {
-//              throw scanner.syntaxError("expected character escape sequence, found end of stream");
-//            }
-//            return sb.toString();
-//          }
-//
-//          if (scanner.escapeMode()) {
-//            String swap = (doEvaluation)?scanner.expand(c):Char.toString(c);
-//            sb.append(swap);
-//            continue;
-//          }
-//
-//          if (c == context.MACRO_TRIGGER) {
-//            if (doEvaluation) sb.append(context.doMacro(scanner));
-//            else sb.append(context.getMacroText(scanner));
-//            continue;
-//          }
-//
-//          if (c == Char.DOUBLE_QUOTE) {
-//            scanner.back();
-//            break;
-//          }
-//
-//          sb.append(c);
-//
-//        }
-//        return sb.toString();
-//      }
-//
-//      @Override
-//      protected @NotNull String compile(@NotNull Scanner scanner) { return Tools.EMPTY_STRING; }
-//      private String getParameter(Scanner scanner, char character) {
-//        char c;
-//        StringBuilder data = new StringBuilder();
-//        if (character == MACRO_TRIGGER) {
-//          if (doEvaluation) data.append(context.doMacro(scanner));
-//          else data.append(context.getMacroText(scanner));
-//        } else if (character == Char.DOUBLE_QUOTE) {
-//          data.append(this.extractQuote(scanner));
-//          scanner.nextCharacter(character);
-//        } else if (character == Char.SINGLE_QUOTE) {
-//          data.append(scanner.nextField(character));
-//          scanner.nextCharacter(character);
-//        } else {
-//          if (doEvaluation) data.append(character).append(scanner.nextBoundField(BREAK_MACRO_OR_PARAMETER_MAP));
-//          else data.append(character).append(scanner.nextField(BREAK_MACRO_OR_PARAMETER_MAP));
-//        }
-//        while (true) {
-//          c = scanner.next();
-//          if (!Char.mapContains(c, BREAK_PARAMETER_MAP)) {
-//            data.append(getParameter(scanner, c));
-//          } else {
-//            scanner.back();
-//            break;
-//          }
-//        }
-//        return data.toString();
-//      }
-//
-//    }
-//
-//  }
   }
 }
