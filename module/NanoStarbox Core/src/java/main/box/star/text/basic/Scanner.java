@@ -268,7 +268,15 @@ public class Scanner implements Closeable {
     return c;
   }
 
-  private void walkBack(long to){ while (to != getIndex()) back(); }
+  public String scanAllWhiteSpace(){
+    return nextMap(Char.MAP_ASCII_LINE_WHITE_SPACE);
+  }
+
+  public String scanLineWhiteSpace(){
+    return nextMap(MAP_ASCII_LINE_WHITE_SPACE);
+  }
+
+  public void walkBack(long to){ while (to != getIndex()) back(); }
 
   /**
    * <p>Tries to silently fetch the requested sequence match, from the beginning. if it fails
