@@ -236,9 +236,9 @@ public class MacroShell {
      *
      * @param scanner
      * @return
-     * @throws Scanner.SyntaxError
+     * @throws SyntaxError
      */
-    private String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
+    private String extractQuote(Scanner scanner) throws SyntaxError {
 
       StringBuilder sb = new StringBuilder();
 

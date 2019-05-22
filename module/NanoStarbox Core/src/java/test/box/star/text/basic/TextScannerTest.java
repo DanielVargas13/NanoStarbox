@@ -1,6 +1,7 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
+import box.star.text.SyntaxError;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -68,7 +69,7 @@ class TextScannerTest {
       sx = x.getStateLock();
       x.nextString(s3, true);
     }
-    catch (Scanner.SyntaxError e) {
+    catch (SyntaxError e) {
       String certification = "Expected A and found a at location = " +
           "{line: 1, column: 11, index: 10, source: 'test-string'}";
       assertEquals(certification, e.getMessage());

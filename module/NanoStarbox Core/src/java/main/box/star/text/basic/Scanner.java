@@ -5,6 +5,7 @@ import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.text.Char;
+import box.star.text.SyntaxError;
 
 import java.io.*;
 
@@ -265,6 +266,31 @@ public class Scanner implements Closeable {
     if (character != c)
       throw this.syntaxError("Expected " + translate(character) + " and located `" + translate(c) + "'");
     return c;
+  }
+
+  private void walkBack(long to){ while (to != getIndex()) back(); }
+
+  /**
+   * <p>Tries to silently fetch the requested sequence match, from the beginning. if it fails
+   * it returns a zero-length-string. this allows iteration through known compounds that fit in
+   * certain contexts. failure to resolve 1 of a set should throw a syntax error,
+   * citing the semantic documentation language for the composition set.</p>
+   * @param sequence
+   * @param caseSensitive
+   * @return
+   */
+  public String nextOptionalSequence(String sequence, boolean caseSensitive){
+    long start = getIndex();
+    String test;
+    String match = test = nextOptionalLength(sequence.length());
+    if (!caseSensitive) {
+      test = match.toLowerCase();
+      sequence = sequence.toLowerCase();
+    }
+    if (! sequence.equals(test)) {
+      walkBack(start); return "";
+    }
+    return match;
   }
 
   /**
@@ -542,6 +568,21 @@ public class Scanner implements Closeable {
     return sb.toString();
   }
 
+  public String nextOptionalLength(int n){
+    if (n == 0) {
+      return Tools.EMPTY_STRING;
+    }
+    char[] chars = new char[n];
+    int pos = 0;
+    while (pos < n) {
+      chars[pos] = this.next();
+      if (this.endOfSource()) {
+        break;
+      }
+      pos += 1;
+    }
+    return new String(chars);
+  }
   /**
    * Get the next n characters.
    *
@@ -732,33 +773,4 @@ public class Scanner implements Closeable {
 
   }
 
-  /**
-   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-   */
-  public static class SyntaxError extends RuntimeException {
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 0;
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message.
-     *
-     * @param message Detail about the reason for the exception.
-     */
-    public SyntaxError(final String message) {
-      super(message);
-    }
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message and cause.
-     *
-     * @param message Detail about the reason for the exception.
-     * @param cause   The cause.
-     */
-    public SyntaxError(final String message, final Throwable cause) {
-      super(message, cause);
-    }
-
-  }
 }

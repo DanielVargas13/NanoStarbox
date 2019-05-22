@@ -185,6 +185,22 @@ public class ScannerMethod implements Cloneable {
   }
 
   /**
+   * Step back the scanner and the buffer by 1 character.
+   * <p><i>
+   * Overriding is not recommended.
+   * </i></p>
+   *
+   * @param scanner
+   */
+  protected void backStep(@NotNull Scanner scanner, long to) {
+    while (scanner.getIndex() != to) {
+      scanner.back();
+      bufferOffset--;
+    }
+    buffer.setLength(bufferOffset+1);
+  }
+
+  /**
    * Examine the character on the top of the buffer.
    * <p>
    * Works like {@link #pop()}, but doesn't modify the buffer.
