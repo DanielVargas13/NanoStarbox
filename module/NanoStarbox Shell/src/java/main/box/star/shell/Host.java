@@ -15,11 +15,12 @@ import static box.star.text.Char.*;
 
 /**
  * <p>Shell Code Reference</p>
- * <pre>
- *   identifier=value ... COMMAND
- *   identifier+=value ... COMMAND
- *   identifier-=value ... COMMAND PARAMETERS IO
- * </pre>
+ * <br>
+ *   <h4>Command Model</h4>
+ * <code>
+ *   ([ENVIRONMENT_OPERATIONS]...) [PROGRAM] ([PARAMETERS]...) ([REDIRECTIONS]...) ([PIPE]?: [COMMAND]...) [TERMINATOR]
+ * </code>
+ * <br><p></p>
  */
 public class Host {
 
@@ -91,7 +92,7 @@ public class Host {
 
   private String doCommand(Scanner scanner, Stack<String> parameters) {
     StringBuilder out = new StringBuilder();
-    for(String p: parameters) out.append(p).append(" ");
+    for(String p: parameters) out.append(p).append(SPACE);
     return out.substring(0, Math.max(0, out.length() - 1));
   }
 
@@ -123,8 +124,7 @@ public class Host {
 
     Stack<String[]> processEnvironmentOperations(Scanner scanner) {
       Stack<String[]> operations = new Stack<>();
-      do {
-        long start = scanner.getIndex();
+      do { long start = scanner.getIndex();
         scanner.scanAllWhiteSpace();
         String[] op = processEnvironmentOperation(scanner);
         if (op == null){ scanner.walkBack(start); break; }
@@ -150,7 +150,7 @@ public class Host {
       if (operation[0] == null) return null;
       try { operation[1] = Char.toString(scanner.nextCharacter('='));
       } catch (Exception e){ return null; }
-      operation[2] = scanner.nextBoundField(new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).map(';', '&', '#').toArray());
+      operation[2] = processParameter(scanner);
       return operation;
     }
 
@@ -164,7 +164,13 @@ public class Host {
       return scanner.nextBoundField('"');
     }
 
-    String processParameter(Scanner scanner) {
+    String processParameter(Scanner scanner){
+      Stack<String> p = new Stack<>();
+      if (processParameter(scanner, p)) return String.join(" ", p);
+      return null;
+    }
+
+    boolean processParameter(Scanner scanner, Stack<String>parameters) {
       scanner.scanLineWhiteSpace();
       StringBuilder builder = new StringBuilder();
       long start = scanner.getIndex();
@@ -176,9 +182,9 @@ public class Host {
             boolean notAnumber = false;
             try { int v = Integer.parseInt(builder.toString());
             } catch (NumberFormatException nfe){ notAnumber = true; }
-            if (notAnumber == false){ scanner.walkBack(start); return null; }
+            if (notAnumber == false){ scanner.walkBack(start); return false; }
             scanner.back();
-            return null; }
+            return false; }
           case '\'': { builder.append(c).append(processQuotedLiteralText(scanner));
             scanner.nextCharacter(c);
             builder.append(c);
@@ -189,23 +195,24 @@ public class Host {
             break; }
           default: { if (Char.mapContains(c, BREAK_PARAMETER_MAP)){
               scanner.back();
-              if (builder.length() == 0) return null;
-              return builder.toString(); }
+              if (builder.length() == 0) return false;
+              parameters.push(builder.toString());
+              return true; }
             builder.append(c).append(processLiteralText(scanner)); }
         }
       } while (!Char.mapContains(c, BREAK_PARAMETER_MAP));
-      return builder.toString();
+      parameters.push(builder.toString());
+      return true;
     }
 
     Stack<String> processParameters(Scanner scanner) {
       Stack<String> parameters = new Stack<>();
       do { long start = scanner.getIndex();
-        String p = processParameter(scanner);
-        if (p == null){
+        if (!processParameter(scanner, parameters)){
           scanner.walkBack(start);
           if (parameters.isEmpty()) { return null; }
           break; }
-        parameters.push(p); } while (true);
+      } while (true);
       return parameters;
     }
 
