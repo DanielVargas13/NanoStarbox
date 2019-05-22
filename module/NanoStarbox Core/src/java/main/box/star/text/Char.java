@@ -120,8 +120,8 @@ public final class Char {
 
   public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
 
-  public static boolean mapContains(char search, char... range) {
-    for (int i = 0; i < range.length; i++) if (range[i] == search) return true;
+  public static boolean mapContains(char search, char... map) {
+    for (int i = 0; i < map.length; i++) if (map[i] == search) return true;
     return false;
   }
 

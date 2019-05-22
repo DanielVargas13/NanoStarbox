@@ -62,9 +62,6 @@ public class ScannerMethod implements Cloneable {
 
   /**
    * Called by the scanner to signal that a new method call is beginning.
-   * <p>
-   * if you override this, call the super method to initialize the input buffer.
-   * <code>super(scanner, parameters); ... return sourceBuffer</code>
    *
    * @param scanner    the host scanner
    * @param parameters the parameters given by the caller.
@@ -132,7 +129,7 @@ public class ScannerMethod implements Cloneable {
    * @param character
    * @return
    */
-  protected boolean zeroTerminator(@NotNull Scanner scanner, char character) {
+  protected final boolean zeroTerminator(@NotNull Scanner scanner, char character) {
     //pop();
     //backStep(scanner);
     return character == 0;
@@ -217,8 +214,11 @@ public class ScannerMethod implements Cloneable {
    * @return the top character on the buffer
    */
   protected char pop() {
-    char c = buffer.charAt(bufferOffset--);
-    buffer.setLength(bufferOffset);
+    int newLength = buffer.length() - 1;
+    if (bufferOffset != newLength) throw new IllegalStateException("buffer offset is not at the top of the stack");
+    bufferOffset--;
+    char c = buffer.charAt(newLength);
+    buffer.setLength(newLength);
     return c;
   }
 
@@ -231,7 +231,7 @@ public class ScannerMethod implements Cloneable {
   protected char[] pop(int count) {
     int offset = Math.max(0, buffer.length() - count);
     char[] c = buffer.substring(offset).toCharArray();
-    buffer.setLength(offset);
+    buffer.setLength(Math.max(0, offset));
     bufferOffset = offset - 1;
     return c;
   }

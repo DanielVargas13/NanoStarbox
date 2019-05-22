@@ -257,29 +257,47 @@ public class Scanner implements Closeable {
   public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
     if (c == 0)
-      throw syntaxError("Expected " + translate(character) + " and found end of text stream");
+      throw syntaxError("Expected " + translate(character) + " and located end of text stream");
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + translate(c) + " and found " + translate(character));
+      throw this.syntaxError("Expected " + translate(character) + " and located `" + translate(c) + "'");
+    return c;
+  }
+
+  /**
+   * @param character
+   * @param caseSensitive
+   * @return
+   */
+  public char nextCharacter(String label, char character, boolean caseSensitive) {
+    char c = next();
+    if (c == 0)
+      throw syntaxError("Expected " + label + " and located end of text stream");
+    if (!caseSensitive) {
+      c = Char.toLowerCase(c);
+      character = Char.toLowerCase(character);
+    }
+    if (character != c)
+      throw this.syntaxError("Expected " + label + " and located `" + translate(c) + "'");
     return c;
   }
 
   /**
    * Match the next string input with a source string.
    *
-   * @param source
+   * @param seek
    * @param caseSensitive
    * @return
    * @throws SyntaxError if match fails
    */
   @NotNull
-  public String nextString(@NotNull String source, boolean caseSensitive) throws SyntaxError {
+  public String nextString(@NotNull String seek, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
-    char[] sequence = source.toCharArray();
-    for (char c : sequence) out.append(nextCharacter(c, caseSensitive));
+    char[] sequence = seek.toCharArray();
+    for (char c : sequence) out.append(nextCharacter(seek, c, caseSensitive));
     return out.toString();
   }
 
@@ -574,6 +592,30 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * <p>Transfer</p>
+   * <br>
+   * <p>Transfers the current scanner position and character to a new scanner.</p>
+   *
+   * @param method the method to use
+   * @param start the current character
+   * @param parameters the parameters for the method
+   * @return
+   */
+  @NotNull
+  final public String branch(ScannerMethod method, char start, Object... parameters) {
+    method = method.clone();
+    method.start(this, parameters);
+    method.collect(this, start);
+    if (! method.terminate(this, start) && method.scan(this))
+    do {
+      char c = next();
+      method.collect(this, c);
+      if (method.terminate(this, c)) break;
+    } while (method.scan(this));
+    return method.compile(this);
+  }
+
+  /**
    * <p>Call this to determine if the current character should be escaped.</p>
    * <br>
    * <p>if the sequence is \ then backslash mode = true;</p>
@@ -600,7 +642,7 @@ public class Scanner implements Closeable {
    */
   @NotNull
   public SyntaxError syntaxError(String message) {
-    return new SyntaxError(message + this.claim());
+    return new SyntaxError(message +":\n\n   "+this.claim());
   }
 
   /**
@@ -612,7 +654,7 @@ public class Scanner implements Closeable {
    */
   @NotNull
   public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
-    return new SyntaxError(message + this.claim(), causedBy);
+    return new SyntaxError(message + ":\n\n   " +this.claim(), causedBy);
   }
 
   public String claim() {
