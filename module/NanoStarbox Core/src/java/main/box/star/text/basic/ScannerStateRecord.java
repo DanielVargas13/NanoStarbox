@@ -4,7 +4,17 @@ import box.star.contract.NotNull;
 
 import java.io.IOException;
 
-public class ScannerStateRecord {
+// TODO: find the introduction of the StringBuilder within the scanner, for more information.
+// TODO: NSR10: delete this class and its counterparts.
+/**
+ * This class is deprecated because it's usage adds a layer of complexity to
+ * the scanner that is quite frankly, no longer needed due to the inbuilt
+ * StringBuilder buffering capabilities of the ScannerState which was not
+ * available in the project until NSR7 (estimation).
+ *
+ * This class and its counterparts are marked for deletion SPEC: NSR10.
+ */
+@Deprecated public class ScannerStateRecord {
 
   protected Scanner main;
   protected ScannerState backupState;
