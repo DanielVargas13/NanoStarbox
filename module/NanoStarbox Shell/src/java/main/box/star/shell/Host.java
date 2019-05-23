@@ -102,7 +102,6 @@ public class Host {
       Map<Integer, String> redirects = new Hashtable<>();
       char terminator; // whatever terminated this command
       TextCommandEntry next; // if terminator == pipe
-
       TextCommandEntry(String source) {this.source = source;}
     }
 
@@ -112,9 +111,7 @@ public class Host {
 
     TextCommandEntry processCommandLine(Scanner scanner) {
       scanner.scanAllWhiteSpace();
-      scanner.next();
-      TextCommandEntry textCommand = new TextCommandEntry(scanner.toString().substring(1));
-      scanner.back();
+      TextCommandEntry textCommand = new TextCommandEntry(scanner.nextCharacterClaim().substring(1));
       textCommand.environmentOperations = processEnvironmentOperations(scanner);
       textCommand.parameters = processParameters(scanner);
       return processRedirects(scanner, textCommand);

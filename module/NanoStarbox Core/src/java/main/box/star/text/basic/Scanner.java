@@ -707,6 +707,24 @@ public class Scanner implements Closeable {
     return new SyntaxError(message + ":\n\n   " +this.claim(), causedBy);
   }
 
+  /**
+   * <p>Gets a future claim for the next character.</p>
+   * <br>
+   *   <p>Some scanner tasks may need a way to record where an external procedure
+   *   will be starting within the scanner stream. This method provides that
+   *   functionality, with a simple next/claim/back step routine, returning
+   *   a capture of the claim.</p>
+   *   <br>
+   * @return the future claim
+   */
+  public String nextCharacterClaim(){
+    String claim;
+    next();
+    claim = claim();
+    back();
+    return claim;
+  }
+
   public String claim() {
     return " at location = " + "{line: " + getLine() + ", column: " + getColumn() + ", index: " + getIndex() + ", source: '" + getPath() + "'}";
   }
