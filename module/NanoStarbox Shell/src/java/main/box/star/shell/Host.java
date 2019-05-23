@@ -16,12 +16,19 @@ import static box.star.text.Char.*;
 /**
  * <p>Shell Code Reference</p>
  * <br>
- *   <h4>Command Model</h4>
+ *   <h4>Text Command Shell: Text Command Model</h4>
+ *   <code>
+ *     RULE-SYNTAX: `?' = maybe, '?:' = if-then, '...' = repeating-or-empty-rule, '()' = anonymous-group
+ *   </code><br><br>
  * <code>
- *   COMMAND: ([ENVIRONMENT_OPERATIONS]...) [PROGRAM]?: (([PARAMETERS]...) ([REDIRECTIONS]...) ([PIPE]?: [COMMAND]...)) [TERMINATOR]
- * </code>
- * <br><br><p>For the list of command terminators see {@link #COMMAND_TERMINATOR}.</p>
- * <br><p></p>
+ *   COMMAND: ([ENVIRONMENT_OPERATIONS]...) [PROGRAM]?: (([PARAMETERS]...) ([REDIRECTIONS]...) ([PIPE]?: [COMMAND])...)? [TERMINATOR]
+ * </code><br><br>
+ * <p>Technically, a command may do nothing by specifying no environment or program, using only a terminator such as comment.</p><br>
+ * <p>Conventionally, a shell such as the BASH shell does not allow for
+ * current process re-directions, using this form, which is why re-directions are dependent upon
+ * the PROGRAM rule. Instead the shell delegates such functionality to the exec command.</p>
+ * <br><p>For the list of command terminators see {@link #COMMAND_TERMINATOR}.</p>
+ * <br>
  */
 public class Host {
 
