@@ -18,37 +18,54 @@ public class Main {
   protected Configuration<Settings, Serializable> configuration;
 
   protected Environment environment;
-  protected StreamTable streams;
+  protected StreamTable io;
   protected Stack<String> parameters;
   protected int exitValue, shellLevel;
   protected Main parent;
 
+  private Scanner source;
   private String origin;
+
+  private void contextInit(Scanner source, StreamTable io){
+    if (this.origin == null) this.origin = source.nextCharacterClaim();
+    this.source = source;
+    // TODO: copy local io from parent if io == null and parent doesn't, or inherit all missing stdio channels in local io from parent.
+    this.io = io;
+  }
 
   /**
    * Classic start main shell
    * @param parameters
    */
-  Main(String... parameters){
+  public Main(String... parameters){
     settings = new EnumSettings.Manager<>(this.getClass().getSimpleName());
     configuration = settings.getConfiguration();
     shellLevel++;
     Stack<String> p = new Stack();
     p.addAll(Arrays.asList(parameters));
-    // TODO: process main parameters
+    processMainParameters(parameters);
+    // TODO: start scanning, store result
+  }
+
+  // TODO: process main parameters
+  private void processMainParameters(String[] parameters) {
+    Scanner scanner = null;
+    StreamTable io = null;
+    contextInit(scanner, io);
   }
 
   /**
    * <p>API: create child shell</p>
    * @param parent
+   * @param origin
    * @param source
    */
-  Main(Main parent, Scanner source) {
+  Main(Main parent, String origin, String source, StreamTable io) {
     shellLevel = parent.shellLevel + 1;
-    this.origin = source.claim();
     settings = new EnumSettings.Manager<>("shell["+shellLevel+"]"+getOrigin(), parent.getConfiguration());
     configuration = settings.getConfiguration();
     this.parent = parent;
+    contextInit(new Scanner(origin, source), io);
     // TODO: start scanning, store result
   }
 
