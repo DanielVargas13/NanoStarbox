@@ -29,7 +29,8 @@ import static box.star.text.Char.*;
  * by any custom implementation. The default implementation understands escaped
  * and not escaped, according to the status of the previous character. This could cause
  * logical errors in a text-stream that has not been correctly back-stepped (to the beginning
- * of an escape sequence).</p>
+ * of an escape sequence), but most implementations which call upon expansion routines,
+ * will never need back-step support within that context.</p>
  * <br>
  * <p>Quick Overview</p>
  * <ul>
