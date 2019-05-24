@@ -63,11 +63,19 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     Variable var = get(name);
     return var.export;
   }
-  public void mapAllObjects(Map<String, Object> map){
-    for (String k: map.keySet()) put(k, new Variable(map.get(k)));
+  public void mapAllObjects(Map<String, Object> map, boolean export){
+    for (String k: map.keySet()) {
+      Variable v = new Variable(map.get(k));
+      v.export = export;
+      put(k, v);
+    }
   }
-  public void mapAllStrings(Map<String, String> map){
-    for (String k: map.keySet()) put(k, new Variable(map.get(k)));
+  public void mapAllStrings(Map<String, String> map, boolean export){
+    for (String k: map.keySet()) {
+      Variable v = new Variable(map.get(k));
+      v.export = export;
+      put(k, v);
+    }
   }
   public void removeAllKeys(List<String> keys){
     for (String k: keys) remove(k);
@@ -77,7 +85,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
   }
 
   {
-    mapAllStrings(System.getenv());
+    mapAllStrings(System.getenv(), true);
   }
 
   public void setSystemDirectoryKey(String currentDirectoryKey) {
