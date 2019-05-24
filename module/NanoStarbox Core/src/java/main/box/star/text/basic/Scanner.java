@@ -40,11 +40,23 @@ public class Scanner implements Closeable {
 
   private Map<Character, String> TRANSLATION = new Hashtable<>();
 
+  /**
+   * <p>Call this method to configure the translation for a particular character</p>
+   * @param c the character to map
+   * @param translation the string to use when displaying this character to a user
+   * @return the translation given
+   */
   public String mapCharacterTranslation(char c, String translation) {
     TRANSLATION.put(c, translation);
     return translation;
   }
 
+  /**
+   * <p>Call this method to get a user display capable version of any character,
+   * according to this scanner's internal configuration</p>
+   * @param c the character to translate
+   * @return the translation of the character
+   */
   public String translateCharacter(char c) {
     if (c == 0) return "null";
     if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
