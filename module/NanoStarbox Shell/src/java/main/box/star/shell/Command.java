@@ -4,9 +4,14 @@ import box.star.text.basic.Scanner;
 
 import java.util.Stack;
 
+/**
+ * A command represents a command execution request, and is compiled from source
+ * text by the classes' own static parser. Environment variables, and other
+ * shell programming mutations are performed my the main context.
+ */
 public class Command {
 
-  final String origin;
+  public final String origin;
   Stack<String[]> environmentOperations;
   Stack<String> parameters;
   /**
@@ -41,6 +46,10 @@ public class Command {
    * @return array of each command exit status, where element 0 is always the status of the last command executed. this feature enables "PIPE-STATUS"
    */
   public int[] start(Main context) {
+    return new int[0];
+  }
+
+  public int[] start(Function context){
     return new int[0];
   }
 
