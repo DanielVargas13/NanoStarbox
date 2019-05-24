@@ -84,23 +84,23 @@ public class Context {
   Map<Integer, String> redirects;
 
   public interface Profile {
-    abstract class Main extends Context {
+    abstract class MainClass extends Context {
       private Scanner scanner;
     }
-    abstract class Command extends Context {}
-    abstract class Script extends Context {}
-    abstract class Object extends Context {}
-    abstract class Function extends Context {
+    abstract class CommandClass extends Context {}
+    abstract class ScriptClass extends Context {}
+    abstract class ObjectClass extends Context {}
+    abstract class FunctionClass extends Context {
       private String name;
       protected List<box.star.shell.Command> body;
-      public Function(){super();}
-      public Function(String origin, String name){
+      public FunctionClass(){super();}
+      public FunctionClass(String origin, String name){
         this(origin, name,  null);
       }
-      public Function(String origin, String name, Map<Integer, String> redirects){
+      public FunctionClass(String origin, String name, Map<Integer, String> redirects){
         this(origin, name, null, redirects);
       }
-      Function(String origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
+      FunctionClass(String origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
         this.origin = origin;
         this.name = name;
         this.body = body;
@@ -130,8 +130,8 @@ public class Context {
         return 0;
       }
     }
-    abstract class Plugin extends Function {
-      public Plugin(String origin, String name) {
+    abstract class PluginClass extends FunctionClass {
+      public PluginClass(String origin, String name) {
         super(origin, name);
       }
       @Override
@@ -162,7 +162,7 @@ public class Context {
     }
   }
 
-  final protected Profile.Main getMain(){
+  final protected Profile.MainClass getMain(){
     return null;
   }
 

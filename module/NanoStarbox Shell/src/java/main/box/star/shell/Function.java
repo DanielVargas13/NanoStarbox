@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Command Shell Function Model
  */
-public class Function extends Context.Profile.Function  implements Cloneable {
+public class Function extends Context.Profile.FunctionClass implements Cloneable {
 
   public Context getContext() { return parent; }
 

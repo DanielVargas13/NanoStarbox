@@ -11,7 +11,7 @@ import java.util.Stack;
 /**
  * Product Spec: code name: System Commander
  */
-public class Main extends Context implements Context.Profile.Main {
+public class Main extends Context.Profile.MainClass {
 
   Scanner source;
 
