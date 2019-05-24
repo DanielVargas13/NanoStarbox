@@ -30,7 +30,11 @@ public class Plugin extends Function {
   protected Object call(Stack<Object> parameters) {
     return 0;
   }
-  final protected Scanner getScanner(){
-    return parent.source;
+  final protected Main getMain(){
+    return null;
   }
+  final protected Scanner getScanner(){
+    return getMain().source;
+  }
+
 }
