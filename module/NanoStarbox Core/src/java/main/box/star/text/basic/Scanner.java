@@ -53,7 +53,8 @@ public class Scanner implements Closeable {
 
   /**
    * <p>Call this method to get a user display capable version of any character,
-   * according to this scanner's internal configuration</p>
+   * according to this scanner's internal configuration, or the static global configuration
+   * of the box.star.Char class</p>
    * @param c the character to translate
    * @return the translation of the character
    */
