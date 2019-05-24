@@ -71,8 +71,13 @@ public class Function implements Cloneable {
   protected int exec(Stack<String> parameters){
     return 0;
   }
+  protected String sourceText(){
+    return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n} # default function io here";
+  }
   @Override
   public String toString() {
-    return "function "+name+"(){"+"\n# function body here\n} # default function io here";
+    if (body == null)
+      return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n} # default function io here";
+    else return sourceText();
   }
 }
