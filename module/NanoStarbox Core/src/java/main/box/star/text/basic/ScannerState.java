@@ -15,8 +15,8 @@ public class ScannerState implements Cloneable, Serializable {
   protected Stack<Long> columnHistory;
   protected StringBuilder buffer;
   protected int bufferPosition;
-  @Deprecated protected boolean locked;
-  protected boolean eof, slashing, escaped, escapeLines, escapeUnderscoreLine;
+  @Deprecated protected boolean locked, escapeLines, escapeUnderscoreLine;
+  protected boolean eof, slashing, escaped;
 
   public ScannerState(String path) {
     ScannerState state = this;
