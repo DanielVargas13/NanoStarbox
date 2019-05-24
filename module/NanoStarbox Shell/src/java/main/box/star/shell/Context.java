@@ -152,9 +152,9 @@ public class Context {
     environment.put(userFunction.name, new Variable(userFunction, export));
   }
 
-  final public void assembleObject(Assembler plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
+  final public void newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
     // TODO: evaluation routine
-    Object objNewInstance = plugin.compile(this, origin, io, parameters);
+    Object objNewInstance = plugin.construct(this, origin, io, parameters);
     set(key, objNewInstance, export);
     return;
   }
