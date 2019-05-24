@@ -830,7 +830,7 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * An optimally compiled source tag
+   * An optimally compiled source tag, with notebook function
    */
   public static class Bookmark {
     public final long line, column, index;
