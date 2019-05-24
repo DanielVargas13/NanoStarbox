@@ -521,8 +521,7 @@ public class Scanner implements Closeable {
    * @param character
    * @return
    */
-  @Nullable
-  public String expand(char character) {
+  @NotNull public String expand(char character) {
     if (characterExpander != null) {
       String expansion = characterExpander.expand(this, character);
       if (expansion != null) return expansion;
