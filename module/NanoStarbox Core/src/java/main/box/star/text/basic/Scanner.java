@@ -8,7 +8,9 @@ import box.star.text.Exception;
 import box.star.text.SyntaxError;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import static box.star.text.Char.*;
@@ -833,6 +835,7 @@ public class Scanner implements Closeable {
   public static class Bookmark {
     public final long line, column, index;
     public final String origin, quote;
+    public final List<Object> notes = new ArrayList<>();
     private Bookmark(Scanner source){
      this.line = source.state.line;
      this.column = source.state.column;
