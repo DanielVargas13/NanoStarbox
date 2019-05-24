@@ -99,6 +99,11 @@ public class Main {
     return null;
   }
 
+  public int evaluate(Environment overlay, String origin, String text) {
+    // TODO: evaluation routine
+    return 0;
+  }
+
   final public Configuration<Settings, Serializable> getConfiguration() {
     return configuration;
   }
