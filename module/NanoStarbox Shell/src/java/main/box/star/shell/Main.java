@@ -37,7 +37,7 @@ public class Main extends Context.Profile.MainClass {
   }
 
   private void contextInit(Scanner source, StreamTable io){
-    if (this.origin == null) this.origin = source.nextCharacterClaim();
+    if (this.origin == null) this.origin = source.createBookmark();
     this.source = source;
     // TODO: copy local io from parent if io == null and parent doesn't, or inherit all missing stdio channels in local io from parent.
     this.io = io;

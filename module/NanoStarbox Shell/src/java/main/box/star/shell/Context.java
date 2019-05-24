@@ -10,7 +10,6 @@ import box.star.text.basic.Scanner;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Stack;
 
 public class Context {
@@ -65,17 +64,17 @@ public class Context {
     return this;
   }
 
-  final protected Context WithParametersOf(Stack<String> parameters){
-    if (this.parameters != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.parameters = parameters;
-    return this;
-  }
-
   final protected Context StreamsOf(StreamTable io){
     if (this.io != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.io = io;
+    return this;
+  }
+
+  final protected Context RedirectsOf(Map<Integer, String> redirects){
+    if (this.redirects != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.redirects = redirects;
     return this;
   }
 
@@ -103,23 +102,27 @@ public class Context {
         this.scanner = scanner;
         return this;
       }
+      final protected Context WithParametersOf(Stack<String> parameters){
+        if (this.parameters != null)
+          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+        this.parameters = parameters;
+        return this;
+      }
     }
     abstract class ScriptClass extends Context {}
     abstract class FunctionClass extends Context {
       private String name;
-      protected List<box.star.shell.Command> body;
+      protected List<box.star.shell.Command> commandList;
       public FunctionClass(){super();}
-      public FunctionClass(Bookmark origin, String name){
-        this(origin, name,  null);
+      final protected Context WithCommandListOf(List<Command> commands){
+        if (this.commandList != null)
+          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+        this.commandList = commands;
+        return this;
       }
-      public FunctionClass(Bookmark origin, String name, Map<Integer, String> redirects){
-        this(origin, name, null, redirects);
-      }
-      FunctionClass(Bookmark origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
+      FunctionClass(Bookmark origin, String name) {
         this.origin = origin;
         this.name = name;
-        this.body = body;
-        this.redirects = redirects;
       }
       public String getName() {
         return name;
@@ -132,7 +135,7 @@ public class Context {
       }
       @Override
       public String toString() {
-        if (body == null)
+        if (commandList == null)
           return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
         else return sourceText();
       }
