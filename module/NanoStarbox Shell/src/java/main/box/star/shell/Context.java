@@ -2,6 +2,7 @@ package box.star.shell;
 
 import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
+import box.star.text.basic.Scanner;
 
 import java.io.File;
 import java.util.List;
@@ -10,13 +11,94 @@ import java.util.Stack;
 
 public class Context {
 
+  final protected Profile.Main getMain(){
+    return null;
+  }
+
   public interface Profile {
-    abstract class Main {}
-    abstract class Plugin {}
-    abstract class Command {}
-    abstract class Script {}
-    abstract class Object {}
-    abstract class Function {}
+    abstract class Main extends Context {
+      private Scanner scanner;
+    }
+    abstract class Command extends Context {}
+    abstract class Script extends Context {}
+    abstract class Object extends Context {}
+    abstract class Function extends Context {
+      /**
+       * <p>For the definitions phase, and String reporting</p>
+       * <br>
+       *   <p>The main context must, use this field to create the default stream table io.</p>
+       *   <br>
+       */
+      private Map<Integer, String> redirects;
+      private String name;
+      protected List<box.star.shell.Command> body;
+      public Function(){super();}
+      public Function(String origin, String name){
+        this(origin, name,  null);
+      }
+      public Function(String origin, String name, Map<Integer, String> redirects){
+        this(origin, name, null, redirects);
+      }
+      Function(String origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
+        this.origin = origin;
+        this.name = name;
+        this.body = body;
+        this.redirects = redirects;
+      }
+      public String getName() {
+        return name;
+      }
+      private final String redirectionText(){
+        return " redirection text here";
+      }
+      protected String sourceText(){
+        return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
+      }
+      @Override
+      public String toString() {
+        if (body == null)
+          return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
+        else return sourceText();
+      }
+      /**
+       * User implementation
+       * @param parameters the specified parameters, partitioned and fully-shell-expanded.
+       * @return the execution status of this function
+       */
+      protected int exec(Stack<String> parameters){
+        return 0;
+      }
+    }
+    abstract class Plugin extends Function {
+      public Plugin(String origin, String name) {
+        super(origin, name);
+      }
+      @Override
+      final protected int exec(Stack<String> parameters) {
+        Stack<java.lang.Object> p = new Stack<>();
+        p.addAll(parameters);
+        java.lang.Object build = call(p);
+        return (build == null)?1:0;
+      }
+      /**
+       * <p>Plugin gets Object array parameters for exec</p>
+       * <br>
+       * <p>Plugins operate as functions that can service object requests.</p>
+       * <br>
+       * <p>When called via text-script, all parameters will be strings.</p>
+       * <br>
+       * <p>A plugin object may access the context scanner.</p>
+       * <br>
+       * @param parameters
+       * @return
+       */
+      protected <ANY> ANY call(Stack<java.lang.Object> parameters) {
+        return (ANY) null;
+      }
+      final protected Scanner getScanner(){
+        return getMain().scanner;
+      }
+    }
   }
 
   final static private String PROPERTY_ACCESS_READ_ONLY =
@@ -159,7 +241,7 @@ public class Context {
   }
 
   final public void defineFunction(Function userFunction, boolean export){
-    environment.put(userFunction.name, new Variable(userFunction, export));
+    environment.put(userFunction.getName(), new Variable(userFunction, export));
   }
 
   final public void newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {

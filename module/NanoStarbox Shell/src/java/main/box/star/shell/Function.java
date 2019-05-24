@@ -5,32 +5,22 @@ import java.util.*;
 /**
  * Command Shell Function Model
  */
-public class Function extends Context implements Cloneable, Context.Profile.Function {
-
-  /**
-   * <p>For the definitions phase, and String reporting</p>
-   * <br>
-   *   <p>The main context must, use this field to create the default stream table io.</p>
-   *   <br>
-   */
-  private final Map<Integer, String> redirects;
-
-  final public String name;
-  protected List<Command> body;
+public class Function extends Context.Profile.Function  implements Cloneable {
 
   public Context getContext() { return parent; }
-  public Function(String origin, String name){
-    this(origin, name,  null);
-  }
-  public Function(String origin, String name, Map<Integer, String> redirects){
-    this(origin, name, null, redirects);
-  }
-  Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
-    this.origin = origin;
-    this.name = name;
-    this.body = body;
-    this.redirects = redirects;
-  }
+
+//  public Function(String origin, String name){
+//    this(origin, name,  null);
+//  }
+//  public Function(String origin, String name, Map<Integer, String> redirects){
+//    this(origin, name, null, redirects);
+//  }
+//  Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
+//    this.origin = origin;
+//    this.name = name;
+//    this.body = body;
+//    this.redirects = redirects;
+//  }
 
   // ?
   public static Function parse(Scanner textScanner){
@@ -57,7 +47,7 @@ public class Function extends Context implements Cloneable, Context.Profile.Func
     if (parent == null)
       throw new IllegalStateException("trying to invoke function definition");
     Stack<String> params = new Stack<>();
-    params.add(name);
+    params.add(getName());
     params.addAll(Arrays.asList(parameters));
     return exec(params);
   }
@@ -68,28 +58,6 @@ public class Function extends Context implements Cloneable, Context.Profile.Func
     params.add(name);
     params.addAll(Arrays.asList(parameters));
     return exec(params);
-  }
-  /**
-   * User implementation
-   * @param parameters the specified parameters, partitioned and fully-shell-expanded.
-   * @return the execution status of this function
-   */
-  protected int exec(Stack<String> parameters){
-    return 0;
-  }
-  private final String redirectionText(){
-    return " redirection text here";
-  }
-
-  protected String sourceText(){
-    return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
-  }
-
-  @Override
-  public String toString() {
-    if (body == null)
-      return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
-    else return sourceText();
   }
 
 }

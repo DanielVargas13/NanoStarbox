@@ -1,3 +1,3 @@
 package box.star.shell;
 
-public class Script extends Context implements Context.Profile.Script {}
+public class Script extends Context.Profile.Script {}
