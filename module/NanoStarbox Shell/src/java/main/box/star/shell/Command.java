@@ -16,8 +16,11 @@ public class Command {
    * N = Number or Zero
    * E = End
    * if O or N: stdio[2] is user-effective
-   * if E: stdio[2], stdio[1] and stdio[0] are user effective
+   * if E: stdio[2], stdio[1] and stdio[0] are user-effective
    * </pre>
+   * <p>user-effective means if the user sets this value, the setting will be
+   * honored during execution.</p>
+   * <br>
    */
   StreamTable redirects;
   char terminator; // whatever terminated this command
@@ -35,7 +38,7 @@ public class Command {
    * @param context the shell context
    * @return array of each command exit status, where element 0 is always the status of the last command executed. this feature enables "PIPE-STATUS"
    */
-  public int[] exec(Main context){
+  public int[] exec(Main context) {
     return new int[0];
   }
 
