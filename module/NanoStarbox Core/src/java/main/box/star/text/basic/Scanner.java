@@ -22,9 +22,8 @@ import static box.star.text.Char.*;
  * <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
  * <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
  * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
- * <li>Character Field Boundary Searching through {@link #nextField(char...)} and {@link #nextFieldLength(int, char...)}</li>
+ * <li>Character Field Boundary Searching through {@link #nextField(char...)}, {@link #nextFieldLength(int, char...)} and {@link #nextBoundField(char...)}</li>
  * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
- * <li>Integral Line and Character Escape interface through {@link #setLineEscape(boolean)}, {@link #setLineEscape(boolean, boolean)}, {@link #backSlashMode()}, and {@link #escapeMode()}</li>
  * </ul>
  * <br>
  * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA</tt>
@@ -206,7 +205,7 @@ public class Scanner implements Closeable {
    * @return a new state lock if the state is not already locked.
    */
   @NotNull
-  public ScannerStateRecord getStateLock() {
+  @Deprecated public ScannerStateRecord getStateLock() {
     return new ScannerStateRecord(this);
   }
 
