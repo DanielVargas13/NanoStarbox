@@ -9,14 +9,16 @@ import java.util.Stack;
  */
 public class Function implements Cloneable {
   private Main context;
+  final String origin;
   final protected String name;
   final protected List<Command> body;
   final protected StreamTable io;
   public Main getContext() { return context; }
-  public Function(String name, StreamTable io){
-    this(name, null, io);
+  public Function(String origin, String name, StreamTable io){
+    this(origin, name, null, io);
   }
-  public Function(String name, List<Command> body, StreamTable io) {
+  public Function(String origin, String name, List<Command> body, StreamTable io) {
+    this.origin = origin;
     this.name = name;
     this.body = body;
     this.io = io;
