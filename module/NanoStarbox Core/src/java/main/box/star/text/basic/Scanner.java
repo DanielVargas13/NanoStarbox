@@ -601,8 +601,13 @@ public class Scanner implements Closeable {
     return sb.toString();
   }
 
+  /**
+   * Tries to get up to n characters from the stream.
+   * @param n the size of the string request
+   * @return an empty string (n<=0), all the characters requested, or a truncated buffer (eof = true), whichever comes first
+   */
   public String nextOptionalLength(int n){
-    if (n == 0) {
+    if (n <= 0) {
       return Tools.EMPTY_STRING;
     }
     char[] chars = new char[n];
@@ -756,25 +761,50 @@ public class Scanner implements Closeable {
     return claim();
   }
 
+  /**
+   * @return the current scanner character
+   */
+  public char current(){
+    return state.current();
+  }
+
+  /**
+   * @return the scanner's connotation of where this stream-data originates
+   */
   public String getPath() {
     return state.path;
   }
 
+  /**
+   * @return the position within the text-stream
+   */
   public long getIndex() {
     return state.index;
   }
 
+  /**
+   * @return the line number within the text-stream
+   */
   public long getLine() {
     return state.line;
   }
 
+  /**
+   * @return the column number at the current line within the text-stream
+   */
   public long getColumn() {
     return state.column;
   }
 
-  public char nextCharacter(char character) {
+  /**
+   * <p>Requires that the next character explicitly match the specified character.</p>
+   * @param character character to match
+   * @return the character matched
+   * @throws SyntaxError if the character in the stream does not match the character specified.
+   */
+  public char nextCharacter(char character) throws SyntaxError {
     char c = next();
-    if (c == 0)
+    if (c == 0 && character != 0)
       throw syntaxError("Expected " + translate(character) + " and found end of text stream");
     if (character != c)
       throw this.syntaxError("Expected " + translate(character) + " and found " + translate(c));
