@@ -3,6 +3,7 @@ package box.star.text.basic;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
+import box.star.text.Exception;
 
 import static box.star.text.Char.SPACE;
 
@@ -274,7 +275,7 @@ public class ScannerMethod implements Cloneable {
       return clone;
     }
     catch (CloneNotSupportedException failure) {
-      throw new Scanner.Exception("unable to create method object", failure);
+      throw new Exception("unable to create method object", failure);
     }
   }
 

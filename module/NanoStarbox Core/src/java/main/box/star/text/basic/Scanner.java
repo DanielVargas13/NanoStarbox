@@ -5,6 +5,7 @@ import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.text.Char;
+import box.star.text.Exception;
 import box.star.text.SyntaxError;
 
 import java.io.*;
@@ -835,48 +836,6 @@ public class Scanner implements Closeable {
     if (character != c)
       throw this.syntaxError("Expected " + translateCharacter(character) + " and found " + translateCharacter(c));
     return c;
-  }
-
-  /**
-   * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
-   *
-   * @author Hypersoft-Systems: USA
-   * @version 2015-12-09
-   */
-  public static class Exception extends RuntimeException {
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 0;
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message.
-     *
-     * @param message Detail about the reason for the exception.
-     */
-    public Exception(final String message) {
-      super(message);
-    }
-
-    /**
-     * Constructs a TextScanner.Exception with an explanatory message and cause.
-     *
-     * @param message Detail about the reason for the exception.
-     * @param cause   The cause.
-     */
-    public Exception(final String message, final Throwable cause) {
-      super(message, cause);
-    }
-
-    /**
-     * Constructs a new TextScanner.Exception with the specified cause.
-     *
-     * @param cause The cause.
-     */
-    public Exception(final Throwable cause) {
-      super(cause.getMessage(), cause);
-    }
-
   }
 
 }

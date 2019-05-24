@@ -1,6 +1,7 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
+import box.star.text.Exception;
 
 import java.io.IOException;
 
@@ -21,10 +22,10 @@ import java.io.IOException;
 
   protected ScannerStateRecord(@NotNull Scanner main) {
     if (main.hasStateRecordLock())
-      throw new Scanner.Exception("cannot acquire scanner lock",
+      throw new Exception("cannot acquire scanner lock",
           new IllegalStateException("state lock acquired"));
     if (!main.haveNext()) {
-      throw new Scanner.Exception("cannot acquire scanner lock",
+      throw new Exception("cannot acquire scanner lock",
           new IllegalStateException("end of source data"));
     }
     this.main = main;
@@ -33,12 +34,12 @@ import java.io.IOException;
       main.reader.mark(1000000);
     }
     catch (IOException e) {
-      throw new Scanner.Exception("failed to configure source reader", e);
+      throw new Exception("failed to configure source reader", e);
     }
     main.state.locked = true;
   }
 
-  public void restore() throws Scanner.Exception {
+  public void restore() throws Exception {
     if (main == null) return;
     try {
       try {
@@ -46,7 +47,7 @@ import java.io.IOException;
         main.state = backupState;
       }
       catch (IOException e) {
-        throw new Scanner.Exception("failed to restore backup state", e);
+        throw new Exception("failed to restore backup state", e);
       }
     }
     finally { free(); }
