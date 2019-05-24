@@ -74,9 +74,8 @@ public class Host {
     switch (next) {
       case '_': case '#': return Char.toString(next);
       case ENTER_OBJECT: return (nextMacroBody(scanner, EXIT_OBJECT)); }
-    scanner.back();
-    scanner.nextCharacter("macro", '\0', true);
-    return null;
+    scanner.reportCurrentCharacterSyntaxError("macro");
+    return null; // not reached
   }
 
   private String doMacro(Scanner scanner) {
@@ -266,8 +265,8 @@ public class Host {
             int v = Integer.parseInt(scan);
             c = scanner.next();
             if (!Char.mapContains(c, '<', '>')) {
-              scanner.back();
-              scanner.nextCharacter("< or >", '\0', true);
+              scanner.reportCurrentCharacterSyntaxError("< or >");
+              return null; // not reached
             }
             scanner.scanAllWhiteSpace();
             commandEntry.redirects.put(v, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
@@ -295,9 +294,9 @@ public class Host {
         case '\r':
           return processCommandEnding(scanner);
       }
-      scanner.back();
-      scanner.nextString("semi-colon, hash-mark, carriage-return, line-feed or end of source", true);
-      return 0;
+      scanner.reportCurrentCharacterSyntaxError
+          ("semi-colon, hash-mark, carriage-return, line-feed or end of source");
+      return 0; // not reached
     }
 
     @Override

@@ -176,6 +176,11 @@ public class Scanner implements Closeable {
     return state.locked;
   }
 
+  public void reportCurrentCharacterSyntaxError(String message) throws SyntaxError {
+    back();
+    nextCharacter(message, '\0', true);
+  }
+
   /**
    * Obtains a state lock, which can reset the reader and state if needed.
    *
