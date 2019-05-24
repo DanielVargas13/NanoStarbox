@@ -157,6 +157,14 @@ public class ScannerState implements Cloneable, Serializable {
     return nextCharacter(previousCharacter());
   }
 
+  /**
+   * An alias for previous character (disambiguation)
+   * @return
+   */
+  public char current(){
+    return previousCharacter();
+  }
+
   @Override
   protected ScannerState clone() {
     try /*  throwing runtime exceptions with closure */ {

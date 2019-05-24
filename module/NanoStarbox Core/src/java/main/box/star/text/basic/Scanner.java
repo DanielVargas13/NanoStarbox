@@ -176,9 +176,28 @@ public class Scanner implements Closeable {
     return state.locked;
   }
 
-  public void reportCurrentCharacterSyntaxError(String message) throws SyntaxError {
+  /**
+   * <p>Like {@link #flagThisCharacterSyntaxError}, but does the error checking beforehand.</p>
+   * <br>
+   *   <p>The current stream position is maintained if an error does not occur.</p>
+   * @param message the content type expected by the driver (caller)
+   * @param map the list of characters to match the current character with
+   * @throws SyntaxError if the current character is not found within the given map
+   */
+  public void flagNextCharacterSyntaxError(String message, char... map) throws SyntaxError {
+    char c = next();
+    if (! Char.mapContains(c, map))
+      throw this.syntaxError("Expected " + message + " and located `" + translate(c) + "'");
     back();
-    nextCharacter(message, '\0', true);
+  }
+
+  /**
+   * <p>Raises a syntax error with the specified message on the current character position.</p>
+   * @param message the content type expected by the driver (caller)
+   * @throws SyntaxError representing this character at this position with this expected content message
+   */
+  public void flagThisCharacterSyntaxError(String message) throws SyntaxError {
+    this.syntaxError("Expected " + message + " and located `" + translate(state.current()) + "'");
   }
 
   /**
