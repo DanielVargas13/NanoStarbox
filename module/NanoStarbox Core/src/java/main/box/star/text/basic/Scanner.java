@@ -2,7 +2,6 @@ package box.star.text.basic;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
-import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.text.Char;
 import box.star.text.Exception;
@@ -24,7 +23,8 @@ import static box.star.text.Char.*;
  * backslash escape expansion with customizable fallback support, for the
  * default implementation.</p>
  * <br>
- *   <p><i>the term "optimistaclly" means all operations are assumed to be successful, though results may prove otherwise.</i></p>
+ *   <p><i>The term "optimistaclly" means all operations are assumed to be
+ *   successful, though results may prove otherwise.</i></p>
  *<br>
  * <p>The scanner automatically tracks backslash escape activation, and in some
  * built-in scanner methods, automatically handles backslash expansion and output
