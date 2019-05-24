@@ -619,8 +619,8 @@ public class Scanner implements Closeable {
    * <br>
    * <p>If eof is encountered, it is considered as the field boundary.</p>
    *
-   * @param map
-   * @return
+   * @param map the field boundaries
+   * @return the assembled characters which exclude the field boundary characters
    * @throws SyntaxError if trying to escape end of stream.
    */
   @NotNull
@@ -635,9 +635,9 @@ public class Scanner implements Closeable {
       if (c == BACKSLASH && !escapeMode()) continue;
 
       if (c == 0) {
-        if (escapeMode())
+        if (escapeMode() && state.eof)
           throw syntaxError("expected character escape sequence, found end of stream");
-        return sb.toString();
+        if (state.eof) return sb.toString();
       }
 
       if (escapeMode()) {
