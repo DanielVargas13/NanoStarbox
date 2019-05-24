@@ -6,7 +6,7 @@ import java.util.*;
  * Command Shell Function Model
  */
 public class Function implements Cloneable {
-  private Main context;
+  Main context;
   /**
    * <p>For the definitions phase, and String reporting</p>
    * <br>

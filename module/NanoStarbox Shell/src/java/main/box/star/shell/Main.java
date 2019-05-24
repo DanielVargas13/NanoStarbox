@@ -37,7 +37,7 @@ public class Main {
   protected int exitValue, shellLevel;
   protected Main parent;
 
-  private Scanner source;
+  Scanner source;
   private String origin;
 
   private void contextInit(Scanner source, StreamTable io){
