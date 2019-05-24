@@ -14,6 +14,8 @@ import java.util.Stack;
  */
 public class Main extends Context {
 
+  Scanner source;
+
   public final static String
 
     SHELL_SYSTEM_PROFILE_VARIABLE = "SHELL_SYSTEM_PROFILE",

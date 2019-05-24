@@ -4,6 +4,9 @@ import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
 import box.star.text.basic.Scanner;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Context {
@@ -11,12 +14,11 @@ public class Context {
   final static public boolean systemConsoleMode = System.console() != null;
 
   Context parent;
-  Scanner source;
+  Environment environment;
+  StreamTable io;
   String origin;
   int shellLevel;
 
-  protected Environment environment;
-  protected StreamTable io;
   protected Stack<String> parameters;
   protected int exitValue;
 
@@ -26,8 +28,18 @@ public class Context {
     this.parent = parent;
   }
 
-  Context(String origin, StreamTable io){
+  Context(Context parent, String origin) {
+    this(parent, origin, null, null);
+  }
+
+  Context(Context parent, String origin, StreamTable io) {
+    this(parent, origin, io, null);
+  }
+
+  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
+    this.parent = parent;
     this.origin = origin;
+    this.parameters = parameters;
     this.io = io;
   }
 
@@ -116,5 +128,15 @@ public class Context {
     set(key, objNewInstance, export);
     return;
   }
+
+  final public void export(String name, boolean value) {environment.export(name, value);}
+  final public boolean exporting(String name) {return environment.exporting(name);}
+  final public void mapAllObjects(Map<String, Object> map, boolean export) {environment.mapAllObjects(map, export);}
+  final public void mapAllStrings(Map<String, String> map, boolean export) {environment.mapAllStrings(map, export);}
+  final public void removeAllKeys(List<String> keys) {environment.removeAllKeys(keys);}
+  final public List<String> keyList() {return environment.keyList();}
+  final public String getCurrentDirectory() {return environment.getCurrentDirectory();}
+  final public void setCurrentDirectory(String currentDirectory) {environment.setCurrentDirectory(currentDirectory);}
+  final public File getRelativeFile(String name) {return environment.getRelativeFile(name);}
 
 }

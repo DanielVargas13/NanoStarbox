@@ -1,4 +1,3 @@
 package box.star.shell;
 
-public class Script {
-}
+public class Script extends Context {}
