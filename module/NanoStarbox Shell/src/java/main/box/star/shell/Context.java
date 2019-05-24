@@ -20,7 +20,7 @@ public class Context {
   Context parent;
   Environment environment;
   StreamTable io;
-  String origin;
+  Scanner.Bookmark origin;
   int shellLevel;
 
   protected Stack<String> parameters;
@@ -32,22 +32,22 @@ public class Context {
     this.parent = parent;
   }
 
-  Context(Context parent, String origin) {
+  Context(Context parent, Scanner.Bookmark origin) {
     this(parent, origin, null, null);
   }
 
-  Context(Context parent, String origin, StreamTable io) {
+  Context(Context parent, Scanner.Bookmark origin, StreamTable io) {
     this(parent, origin, io, null);
   }
 
-  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
+  Context(Context parent, Scanner.Bookmark origin, StreamTable io, Stack<String> parameters){
     this.parent = parent;
     this.origin = origin;
     this.parameters = parameters;
     this.io = io;
   }
 
-  final protected Context WithOriginOf(String origin){
+  final protected Context OriginOf(Scanner.Bookmark origin){
     if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.origin = origin;
@@ -68,10 +68,17 @@ public class Context {
     return this;
   }
 
-  final protected Context WithStreamsOf(StreamTable io){
+  final protected Context StreamsOf(StreamTable io){
     if (this.io != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.io = io;
+    return this;
+  }
+
+  final protected Context EnvironmentOf(Environment environment){
+    if (this.environment != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.environment = environment;
     return this;
   }
 
@@ -86,19 +93,25 @@ public class Context {
   public interface Profile {
     abstract class MainClass extends Context {
       private Scanner scanner;
+      final protected Context WithScannerOf(Scanner scanner){
+        if (this.scanner != null)
+          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+        this.scanner = scanner;
+        return this;
+      }
     }
     abstract class ScriptClass extends Context {}
     abstract class FunctionClass extends Context {
       private String name;
       protected List<box.star.shell.Command> body;
       public FunctionClass(){super();}
-      public FunctionClass(String origin, String name){
+      public FunctionClass(Scanner.Bookmark origin, String name){
         this(origin, name,  null);
       }
-      public FunctionClass(String origin, String name, Map<Integer, String> redirects){
+      public FunctionClass(Scanner.Bookmark origin, String name, Map<Integer, String> redirects){
         this(origin, name, null, redirects);
       }
-      FunctionClass(String origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
+      FunctionClass(Scanner.Bookmark origin, String name, List<box.star.shell.Command> body, Map<Integer, String> redirects) {
         this.origin = origin;
         this.name = name;
         this.body = body;
@@ -129,7 +142,7 @@ public class Context {
       }
     }
     abstract class PluginClass extends FunctionClass {
-      public PluginClass(String origin, String name) {
+      public PluginClass(Scanner.Bookmark origin, String name) {
         super(origin, name);
       }
       @Override
@@ -162,8 +175,8 @@ public class Context {
     class CommandGroupClass extends Context {}
     class CommandClass extends Context {}
     class ObjectClass extends Context {
-      ObjectClass(Context parent, String origin, StreamTable io){
-        super(parent, origin, io);
+      ObjectClass(Context parent, Scanner.Bookmark origin, StreamTable io){
+        WithParentOf(parent).OriginOf(origin).StreamsOf(io);
       }
     }
   }
@@ -181,7 +194,7 @@ public class Context {
   }
 
   final public String getOrigin() {
-    return this.origin;
+    return this.origin.toString();
   }
 
   final public int getShellLevel() {
@@ -198,7 +211,7 @@ public class Context {
     return null;
   }
 
-  public String expandText(String origin, String text){
+  public String expandText(Scanner.Bookmark origin, String text){
     // TODO: expandText with environment overlay
     return null;
   }
@@ -251,7 +264,7 @@ public class Context {
     environment.put(userFunction.getName(), new Variable(userFunction, export));
   }
 
-  final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
+  final public boolean newObject(Constructor plugin, Scanner.Bookmark origin, String key, boolean export, StreamTable io, Object... parameters) {
     Context.Profile.ObjectClass objectContext = new Profile.ObjectClass(this, origin, io);
     Object newObjInstance = plugin.construct(objectContext, parameters);
     if (newObjInstance == null) return false;
