@@ -1,13 +1,11 @@
 package box.star.shell;
 
-import box.star.shell.io.StreamTable;
-
 import java.util.*;
 
 /**
  * Command Shell Function Model
  */
-public class Function extends Context implements Cloneable {
+public class Function extends Context implements Cloneable, Context.Profile.Function {
 
   /**
    * <p>For the definitions phase, and String reporting</p>

@@ -4,7 +4,7 @@ import box.star.text.basic.Scanner;
 
 import java.util.Stack;
 
-public class Plugin extends Function {
+public class Plugin extends Function implements Context.Profile.Plugin {
   public Plugin(String origin, String name) {
     super(origin, name);
   }

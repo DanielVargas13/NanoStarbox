@@ -10,6 +10,15 @@ import java.util.Stack;
 
 public class Context {
 
+  public interface Profile {
+    abstract class Main {}
+    abstract class Plugin {}
+    abstract class Command {}
+    abstract class Script {}
+    abstract class Object {}
+    abstract class Function {}
+  }
+
   final static private String PROPERTY_ACCESS_READ_ONLY =
       "you can't do that,"+
           " the corresponding property is marked read only for clients";
