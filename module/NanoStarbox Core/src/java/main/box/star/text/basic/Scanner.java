@@ -8,9 +8,7 @@ import box.star.text.Exception;
 import box.star.text.SyntaxError;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import static box.star.text.Char.*;
@@ -829,47 +827,6 @@ public class Scanner implements Closeable {
     return new SyntaxError(message + ":\n\n   " +this.claim(), causedBy);
   }
 
-  /**
-   * An optimally compiled source tag, with notebook function
-   */
-  public static class Bookmark {
-    public final long line, column, index;
-    public final String origin, quote;
-    Enum subType;
-    public final List<Object> notes = new ArrayList<>();
-    private Bookmark(Scanner source){
-     this.line = source.state.line;
-     this.column = source.state.column;
-     this.index = source.state.index;
-     this.quote = quoteSource(source.getPath());
-     this.origin = compileToString();
-    }
-    public Bookmark setSubType(Enum type){
-      if (hasSubType())
-        throw new IllegalStateException("you can't do that,"+
-            " the underlying property is marked read only for clients");
-      this.subType = type;
-      return this;
-    }
-    public Enum getSubType() {
-      return subType;
-    }
-    public boolean hasSubType(){
-      return subType != null;
-    }
-    private static String quoteSource(String source){
-      return source
-          .replaceAll(Char.toString(BACKSLASH), Char.toString(BACKSLASH, BACKSLASH))
-          .replaceAll(Char.toString(BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
-    }
-    private String compileToString() {
-      return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";
-    }
-    @Override
-    public String toString() {
-      return origin;
-    }
-  }
   /**
    * <p>Gets a future claim for the next character.</p>
    * <br>
