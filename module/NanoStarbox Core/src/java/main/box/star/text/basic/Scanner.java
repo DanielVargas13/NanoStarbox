@@ -55,7 +55,19 @@ public class Scanner implements Closeable {
     }
   };
 
+  /**
+   * <p>A custom character expander.</p>
+   * <br>
+   * <p>If this character expander returns null or is null, the default
+   * implementation will be used.</p>
+   * <p></p>
+   */
   public CharacterExpander characterExpander = null;
+
+  /**
+   * The character expander that will resolve backslash escapes, if the current
+   * configuration does not handle the escape.
+   */
   public CharacterExpander fallBackCharacterExpander = defaultCharacterExpander;
 
   /**
@@ -511,7 +523,10 @@ public class Scanner implements Closeable {
    */
   @Nullable
   public String expand(char character) {
-    if (characterExpander != null) return characterExpander.expand(this, character);
+    if (characterExpander != null) {
+      String expansion = characterExpander.expand(this, character);
+      if (expansion != null) return expansion;
+    }
     switch (character) {
       case 'd':
         return DELETE + Tools.EMPTY_STRING;
