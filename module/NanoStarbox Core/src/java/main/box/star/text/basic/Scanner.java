@@ -13,16 +13,17 @@ import static box.star.text.Char.*;
 
 /**
  * <h2>Basic Text Scanner</h2>
- * <p>Provides the facilities to scan text.</p>
+ * <p>Provides the basic facilities to scan text formats and report text format
+ * errors.</p>
  * <br>
  * <p>Quick Overview</p>
  * <ul>
- * <li>Master Batch Operation State Restore through {@link #getStateLock()}</li>
- * <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}</li>
+ * <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}, and {@link #branch(ScannerMethod, Object...)}</li>
  * <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
  * <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
  * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
- * <li>Character Field Boundary Searching through {@link #nextField(char...)}, {@link #nextFieldLength(int, char...)} and {@link #nextBoundField(char...)}</li>
+ * <li>Character Map Field Boundary Searching through {@link #nextField(char...)}, {@link #nextFieldLength(int, char...)} and {@link #nextBoundField(char...)}</li>
+ * <li>Buffer Position Backstep through {@link #back()}, and {@link #walkBack(long)}</li>
  * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
  * </ul>
  * <br>
