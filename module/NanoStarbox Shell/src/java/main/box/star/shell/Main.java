@@ -31,14 +31,9 @@ public class Main extends Context {
   protected SettingsManager settings;
   protected Configuration<Settings, Serializable> configuration;
 
-//  protected Environment environment;
-//  protected StreamTable io;
-//  protected Stack<String> parameters;
-//  protected int exitValue, shellLevel;
-//  protected Main parent;
-//
-//  Scanner source;
-//  String origin;
+  final public Configuration<Settings, Serializable> getConfiguration() {
+    return configuration;
+  }
 
   private void contextInit(Scanner source, StreamTable io){
     if (this.origin == null) this.origin = source.nextCharacterClaim();
@@ -85,17 +80,6 @@ public class Main extends Context {
     this.parent = parent;
     contextInit(new Scanner(origin, source), io);
     // TODO: start scanning, store result
-  }
-
-  public void assembleObject(Assembler plugin, Environment overlay, String origin, String key, boolean export, StreamTable io, Object... parameters) {
-    // TODO: evaluation routine
-    Object objNewInstance = plugin.compile(this, origin, overlay, io, parameters);
-    set(key, objNewInstance, export);
-    return;
-  }
-
-  final public Configuration<Settings, Serializable> getConfiguration() {
-    return configuration;
   }
 
 }

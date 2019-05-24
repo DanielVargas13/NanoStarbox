@@ -15,11 +15,10 @@ public interface Assembler<Kind> {
    * Custom Assembler
    * @param context the context
    * @param origin the source location of the command
-   * @param overlay the local environment for the object
    * @param io the stream table for the object
    * @param parameters the parameters for the construction
    * @return the newly compiled object
    */
- Kind compile(Main context, String origin, Environment overlay, StreamTable io, Object... parameters);
+ Kind compile(Context context, String origin, StreamTable io, Object... parameters);
 
 }
