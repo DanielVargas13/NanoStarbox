@@ -54,16 +54,20 @@ public final class Char {
       RECORD_SEPARATOR = 30,
       UNIT_SEPARATOR = 31,
       DELETE = 127;
-  public final static char[] MAP_ASCII = new Assembler(NULL_CHARACTER, 255).toArray();
-  public final static char[] MAP_ASCII_EXTENDED = new Assembler.RangeMap(128, 255).compile();
-  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(9, 13).map(SPACE).toArray();
-  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toArray();
-  public final static char[] MAP_ASCII_LETTERS = new Assembler(65, 90).merge(97, 122).toArray();
-  public final static char[] MAP_ASCII_NUMBERS = new Assembler.RangeMap(48, 57).compile();
-  public final static char[] MAP_ASCII_CONTROL = new Assembler(NULL_CHARACTER, 31).map(DELETE).filterMap(MAP_ASCII_ALL_WHITE_SPACE).toArray();
-  public final static char[] MAP_ASCII_SYMBOLS = new Assembler(33, 47).merge(58, 64).merge(91, 96).merge(123, 127).toArray();
-  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toArray();
-  public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toArray();
+  public final static char[] MAP_ASCII = new RangeMap(NULL_CHARACTER, 255).toMap();
+  public final static char[] MAP_ASCII_EXTENDED = new RangeMap(128, 255).toMap();
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(new RangeMap(9, 13)).merge(SPACE).toMap();
+  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toMap();
+  public final static char[] MAP_ASCII_LETTERS = new Assembler(new RangeMap(65, 90)).merge(new RangeMap(97, 122)).toMap();
+  public final static char[] MAP_ASCII_NUMBERS = new RangeMap(48, 57).toMap();
+  public final static char[] MAP_ASCII_CONTROL = new Assembler(new RangeMap(NULL_CHARACTER, 31)).merge(DELETE).filter(MAP_ASCII_ALL_WHITE_SPACE).toMap();
+  public final static char[] MAP_ASCII_SYMBOLS = new Assembler(new RangeMap(33, 47))
+      .merge(new RangeMap(58, 64))
+      .merge(new RangeMap(91, 96))
+      .merge(new RangeMap(123, 127)
+      ).toMap();
+  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toMap();
+  public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toMap();
   private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
   private static Locale locale;
   private static Hashtable<Character, String> TRANSLATION;
@@ -131,7 +135,7 @@ public final class Char {
     return false;
   }
 
-  static char[] buildRangeMap(Assembler.RangeMap range) {
+  static char[] buildRangeMap(RangeMap range) {
     StringBuilder out = new StringBuilder();
     for (int i = range.start; i <= range.end; i++) out.append((char) i);
     return out.toString().toCharArray();
@@ -191,29 +195,18 @@ public final class Char {
       merge(stream);
     }
 
-    private Assembler(RangeMap map) {
-      this(map.start, map.end);
+    public Assembler(RangeMap sequence) {
+      this(sequence.toMap());
     }
 
-    public Assembler(char[] map) {
+    public Assembler(char... map) {
       chars = new StringBuilder(map.length);
-      map(map);
-    }
-
-    public Assembler(int start, int end) {
-      if (start > end) throw new RuntimeException("RangeError: start is greater than end");
-      chars = new StringBuilder((end - start) + 2);
-      merge(new RangeMap(start, end));
-    }
-
-    public Assembler(int... integer) {
-      chars = new StringBuilder(integer.length);
-      merge(integer);
+      merge(map);
     }
 
     @Override
     public Iterator<Character> iterator() {
-      final char[] data = this.toArray();
+      final char[] data = this.toMap();
       return new Iterator<Character>() {
         int i = 0;
 
@@ -229,15 +222,7 @@ public final class Char {
       return merge(sequence.toString());
     }
 
-    public Assembler merge(int... integer) {
-      for (int i : integer) {
-        char c = (char) sanitizeRangeValue(i);
-        if (!contains(c)) chars.append(c);
-      }
-      return this;
-    }
-
-    public Assembler map(char... map) {
+    public Assembler merge(char... map) {
       for (char c : map) if (chars.indexOf(String.valueOf(c)) == -1) chars.append(c);
       return this;
     }
@@ -248,26 +233,15 @@ public final class Char {
     }
 
     public Assembler merge(String source) {
-      return map(source.toCharArray());
+      return merge(source.toCharArray());
     }
 
-    public Assembler merge(int start, int end) {
-      return merge(new RangeMap(start, end));
-    }
-
-    private Assembler merge(RangeMap map) {
-      return map(map.compile());
+    public Assembler merge(RangeMap map) {
+      return merge(map.toMap());
     }
 
     public Assembler filter(String source) {
-      return filterMap(source.toCharArray());
-    }
-
-    public Assembler filter(int... integer) {
-      StringBuilder map = new StringBuilder(chars.length());
-      for (int i : integer) map.append((char) i);
-      char[] chars = map.toString().toCharArray();
-      return filterMap(chars);
+      return filter(source.toCharArray());
     }
 
     public Assembler filter(CharSequence sequence) {
@@ -277,18 +251,14 @@ public final class Char {
     public Assembler filter(Iterable<Character> stream) {
       StringBuilder out = new StringBuilder(chars.length());
       for (char c : stream) out.append(c);
-      return filterMap(out.toString().toCharArray());
-    }
-
-    public Assembler filter(int start, int end) {
-      return filter(new RangeMap(start, end));
+      return filter(out.toString().toCharArray());
     }
 
     public Assembler filter(RangeMap map) {
-      return filterMap(map.compile());
+      return filter(map.toMap());
     }
 
-    public Assembler filterMap(char... map) {
+    public Assembler filter(char... map) {
       StringBuilder filter = new StringBuilder(chars.length());
       for (char c : chars.toString().toCharArray()) {
         if (mapContains(c, map)) continue;
@@ -298,7 +268,7 @@ public final class Char {
       return this;
     }
 
-    public char[] toArray() {
+    public char[] toMap() {
       return chars.toString().toCharArray();
     }
 
@@ -398,23 +368,20 @@ public final class Char {
       return chars.indexOf(character + Tools.EMPTY_STRING) != -1;
     }
 
-    private static class RangeMap {
-      public final int start, end;
-
-      RangeMap(int start, int end) {
-        this.start = sanitizeRangeValue(start);
-        this.end = sanitizeRangeValue(end);
-      }
-
-      public boolean match(char character) {
-        return character >= start || character <= end;
-      }
-
-      public char[] compile() {
-        return buildRangeMap(this);
-      }
-    }
-
   }
 
+  public static class RangeMap {
+    public final int start, end;
+    public RangeMap(int start, int end) {
+      this.start = sanitizeRangeValue(start);
+      this.end = sanitizeRangeValue(end);
+    }
+
+    public boolean match(char character) {
+      return character >= start || character <= end;
+    }
+    public char[] toMap() {
+      return buildRangeMap(this);
+    }
+  }
 }

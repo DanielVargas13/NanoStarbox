@@ -37,10 +37,10 @@ public class Host {
       MACRO_TRIGGER = '$';
 
   private static final char[] COMMAND_TERMINATOR =
-      new Char.Assembler(Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')).toArray();
+      new Char.Assembler(Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')).toMap();
 
   private static final char[] BREAK_PARAMETER_MAP =
-      new Char.Assembler(Char.toMap(PIPE, '<', '>')).map(COMMAND_TERMINATOR).map(MAP_ASCII_ALL_WHITE_SPACE).toArray();
+      new Char.Assembler(Char.toMap(PIPE, '<', '>')).merge(COMMAND_TERMINATOR).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
   Environment environment;
   StreamTable streams;
@@ -140,7 +140,7 @@ public class Host {
 
     String processEnvironmentLabel(Scanner scanner) {
       StringBuilder output = new StringBuilder();
-      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).map('-', '_').toArray();
+      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('-', '_').toMap();
       do {
         char c = scanner.next();
         if (c == 0) return null;

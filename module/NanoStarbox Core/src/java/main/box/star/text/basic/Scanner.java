@@ -116,7 +116,7 @@ public class Scanner implements Closeable {
    *
    * @return
    */
-  public int historySize() {
+  public int getHistoryLength() {
     return state.getHistoryLength();
   }
 
@@ -129,7 +129,7 @@ public class Scanner implements Closeable {
    * @param size
    * @throws IllegalStateException if the current position is within the history.
    */
-  public void trimHistory(int size) throws IllegalStateException {
+  public void trimHistoryLength(int size) throws IllegalStateException {
     state.trimHistoryLength(size);
   }
 

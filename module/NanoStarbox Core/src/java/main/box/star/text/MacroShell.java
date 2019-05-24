@@ -20,12 +20,12 @@ public class MacroShell {
       ENTER_VARIABLE = '[', EXIT_VARIABLE = ']';
   private static final char[] BREAK_PROCEDURE_MAP =
       new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
-          .map(EXIT_PROCEDURE)
-          .toArray();
+          .merge(EXIT_PROCEDURE)
+          .toMap();
   private static final char[] BREAK_COMMAND_MAP =
       new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
-          .map(EXIT_PROCEDURE, '>')
-          .toArray();
+          .merge(EXIT_PROCEDURE, '>')
+          .toMap();
   private final static Command STAR_COMMAND = new Command() {
     @Override
     protected String run(String command, Stack<String> parameters) {
@@ -205,7 +205,7 @@ public class MacroShell {
   private static class ParameterBuilder extends ScannerMethod {
 
     private static final Char.Assembler assembler =
-        new Char.Assembler(BREAK_PROCEDURE_MAP).map(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
+        new Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
     MacroShell context;
     Stack<String> parameters;
     private char[] PARAMETER_TEXT_MAP;
@@ -214,7 +214,7 @@ public class MacroShell {
     protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>) parameters[1];
-      PARAMETER_TEXT_MAP = assembler.map(context.macroTrigger, ENTER_PROCEDURE).toArray();
+      PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger, ENTER_PROCEDURE).toMap();
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     }
 
