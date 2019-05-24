@@ -27,7 +27,6 @@ public class Function implements Cloneable {
     this.body = body;
     this.io = io;
   }
-
   /**
    *
    * @param context
@@ -37,8 +36,8 @@ public class Function implements Cloneable {
    */
   protected Function createRuntimeInstance(Main context, Environment locals, StreamTable io) {
     try /* never throwing runtime exceptions with closure */ {
-      if (context != null)
-        throw new IllegalStateException("trying to create function copy from function copy");
+      if (this.context != null)
+        throw new IllegalStateException("trying to create function instance from function instance");
       Function newInstance = (Function) super.clone();
       newInstance.context = context;
       newInstance.locals = locals;
@@ -50,7 +49,7 @@ public class Function implements Cloneable {
   }
   final public int invoke(String... parameters){
     if (context == null)
-      throw new IllegalStateException("trying to invoke function prototype");
+      throw new IllegalStateException("trying to invoke function definition");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
@@ -58,7 +57,7 @@ public class Function implements Cloneable {
   }
   final public int invoke(String name, String... parameters){
     if (context == null)
-      throw new IllegalStateException("trying to invoke function prototype");
+      throw new IllegalStateException("trying to invoke function definition");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
