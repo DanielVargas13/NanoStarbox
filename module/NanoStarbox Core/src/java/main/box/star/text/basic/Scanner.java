@@ -55,7 +55,8 @@ public class Scanner implements Closeable {
     }
   };
 
-  public CharacterExpander customCharacterExpander = defaultCharacterExpander;
+  public CharacterExpander characterExpander = null;
+  public CharacterExpander fallBackCharacterExpander = defaultCharacterExpander;
 
   /**
    * Reader for the input.
@@ -510,6 +511,7 @@ public class Scanner implements Closeable {
    */
   @Nullable
   public String expand(char character) {
+    if (characterExpander != null) return characterExpander.expand(this, character);
     switch (character) {
       case 'd':
         return DELETE + Tools.EMPTY_STRING;
@@ -560,7 +562,7 @@ public class Scanner implements Closeable {
             char out = (char) value;
             return out + Tools.EMPTY_STRING;
           }
-        } else return customCharacterExpander.expand(this, character);
+        } else return fallBackCharacterExpander.expand(this, character);
       }
     }
   }
