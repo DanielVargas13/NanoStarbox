@@ -28,11 +28,14 @@ public class Function implements Cloneable {
   public Function(String origin, String name, Map<Integer, String> redirects){
     this(origin, name, null, redirects);
   }
-  public Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
+  Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
     this.origin = origin;
     this.name = name;
     this.body = body;
     this.redirects = redirects;
+  }
+  public static Function parse(Scanner textScanner){
+    return null;
   }
   /**
    *
