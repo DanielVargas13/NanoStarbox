@@ -16,8 +16,8 @@ import static box.star.text.Char.*;
 
 /**
  * <h2>Basic Text Scanner</h2>
- * <p>Provides the basic facilities to scan text formats and report text format
- * errors.</p>
+ * <p>Provides the basic facilities to scan text formats with precision text format
+ * error reporting capabilities.</p>
  * <br>
  * <p>Quick Overview</p>
  * <ul>
