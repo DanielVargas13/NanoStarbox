@@ -93,7 +93,7 @@ public class Context {
    */
   Map<Integer, String> redirects;
 
-  public interface Profile {
+  public interface Shell {
     abstract class MainClass extends Context {
       private Scanner scanner;
       final protected Context WithScannerOf(Scanner scanner){
@@ -175,7 +175,7 @@ public class Context {
         return (ANY) null;
       }
       final protected Scanner getScanner(){
-        return ((Profile.MainClass) getMain()).scanner;
+        return ((Shell.MainClass) getMain()).scanner;
       }
     }
     class SubMainClass extends MainClass {}
@@ -190,7 +190,7 @@ public class Context {
 
   @NotNull
   final protected Context getMain(){
-    if (this instanceof Profile.MainClass) return this;
+    if (this instanceof Shell.MainClass) return this;
     else return parent.getMain();
   }
 
@@ -275,7 +275,7 @@ public class Context {
   }
 
   final public boolean newObject(Constructor plugin, Bookmark origin, String key, boolean export, StreamTable io, Object... parameters) {
-    Context.Profile.ObjectClass objectContext = new Profile.ObjectClass(this, origin, io);
+    Shell.ObjectClass objectContext = new Shell.ObjectClass(this, origin, io);
     Object newObjInstance = plugin.construct(objectContext, parameters);
     if (newObjInstance == null) return false;
     this.set(key, newObjInstance, export);
