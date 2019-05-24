@@ -11,9 +11,77 @@ import java.util.Stack;
 
 public class Context {
 
-  final protected Profile.Main getMain(){
-    return null;
+  final static private String PROPERTY_ACCESS_READ_ONLY =
+      "you can't do that,"+
+          " the corresponding property is marked read only for clients";
+
+  final static public boolean systemConsoleMode = System.console() != null;
+
+  Context parent;
+  Environment environment;
+  StreamTable io;
+  String origin;
+  int shellLevel;
+
+  protected Stack<String> parameters;
+  protected int exitValue;
+
+  Context(){}
+
+  Context(Context parent){
+    this.parent = parent;
   }
+
+  Context(Context parent, String origin) {
+    this(parent, origin, null, null);
+  }
+
+  Context(Context parent, String origin, StreamTable io) {
+    this(parent, origin, io, null);
+  }
+
+  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
+    this.parent = parent;
+    this.origin = origin;
+    this.parameters = parameters;
+    this.io = io;
+  }
+
+  final protected Context WithOriginOf(String origin){
+    if (this.origin != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.origin = origin;
+    return this;
+  }
+
+  final protected Context WithParentOf(Context parent){
+    if (this.parent != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.parent = parent;
+    return this;
+  }
+
+  final protected Context WithParametersOf(Stack<String> parameters){
+    if (this.parameters != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.parameters = parameters;
+    return this;
+  }
+
+  final protected Context WithStreamsOf(StreamTable io){
+    if (this.io != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.io = io;
+    return this;
+  }
+
+  /**
+   * <p>For the definitions phase, and String reporting</p>
+   * <br>
+   *   <p>The main context must, use this field to create the default stream table io.</p>
+   *   <br>
+   */
+  Map<Integer, String> redirects;
 
   public interface Profile {
     abstract class Main extends Context {
@@ -23,13 +91,6 @@ public class Context {
     abstract class Script extends Context {}
     abstract class Object extends Context {}
     abstract class Function extends Context {
-      /**
-       * <p>For the definitions phase, and String reporting</p>
-       * <br>
-       *   <p>The main context must, use this field to create the default stream table io.</p>
-       *   <br>
-       */
-      private Map<Integer, String> redirects;
       private String name;
       protected List<box.star.shell.Command> body;
       public Function(){super();}
@@ -101,71 +162,11 @@ public class Context {
     }
   }
 
-  final static private String PROPERTY_ACCESS_READ_ONLY =
-      "you can't do that,"+
-          " the corresponding property is marked read only for clients";
-
-  final static public boolean systemConsoleMode = System.console() != null;
-
-  Context parent;
-  Environment environment;
-  StreamTable io;
-  String origin;
-  int shellLevel;
-
-  protected Stack<String> parameters;
-  protected int exitValue;
-
-  Context(){}
-
-  Context(Context parent){
-    this.parent = parent;
+  final protected Profile.Main getMain(){
+    return null;
   }
 
-  Context(Context parent, String origin) {
-    this(parent, origin, null, null);
-  }
-
-  Context(Context parent, String origin, StreamTable io) {
-    this(parent, origin, io, null);
-  }
-
-  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
-    this.parent = parent;
-    this.origin = origin;
-    this.parameters = parameters;
-    this.io = io;
-  }
-
-  final protected Context WithOriginOf(String origin){
-    if (this.origin != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.origin = origin;
-    return this;
-  }
-  
-  final protected Context WithParentOf(Context parent){
-    if (this.parent != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.parent = parent;
-    return this;
-  }
-  
-  final protected Context WithParametersOf(Stack<String> parameters){
-    if (this.parameters != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.parameters = parameters;
-    return this;
-  }
-  
-  final protected Context WithStreamsOf(StreamTable io){
-    if (this.io != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.io = io;
-    return this;
-  }
-  
-  final public Context getParent() {
+  final protected Context getParent() {
     return parent;
   }
 
