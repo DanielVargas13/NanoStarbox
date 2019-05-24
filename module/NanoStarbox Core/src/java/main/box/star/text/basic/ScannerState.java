@@ -15,13 +15,13 @@ public class ScannerState implements Cloneable, Serializable {
   protected Stack<Long> columnHistory;
   protected StringBuilder buffer;
   protected int bufferPosition;
-  protected boolean locked, eof, slashing, escaped, escapeLines, escapeUnderscoreLine;
+  @Deprecated protected boolean locked;
+  protected boolean eof, slashing, escaped, escapeLines, escapeUnderscoreLine;
 
   public ScannerState(String path) {
     ScannerState state = this;
     state.path = path;
     state.index = -1;
-    state.column = 0;
     state.line = 1;
     state.clearHistory();
   }
@@ -166,7 +166,7 @@ public class ScannerState implements Cloneable, Serializable {
   }
 
   @Override
-  protected ScannerState clone() {
+  @Deprecated protected ScannerState clone() {
     try /*  throwing runtime exceptions with closure */ {
       return (ScannerState) super.clone();
     }
