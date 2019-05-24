@@ -63,7 +63,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
 
   public <T> T getObject(Class<? extends T> type, String name){
     if (! containsKey(name)) return null;
-    return get(name).getValue(type);
+    return get(name).getObject(type);
   }
 
   public void export(String name, boolean value){
@@ -75,18 +75,10 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     return var.export;
   }
   public void mapAllObjects(Map<String, Object> map, boolean export){
-    for (String k: map.keySet()) {
-      Variable v = new Variable(map.get(k));
-      v.export = export;
-      put(k, v);
-    }
+    for (String k: map.keySet()) put(k, new Variable(map.get(k), export));
   }
   public void mapAllStrings(Map<String, String> map, boolean export){
-    for (String k: map.keySet()) {
-      Variable v = new Variable(map.get(k));
-      v.export = export;
-      put(k, v);
-    }
+    for (String k: map.keySet()) put(k, new Variable(map.get(k), export));
   }
   public void removeAllKeys(List<String> keys){
     for (String k: keys) remove(k);

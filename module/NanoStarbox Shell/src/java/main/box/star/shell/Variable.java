@@ -1,5 +1,7 @@
 package box.star.shell;
 
+import java.util.Arrays;
+
 public class Variable implements Cloneable {
   boolean
       export, // aka enumerable
@@ -8,6 +10,10 @@ public class Variable implements Cloneable {
   Object value;
   public Variable(Object value){
     this.value = value;
+  }
+  public Variable(Object value, boolean export){
+    this.value = value;
+    this.export = export;
   }
   @Override
   public String toString() {
@@ -20,6 +26,7 @@ public class Variable implements Cloneable {
   public <ANY> ANY getValue(){
     return (ANY) this.value;
   }
+
   public boolean isByte(){
     return Byte.class.isInstance(value);
   }
@@ -39,7 +46,16 @@ public class Variable implements Cloneable {
     return Double.class.isInstance(this.value);
   }
   public boolean isObject(){
-    return this.value != null && (!(this.isString() || this.isInteger() || this.isBoolean() || this.isDouble()));
+    return isObjectOfClass(Object.class);
+  }
+  public Class<?> getObjectClass(){
+    return getValue().getClass();
+  }
+  public boolean isObjectOfClass(Class type){
+    return type.isInstance(this.value);
+  }
+  public <T> T getObject(Class<? extends T> type){
+    return type.cast(getValue());
   }
   @Override
   protected Variable clone() {
