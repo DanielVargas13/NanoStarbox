@@ -11,7 +11,8 @@ import java.util.Stack;
 public class Context {
 
   final static private String PROPERTY_ACCESS_READ_ONLY =
-      "you can't do that, the corresponding property is marked read only for clients";
+      "you can't do that,"+
+          " the corresponding property is marked read only for clients";
 
   final static public boolean systemConsoleMode = System.console() != null;
 
