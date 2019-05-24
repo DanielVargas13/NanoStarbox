@@ -328,7 +328,11 @@ public class Scanner implements Closeable {
         int c = this.reader.read();
         if (c <= 0) {
           state.eof = true;
-          return 0;
+          // TODO: null embedding support in Scanner.next()
+          return 0; // this should be ignored to support embedded nulls.
+          // or perhaps an embedded null driver routine may be useful
+          // this will require state inspection to see if it can be fully
+          // supported by a capable driver
         }
         state.recordCharacter(Char.valueOf(c));
         return Char.valueOf(c);
