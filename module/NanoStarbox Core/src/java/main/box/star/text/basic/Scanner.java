@@ -30,7 +30,7 @@ import static box.star.text.Char.*;
  * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
  * </ul>
  * <br>
- * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA</tt>
+ * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA (Triston-Jerard: Taylor)</tt>
  * <p></p>
  */
 public class Scanner implements Closeable {
