@@ -2,7 +2,6 @@ package box.star.shell;
 
 import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
-import box.star.text.basic.Scanner;
 
 import java.io.File;
 import java.util.List;
@@ -10,6 +9,8 @@ import java.util.Map;
 import java.util.Stack;
 
 public class Context {
+
+  final static private String PROPERTY_ACCESS_READ_ONLY = "you can't do that, the corresponding property is marked read only for clients";
 
   final static public boolean systemConsoleMode = System.console() != null;
 
@@ -43,6 +44,34 @@ public class Context {
     this.io = io;
   }
 
+  final protected Context WithOriginOf(String origin){
+    if (this.origin != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.origin = origin;
+    return this;
+  }
+  
+  final protected Context WithParentOf(Context parent){
+    if (this.parent != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.parent = parent;
+    return this;
+  }
+  
+  final protected Context WithParametersOf(Stack<String> parameters){
+    if (this.parameters != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.parameters = parameters;
+    return this;
+  }
+  
+  final protected Context WithStreamsOf(StreamTable io){
+    if (this.io != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    this.io = io;
+    return this;
+  }
+  
   final public Context getParent() {
     return parent;
   }
