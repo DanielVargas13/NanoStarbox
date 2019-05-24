@@ -9,6 +9,6 @@ only two list-items: %(list \64\ test-bound-field-expansion "(
 
 )")
 
-%(list escaped-syntax-error\())
+%(list escaped-syntax-error'()')
 
 Definitely a stocking stuffer.

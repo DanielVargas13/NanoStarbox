@@ -2,7 +2,9 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
+import box.star.io.Streams;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -54,20 +56,29 @@ public final class Char {
       RECORD_SEPARATOR = 30,
       UNIT_SEPARATOR = 31,
       DELETE = 127;
-  public final static char[] MAP_ASCII = new RangeMap(NULL_CHARACTER, 255).toMap();
-  public final static char[] MAP_ASCII_EXTENDED = new RangeMap(128, 255).toMap();
-  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = new Assembler(new RangeMap(9, 13)).merge(SPACE).toMap();
-  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = new Assembler(MAP_ASCII_ALL_WHITE_SPACE).filter(LINE_FEED, CARRIAGE_RETURN).toMap();
-  public final static char[] MAP_ASCII_LETTERS = new Assembler(new RangeMap(65, 90)).merge(new RangeMap(97, 122)).toMap();
-  public final static char[] MAP_ASCII_NUMBERS = new RangeMap(48, 57).toMap();
-  public final static char[] MAP_ASCII_CONTROL = new Assembler(new RangeMap(NULL_CHARACTER, 31)).merge(DELETE).filter(MAP_ASCII_ALL_WHITE_SPACE).toMap();
-  public final static char[] MAP_ASCII_SYMBOLS = new Assembler(new RangeMap(33, 47))
-      .merge(new RangeMap(58, 64))
-      .merge(new RangeMap(91, 96))
-      .merge(new RangeMap(123, 127)
-      ).toMap();
-  public final static char[] MAP_ASCII_HEX = new Assembler(MAP_ASCII_NUMBERS).merge('a', 'f').merge('A', 'F').toMap();
-  public final static char[] MAP_ASCII_OCTAL = new Assembler('0', '8').toMap();
+
+  private static char[] loadResourceMap(String name){
+    InputStream stream = Streams.getResourceAsStream("box/star/text/optimization/"+name);
+    char[] map = new char[0];
+    try {
+      map = (char[]) Streams.readSerializable(stream);
+      stream.close();
+    }
+    catch (java.lang.Exception ignored) {}
+    return map;
+  }
+
+  public final static char[] MAP_ASCII = loadResourceMap("MAP_ASCII");
+  public final static char[] MAP_ASCII_EXTENDED = loadResourceMap("MAP_ASCII_EXTENDED");
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE");
+  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE");
+  public final static char[] MAP_ASCII_LETTERS = loadResourceMap("MAP_ASCII_LETTERS");
+  public final static char[] MAP_ASCII_NUMBERS = loadResourceMap("MAP_ASCII_NUMBERS");
+  public final static char[] MAP_ASCII_CONTROL = loadResourceMap("MAP_ASCII_CONTROL");
+  public final static char[] MAP_ASCII_SYMBOLS = loadResourceMap("MAP_ASCII_SYMBOLS");
+  public final static char[] MAP_ASCII_HEX = loadResourceMap("MAP_ASCII_HEX");
+  public final static char[] MAP_ASCII_OCTAL = loadResourceMap("MAP_ASCII_OCTAL");
+
   private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
   private static Locale locale;
   private static Hashtable<Character, String> TRANSLATION;
