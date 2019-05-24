@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Environment extends ConcurrentHashMap<String, Variable> implements EnvironmentExporter {
 
   public final static String defaultCurrentDirectoryKey = "PWD";
-  public final static String defaultCurrentDirectory = System.getenv("user.dir");
+  public final static String defaultCurrentDirectory = System.getProperty("user.dir");
 
   protected String currentDirectoryKey;
 
