@@ -103,9 +103,16 @@ public class Main {
     return null;
   }
 
-  public int evaluate(Environment overlay, String origin, String text) {
+  public int evaluate(Environment overlay, String origin, String text, StreamTable io) {
     // TODO: evaluation routine
     return 0;
+  }
+
+  public void construct(PluginFactory plugin, Environment overlay, String origin, String key, boolean export, Object... parameters) {
+    // TODO: evaluation routine
+    Object objNewInstance = plugin.constructObject(this, origin, overlay, io, parameters);
+    set(key, objNewInstance, export);
+    return;
   }
 
   public Function getFunction(String name){
