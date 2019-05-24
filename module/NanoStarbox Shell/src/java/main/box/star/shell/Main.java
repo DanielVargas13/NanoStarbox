@@ -2,10 +2,10 @@ package box.star.shell;
 
 import box.star.state.Configuration;
 import box.star.state.EnumSettings;
+import box.star.text.basic.Scanner;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Stack;
 
 public class Main {
@@ -22,6 +22,8 @@ public class Main {
   protected Stack<String> parameters;
   protected int exitValue, shellLevel;
   protected Main parent;
+
+  private String origin;
 
   /**
    * Classic start main shell
@@ -43,10 +45,15 @@ public class Main {
    */
   Main(Main parent, Scanner source) {
     shellLevel = parent.shellLevel + 1;
-    settings = new EnumSettings.Manager<>("shell["+shellLevel+"]", parent.getConfiguration());
+    this.origin = source.claim();
+    settings = new EnumSettings.Manager<>("shell["+shellLevel+"]"+getOrigin(), parent.getConfiguration());
     configuration = settings.getConfiguration();
     this.parent = parent;
     // TODO: start scanning, store result
+  }
+
+  public String getOrigin() {
+    return this.origin;
   }
 
   // TODO: expandParameter to stack with environment overlay
