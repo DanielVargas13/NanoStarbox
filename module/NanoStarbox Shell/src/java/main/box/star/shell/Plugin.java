@@ -24,10 +24,10 @@ public class Plugin extends Function {
    * @param parameters
    * @return
    */
-  final int exec(Object... parameters) {
+  protected int exec(Object... parameters) {
     return 0;
   }
-  Scanner getScanner(){
+  final protected Scanner getScanner(){
     return context.source;
   }
 }
