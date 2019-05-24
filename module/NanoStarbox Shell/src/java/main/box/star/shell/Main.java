@@ -1,5 +1,6 @@
 package box.star.shell;
 
+import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
 import box.star.state.Configuration;
 import box.star.text.basic.Scanner;
@@ -109,6 +110,46 @@ public class Main {
 
   public Function getFunction(String name){
     return environment.getObject(Function.class, name);
+  }
+
+  public Plugin getPlugin(String name){
+    return environment.getObject(Plugin.class, name);
+  }
+
+  public <T> T getObject(Class<T> type, String name){
+    return environment.getObject(type, name);
+  }
+
+  public String get(String name){
+    return environment.getString(name);
+  }
+
+  public Stream get(int stream){
+    return io.get(stream);
+  }
+
+  public void set(String name, Object value, boolean export){
+    environment.put(name, new Variable(value, export));
+  }
+
+  public void set(String name, Object value){
+    environment.put(name, new Variable(value));
+  }
+
+  public void set(int number, Stream value){
+    io.put(number, value);
+  }
+
+  public boolean have(String key){
+    return environment.containsKey(key);
+  }
+
+  public boolean have(int stream){
+    return io.containsKey(stream);
+  }
+
+  public boolean have(String key, Class type){
+    return environment.containsKey(key) && environment.get(key).isObjectOfClass(type);
   }
 
   public void defineFunction(Function userFunction, boolean export){
