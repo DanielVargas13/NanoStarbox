@@ -9,8 +9,8 @@ import java.util.Stack;
  */
 public class Function implements Cloneable {
   private Main context;
-  final String origin;
-  final protected String name;
+  final public String origin;
+  final public String name;
   final protected List<Command> body;
   final protected StreamTable io;
   public Main getContext() { return context; }
