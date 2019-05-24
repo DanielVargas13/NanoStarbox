@@ -289,6 +289,7 @@ public class Scanner implements Closeable {
         int c = this.reader.read();
         if (c <= 0) {
           state.eof = true;
+          // TODO: null embedding support in Scanner.next() issue #2
           return false;
         }
         state.recordCharacter(Char.valueOf(c));
@@ -328,11 +329,12 @@ public class Scanner implements Closeable {
         int c = this.reader.read();
         if (c <= 0) {
           state.eof = true;
-          // TODO: null embedding support in Scanner.next()
+          // TODO: null embedding support in Scanner.next() issue #1
           return 0; // this should be ignored to support embedded nulls.
           // or perhaps an embedded null driver routine may be useful
           // this will require state inspection to see if it can be fully
-          // supported by a capable driver
+          // supported by a capable driver. all markups in this document
+          // referring to the issue can possibly be fixed via endOfSource()
         }
         state.recordCharacter(Char.valueOf(c));
         return Char.valueOf(c);
@@ -348,6 +350,7 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
+    // TODO: null embedding support in Scanner.next() issue #3
     if (c == 0)
       throw syntaxError("Expected " + translateCharacter(character) + " and located end of text stream");
     if (!caseSensitive) {
@@ -411,6 +414,7 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(String label, char character, boolean caseSensitive) {
     char c = next();
+    // TODO: null embedding support in Scanner.next() issue #4
     if (c == 0)
       throw syntaxError("Expected " + label + " and located end of text stream");
     if (!caseSensitive) {
@@ -456,7 +460,7 @@ public class Scanner implements Closeable {
         this.back();
         break;
       }
-    } while (c != 0);
+    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #5
     return sb.toString();
   }
 
@@ -480,7 +484,8 @@ public class Scanner implements Closeable {
         this.back();
         break;
       }
-    } while (c != 0);
+    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #6
+
     return sb.toString();
   }
 
@@ -511,7 +516,7 @@ public class Scanner implements Closeable {
     do {
       char c = this.next(); // step
       ++bl; // count buffer length
-      if (c == 0) // die
+      if (c == 0) // die // TODO: null embedding support in Scanner.next() issue #7
         throw syntaxError("Expected `" + sequence + "' and found end of text stream");
       sb.append(c); // add to collection
       char find = (caseSensitive?c:Char.toLowerCase(c)); // transliterate if needed
@@ -543,7 +548,7 @@ public class Scanner implements Closeable {
         break;
       }
       sb.append(c);
-    } while (c != 0);
+    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #8
     return sb.toString();
   }
 
@@ -639,7 +644,7 @@ public class Scanner implements Closeable {
       if (c == BACKSLASH && !escapeMode()) continue;
 
       if (c == 0) {
-        if (escapeMode() && state.eof)
+        if (escapeMode() && !haveNext())
           throw syntaxError("expected character escape sequence, found end of stream");
         if (state.eof) return sb.toString();
       }
@@ -681,7 +686,8 @@ public class Scanner implements Closeable {
         this.back();
         break;
       }
-    } while (c != 0);
+    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #9
+
     return sb.toString();
   }
 
@@ -888,7 +894,7 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(char character) throws SyntaxError {
     char c = next();
-    if (c == 0 && character != 0)
+    if (c == 0 && character != 0) // TODO: null embedding support in Scanner.next() issue #10
       throw syntaxError("Expected " + translateCharacter(character) + " and found end of text stream");
     if (character != c)
       throw this.syntaxError("Expected " + translateCharacter(character) + " and found " + translateCharacter(c));
