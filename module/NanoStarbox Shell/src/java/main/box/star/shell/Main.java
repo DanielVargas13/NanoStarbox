@@ -94,7 +94,7 @@ public class Main {
     return null;
   }
 
-  String expandText(Environment overlay, String origin, String text){
+  public String expandText(Environment overlay, String origin, String text){
     // TODO: expandText with environment overlay
     return null;
   }
