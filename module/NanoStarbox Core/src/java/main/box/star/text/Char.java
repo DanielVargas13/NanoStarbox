@@ -118,11 +118,11 @@ public final class Char {
     else return String.valueOf(c);
   }
 
-  public static int atLeastZero(int val) { return (val < 0) ? 0 : val; }
+  public static int min(int val) { return (val < 0) ? 0 : val; }
 
-  public static int atMostCharMax(int val) { return (val > CHAR_MAX) ? CHAR_MAX : val; }
+  public static int max(int val) { return (val > CHAR_MAX) ? CHAR_MAX : val; }
 
-  public static int sanitizeRangeValue(int val) { return atLeastZero(atMostCharMax(val));}
+  public static int sanitizeRangeValue(int val) { return min(max(val));}
 
   public static boolean mapContains(char search, char... map) {
     for (int i = 0; i < map.length; i++) if (map[i] == search) return true;
