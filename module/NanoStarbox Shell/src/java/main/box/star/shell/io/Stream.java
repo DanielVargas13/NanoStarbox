@@ -1,4 +1,4 @@
-package box.star.shell;
+package box.star.shell.io;
 
 public interface Stream {
   boolean isWritable();

@@ -1,5 +1,7 @@
 package box.star.shell;
 
+import box.star.shell.io.StreamTable;
+
 import java.util.*;
 
 /**

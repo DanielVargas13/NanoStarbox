@@ -1,6 +1,7 @@
 package box.star.shell;
 
 import box.star.contract.NotNull;
+import box.star.shell.io.StreamTable;
 import box.star.text.Char;
 import box.star.text.SyntaxError;
 import box.star.text.basic.Scanner;

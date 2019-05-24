@@ -1,5 +1,6 @@
 package box.star.shell;
 
+import box.star.shell.io.StreamTable;
 import box.star.state.Configuration;
 import box.star.text.basic.Scanner;
 
