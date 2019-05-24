@@ -54,6 +54,9 @@ public class Scanner implements Closeable {
       return Char.toString(c);
     }
   };
+
+  public CharacterExpander customCharacterExpander = defaultCharacterExpander;
+
   /**
    * Reader for the input.
    */
@@ -557,7 +560,7 @@ public class Scanner implements Closeable {
             char out = (char) value;
             return out + Tools.EMPTY_STRING;
           }
-        } else return defaultCharacterExpander.expand(this, character);
+        } else return customCharacterExpander.expand(this, character);
       }
     }
   }
