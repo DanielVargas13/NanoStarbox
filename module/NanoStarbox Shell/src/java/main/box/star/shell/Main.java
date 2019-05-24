@@ -108,9 +108,9 @@ public class Main {
     return 0;
   }
 
-  public void construct(PluginFactory plugin, Environment overlay, String origin, String key, boolean export, StreamTable io, Object... parameters) {
+  public void assembleObject(Assembler plugin, Environment overlay, String origin, String key, boolean export, StreamTable io, Object... parameters) {
     // TODO: evaluation routine
-    Object objNewInstance = plugin.constructObject(this, origin, overlay, io, parameters);
+    Object objNewInstance = plugin.compile(this, origin, overlay, io, parameters);
     set(key, objNewInstance, export);
     return;
   }
