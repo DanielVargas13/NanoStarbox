@@ -176,7 +176,7 @@ public class Context {
       }
     }
     class SubMainClass extends MainClass {}
-    class CommandGroupClass extends Context {}
+    class CommandBlockClass extends Context {}
     class CommandClass extends Context {}
     class ObjectClass extends Context {
       ObjectClass(Context parent, Bookmark origin, StreamTable io){
