@@ -32,10 +32,10 @@ public class Main {
   }
 
   private static class SettingsManager extends EnumSettings.Manager<Settings, Serializable> {
-    public SettingsManager() {
+    public SettingsManager(Environment environment) {
       super(SettingsManager.class.getSimpleName());
-      set(SYSTEM_PROFILE, Tools.switchNull(System.getenv(SHELL_SYSTEM_PROFILE_VARIABLE), System.getProperty(SHELL_SYSTEM_PROFILE_PROPERTY)));
-      set(USER_PROFILE, Tools.switchNull(System.getenv(SHELL_USER_PROFILE_VARIABLE), System.getProperty(SHELL_USER_PROFILE_PROPERTY)));
+      set(SYSTEM_PROFILE, Tools.switchNull(environment.getString(SHELL_SYSTEM_PROFILE_VARIABLE), System.getProperty(SHELL_SYSTEM_PROFILE_PROPERTY)));
+      set(USER_PROFILE, Tools.switchNull(environment.getString(SHELL_USER_PROFILE_VARIABLE), System.getProperty(SHELL_USER_PROFILE_PROPERTY)));
     }
     public SettingsManager(String name, Configuration<Settings, Serializable> parent) {
       super(name, parent);
@@ -67,19 +67,19 @@ public class Main {
    */
   public Main(String... parameters){
     shellLevel++;
-    settings = new SettingsManager();
-    configuration = settings.getConfiguration();
     environment = new Environment();
+    settings = new SettingsManager(environment);
+    configuration = settings.getConfiguration();
     Stack<String> p = new Stack();
     p.addAll(Arrays.asList(parameters));
     processMainParameters(parameters);
     // TODO: start scanning, store result
   }
 
-  // TODO: process main parameters
   private void processMainParameters(String[] parameters) {
     Scanner scanner = null;
     StreamTable io = null;
+    // TODO: process main parameters
     contextInit(scanner, io);
   }
 
@@ -91,29 +91,29 @@ public class Main {
    */
   Main(Main parent, String origin, String source, StreamTable io) {
     shellLevel = parent.shellLevel + 1;
+    environment = parent.environment.getExports();
     settings = new SettingsManager("shell["+shellLevel+"]", parent.getConfiguration());
     configuration = settings.getConfiguration();
-    environment = parent.environment.getExports();
     this.parent = parent;
     contextInit(new Scanner(origin, source), io);
     // TODO: start scanning, store result
   }
 
-  public String getOrigin() {
+  final public String getOrigin() {
     return this.origin;
   }
 
-  // TODO: expandParameter to stack with environment overlay
   Stack<String> expandTextParameter(Environment overlay, String origin, int number, String text){
+    // TODO: expandParameter to stack with environment overlay
     return null;
   }
 
-  // TODO: expandText with environment overlay
   String expandText(Environment overlay, String origin, String text){
+    // TODO: expandText with environment overlay
     return null;
   }
 
-  public Configuration<Settings, Serializable> getConfiguration() {
+  final public Configuration<Settings, Serializable> getConfiguration() {
     return configuration;
   }
 

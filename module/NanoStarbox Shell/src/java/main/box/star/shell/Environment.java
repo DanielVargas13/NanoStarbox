@@ -55,6 +55,12 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     }
     return null;
   }
+
+  public String getString(String name){
+    if (! containsKey(name)) return null;
+    return get(name).toString();
+  }
+
   public void export(String name, boolean value){
     Variable var = get(name);
     var.export = value;
