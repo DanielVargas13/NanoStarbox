@@ -172,7 +172,7 @@ public class Scanner implements Closeable {
   /**
    * @return true if this scanner already has a state lock.
    */
-  public boolean hasStateRecordLock() {
+  @Deprecated  public boolean hasStateRecordLock() {
     return state.locked;
   }
 
@@ -671,16 +671,15 @@ public class Scanner implements Closeable {
    * <p>Transfers the current scanner position and character to a new scanner.</p>
    *
    * @param method the method to use
-   * @param start the current character
    * @param parameters the parameters for the method
    * @return
    */
   @NotNull
-  final public String branch(ScannerMethod method, char start, Object... parameters) {
+  final public String branch(ScannerMethod method, Object... parameters) {
     method = method.clone();
     method.start(this, parameters);
-    method.collect(this, start);
-    if (! method.terminate(this, start) && method.scan(this))
+    method.collect(this, state.current());
+    if (! method.terminate(this, state.current()) && method.scan(this))
     do {
       char c = next();
       method.collect(this, c);
