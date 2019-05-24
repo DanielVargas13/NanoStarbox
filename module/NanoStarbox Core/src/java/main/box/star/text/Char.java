@@ -122,7 +122,7 @@ public final class Char {
 
   public static int max(int val) { return (val > CHAR_MAX) ? CHAR_MAX : val; }
 
-  public static int sanitizeRangeValue(int val) { return min(max(val));}
+  public static int normalize(int val) { return min(max(val));}
 
   public static boolean mapContains(char search, char... map) {
     for (int i = 0; i < map.length; i++) if (map[i] == search) return true;
@@ -373,8 +373,8 @@ public final class Char {
   public static class RangeMap {
     public final int start, end;
     public RangeMap(int start, int end) {
-      this.start = sanitizeRangeValue(start);
-      this.end = sanitizeRangeValue(end);
+      this.start = normalize(start);
+      this.end = normalize(end);
     }
 
     public boolean match(char character) {
