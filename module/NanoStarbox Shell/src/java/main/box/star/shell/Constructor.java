@@ -12,13 +12,12 @@ import box.star.text.basic.Scanner;
  */
 public interface Constructor<Kind> {
   /**
-   * Custom Object Constructor
+   * <p>Custom Object Constructor</p>
+   *
    * @param context the context
-   * @param origin the source location of the command
-   * @param io the stream table for the object
    * @param parameters the parameters for the construction
    * @return the newly constructed object
    */
- Kind construct(Context context, String origin, StreamTable io, Object... parameters);
+ Kind construct(Context context, Object... parameters);
 
 }

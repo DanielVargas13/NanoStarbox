@@ -87,9 +87,7 @@ public class Context {
     abstract class MainClass extends Context {
       private Scanner scanner;
     }
-    abstract class CommandClass extends Context {}
     abstract class ScriptClass extends Context {}
-    abstract class ObjectClass extends Context {}
     abstract class FunctionClass extends Context {
       private String name;
       protected List<box.star.shell.Command> body;
@@ -158,6 +156,14 @@ public class Context {
       }
       final protected Scanner getScanner(){
         return getMain().scanner;
+      }
+    }
+    class SubMainClass extends MainClass {}
+    class CommandGroupClass extends Context {}
+    class CommandClass extends Context {}
+    class ObjectClass extends Context {
+      ObjectClass(Context parent, String origin, StreamTable io){
+        super(parent, origin, io);
       }
     }
   }
@@ -245,11 +251,12 @@ public class Context {
     environment.put(userFunction.getName(), new Variable(userFunction, export));
   }
 
-  final public void newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
-    // TODO: evaluation routine
-    Object objNewInstance = plugin.construct(this, origin, io, parameters);
-    set(key, objNewInstance, export);
-    return;
+  final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
+    Context.Profile.ObjectClass objectContext = new Profile.ObjectClass(this, origin, io);
+    Object newObjInstance = plugin.construct(objectContext, parameters);
+    if (newObjInstance == null) return false;
+    this.set(key, newObjInstance, export);
+    return true;
   }
 
   public void export(String name, boolean value) {environment.export(name, value);}
