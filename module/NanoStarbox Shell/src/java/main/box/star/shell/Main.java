@@ -1,5 +1,9 @@
 package box.star.shell;
 
+import box.star.state.Configuration;
+import box.star.state.EnumSettings;
+
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
@@ -7,6 +11,11 @@ import java.util.Stack;
 public class Main {
 
   final static public boolean systemConsoleMode = System.console() != null;
+
+  public static enum Settings {}
+
+  protected EnumSettings.Manager<Settings, Serializable> settings;
+  protected Configuration<Settings, Serializable> configuration;
 
   protected Environment environment;
   protected StreamTable streams;
@@ -19,6 +28,8 @@ public class Main {
    * @param parameters
    */
   Main(String... parameters){
+    settings = new EnumSettings.Manager<>(this.getClass().getSimpleName());
+    configuration = settings.getConfiguration();
     shellLevel++;
     Stack<String> p = new Stack();
     p.addAll(Arrays.asList(parameters));
@@ -32,6 +43,8 @@ public class Main {
    */
   Main(Main parent, Scanner source) {
     shellLevel = parent.shellLevel + 1;
+    settings = new EnumSettings.Manager<>("shell["+shellLevel+"]", parent.getConfiguration());
+    configuration = settings.getConfiguration();
     this.parent = parent;
     // TODO: start scanning, store result
   }
@@ -44,6 +57,10 @@ public class Main {
   // TODO: expandText with environment overlay
   String expandText(Environment overlay, String origin, String text){
     return null;
+  }
+
+  public Configuration<Settings, Serializable> getConfiguration() {
+    return configuration;
   }
 
 }
