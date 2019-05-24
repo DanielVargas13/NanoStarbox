@@ -114,8 +114,7 @@ public final class Char {
 
   public static String translate(char c) {
     if (c == 0) return "null";
-    else if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
-    else return String.valueOf(c);
+    else return Char.TRANSLATION.getOrDefault(c, null);
   }
 
   public static int min(int val) { return (val < 0) ? 0 : val; }

@@ -8,6 +8,8 @@ import box.star.text.Char;
 import box.star.text.SyntaxError;
 
 import java.io.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 import static box.star.text.Char.*;
 
@@ -31,6 +33,19 @@ import static box.star.text.Char.*;
  * <p></p>
  */
 public class Scanner implements Closeable {
+
+  private Map<Character, String> TRANSLATION = new Hashtable<>();
+
+  public String setTranslation(char c, String translation) {
+    TRANSLATION.put(c, translation);
+    return translation;
+  }
+
+  public String translate(char c) {
+    if (c == 0) return "null";
+    if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
+    else return Tools.switchNull(Char.translate(c), String.valueOf(c));
+  }
 
   private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
     @Override
