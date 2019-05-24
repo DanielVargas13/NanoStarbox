@@ -17,7 +17,10 @@ import static box.star.text.Char.*;
 /**
  * <h2>Basic Text Scanner</h2>
  * <p>Provides the basic facilities to scan text formats with precision text format
- * error reporting capabilities.</p>
+ * error reporting capabilities. The scanner also supports custom character-to-string translation
+ * so that each scanner may provide standardized: `hard to define character error disambiguation`
+ * to its users. In addition, the scanner supports overridable backslash escape expansion with
+ * bi-level default implementation support.</p>
  * <br>
  * <p>Quick Overview</p>
  * <ul>
