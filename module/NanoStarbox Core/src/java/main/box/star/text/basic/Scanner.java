@@ -828,6 +828,32 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * An optimally compiled source tag
+   */
+  public static class Bookmark {
+    public final long line, column, index;
+    public final String origin, quote;
+    private Bookmark(Scanner source){
+     this.line = source.state.line;
+     this.column = source.state.column;
+     this.index = source.state.index;
+     this.quote = quoteSource(source.getPath());
+     this.origin = compileToString();
+    }
+    public String compileToString() {
+      return " location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";
+    }
+    @Override
+    public String toString() {
+      return origin;
+    }
+    private static String quoteSource(String source){
+      return source
+          .replaceAll(Char.toString(BACKSLASH), Char.toString(BACKSLASH, BACKSLASH))
+          .replaceAll(Char.toString(BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
+    }
+  }
+  /**
    * <p>Gets a future claim for the next character.</p>
    * <br>
    *   <p>Some scanner tasks may need a way to record where an external procedure
@@ -837,20 +863,24 @@ public class Scanner implements Closeable {
    *   <br>
    * @return the future claim
    */
-  public String nextCharacterClaim(){
+  @Deprecated public String nextCharacterClaim(){
     String claim;
     next();
-    claim = claim();
+    claim = toString();
     back();
     return claim;
   }
 
-  public String claim() {
-    return " at location = " + "{line: " + getLine() + ", column: " + getColumn() + ", index: " + getIndex() + ", source: '" + getPath() + "'}";
+  public Bookmark createBookmark(){
+    return new Bookmark(this);
+  }
+
+  @Deprecated public String claim() {
+    return toString();
   }
 
   public String toString() {
-    return claim();
+    return String.valueOf(createBookmark());
   }
 
   /**
