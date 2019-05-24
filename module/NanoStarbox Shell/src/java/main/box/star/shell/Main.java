@@ -1,14 +1,11 @@
 package box.star.shell;
 
-import box.star.Tools;
 import box.star.state.Configuration;
-import box.star.state.EnumSettings;
 import box.star.text.basic.Scanner;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Stack;
-import static box.star.shell.Main.Settings.*;
 
 /**
  * Product Spec: code name: System Commander
@@ -29,17 +26,6 @@ public class Main {
 
   public static enum Settings {
     SYSTEM_PROFILE, USER_PROFILE
-  }
-
-  private static class SettingsManager extends EnumSettings.Manager<Settings, Serializable> {
-    public SettingsManager(Environment environment) {
-      super(SettingsManager.class.getSimpleName());
-      set(SYSTEM_PROFILE, Tools.switchNull(environment.getString(SHELL_SYSTEM_PROFILE_VARIABLE), System.getProperty(SHELL_SYSTEM_PROFILE_PROPERTY)));
-      set(USER_PROFILE, Tools.switchNull(environment.getString(SHELL_USER_PROFILE_VARIABLE), System.getProperty(SHELL_USER_PROFILE_PROPERTY)));
-    }
-    public SettingsManager(String name, Configuration<Settings, Serializable> parent) {
-      super(name, parent);
-    }
   }
 
   protected SettingsManager settings;
