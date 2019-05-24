@@ -613,8 +613,10 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scan and assemble characters while scan is not in map, expanding escape
-   * sequences, and ignoring escaped characters in map.
+   * <p>Scan and assemble characters while scan is not in map, expanding escape
+   * sequences, and ignoring escaped characters in map.</p>
+   * <br>
+   * <p>If eof is encountered, it is considered as the field boundary.</p>
    *
    * @param map
    * @return
