@@ -89,7 +89,7 @@ public class Main {
     return this.origin;
   }
 
-  Stack<String> expandTextParameter(Environment overlay, String origin, int number, String text){
+  public Stack<String> expandTextParameter(Environment overlay, String origin, int number, String text){
     // TODO: expandParameter to stack with environment overlay
     return null;
   }
