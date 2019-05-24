@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.Stack;
 import static box.star.shell.Main.Settings.*;
 
+/**
+ * Product Spec: code name: System Commander
+ */
 public class Main {
 
   final static public boolean systemConsoleMode = System.console() != null;
