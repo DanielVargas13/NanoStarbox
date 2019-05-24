@@ -849,7 +849,7 @@ public class Scanner implements Closeable {
           .replaceAll(Char.toString(BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
     }
     private String compileToString() {
-      return " location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";
+      return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";
     }
     @Override
     public String toString() {
