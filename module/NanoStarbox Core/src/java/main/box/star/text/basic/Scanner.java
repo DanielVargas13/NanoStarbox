@@ -737,16 +737,15 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * <h2>Run</h2>
-   * <p>Starts a {@link ScannerMethod}.</p>
+   * <p>Starts a {@link ScannerMethod}</p>
    * <br>
    * <p>Creates a copy of the method, and calls its
    * {@link ScannerMethod#start(Scanner, Object[])} method with the given
    * parameters.</p>
    *
-   * @param method
-   * @param parameters
-   * @return
+   * @param method the method to use
+   * @param parameters the parameters to forward to the method
+   * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
   final public String run(ScannerMethod method, Object... parameters) {
@@ -761,13 +760,11 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * <p>Transfer</p>
-   * <br>
-   * <p>Transfers the current scanner position and character to a new scanner.</p>
+   * <p>Calls upon a scanner method, as a branch from within a scanner method.</p>
    *
    * @param method the method to use
    * @param parameters the parameters for the method
-   * @return
+   * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
   final public String branch(ScannerMethod method, Object... parameters) {
