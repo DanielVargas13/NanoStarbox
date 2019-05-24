@@ -70,10 +70,12 @@ public class Main {
   }
 
   /**
-   * <p>API: create child shell</p>
-   * @param parent
-   * @param origin
-   * @param source
+   * <p>Create a child shell with a parent shell</p>
+   *
+   * @param parent the child's parent
+   * @param origin the source origin
+   * @param source the source text
+   * @param io the child's stream table
    */
   Main(Main parent, String origin, String source, StreamTable io) {
     shellLevel = parent.shellLevel + 1;
@@ -102,6 +104,14 @@ public class Main {
   public int evaluate(Environment overlay, String origin, String text) {
     // TODO: evaluation routine
     return 0;
+  }
+
+  public Function getFunction(String name){
+    return environment.getObject(Function.class, name);
+  }
+
+  public void defineFunction(Function userFunction, boolean export){
+    environment.put(userFunction.name, new Variable(userFunction, export));
   }
 
   final public Configuration<Settings, Serializable> getConfiguration() {
