@@ -13,7 +13,11 @@ public class Function implements Cloneable {
   final public String name;
   protected List<Command> body;
   protected StreamTable io;
+  protected Environment locals;
   public Main getContext() { return context; }
+  public Function(String origin, String name){
+    this(origin, name,  null);
+  }
   public Function(String origin, String name, StreamTable io){
     this(origin, name, null, io);
   }
@@ -23,39 +27,49 @@ public class Function implements Cloneable {
     this.body = body;
     this.io = io;
   }
-  protected Function createRuntimeInstance(Main context) {
+
+  /**
+   *
+   * @param context
+   * @param locals the local environment for this function execution, which is empty of no command environment operations were specified for this call.
+   * @param io the io to use if the original definition is to be overridden. if neither this nor the origin specify the io, the Main io table will be copied.
+   * @return the newly created function instance
+   */
+  protected Function createRuntimeInstance(Main context, Environment locals, StreamTable io) {
     try /* never throwing runtime exceptions with closure */ {
       if (context != null)
         throw new IllegalStateException("trying to create function copy from function copy");
       Function newInstance = (Function) super.clone();
       newInstance.context = context;
+      newInstance.locals = locals;
+      if (io != null) newInstance.io = io;
+      // TODO: copy local io from main if it is null, or inherit all missing stdio channels from main.
       return newInstance;
     } catch (Exception e){throw new RuntimeException(e);}
     // finally /* never complete */ { ; }
   }
-  final public int invoke(Environment locals, String... parameters){
+  final public int invoke(String... parameters){
     if (context == null)
       throw new IllegalStateException("trying to invoke function prototype");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
-    return exec(locals, params);
+    return exec(params);
   }
-  final public int invoke(Environment locals, String name, String... parameters){
+  final public int invoke(String name, String... parameters){
     if (context == null)
       throw new IllegalStateException("trying to invoke function prototype");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
-    return exec(locals, params);
+    return exec(params);
   }
   /**
    * User implementation
-   * @param locals the local environment for this function, which is empty of no command environment operations were specified for this call.
    * @param parameters the specified parameters, partitioned and fully-shell-expanded.
    * @return the execution status of this function
    */
-  protected int exec(Environment locals, Stack<String> parameters){
+  protected int exec(Stack<String> parameters){
     return 0;
   }
   @Override
