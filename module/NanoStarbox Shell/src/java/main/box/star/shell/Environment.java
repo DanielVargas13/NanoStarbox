@@ -75,6 +75,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> implements 
   List<String> keyList(){
     return new ArrayList<>(keySet());
   }
+
   {
     mapAllStrings(System.getenv());
   }

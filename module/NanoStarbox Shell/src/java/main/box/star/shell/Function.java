@@ -5,45 +5,55 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Function Model
+ * Command Shell Function Model
  */
 public class Function implements Cloneable {
-  protected Host context;
-  protected String name;
-  protected List<Command> body;
-  protected StreamTable io;
-  public String getName() {
-    return name;
-  }
+  private Main context;
+  final protected String name;
+  final protected List<Command> body;
+  final protected StreamTable io;
+  public Main getContext() { return context; }
   public Function(String name, List<Command> body, StreamTable io) {
     this.name = name;
     this.body = body;
     this.io = io;
   }
-  @Override
-  protected Function clone() {
-    try /*  throwing runtime exceptions with closure */ {
-      return (Function) super.clone();
+  protected Function createRuntimeInstance(Main context) {
+    try /* never throwing runtime exceptions with closure */ {
+      if (context != null)
+        throw new IllegalStateException("trying to create function copy from function copy");
+      Function newInstance = (Function) super.clone();
+      newInstance.context = context;
+      return newInstance;
     } catch (Exception e){throw new RuntimeException(e);}
-    finally /*  complete */ {
-      ;
-    }
+    // finally /* never complete */ { ; }
   }
-  final protected void enterContext(Host context){
-    this.context = context;
-  }
-  final public int invoke(Host context, String... parameters){
-    this.context = context;
+  final public int invoke(String... parameters){
+    if (context == null)
+      throw new IllegalStateException("trying to invoke function prototype");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
     return exec(params);
   }
+  final public int invoke(String name, String... parameters){
+    if (context == null)
+      throw new IllegalStateException("trying to invoke function prototype");
+    Stack<String> params = new Stack<>();
+    params.add(name);
+    params.addAll(Arrays.asList(parameters));
+    return exec(params);
+  }
+  /**
+   * User implementation
+   * @param parameters
+   * @return
+   */
   protected int exec(Stack<String> parameters){
     return 0;
   }
   @Override
   public String toString() {
-    return "function "+name+"(){"+"\n# function body here\n} # function io here";
+    return "function "+name+"(){"+"\n# function body here\n} # default function io here";
   }
 }
