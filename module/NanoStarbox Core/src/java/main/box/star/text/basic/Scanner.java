@@ -23,7 +23,7 @@ import static box.star.text.Char.*;
  * bi-level default implementation support.</p><br>
  * <p>The scanner automatically tracks backslash escape activation, and in some
  * built-in scanner methods, automatically handles backslash expansion and output
- * stream insertion. However the scanner does not usually provide such facilities,
+ * string insertion. However the scanner does not usually provide such facilities,
  * as the meaning of "character escape sequence" is often text format dependent.
  * The design methodology of these features allows for them to be safely ignored
  * by any custom implementation. The default implementation understands escaped
