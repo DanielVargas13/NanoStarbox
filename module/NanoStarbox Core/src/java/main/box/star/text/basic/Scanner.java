@@ -625,7 +625,7 @@ public class Scanner implements Closeable {
 
     StringBuilder sb = new StringBuilder();
 
-    while (true) {
+    while (haveNext()) {
 
       char c = next();
 
