@@ -17,7 +17,7 @@ public class Variable implements Cloneable {
   }
   @Override
   public String toString() {
-    if (this.isString()) return (String) value;
+    if (this.isObjectOfClass(String.class)) return (String) value;
     return this.value.toString();
   }
   public void setValue(Object value) {
@@ -27,24 +27,6 @@ public class Variable implements Cloneable {
     return (ANY) this.value;
   }
 
-  public boolean isByte(){
-    return Byte.class.isInstance(value);
-  }
-  public boolean isCharacter(){
-    return Character.class.isInstance(value);
-  }
-  public boolean isString(){
-    return String.class.isInstance(this.value);
-  }
-  public boolean isBoolean(){
-    return Boolean.class.isInstance(this.value);
-  }
-  public boolean isInteger(){
-    return Integer.class.isInstance(this.value);
-  }
-  public boolean isDouble(){
-    return Double.class.isInstance(this.value);
-  }
   public boolean isObject(){
     return isObjectOfClass(Object.class);
   }
