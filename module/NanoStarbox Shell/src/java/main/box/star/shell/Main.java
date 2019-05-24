@@ -12,9 +12,19 @@ public class Main {
 
   final static public boolean systemConsoleMode = System.console() != null;
 
-  public static enum Settings {}
+  public static enum Settings {
+  }
 
-  protected EnumSettings.Manager<Settings, Serializable> settings;
+  private static class SettingsManager extends EnumSettings.Manager<Settings, Serializable> {
+    public SettingsManager() {
+      super(SettingsManager.class.getSimpleName());
+    }
+    public SettingsManager(String name, Configuration<Settings, Serializable> parent) {
+      super(name, parent);
+    }
+  }
+
+  protected SettingsManager settings;
   protected Configuration<Settings, Serializable> configuration;
 
   protected Environment environment;
@@ -38,9 +48,10 @@ public class Main {
    * @param parameters
    */
   public Main(String... parameters){
-    settings = new EnumSettings.Manager<>(this.getClass().getSimpleName());
-    configuration = settings.getConfiguration();
     shellLevel++;
+    settings = new SettingsManager();
+    configuration = settings.getConfiguration();
+    environment = new Environment();
     Stack<String> p = new Stack();
     p.addAll(Arrays.asList(parameters));
     processMainParameters(parameters);
@@ -62,8 +73,9 @@ public class Main {
    */
   Main(Main parent, String origin, String source, StreamTable io) {
     shellLevel = parent.shellLevel + 1;
-    settings = new EnumSettings.Manager<>("shell["+shellLevel+"]"+getOrigin(), parent.getConfiguration());
+    settings = new SettingsManager("shell["+shellLevel+"]", parent.getConfiguration());
     configuration = settings.getConfiguration();
+    environment = parent.environment.getExports();
     this.parent = parent;
     contextInit(new Scanner(origin, source), io);
     // TODO: start scanning, store result
