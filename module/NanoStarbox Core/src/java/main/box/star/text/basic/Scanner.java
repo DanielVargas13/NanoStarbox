@@ -38,7 +38,9 @@ import static box.star.text.Char.*;
  * logical errors in a text-stream that has not been correctly back-stepped (to the beginning
  * of an escape sequence), but most implementations which call upon expansion routines,
  * will never need back-step support within that context.</p>
- *
+ *<br>
+ * <p>Ultimately, the Basic Text Scanner provides a working language agnostic interface
+ * by which any text-stream or string processor could be constructed.</p>
  * <br>
  * <p>Quick Overview</p>
  * <ul>
