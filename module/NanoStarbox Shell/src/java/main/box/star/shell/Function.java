@@ -13,6 +13,9 @@ public class Function implements Cloneable {
   final protected List<Command> body;
   final protected StreamTable io;
   public Main getContext() { return context; }
+  public Function(String name, StreamTable io){
+    this(name, null, io);
+  }
   public Function(String name, List<Command> body, StreamTable io) {
     this.name = name;
     this.body = body;
