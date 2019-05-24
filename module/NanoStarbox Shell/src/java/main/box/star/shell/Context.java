@@ -86,7 +86,7 @@ public class Context {
     return environment.getObject(type, name);
   }
 
-  final public String get(String name){
+  public String get(String name){
     return environment.getString(name);
   }
 
@@ -94,11 +94,11 @@ public class Context {
     return io.get(stream);
   }
 
-  final public void set(String name, Object value, boolean export){
+  public void set(String name, Object value, boolean export){
     environment.put(name, new Variable(value, export));
   }
 
-  final public void set(String name, Object value){
+  public void set(String name, Object value){
     environment.put(name, new Variable(value));
   }
 
@@ -106,7 +106,7 @@ public class Context {
     io.put(number, value);
   }
 
-  final public boolean have(String key){
+  public boolean have(String key){
     return environment.containsKey(key);
   }
 
@@ -114,7 +114,7 @@ public class Context {
     return io.containsKey(stream);
   }
 
-  final public boolean have(String key, Class type){
+  public boolean have(String key, Class type){
     return environment.containsKey(key) && environment.get(key).isObjectOfClass(type);
   }
 
@@ -122,19 +122,20 @@ public class Context {
     environment.put(userFunction.name, new Variable(userFunction, export));
   }
 
-  public void assembleObject(Assembler plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
+  final public void assembleObject(Assembler plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
     // TODO: evaluation routine
     Object objNewInstance = plugin.compile(this, origin, io, parameters);
     set(key, objNewInstance, export);
     return;
   }
 
-  final public void export(String name, boolean value) {environment.export(name, value);}
-  final public boolean exporting(String name) {return environment.exporting(name);}
+  public void export(String name, boolean value) {environment.export(name, value);}
+  public boolean exporting(String name) {return environment.exporting(name);}
+  public void mapAllStrings(Map<String, String> map, boolean export) {environment.mapAllStrings(map, export);}
+  public void removeAllKeys(List<String> keys) {environment.removeAllKeys(keys);}
+  public List<String> keyList() {return environment.keyList();}
+
   final public void mapAllObjects(Map<String, Object> map, boolean export) {environment.mapAllObjects(map, export);}
-  final public void mapAllStrings(Map<String, String> map, boolean export) {environment.mapAllStrings(map, export);}
-  final public void removeAllKeys(List<String> keys) {environment.removeAllKeys(keys);}
-  final public List<String> keyList() {return environment.keyList();}
   final public String getCurrentDirectory() {return environment.getCurrentDirectory();}
   final public void setCurrentDirectory(String currentDirectory) {environment.setCurrentDirectory(currentDirectory);}
   final public File getRelativeFile(String name) {return environment.getRelativeFile(name);}
