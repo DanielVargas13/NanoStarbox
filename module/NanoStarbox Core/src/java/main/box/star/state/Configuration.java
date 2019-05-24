@@ -19,8 +19,17 @@ public class Configuration<K extends Serializable, V extends Serializable> imple
 
   public String toString() {return this.manager.name;}
 
-  public void set(@NotNull K k, @Nullable V v) {
+  public void setGlobal(@NotNull K k, @Nullable V v){
     Entry<V> entry = manager.resolve(k);
+    if (entry != null) {
+      if (entry.isWritable()) entry.setValue(v);
+    } else {
+      manager.map.put(k, new Entry<>(v));
+    }
+  }
+
+  public void set(@NotNull K k, @Nullable V v) {
+    Entry<V> entry = manager.get(k);
     if (entry != null) {
       if (entry.isWritable()) entry.setValue(v);
     } else {
