@@ -36,12 +36,12 @@ public class Scanner implements Closeable {
 
   private Map<Character, String> TRANSLATION = new Hashtable<>();
 
-  public String setTranslation(char c, String translation) {
+  public String mapCharacterTranslation(char c, String translation) {
     TRANSLATION.put(c, translation);
     return translation;
   }
 
-  public String translate(char c) {
+  public String translateCharacter(char c) {
     if (c == 0) return "null";
     if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
     else return Tools.switchNull(Char.translate(c), String.valueOf(c));
@@ -202,7 +202,7 @@ public class Scanner implements Closeable {
   public void flagNextCharacterSyntaxError(String message, char... map) throws SyntaxError {
     char c = next();
     if (! Char.mapContains(c, map))
-      throw this.syntaxError("Expected " + message + " and located `" + translate(c) + "'");
+      throw this.syntaxError("Expected " + message + " and located `" + translateCharacter(c) + "'");
     back();
   }
 
@@ -212,7 +212,7 @@ public class Scanner implements Closeable {
    * @throws SyntaxError representing this character at this position with this expected content message
    */
   public void flagThisCharacterSyntaxError(String message) throws SyntaxError {
-    this.syntaxError("Expected " + message + " and located `" + translate(state.current()) + "'");
+    this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
   }
 
   /**
@@ -297,13 +297,13 @@ public class Scanner implements Closeable {
   public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
     if (c == 0)
-      throw syntaxError("Expected " + translate(character) + " and located end of text stream");
+      throw syntaxError("Expected " + translateCharacter(character) + " and located end of text stream");
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + translate(character) + " and located `" + translate(c) + "'");
+      throw this.syntaxError("Expected " + translateCharacter(character) + " and located `" + translateCharacter(c) + "'");
     return c;
   }
 
@@ -366,7 +366,7 @@ public class Scanner implements Closeable {
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + label + " and located `" + translate(c) + "'");
+      throw this.syntaxError("Expected " + label + " and located `" + translateCharacter(c) + "'");
     return c;
   }
 
@@ -831,9 +831,9 @@ public class Scanner implements Closeable {
   public char nextCharacter(char character) throws SyntaxError {
     char c = next();
     if (c == 0 && character != 0)
-      throw syntaxError("Expected " + translate(character) + " and found end of text stream");
+      throw syntaxError("Expected " + translateCharacter(character) + " and found end of text stream");
     if (character != c)
-      throw this.syntaxError("Expected " + translate(character) + " and found " + translate(c));
+      throw this.syntaxError("Expected " + translateCharacter(character) + " and found " + translateCharacter(c));
     return c;
   }
 
