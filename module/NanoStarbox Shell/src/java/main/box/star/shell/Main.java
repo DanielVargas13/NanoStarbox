@@ -40,7 +40,7 @@ public class Main {
   protected Main parent;
 
   Scanner source;
-  private String origin;
+  String origin;
 
   private void contextInit(Scanner source, StreamTable io){
     if (this.origin == null) this.origin = source.nextCharacterClaim();

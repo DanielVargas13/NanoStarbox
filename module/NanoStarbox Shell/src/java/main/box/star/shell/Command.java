@@ -9,7 +9,7 @@ import java.util.Stack;
 /**
  * A command represents a command execution request, and is compiled from source
  * text by the classes' own static parser. Environment variables, and other
- * shell programming mutations are performed my the main context.
+ * shell programming mutations are performed by the main context.
  */
 public class Command {
 

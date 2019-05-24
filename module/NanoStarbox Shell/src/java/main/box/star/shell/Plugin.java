@@ -10,7 +10,10 @@ public class Plugin extends Function {
   }
   @Override
   final protected int exec(Stack<String> parameters) {
-    return exec(parameters.toArray());
+    Stack<Object> p = new Stack<>();
+    p.addAll(parameters);
+    Object build = call(p);
+    return (build == null)?1:0;
   }
   /**
    * <p>Plugin gets Object array parameters for exec</p>
@@ -24,7 +27,7 @@ public class Plugin extends Function {
    * @param parameters
    * @return
    */
-  protected int exec(Object... parameters) {
+  protected Object call(Stack<Object> parameters) {
     return 0;
   }
   final protected Scanner getScanner(){
