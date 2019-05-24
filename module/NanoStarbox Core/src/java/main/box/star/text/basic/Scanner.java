@@ -16,13 +16,16 @@ import static box.star.text.Char.*;
 
 /**
  * <h2>Basic Text Scanner</h2>
- * <p>Provides the basic facilities to scan text formats with precision text format
- * error-reporting and sub-processing capabilities. The scanner also supports
- * custom character-to-string translation so that each scanner may provide
- * standardized: `hard to define character error disambiguation` to its users.
- * In addition, the scanner supports overridable backslash escape expansion with
- * customizable fallback support, for the default implementation.</p><br>
- *
+ * <p>Provides the basic facilities to (optimistically) scan text formats, with
+ * precision text format error-reporting and sub-processing capabilities. The
+ * scanner also supports custom character-to-string translation so that each
+ * scanner may provide standardized: `hard to define character error
+ * disambiguation` to its users. In addition, the scanner supports overridable
+ * backslash escape expansion with customizable fallback support, for the
+ * default implementation.</p>
+ * <br>
+ *   <p><i>the term "optimistaclly" means all operations are assumed to be successful, though results may prove otherwise.</i></p>
+ *<br>
  * <p>The scanner automatically tracks backslash escape activation, and in some
  * built-in scanner methods, automatically handles backslash expansion and output
  * string insertion. However the scanner does not usually provide such facilities,
