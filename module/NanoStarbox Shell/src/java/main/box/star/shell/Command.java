@@ -28,4 +28,15 @@ public class Command {
     return null;
   }
 
+  /**
+   * <p>Execute the command within the current context, returning the status of
+   * each command executed.</p>
+   *
+   * @param context the shell context
+   * @return array of each command exit status, where element 0 is always the status of the last command executed. this feature enables "PIPE-STATUS"
+   */
+  public int[] exec(Main context){
+    return new int[0];
+  }
+
 }
