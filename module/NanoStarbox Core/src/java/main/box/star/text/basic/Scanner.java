@@ -292,14 +292,25 @@ public class Scanner implements Closeable {
     return c;
   }
 
+  /**
+   * @return the white-space-scanned
+   */
   public String scanAllWhiteSpace(){
-    return nextMap(Char.MAP_ASCII_LINE_WHITE_SPACE);
+    return nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
   }
 
+  /**
+   * @return all white-space characters which do not escape lines
+   */
   public String scanLineWhiteSpace(){
     return nextMap(MAP_ASCII_LINE_WHITE_SPACE);
   }
 
+  /**
+   * <p>Returns the scanner to the specified position. This position must be within
+   * the buffer history. No validation is performed.</p>
+   * @param to
+   */
   public void walkBack(long to){ while (to != getIndex()) back(); }
 
   /**
