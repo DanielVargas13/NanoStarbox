@@ -522,11 +522,11 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scan and assemble characters while scan is not in map.
+   * <p>Scan and assemble characters while scan is not in map</p>
    *
-   * @param map
-   * @return
-   * @throws Exception if read fails.
+   * @param map the collection of characters to break scanning with
+   * @return the collection of characters not found in map
+   * @throws Exception by call to {@link #next()}
    */
   @NotNull
   public String nextField(@NotNull char... map) throws Exception {
@@ -544,13 +544,14 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Performs all right-hand-side-backslash operations.
-   * <p>
-   * (for this: right-hand-side = "everything after")
-   * </p>
+   * <p>Performs all right-hand-side-backslash operations</p>
+   * <br>
+   * <code>
+   * for this: right-hand-side = "everything following": `\' in the left-to-right-order
+   * </code>
    *
-   * @param character
-   * @return
+   * @param character the first character of the text to expand. technically this is not correct usage. any character-sequence that requires further scanning, may invoke the scanner for its input. in some cases it may be possible to expand a character without further scanning, therefore this method provides the route
+   * @return the string expansion of the escaped interpretation provided by the implementation.
    */
   @NotNull public String expand(char character) {
     if (characterExpander != null) {
