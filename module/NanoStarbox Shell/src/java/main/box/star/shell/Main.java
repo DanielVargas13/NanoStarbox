@@ -1,16 +1,12 @@
 package box.star.shell;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
   final static public boolean systemConsoleMode = System.console() != null;
-
-  // TODO: expandText with environment overlay
 
   protected Environment environment;
   protected StreamTable streams;
@@ -38,6 +34,16 @@ public class Main {
     shellLevel = parent.shellLevel + 1;
     this.parent = parent;
     // TODO: start scanning, store result
+  }
+
+  // TODO: expandParameter to stack with environment overlay
+  Stack<String> expandTextParameter(Environment overlay, String origin, int number, String text){
+    return null;
+  }
+
+  // TODO: expandText with environment overlay
+  String expandText(Environment overlay, String origin, String text){
+    return null;
   }
 
 }
