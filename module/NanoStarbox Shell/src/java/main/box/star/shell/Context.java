@@ -1,5 +1,7 @@
 package box.star.shell;
 
+import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
 import box.star.text.basic.Bookmark;
@@ -8,6 +10,7 @@ import box.star.text.basic.Scanner;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 
 public class Context {
@@ -48,7 +51,7 @@ public class Context {
     this.io = io;
   }
 
-  final protected Context OriginOf(Bookmark origin){
+  final protected Context BookmarkOf(Bookmark origin){
     if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.origin = origin;
@@ -169,7 +172,7 @@ public class Context {
         return (ANY) null;
       }
       final protected Scanner getScanner(){
-        return getMain().scanner;
+        return ((Profile.MainClass) getMain()).scanner;
       }
     }
     class SubMainClass extends MainClass {}
@@ -177,15 +180,18 @@ public class Context {
     class CommandClass extends Context {}
     class ObjectClass extends Context {
       ObjectClass(Context parent, Bookmark origin, StreamTable io){
-        WithParentOf(parent).OriginOf(origin).StreamsOf(io);
+        WithParentOf(parent).BookmarkOf(origin).StreamsOf(io);
       }
     }
   }
 
-  final protected Profile.MainClass getMain(){
-    return null;
+  @NotNull
+  final protected Context getMain(){
+    if (this instanceof Profile.MainClass) return this;
+    else return parent.getMain();
   }
 
+  @Nullable
   final protected Context getParent() {
     return parent;
   }
