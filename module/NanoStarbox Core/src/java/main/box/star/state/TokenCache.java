@@ -1,13 +1,9 @@
 package box.star.state;
 
-import box.star.text.TokenGenerator;
-
 import java.io.File;
 
 public class TokenCache<T> extends TokenMap<T> {
 
-  protected int[] tokenFormat;
-  protected TokenGenerator tokenGenerator = new TokenGenerator();
   protected CacheMap<String, T> map;
   private boolean configuredForDiskSynchronization;
   public TokenCache(long duration, int... lengths) {
