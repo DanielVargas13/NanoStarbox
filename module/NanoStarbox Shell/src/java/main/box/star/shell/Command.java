@@ -40,7 +40,7 @@ public class Command {
    * @param context the shell context
    * @return array of each command exit status, where element 0 is always the status of the last command executed. this feature enables "PIPE-STATUS"
    */
-  public int[] exec(Main context) {
+  public int[] start(Main context) {
     return new int[0];
   }
 
