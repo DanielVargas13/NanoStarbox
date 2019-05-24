@@ -1,5 +1,6 @@
 package box.star.shell;
 
+import box.star.Tools;
 import box.star.state.Configuration;
 import box.star.state.EnumSettings;
 import box.star.text.basic.Scanner;
@@ -7,17 +8,31 @@ import box.star.text.basic.Scanner;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Stack;
+import static box.star.shell.Main.Settings.*;
 
 public class Main {
 
   final static public boolean systemConsoleMode = System.console() != null;
 
+  public final static String
+
+    SHELL_SYSTEM_PROFILE_VARIABLE = "SHELL_SYSTEM_PROFILE",
+    SHELL_SYSTEM_PROFILE_PROPERTY = "box.star.shell.Main.system.profile",
+
+    SHELL_USER_PROFILE_VARIABLE = "SHELL_USER_PROFILE",
+    SHELL_USER_PROFILE_PROPERTY = "box.star.shell.Main.user.profile"
+
+  ;
+
   public static enum Settings {
+    SYSTEM_PROFILE, USER_PROFILE
   }
 
   private static class SettingsManager extends EnumSettings.Manager<Settings, Serializable> {
     public SettingsManager() {
       super(SettingsManager.class.getSimpleName());
+      set(SYSTEM_PROFILE, Tools.switchNull(System.getenv(SHELL_SYSTEM_PROFILE_VARIABLE), System.getProperty(SHELL_SYSTEM_PROFILE_PROPERTY)));
+      set(USER_PROFILE, Tools.switchNull(System.getenv(SHELL_USER_PROFILE_VARIABLE), System.getProperty(SHELL_USER_PROFILE_PROPERTY)));
     }
     public SettingsManager(String name, Configuration<Settings, Serializable> parent) {
       super(name, parent);
