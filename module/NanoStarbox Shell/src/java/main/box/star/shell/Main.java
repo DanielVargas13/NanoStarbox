@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
+  // TODO: expandText with environment overlay
+
   protected Environment environment;
   protected StreamTable streams;
   protected Stack<String> parameters;
