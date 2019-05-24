@@ -11,8 +11,8 @@ public class Function implements Cloneable {
   private Main context;
   final public String origin;
   final public String name;
-  final protected List<Command> body;
-  final protected StreamTable io;
+  protected List<Command> body;
+  protected StreamTable io;
   public Main getContext() { return context; }
   public Function(String origin, String name, StreamTable io){
     this(origin, name, null, io);
@@ -33,28 +33,29 @@ public class Function implements Cloneable {
     } catch (Exception e){throw new RuntimeException(e);}
     // finally /* never complete */ { ; }
   }
-  final public int invoke(String... parameters){
+  final public int invoke(Environment locals, String... parameters){
     if (context == null)
       throw new IllegalStateException("trying to invoke function prototype");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
-    return exec(params);
+    return exec(locals, params);
   }
-  final public int invoke(String name, String... parameters){
+  final public int invoke(Environment locals, String name, String... parameters){
     if (context == null)
       throw new IllegalStateException("trying to invoke function prototype");
     Stack<String> params = new Stack<>();
     params.add(name);
     params.addAll(Arrays.asList(parameters));
-    return exec(params);
+    return exec(locals, params);
   }
   /**
    * User implementation
-   * @param parameters
-   * @return
+   * @param locals the local environment for this function, which is empty of no command environment operations were specified for this call.
+   * @param parameters the specified parameters, partitioned and fully-shell-expanded.
+   * @return the execution status of this function
    */
-  protected int exec(Stack<String> parameters){
+  protected int exec(Environment locals, Stack<String> parameters){
     return 0;
   }
   @Override
