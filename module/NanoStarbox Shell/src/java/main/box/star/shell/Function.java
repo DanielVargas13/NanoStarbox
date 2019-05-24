@@ -1,31 +1,38 @@
 package box.star.shell;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Command Shell Function Model
  */
 public class Function implements Cloneable {
   private Main context;
+  /**
+   * <p>For the definitions phase, and String reporting</p>
+   * <br>
+   *   <p>The main context must, use this field to create the default stream table io.</p>
+   *   <br>
+   */
+  private final Map<Integer, String> redirects;
+
   final public String origin;
   final public String name;
   protected List<Command> body;
+
   protected StreamTable io;
   protected Environment locals;
   public Main getContext() { return context; }
   public Function(String origin, String name){
     this(origin, name,  null);
   }
-  public Function(String origin, String name, StreamTable io){
-    this(origin, name, null, io);
+  public Function(String origin, String name, Map<Integer, String> redirects){
+    this(origin, name, null, redirects);
   }
-  public Function(String origin, String name, List<Command> body, StreamTable io) {
+  public Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
     this.origin = origin;
     this.name = name;
     this.body = body;
-    this.io = io;
+    this.redirects = redirects;
   }
   /**
    *
@@ -71,13 +78,16 @@ public class Function implements Cloneable {
   protected int exec(Stack<String> parameters){
     return 0;
   }
+  private final String redirectionText(){
+    return " redirection text here";
+  }
   protected String sourceText(){
-    return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n} # default function io here";
+    return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
   }
   @Override
   public String toString() {
     if (body == null)
-      return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n} # default function io here";
+      return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
     else return sourceText();
   }
 }
