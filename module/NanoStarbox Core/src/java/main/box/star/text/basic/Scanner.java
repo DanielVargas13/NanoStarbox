@@ -835,6 +835,7 @@ public class Scanner implements Closeable {
   public static class Bookmark {
     public final long line, column, index;
     public final String origin, quote;
+    Enum type;
     public final List<Object> notes = new ArrayList<>();
     private Bookmark(Scanner source){
      this.line = source.state.line;
@@ -842,6 +843,16 @@ public class Scanner implements Closeable {
      this.index = source.state.index;
      this.quote = quoteSource(source.getPath());
      this.origin = compileToString();
+    }
+    public Bookmark WithTypeOf(Enum type){
+      if (type != null)
+        throw new IllegalStateException("you can't do that,"+
+            " the underlying property is marked read only for clients");
+      this.type = type;
+      return this;
+    }
+    public Enum getType() {
+      return type;
     }
     private static String quoteSource(String source){
       return source
