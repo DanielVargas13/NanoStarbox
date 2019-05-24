@@ -31,6 +31,6 @@ public class Plugin extends Function {
     return 0;
   }
   final protected Scanner getScanner(){
-    return context.source;
+    return parent.source;
   }
 }

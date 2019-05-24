@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Command Shell Function Model
  */
-public class Function implements Cloneable {
-  Main context;
+public class Function extends Context implements Cloneable {
+
   /**
    * <p>For the definitions phase, and String reporting</p>
    * <br>
@@ -17,13 +17,10 @@ public class Function implements Cloneable {
    */
   private final Map<Integer, String> redirects;
 
-  final public String origin;
   final public String name;
   protected List<Command> body;
 
-  protected StreamTable io;
-  protected Environment locals;
-  public Main getContext() { return context; }
+  public Context getContext() { return parent; }
   public Function(String origin, String name){
     this(origin, name,  null);
   }
@@ -36,31 +33,30 @@ public class Function implements Cloneable {
     this.body = body;
     this.redirects = redirects;
   }
+
+  // ?
   public static Function parse(Scanner textScanner){
     return null;
   }
+
   /**
    *
    * @param context
-   * @param locals the local environment for this function execution, which is empty of no command environment operations were specified for this call.
-   * @param io the io to use if the original definition is to be overridden. if neither this nor the origin specify the io, the Main io table will be copied.
    * @return the newly created function instance
    */
-  protected Function createRuntimeInstance(Main context, Environment locals, StreamTable io) {
+  protected Function createRuntimeInstance(Context context) {
     try /* never throwing runtime exceptions with closure */ {
-      if (this.context != null)
+      if (this.parent != null)
         throw new IllegalStateException("trying to create function instance from function instance");
       Function newInstance = (Function) super.clone();
-      newInstance.context = context;
-      newInstance.locals = locals;
-      if (io != null) newInstance.io = io;
-      // TODO: copy local io from main if it is null, or inherit all missing stdio channels from main.
+      newInstance.parent = context;
       return newInstance;
     } catch (Exception e){throw new RuntimeException(e);}
     // finally /* never complete */ { ; }
   }
+
   final public int invoke(String... parameters){
-    if (context == null)
+    if (parent == null)
       throw new IllegalStateException("trying to invoke function definition");
     Stack<String> params = new Stack<>();
     params.add(name);
@@ -68,7 +64,7 @@ public class Function implements Cloneable {
     return exec(params);
   }
   final public int invoke(String name, String... parameters){
-    if (context == null)
+    if (parent == null)
       throw new IllegalStateException("trying to invoke function definition");
     Stack<String> params = new Stack<>();
     params.add(name);
@@ -86,13 +82,16 @@ public class Function implements Cloneable {
   private final String redirectionText(){
     return " redirection text here";
   }
+
   protected String sourceText(){
     return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
   }
+
   @Override
   public String toString() {
     if (body == null)
       return "function "+name+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
     else return sourceText();
   }
+
 }

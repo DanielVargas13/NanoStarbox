@@ -12,9 +12,7 @@ import java.util.Stack;
 /**
  * Product Spec: code name: System Commander
  */
-public class Main {
-
-  final static public boolean systemConsoleMode = System.console() != null;
+public class Main extends Context {
 
   public final static String
 
@@ -33,14 +31,14 @@ public class Main {
   protected SettingsManager settings;
   protected Configuration<Settings, Serializable> configuration;
 
-  protected Environment environment;
-  protected StreamTable io;
-  protected Stack<String> parameters;
-  protected int exitValue, shellLevel;
-  protected Main parent;
-
-  Scanner source;
-  String origin;
+//  protected Environment environment;
+//  protected StreamTable io;
+//  protected Stack<String> parameters;
+//  protected int exitValue, shellLevel;
+//  protected Main parent;
+//
+//  Scanner source;
+//  String origin;
 
   private void contextInit(Scanner source, StreamTable io){
     if (this.origin == null) this.origin = source.nextCharacterClaim();
@@ -89,78 +87,11 @@ public class Main {
     // TODO: start scanning, store result
   }
 
-  final public String getOrigin() {
-    return this.origin;
-  }
-
-  public Stack<String> expandTextParameter(Environment overlay, String origin, int number, String text){
-    // TODO: expandParameter to stack with environment overlay
-    return null;
-  }
-
-  public String expandText(Environment overlay, String origin, String text){
-    // TODO: expandText with environment overlay
-    return null;
-  }
-
-  public int evaluate(Environment overlay, String origin, String text, StreamTable io) {
-    // TODO: evaluation routine
-    return 0;
-  }
-
   public void assembleObject(Assembler plugin, Environment overlay, String origin, String key, boolean export, StreamTable io, Object... parameters) {
     // TODO: evaluation routine
     Object objNewInstance = plugin.compile(this, origin, overlay, io, parameters);
     set(key, objNewInstance, export);
     return;
-  }
-
-  public Function getFunction(String name){
-    return environment.getObject(Function.class, name);
-  }
-
-  public Plugin getPlugin(String name){
-    return environment.getObject(Plugin.class, name);
-  }
-
-  public <T> T getObject(Class<T> type, String name){
-    return environment.getObject(type, name);
-  }
-
-  public String get(String name){
-    return environment.getString(name);
-  }
-
-  public Stream get(int stream){
-    return io.get(stream);
-  }
-
-  public void set(String name, Object value, boolean export){
-    environment.put(name, new Variable(value, export));
-  }
-
-  public void set(String name, Object value){
-    environment.put(name, new Variable(value));
-  }
-
-  public void set(int number, Stream value){
-    io.put(number, value);
-  }
-
-  public boolean have(String key){
-    return environment.containsKey(key);
-  }
-
-  public boolean have(int stream){
-    return io.containsKey(stream);
-  }
-
-  public boolean have(String key, Class type){
-    return environment.containsKey(key) && environment.get(key).isObjectOfClass(type);
-  }
-
-  public void defineFunction(Function userFunction, boolean export){
-    environment.put(userFunction.name, new Variable(userFunction, export));
   }
 
   final public Configuration<Settings, Serializable> getConfiguration() {
