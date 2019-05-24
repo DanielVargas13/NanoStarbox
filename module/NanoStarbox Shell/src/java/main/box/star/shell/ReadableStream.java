@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 
 public class ReadableStream implements Stream {
-  InputStream stream;
-  String uri;
+  private InputStream stream;
+  private String uri;
   public ReadableStream(InputStream stream){
     this.stream = stream;
   }
@@ -16,16 +16,16 @@ public class ReadableStream implements Stream {
     this.uri = uri;
   }
   @Override
-  public boolean isWritable() {
+  final public boolean isWritable() {
     return false;
   }
   @Override
-  public boolean isReadable() {
+  final public boolean isReadable() {
     return true;
   }
   @Override
-  public boolean isTerminal() {
-    return false;
+  final public boolean isTerminal() {
+    return System.in.equals(stream);
   }
   @Override
   public boolean isPipe() {
@@ -40,19 +40,19 @@ public class ReadableStream implements Stream {
     return stream instanceof BufferedInputStream;
   }
   @Override
-  public boolean isRandom() {
+  final public boolean isRandom() {
     return false;
   }
   @Override
-  public boolean hasURI() {
+  final public boolean hasURI() {
     return uri != null;
   }
   @Override
-  public String getURI() {
+  final public String getURI() {
     return uri;
   }
   @Override
-  public <STREAM> STREAM getController() {
+  final public <STREAM> STREAM getController() {
     return (STREAM) stream;
   }
 }

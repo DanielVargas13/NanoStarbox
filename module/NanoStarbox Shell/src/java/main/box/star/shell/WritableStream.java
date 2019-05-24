@@ -3,8 +3,8 @@ package box.star.shell;
 import java.io.*;
 
 public class WritableStream implements Stream {
-  OutputStream stream;
-  String uri;
+  private OutputStream stream;
+  private String uri;
   public WritableStream(OutputStream stream){
     this.stream = stream;
   }
@@ -13,16 +13,16 @@ public class WritableStream implements Stream {
     this.uri = uri;
   }
   @Override
-  public boolean isWritable() {
+  final public boolean isWritable() {
     return true;
   }
   @Override
-  public boolean isReadable() {
+  final public boolean isReadable() {
     return false;
   }
   @Override
-  public boolean isTerminal() {
-    return false;
+  final public boolean isTerminal() {
+    return System.out.equals(stream) || System.err.equals(stream);
   }
   @Override
   public boolean isPipe() {
@@ -37,19 +37,19 @@ public class WritableStream implements Stream {
     return stream instanceof BufferedOutputStream;
   }
   @Override
-  public boolean isRandom() {
+  final public boolean isRandom() {
     return false;
   }
   @Override
-  public boolean hasURI() {
+  final public boolean hasURI() {
     return uri != null;
   }
   @Override
-  public String getURI() {
+  final public String getURI() {
     return uri;
   }
   @Override
-  public <STREAM> STREAM getController() {
+  final public <STREAM> STREAM getController() {
     return (STREAM) stream;
   }
 }
