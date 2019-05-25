@@ -107,7 +107,7 @@ public class Context {
       void importContext(Context impl){
         this.parent = impl;
         this.environment = impl.environment;
-        this.io = impl.io;
+        importStreamTable(impl.io);
       }
       ScriptClass(Context parent, String origin) {
         super(parent, origin);
@@ -210,7 +210,7 @@ public class Context {
       void importContext(Context impl){
         this.parent = impl;
         this.environment = impl.environment;
-        this.io = impl.io;
+        importStreamTable(impl.io);
       }
       CommandGroupContext(Context parent, String origin) {
         super(parent, origin);
@@ -225,7 +225,7 @@ public class Context {
       void importContext(Context impl){
         this.parent = impl;
         this.environment = impl.environment;
-        this.io = impl.io;
+        importStreamTable(impl.io);
       }
       ObjectContext(Context parent, String origin){
         super(parent, origin);
