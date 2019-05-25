@@ -4,7 +4,6 @@ import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
-import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 import java.io.File;
@@ -50,7 +49,7 @@ public class Context {
     this.io = io;
   }
 
-  final protected Context BookmarkOf(String origin){
+  final protected Context OriginOf(String origin){
     if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.origin = origin;
@@ -148,12 +147,12 @@ public class Context {
         return 0;
       }
     }
-    class CommandShellClass extends /* [$](COMMAND...) */ Context {}
-    class CommandGroupClass extends /* { COMMAND... } */ Context {}
-    class CommandClass extends /* COMMAND [ | COMMAND... ] */ Context {}
-    class ObjectClass extends /* UNKNOWN */ Context {
-      ObjectClass(Context parent, String origin, StreamTable io){
-        WithParentOf(parent).BookmarkOf(origin).StreamsOf(io);
+    class CommandShellContext extends /* [$](COMMAND...) */ Context {}
+    class CommandGroupContext extends /* { COMMAND... } */ Context {}
+    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {}
+    class ObjectContext extends /* UNKNOWN */ Context {
+      ObjectContext(Context parent, String origin, StreamTable io){
+        WithParentOf(parent).OriginOf(origin).StreamsOf(io);
       }
     }
   }
@@ -245,7 +244,7 @@ public class Context {
   }
 
   final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
-    Shell.ObjectClass objectContext = new Shell.ObjectClass(this, origin, io);
+    Shell.ObjectContext objectContext = new Shell.ObjectContext(this, origin, io);
     Object newObjInstance = plugin.construct(objectContext, parameters);
     if (newObjInstance == null) return false;
     this.set(key, newObjInstance, export);
