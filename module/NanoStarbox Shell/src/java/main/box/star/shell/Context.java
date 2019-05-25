@@ -85,8 +85,8 @@ public class Context {
 
   public interface Shell {
     abstract class MainClass extends Context {
-      protected Stack<String> parameters;
-      protected Scanner scanner;
+      Stack<String> parameters;
+      Scanner scanner;
       MainClass(Context parent, String origin) {
         super(parent, origin);
       }
@@ -102,6 +102,10 @@ public class Context {
         this.parameters = parameters;
         return this;
       }
+      @NotNull
+      protected Stack<String> getParameters(){
+        return parameters;
+      }
     }
     abstract class ScriptClass extends /* source ... */ MainClass {
       void importContext(Context impl){
@@ -114,6 +118,7 @@ public class Context {
       }
     }
     abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
+      Stack<String> parameters;
       private String name;
       FunctionClass(String origin, String name) {
         super(null, origin);
@@ -145,7 +150,7 @@ public class Context {
        * @param context
        * @return the newly created function instance
        */
-      protected Function createRuntimeInstance(Context context) {
+      protected Function createContextInstance(Context context) {
         try /* never throwing runtime exceptions with closure */ {
           if (this.parent != null)
             throw new IllegalStateException("trying to create function instance from function instance");
@@ -155,21 +160,25 @@ public class Context {
         } catch (Exception e){throw new RuntimeException(e);}
         // finally /* never complete */ { ; }
       }
+      @NotNull
+      protected Stack<String> getParameters(){
+        return parameters;
+      }
       final public int invoke(String... parameters){
         if (parent == null)
           throw new IllegalStateException("trying to invoke function definition");
-        Stack<String> params = new Stack<>();
-        params.add(getName());
-        params.addAll(Arrays.asList(parameters));
-        return exec(params);
+        this.parameters = new Stack<>();
+        this.parameters.add(getName());
+        this.parameters.addAll(Arrays.asList(parameters));
+        return exec(this.parameters);
       }
       final public int invoke(String name, String... parameters){
         if (parent == null)
           throw new IllegalStateException("trying to invoke function definition");
-        Stack<String> params = new Stack<>();
-        params.add(name);
-        params.addAll(Arrays.asList(parameters));
-        return exec(params);
+        this.parameters = new Stack<>();
+        this.parameters.add(name);
+        this.parameters.addAll(Arrays.asList(parameters));
+        return exec(this.parameters);
       }
     }
     abstract class PluginClass extends /* virtual function NAME() {} */ FunctionClass {
@@ -241,6 +250,13 @@ public class Context {
   final protected Context getMain(){
     if (this instanceof Shell.MainClass) return this;
     else return parent.getMain();
+  }
+
+  @NotNull
+  final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
+    if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).parameters;
+    else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).parameters;
+    else return parent.getContextParameters();
   }
 
   @Nullable
