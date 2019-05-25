@@ -252,7 +252,12 @@ public class Context {
     return shellLevel;
   }
 
-  final protected StreamTable compileRedirects(Map<Integer, String> redirects){
+  protected Environment compileEnvironmentOperations(List<String> operations){
+    // todo: compile environment operations into an environment table, which can be imported on a context
+    return null;
+  }
+
+  protected StreamTable compileRedirects(Map<Integer, String> redirects){
     // todo: parse redirects, and return a new stream table, which can be imported on a context
     return null;
   }
