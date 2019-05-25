@@ -1,11 +1,5 @@
 package box.star.shell;
 
-import box.star.shell.Environment;
-import box.star.shell.Main;
-import box.star.shell.Plugin;
-import box.star.shell.io.StreamTable;
-import box.star.text.basic.Scanner;
-
 /**
  * Any object can implement this to offer object constructor services.
  * @param <Kind>

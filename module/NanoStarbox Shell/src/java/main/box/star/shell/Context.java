@@ -23,7 +23,7 @@ public class Context {
   Context parent;
   Environment environment;
   StreamTable io;
-  Bookmark origin;
+  String origin;
   int shellLevel;
 
   protected Stack<String> parameters;
@@ -35,22 +35,22 @@ public class Context {
     this.parent = parent;
   }
 
-  Context(Context parent, Bookmark origin) {
+  Context(Context parent, String origin) {
     this(parent, origin, null, null);
   }
 
-  Context(Context parent, Bookmark origin, StreamTable io) {
+  Context(Context parent, String origin, StreamTable io) {
     this(parent, origin, io, null);
   }
 
-  Context(Context parent, Bookmark origin, StreamTable io, Stack<String> parameters){
+  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
     this.parent = parent;
     this.origin = origin;
     this.parameters = parameters;
     this.io = io;
   }
 
-  final protected Context BookmarkOf(Bookmark origin){
+  final protected Context BookmarkOf(String origin){
     if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.origin = origin;
@@ -95,7 +95,7 @@ public class Context {
 
   public interface Shell {
     abstract class MainClass extends Context {
-      private Scanner scanner;
+      protected Scanner scanner;
       final protected Context WithScannerOf(Scanner scanner){
         if (this.scanner != null)
           throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
@@ -109,8 +109,8 @@ public class Context {
         return this;
       }
     }
-    abstract class ScriptClass extends Context {}
-    abstract class FunctionClass extends Context {
+    abstract class ScriptClass extends /* source ... */ MainClass {}
+    abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
       private String name;
       protected List<box.star.shell.Command> commandList;
       public FunctionClass(){super();}
@@ -120,7 +120,7 @@ public class Context {
         this.commandList = commands;
         return this;
       }
-      FunctionClass(Bookmark origin, String name) {
+      FunctionClass(String origin, String name) {
         this.origin = origin;
         this.name = name;
       }
@@ -148,41 +148,11 @@ public class Context {
         return 0;
       }
     }
-    abstract class PluginClass extends FunctionClass {
-      public PluginClass(Bookmark origin, String name) {
-        super(origin, name);
-      }
-      @Override
-      final protected int exec(Stack<String> parameters) {
-        Stack<java.lang.Object> p = new Stack<>();
-        p.addAll(parameters);
-        java.lang.Object build = call(p);
-        return (build == null)?1:0;
-      }
-      /**
-       * <p>Plugin gets Object array parameters for exec</p>
-       * <br>
-       * <p>Plugins operate as functions that can service object requests.</p>
-       * <br>
-       * <p>When called via text-script, all parameters will be strings.</p>
-       * <br>
-       * <p>A plugin object may access the context scanner.</p>
-       * <br>
-       * @param parameters
-       * @return
-       */
-      protected <ANY> ANY call(Stack<java.lang.Object> parameters) {
-        return (ANY) null;
-      }
-      final protected Scanner getScanner(){
-        return ((Shell.MainClass) getMain()).scanner;
-      }
-    }
-    class SubMainClass extends MainClass {}
-    class CommandBlockClass extends Context {}
-    class CommandClass extends Context {}
-    class ObjectClass extends Context {
-      ObjectClass(Context parent, Bookmark origin, StreamTable io){
+    class CommandShellClass extends /* [$](COMMAND...) */ Context {}
+    class CommandGroupClass extends /* { COMMAND... } */ Context {}
+    class CommandClass extends /* COMMAND [ | COMMAND... ] */ Context {}
+    class ObjectClass extends /* UNKNOWN */ Context {
+      ObjectClass(Context parent, String origin, StreamTable io){
         WithParentOf(parent).BookmarkOf(origin).StreamsOf(io);
       }
     }
@@ -221,7 +191,7 @@ public class Context {
     return null;
   }
 
-  public String expandText(Bookmark origin, String text){
+  public String expandText(String origin, String text){
     // TODO: expandText with environment overlay
     return null;
   }
@@ -274,7 +244,7 @@ public class Context {
     environment.put(userFunction.getName(), new Variable(userFunction, export));
   }
 
-  final public boolean newObject(Constructor plugin, Bookmark origin, String key, boolean export, StreamTable io, Object... parameters) {
+  final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
     Shell.ObjectClass objectContext = new Shell.ObjectClass(this, origin, io);
     Object newObjInstance = plugin.construct(objectContext, parameters);
     if (newObjInstance == null) return false;

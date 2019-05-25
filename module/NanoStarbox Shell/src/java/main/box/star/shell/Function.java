@@ -1,26 +1,19 @@
 package box.star.shell;
 
+import box.star.text.basic.Bookmark;
+
 import java.util.*;
 
 /**
  * Command Shell Function Model
  */
-public class Function extends Context.Shell.FunctionClass implements Cloneable {
+public class Function extends Context.Shell.FunctionClass {
 
   public Context getContext() { return parent; }
 
-//  public Function(String origin, String name){
-//    this(origin, name,  null);
-//  }
-//  public Function(String origin, String name, Map<Integer, String> redirects){
-//    this(origin, name, null, redirects);
-//  }
-//  Function(String origin, String name, List<Command> body, Map<Integer, String> redirects) {
-//    this.origin = origin;
-//    this.name = name;
-//    this.body = body;
-//    this.redirects = redirects;
-//  }
+  public Function(String origin, String name){
+    super(origin, name);
+  }
 
   // ?
   public static Function parse(Scanner textScanner){

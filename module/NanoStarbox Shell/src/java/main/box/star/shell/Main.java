@@ -37,7 +37,7 @@ public class Main extends Context.Shell.MainClass {
   }
 
   private void contextInit(Scanner source, StreamTable io){
-    if (this.origin == null) this.origin = source.createBookmark();
+    if (this.origin == null) this.origin = source.createBookmark().toString();
     this.source = source;
     // TODO: copy local io from parent if io == null and parent doesn't, or inherit all missing stdio channels in local io from parent.
     this.io = io;
@@ -59,7 +59,7 @@ public class Main extends Context.Shell.MainClass {
   }
 
   private void processMainParameters(String[] parameters) {
-    Scanner scanner = null;
+    scanner = null;
     StreamTable io = null;
     // TODO: process main parameters
     contextInit(scanner, io);
