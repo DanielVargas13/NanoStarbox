@@ -75,13 +75,6 @@ public class Context {
     return this;
   }
 
-  final protected Context applyRedirects(Map<Integer, String> redirects){
-    if (this.redirects != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.redirects = redirects;
-    return this;
-  }
-
   /**
    * <p>For the definitions phase, and String reporting</p>
    * <br>
@@ -257,6 +250,11 @@ public class Context {
 
   final public int getShellLevel() {
     return shellLevel;
+  }
+
+  final protected StreamTable compileRedirects(Map<Integer, String> redirects){
+    // todo: parse redirects, and return a new stream table, which can be imported on a context
+    return null;
   }
 
   public int evaluate(String origin, String text, StreamTable io) {
