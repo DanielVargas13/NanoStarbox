@@ -54,7 +54,7 @@ public class Context {
     return this;
   }
 
-  final void importContext(Context impl){
+  void importContext(Context impl){
     this.parent = impl;
     importEnvironment(impl.environment);
     importStreamTable(impl.io);
@@ -104,6 +104,11 @@ public class Context {
       }
     }
     abstract class ScriptClass extends /* source ... */ MainClass {
+      void importContext(Context impl){
+        this.parent = impl;
+        this.environment = impl.environment;
+        this.io = impl.io;
+      }
       ScriptClass(Context parent, String origin) {
         super(parent, origin);
       }
@@ -209,6 +214,11 @@ public class Context {
       }
     }
     class CommandGroupContext extends /* { COMMAND... } */ Context {
+      void importContext(Context impl){
+        this.parent = impl;
+        this.environment = impl.environment;
+        this.io = impl.io;
+      }
       CommandGroupContext(Context parent, String origin) {
         super(parent, origin);
       }
@@ -219,6 +229,11 @@ public class Context {
       }
     }
     class ObjectContext extends /* UNKNOWN */ Context {
+      void importContext(Context impl){
+        this.parent = impl;
+        this.environment = impl.environment;
+        this.io = impl.io;
+      }
       ObjectContext(Context parent, String origin){
         super(parent, origin);
       }
