@@ -249,7 +249,7 @@ public class Context {
       void importContext(Context impl){
         this.parent = impl;
         this.environment = impl.environment;
-        importStreamTable(impl.io);
+        this.io = parent.io;
       }
       ObjectContext(Context parent, String origin){
         super(parent, origin);
