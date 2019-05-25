@@ -115,13 +115,6 @@ public class Context {
     }
     abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
       private String name;
-//      protected List<box.star.shell.Command> commandList;
-//      final protected Context WithCommandListOf(List<Command> commands){
-//        if (this.commandList != null)
-//          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-//        this.commandList = commands;
-//        return this;
-//      }
       FunctionClass(String origin, String name) {
         super(null, origin);
         this.name = name;
@@ -273,6 +266,8 @@ public class Context {
   }
 
   protected StreamTable compileRedirects(Map<Integer, String> redirects){
+    if (this.redirects == null) this.redirects = redirects;
+    else this.redirects.putAll(redirects);
     // todo: parse redirects, and return a new stream table, which can be imported on a context
     return null;
   }
