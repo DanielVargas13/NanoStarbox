@@ -13,8 +13,6 @@ import java.util.Stack;
  */
 public class Main extends Context.Shell.MainClass {
 
-  Scanner source;
-
   public final static String
 
     SHELL_SYSTEM_PROFILE_VARIABLE = "SHELL_SYSTEM_PROFILE",
@@ -36,51 +34,26 @@ public class Main extends Context.Shell.MainClass {
     return configuration;
   }
 
-  private void contextInit(Scanner source, StreamTable io){
-    if (this.origin == null) this.origin = source.createBookmark().toString();
-    this.source = source;
-    // TODO: copy local io from parent if io == null and parent doesn't, or inherit all missing stdio channels in local io from parent.
-    this.io = io;
-  }
-
   /**
    * Classic start main shell
    * @param parameters
    */
   public Main(String... parameters){
-    shellLevel++;
+    super(null, null);
     environment = new Environment();
     settings = new SettingsManager(environment);
     configuration = settings.getConfiguration();
     Stack<String> p = new Stack();
     p.addAll(Arrays.asList(parameters));
-    processMainParameters(parameters);
+    WithParametersOf(p);
+    processParameters();
     // TODO: start scanning, store result
   }
 
-  private void processMainParameters(String[] parameters) {
+  private void processParameters() {
+    // TODO: actually process parameters
     scanner = null;
     StreamTable io = null;
-    // TODO: process main parameters
-    contextInit(scanner, io);
-  }
-
-  /**
-   * <p>Create a child shell with a parent shell</p>
-   *
-   * @param parent the child's parent
-   * @param origin the source origin
-   * @param source the source text
-   * @param io the child's stream table
-   */
-  Main(Main parent, String origin, String source, StreamTable io) {
-    shellLevel = parent.shellLevel + 1;
-    environment = parent.environment.getExports();
-    settings = new SettingsManager("shell["+shellLevel+"]", parent.getConfiguration());
-    configuration = settings.getConfiguration();
-    this.parent = parent;
-    contextInit(new Scanner(origin, source), io);
-    // TODO: start scanning, store result
   }
 
 }

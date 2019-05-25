@@ -7,6 +7,7 @@ import box.star.shell.io.StreamTable;
 import box.star.text.basic.Scanner;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -25,43 +26,45 @@ public class Context {
   String origin;
   int shellLevel;
 
-  protected Stack<String> parameters;
   protected int exitValue;
 
-  Context(){}
+  //Context(){}
 
-  Context(Context parent){
-    this.parent = parent;
-  }
+//  Context(Context parent){
+//    this.parent = parent;
+//  }
+//
+//  Context(Context parent, String origin) {
+//    this(parent, origin, null, null);
+//  }
 
   Context(Context parent, String origin) {
-    this(parent, origin, null, null);
-  }
-
-  Context(Context parent, String origin, StreamTable io) {
-    this(parent, origin, io, null);
-  }
-
-  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
     this.parent = parent;
     this.origin = origin;
-    this.parameters = parameters;
-    this.io = io;
+//    this.parameters = parameters;
+    //this.io = io;
   }
 
-  final protected Context OriginOf(String origin){
-    if (this.origin != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.origin = origin;
-    return this;
-  }
+//  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
+//    this.parent = parent;
+//    this.origin = origin;
+//    this.parameters = parameters;
+//    this.io = io;
+//  }
 
-  final protected Context WithParentOf(Context parent){
-    if (this.parent != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.parent = parent;
-    return this;
-  }
+//  final protected Context OriginOf(String origin){
+//    if (this.origin != null)
+//      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+//    this.origin = origin;
+//    return this;
+//  }
+//
+//  final protected Context WithParentOf(Context parent){
+//    if (this.parent != null)
+//      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+//    this.parent = parent;
+//    return this;
+//  }
 
   final protected Context StreamsOf(StreamTable io){
     if (this.io != null)
@@ -94,7 +97,14 @@ public class Context {
 
   public interface Shell {
     abstract class MainClass extends Context {
+      protected Stack<String> parameters;
       protected Scanner scanner;
+      MainClass(String origin){
+        super(null, origin);
+      }
+      MainClass(Context parent, String origin) {
+        super(parent, origin);
+      }
       final protected Context WithScannerOf(Scanner scanner){
         if (this.scanner != null)
           throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
@@ -108,19 +118,22 @@ public class Context {
         return this;
       }
     }
-    abstract class ScriptClass extends /* source ... */ MainClass {}
+    abstract class ScriptClass extends /* source ... */ MainClass {
+      ScriptClass(Context parent, String origin) {
+        super(parent, origin);
+      }
+    }
     abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
       private String name;
-      protected List<box.star.shell.Command> commandList;
-      public FunctionClass(){super();}
-      final protected Context WithCommandListOf(List<Command> commands){
-        if (this.commandList != null)
-          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-        this.commandList = commands;
-        return this;
-      }
+//      protected List<box.star.shell.Command> commandList;
+//      final protected Context WithCommandListOf(List<Command> commands){
+//        if (this.commandList != null)
+//          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+//        this.commandList = commands;
+//        return this;
+//      }
       FunctionClass(String origin, String name) {
-        this.origin = origin;
+        super(null, origin);
         this.name = name;
       }
       public String getName() {
@@ -134,9 +147,7 @@ public class Context {
       }
       @Override
       public String toString() {
-        if (commandList == null)
-          return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
-        else return sourceText();
+          return sourceText();
       }
       /**
        * User implementation
@@ -146,13 +157,89 @@ public class Context {
       protected int exec(Stack<String> parameters){
         return 0;
       }
+      /**
+       *
+       * @param context
+       * @return the newly created function instance
+       */
+      protected Function createRuntimeInstance(Context context) {
+        try /* never throwing runtime exceptions with closure */ {
+          if (this.parent != null)
+            throw new IllegalStateException("trying to create function instance from function instance");
+          Function newInstance = (Function) super.clone();
+          newInstance.parent = context;
+          return newInstance;
+        } catch (Exception e){throw new RuntimeException(e);}
+        // finally /* never complete */ { ; }
+      }
+      final public int invoke(String... parameters){
+        if (parent == null)
+          throw new IllegalStateException("trying to invoke function definition");
+        Stack<String> params = new Stack<>();
+        params.add(getName());
+        params.addAll(Arrays.asList(parameters));
+        return exec(params);
+      }
+      final public int invoke(String name, String... parameters){
+        if (parent == null)
+          throw new IllegalStateException("trying to invoke function definition");
+        Stack<String> params = new Stack<>();
+        params.add(name);
+        params.addAll(Arrays.asList(parameters));
+        return exec(params);
+      }
     }
-    class CommandShellContext extends /* [$](COMMAND...) */ Context {}
-    class CommandGroupContext extends /* { COMMAND... } */ Context {}
-    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {}
+    abstract class PluginClass extends /* virtual function NAME() {} */ FunctionClass {
+      PluginClass(String origin, String name) {
+        super(origin, name);
+      }
+      final protected Scanner getScanner(){
+        return ((MainClass)getMain()).scanner;
+      }
+      @Override
+      final protected int exec(Stack<String> parameters) {
+        Stack<java.lang.Object> p = new Stack<>();
+        p.addAll(parameters);
+        return (call(p) == null)?1:0;
+      }
+      /**
+       * <p>Plugin gets Object array parameters for exec</p>
+       * <br>
+       * <p>Plugins operate as functions that can service object requests.</p>
+       * <br>
+       * <p>When called via text-script, all parameters will be strings.</p>
+       * <br>
+       * <p>A plugin object may access the context scanner.</p>
+       * <br>
+       * @param parameters
+       * @return
+       */
+      protected <ANY> ANY call(Stack<java.lang.Object> parameters) {
+        return (ANY) null;
+      }
+    }
+    class CommandShellContext extends /* [$](COMMAND...) */ Context {
+      CommandShellContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+    }
+    class CommandGroupContext extends /* { COMMAND... } */ Context {
+      CommandGroupContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+    }
+    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {
+      CommandContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+    }
     class ObjectContext extends /* UNKNOWN */ Context {
+      ObjectContext(Context parent, String origin){
+        super(parent, origin);
+      }
       ObjectContext(Context parent, String origin, StreamTable io){
-        WithParentOf(parent).OriginOf(origin).StreamsOf(io);
+        this(parent, origin);
+        StreamsOf(io);
       }
     }
   }
