@@ -39,35 +39,36 @@ public class Context {
     return initialized && origin != null;
   }
 
-  final protected Context AndOriginOf(String origin){
+  @NotNull final protected Context AndOriginOf(@NotNull String origin){
     if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.origin = origin;
     return this;
   }
 
-  final protected Context WithParentOf(Context parent){
+  @NotNull final protected Context WithParentOf(@NotNull Context parent){
     if (this.parent != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     importContext(parent);
+    this.shellLevel = (parent.shellLevel + 1);
     initialized = true;
     return this;
   }
 
-  void importContext(Context impl){
+  void importContext(@NotNull Context impl){
     this.parent = impl;
     importEnvironment(impl.environment);
     importStreamTable(impl.io);
   }
 
-  final protected Context importEnvironment(Environment environment){
+  @NotNull final protected Context importEnvironment(@NotNull Environment environment){
     if (environment == null){
       this.environment = environment.getExports();
     } else this.environment.putAll(environment.getExports());
     return this;
   }
 
-  final protected Context importStreamTable(StreamTable io){
+  @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
     if (io == null){
       this.io = new StreamTable();
       this.io.putAll(parent.io);
@@ -106,16 +107,23 @@ public class Context {
       protected Stack<String> getParameters(){
         return parameters;
       }
+      @NotNull final protected Context importParameters(Context parent){
+        this.parameters = new Stack<>();
+        this.parameters.addAll(parent.getContextParameters());
+        return this;
+      }
     }
     abstract class ScriptClass extends /* source ... */ MainClass {
+      @Override
       void importContext(Context impl){
         this.parent = impl;
         this.environment = impl.environment;
         importStreamTable(impl.io);
-        // todo: when our parameters are empty, we need to use the current parameters verbatim.
+        importParameters(impl);
       }
       ScriptClass(Context parent, String origin) {
         super(parent, origin);
+        // todo: overwrite the inherited parameters with new parameters if available
       }
     }
     abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
@@ -216,8 +224,7 @@ public class Context {
       void importContext(Context impl) {
         super.importContext(impl);
         // spec uses a parameter copy
-        this.parameters = new Stack<>();
-        this.parameters.addAll(impl.getContextParameters());
+        importParameters(impl);
       }
       CommandShellContext(Context parent, String origin) {
         super(parent, origin);
