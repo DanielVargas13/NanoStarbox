@@ -25,65 +25,60 @@ public class Context {
   StreamTable io;
   String origin;
   int shellLevel;
+  boolean initialized;
 
   protected int exitValue;
 
-  //Context(){}
-
-//  Context(Context parent){
-//    this.parent = parent;
-//  }
-//
-//  Context(Context parent, String origin) {
-//    this(parent, origin, null, null);
-//  }
+  Context(){}
 
   Context(Context parent, String origin) {
-    this.parent = parent;
-    this.origin = origin;
-//    this.parameters = parameters;
-    //this.io = io;
+    WithParentOf(parent).AndOriginOf(origin);
   }
 
-//  Context(Context parent, String origin, StreamTable io, Stack<String> parameters){
-//    this.parent = parent;
-//    this.origin = origin;
-//    this.parameters = parameters;
-//    this.io = io;
-//  }
+  public boolean isReady() {
+    return initialized && origin != null;
+  }
 
-//  final protected Context OriginOf(String origin){
-//    if (this.origin != null)
-//      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-//    this.origin = origin;
-//    return this;
-//  }
-//
-//  final protected Context WithParentOf(Context parent){
-//    if (this.parent != null)
-//      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-//    this.parent = parent;
-//    return this;
-//  }
-
-  final protected Context StreamsOf(StreamTable io){
-    if (this.io != null)
+  final protected Context AndOriginOf(String origin){
+    if (this.origin != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.io = io;
+    this.origin = origin;
     return this;
   }
 
-  final protected Context RedirectsOf(Map<Integer, String> redirects){
+  final protected Context WithParentOf(Context parent){
+    if (this.parent != null)
+      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+    importContext(parent);
+    initialized = true;
+    return this;
+  }
+
+  final void importContext(Context impl){
+    this.parent = impl;
+    importEnvironment(impl.environment);
+    importStreamTable(impl.io);
+  }
+
+  final protected Context importEnvironment(Environment environment){
+    if (environment == null){
+      this.environment = environment.getExports();
+    } else this.environment.putAll(environment.getExports());
+    return this;
+  }
+
+  final protected Context importStreamTable(StreamTable io){
+    if (io == null){
+      this.io = new StreamTable();
+      this.io.putAll(parent.io);
+    } else this.io.putAll(io);
+    return this;
+  }
+
+  final protected Context applyRedirects(Map<Integer, String> redirects){
     if (this.redirects != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     this.redirects = redirects;
-    return this;
-  }
-
-  final protected Context EnvironmentOf(Environment environment){
-    if (this.environment != null)
-      throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-    this.environment = environment;
     return this;
   }
 
@@ -99,9 +94,6 @@ public class Context {
     abstract class MainClass extends Context {
       protected Stack<String> parameters;
       protected Scanner scanner;
-      MainClass(String origin){
-        super(null, origin);
-      }
       MainClass(Context parent, String origin) {
         super(parent, origin);
       }
@@ -239,7 +231,7 @@ public class Context {
       }
       ObjectContext(Context parent, String origin, StreamTable io){
         this(parent, origin);
-        StreamsOf(io);
+        importStreamTable(io);
       }
     }
   }
@@ -260,7 +252,7 @@ public class Context {
   }
 
   final public String getOrigin() {
-    return this.origin.toString();
+    return this.origin;
   }
 
   final public int getShellLevel() {
