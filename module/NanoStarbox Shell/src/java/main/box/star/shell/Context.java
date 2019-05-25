@@ -112,6 +112,7 @@ public class Context {
         this.parent = impl;
         this.environment = impl.environment;
         importStreamTable(impl.io);
+        // todo: when our parameters are empty, we need to use the current parameters verbatim.
       }
       ScriptClass(Context parent, String origin) {
         super(parent, origin);
@@ -210,7 +211,14 @@ public class Context {
         return (ANY) null;
       }
     }
-    class CommandShellContext extends /* [$](COMMAND...) */ Context {
+    class CommandShellContext extends /* [$](COMMAND...) */ MainClass {
+      @Override
+      void importContext(Context impl) {
+        super.importContext(impl);
+        // spec uses a parameter copy
+        this.parameters = new Stack<>();
+        this.parameters.addAll(impl.getContextParameters());
+      }
       CommandShellContext(Context parent, String origin) {
         super(parent, origin);
       }
@@ -252,6 +260,10 @@ public class Context {
     else return parent.getMain();
   }
 
+  /**
+   * Provides the $1...$N variables for text-expansion and other uses within all contexts.
+   * @return
+   */
   @NotNull
   final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
     if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).parameters;
