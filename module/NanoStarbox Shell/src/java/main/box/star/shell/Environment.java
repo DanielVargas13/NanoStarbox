@@ -87,10 +87,6 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     return new ArrayList<>(keySet());
   }
 
-  {
-    mapAllStrings(System.getenv(), true);
-  }
-
   public void setSystemDirectoryKey(String currentDirectoryKey) {
     this.currentDirectoryKey = currentDirectoryKey;
   }
@@ -114,6 +110,11 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
 
   public File getRelativeFile(String name){
     return new File(getCurrentDirectory(), name);
+  }
+
+  public Environment loadFactoryEnvironment(boolean export)  {
+    mapAllStrings(System.getenv(), export);
+    return this;
   }
 
 }

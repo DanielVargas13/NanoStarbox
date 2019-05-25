@@ -2,7 +2,6 @@ package box.star.shell;
 
 import box.star.shell.io.StreamTable;
 import box.star.state.Configuration;
-import box.star.text.basic.Scanner;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -40,7 +39,7 @@ public class Main extends Context.Shell.MainClass {
    */
   public Main(String... parameters){
     super(null, null);
-    environment = new Environment();
+    environment = new Environment().loadFactoryEnvironment(true);
     settings = new SettingsManager(environment);
     configuration = settings.getConfiguration();
     Stack<String> p = new Stack();
@@ -52,8 +51,7 @@ public class Main extends Context.Shell.MainClass {
 
   private void processParameters() {
     // TODO: actually process parameters
-    scanner = null;
-    StreamTable io = null;
+    StreamTable io = new StreamTable().loadFactoryStreams();
   }
 
 }
