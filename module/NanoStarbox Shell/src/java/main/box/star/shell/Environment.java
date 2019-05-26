@@ -74,6 +74,9 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     Variable var = get(name);
     return var.export;
   }
+  void mapAllObjects(Environment map, boolean export){
+    mapAllObjects(map.getExports(), export);
+  }
   public void mapAllObjects(Map<String, Object> map, boolean export){
     for (String k: map.keySet()) put(k, new Variable(map.get(k), export));
   }

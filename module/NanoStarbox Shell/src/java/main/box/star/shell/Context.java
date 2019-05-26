@@ -66,15 +66,15 @@ public class Context {
     return this;
   }
 
-  void importContext(@NotNull Context impl){
-    if (impl == null)
+  void importContext(@NotNull Context parent){
+    if (parent == null)
       throw new IllegalArgumentException("parent context is null");
-    this.parent = impl;
-    importEnvironment(impl.environment);
-    importStreamTable(impl.io);
+    this.parent = parent;
+    importEnvironment(parent.environment);
+    importStreamTable(parent.io);
   }
 
-  @NotNull final protected Context importEnvironment(@NotNull Environment environment){
+  @NotNull final protected Context importEnvironment(@Nullable Environment environment){
     if (this.environment == null){
       this.environment = new Environment();
       if (environment == null) {
@@ -82,11 +82,11 @@ public class Context {
         return this;
       }
     }
-    if (environment != null) this.environment.putAll(environment.getExports());
+    if (environment != null) this.environment.mapAllObjects(environment, true);
     return this;
   }
 
-  @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
+  @NotNull final protected Context importStreamTable(@Nullable StreamTable io){
     if (this.io == null) {
       this.io = new StreamTable();
       if (io == null) {
@@ -143,11 +143,11 @@ public class Context {
     }
     abstract class ScriptClass extends /* source ... */ MainClass {
       @Override
-      void importContext(Context impl){
-        this.parent = impl;
-        this.environment = impl.environment;
-        importStreamTable(impl.io);
-        importParameters(impl);
+      void importContext(Context parent){
+        this.parent = parent;
+        this.environment = parent.environment;
+        importStreamTable(parent.io);
+        importParameters(parent);
       }
       ScriptClass(Context parent, String origin) {
         super(parent, origin);
@@ -287,20 +287,20 @@ public class Context {
     }
     class CommandShellContext extends /* [$](COMMAND...) */ MainClass {
       @Override
-      void importContext(Context impl) {
-        super.importContext(impl);
+      void importContext(Context parent) {
+        super.importContext(parent);
         // spec uses a parameter copy
-        importParameters(impl);
+        importParameters(parent);
       }
       CommandShellContext(Context parent, String origin) {
         super(parent, origin);
       }
     }
     class CommandGroupContext extends /* { COMMAND... } */ Context {
-      void importContext(Context impl){
-        this.parent = impl;
-        this.environment = impl.environment;
-        importStreamTable(impl.io);
+      void importContext(Context parent){
+        this.parent = parent;
+        this.environment = parent.environment;
+        importStreamTable(parent.io);
       }
       CommandGroupContext(Context parent, String origin) {
         super(parent, origin);
@@ -312,10 +312,10 @@ public class Context {
       }
     }
     class ObjectContext extends /* UNKNOWN */ Context {
-      void importContext(Context impl){
-        this.parent = impl;
-        this.environment = impl.environment;
-        this.io = parent.io;
+      void importContext(Context parent){
+        this.parent = parent;
+        this.environment = parent.environment;
+        this.io = this.parent.io;
       }
       ObjectContext(Context parent, String origin){
         super(parent, origin);
