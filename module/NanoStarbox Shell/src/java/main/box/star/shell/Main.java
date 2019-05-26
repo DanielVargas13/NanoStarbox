@@ -34,13 +34,6 @@ public class Main extends Context.Shell.MainClass {
     return configuration;
   }
 
-  public final URI path;
-  {
-    try /*  throwing runtime exceptions with closure */ {
-      path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-    } catch (Exception e){throw new RuntimeException(e);}
-  }
-
   /**
    * Classic start main shell
    * @param parameters
