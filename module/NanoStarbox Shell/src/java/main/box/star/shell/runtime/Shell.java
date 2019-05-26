@@ -66,14 +66,14 @@ public interface Shell {
       return initialized && origin != null;
     }
 
-    @NotNull final protected box.star.shell.runtime.Shell.Context AndOriginOf(@NotNull String origin){
+    @NotNull final protected Context AndOriginOf(@NotNull String origin){
       if (this.origin != null)
         throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
       this.origin = origin;
       return this;
     }
 
-    @NotNull final protected box.star.shell.runtime.Shell.Context WithParentOf(@NotNull box.star.shell.runtime.Shell.Context parent){
+    @NotNull final protected Context WithParentOf(@NotNull Context parent){
       if (this.parent != null)
         throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
       importContext(parent);
@@ -81,7 +81,7 @@ public interface Shell {
       return this;
     }
 
-    void importContext(@NotNull box.star.shell.runtime.Shell.Context parent){
+    void importContext(@NotNull Context parent){
       if (parent == null) {
         if (this instanceof Shell.MainContext) return;
         throw new IllegalArgumentException("parent context is null");
@@ -92,7 +92,7 @@ public interface Shell {
       importStreamTable(parent.io);
     }
 
-    @NotNull final protected box.star.shell.runtime.Shell.Context importEnvironment(@Nullable Environment environment){
+    @NotNull final protected Context importEnvironment(@Nullable Environment environment){
       if (this.environment == null){
         this.environment = new Environment();
         if (environment == null) {
@@ -104,7 +104,7 @@ public interface Shell {
       return this;
     }
 
-    @NotNull final protected box.star.shell.runtime.Shell.Context importStreamTable(@Nullable StreamTable io){
+    @NotNull final protected Context importStreamTable(@Nullable StreamTable io){
       if (this.io == null) {
         this.io = new StreamTable();
         if (io == null) {
@@ -131,7 +131,7 @@ public interface Shell {
     }
 
     @NotNull
-    final protected box.star.shell.runtime.Shell.Context getMain(){
+    final protected Context getMain(){
       if (this instanceof MainContext) return this;
       else return parent.getMain();
     }
@@ -266,17 +266,19 @@ public interface Shell {
     protected Stack<String> getParameters(){
       return parameters;
     }
-    @NotNull final protected box.star.shell.runtime.Shell.Context importParameters(Context parent){
+    @NotNull final protected Context importParameters(Context parent){
       this.parameters = new Stack<>();
       this.parameters.addAll(parent.getParameters());
       return this;
     }
   }
+
   class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {
     CommandContext(Context parent, String origin) {
       super(parent, origin);
     }
   }
+
   class CommandShellContext extends /* [$](COMMAND...) */ MainContext implements Context.FirstClassExecutive {
     @Override
     void importContext(Context parent) {
@@ -291,6 +293,7 @@ public interface Shell {
       return 0;
     }
   }
+
   class CommandGroupContext extends /* { COMMAND... } */ Context implements Context.FirstClassExecutive {
     void importContext(Context parent){
       this.parent = parent;
@@ -305,6 +308,7 @@ public interface Shell {
       return 0;
     }
   }
+
   class SourceContext extends /* source ... */ MainContext implements Context.SecondClassExecutive {
     @Override
     void importContext(Context parent){
