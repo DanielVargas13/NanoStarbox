@@ -30,12 +30,13 @@ public class Context {
   protected int exitValue;
   public final long timeStamp;
 
-  Context(){
+  {
     this.timeStamp = System.currentTimeMillis();
   }
 
+  Context(){}
+
   Context(Context parent, String origin) {
-    this();
     WithParentOf(parent).AndOriginOf(origin);
   }
 
