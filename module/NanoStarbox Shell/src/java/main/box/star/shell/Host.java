@@ -112,7 +112,7 @@ public class Host {
       TextCommand textCommand = new TextCommand(scanner.nextCharacterClaim().substring(1));
       textCommand.environmentOperations = processEnvironmentOperations(scanner);
       textCommand.parameters = processParameters(scanner);
-      return processRedirects(scanner, textCommand);
+      return null;//processRedirects(scanner, textCommand);
     }
 
     Stack<String[]> processEnvironmentOperations(Scanner scanner) {
@@ -235,44 +235,6 @@ public class Host {
         }
       } while (true);
       return parameters;
-    }
-
-    TextCommand processRedirects(Scanner scanner, TextCommand commandEntry) {
-      char c = scanner.next();
-      commandEntry.redirects = new Hashtable<>();
-      while (Char.mapContains(c, '<', '>', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9')) {
-        switch (c) {
-          case '<': {
-            scanner.nextAllWhiteSpace();
-            commandEntry.redirects.put(0, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
-            break;
-          }
-          case '>': {
-            scanner.nextAllWhiteSpace();
-            commandEntry.redirects.put(1, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
-            break;
-          }
-          default: {
-            String scan = c + scanner.nextMap(MAP_ASCII_NUMBERS);
-            int v = Integer.parseInt(scan);
-            c = scanner.next();
-            if (!Char.mapContains(c, '<', '>')) {
-              scanner.flagThisCharacterSyntaxError("< or >");
-              return null; // not reached
-            }
-            scanner.nextAllWhiteSpace();
-            commandEntry.redirects.put(v, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
-          }
-        }
-        c = scanner.next();
-      }
-      if (c == PIPE) {
-        commandEntry.terminator = c;
-        commandEntry.next = processCommandLine(scanner);
-        return commandEntry;
-      }
-      commandEntry.terminator = processCommandEnding(scanner);
-      return commandEntry;
     }
 
     char processCommandEnding(Scanner scanner) {

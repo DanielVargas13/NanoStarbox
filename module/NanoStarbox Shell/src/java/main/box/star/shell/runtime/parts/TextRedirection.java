@@ -33,9 +33,14 @@ public class TextRedirection {
   public static TextRedirection parseRedirect(Scanner scanner){
     TextRedirection redirect = new TextRedirection();
     redirect.bookmark = scanner.nextBookmark();
-    redirect.channel = scanner.nextUnsignedInteger();
+    try { redirect.channel = scanner.nextUnsignedInteger(); }
+    catch (Exception e){redirect.channel = -1; scanner.walkBack(redirect.bookmark.index - 1);}
     scanner.nextLineWhiteSpace();
     redirect.operation = scanner.nextWord("redirection operator", redirectionOperators);
+    if (redirect.channel == -1){
+      if (redirect.operation.contains(">")) redirect.channel = 1;
+      else redirect.channel = 0;
+    }
     scanner.nextLineWhiteSpace();
     if (! redirect.isCloseOperation()){
       if (redirect.isCopyOperation()){

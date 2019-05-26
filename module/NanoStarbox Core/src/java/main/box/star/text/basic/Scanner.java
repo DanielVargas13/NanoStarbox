@@ -297,9 +297,8 @@ public class Scanner implements Closeable {
     else {
       try {
         int c = this.reader.read();
-        if (c <= 0) {
+        if (c == -1) {
           state.eof = true;
-          // TODO: null embedding support in Scanner.next() issue #2
           return false;
         }
         state.recordCharacter(Char.valueOf(c));
@@ -324,7 +323,11 @@ public class Scanner implements Closeable {
    *
    * @throws Exception if unable to step backward
    */
-  public void back() throws Exception { state.stepBackward(); }
+  public void back() throws Exception {
+    if (state.bufferPosition == -1)
+      throw new IllegalStateException("cannot step back");
+    state.stepBackward();
+  }
 
   /**
    * Get the next character.
@@ -334,23 +337,12 @@ public class Scanner implements Closeable {
    */
   public char next() throws Exception {
     if (state.haveNext()) return state.next();
-    else {
-      try {
+    else try {
         int c = this.reader.read();
-        if (c <= 0) {
-          state.eof = true;
-          // TODO: null embedding support in Scanner.next() issue #1
-          return 0; // this should be ignored to support embedded nulls.
-          // or perhaps an embedded null driver routine may be useful
-          // this will require state inspection to see if it can be fully
-          // supported by a capable driver. all markups in this document
-          // referring to the issue can possibly be fixed via endOfSource()
-        }
+        if (c == -1) { state.eof = true; return 0; }
         state.recordCharacter(Char.valueOf(c));
         return Char.valueOf(c);
-      }
-      catch (IOException exception) { throw new Exception(exception); }
-    }
+    } catch (IOException exception) { throw new Exception(exception); }
   }
 
   /**
@@ -360,15 +352,12 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
-    // TODO: null embedding support in Scanner.next() issue #3
-    if (c == 0)
-      throw syntaxError("Expected " + translateCharacter(character) + " and located end of text stream");
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + translateCharacter(character) + " and located `" + translateCharacter(c) + "'");
+      throw this.syntaxError("Expected " + translateCharacter(character) + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 
@@ -391,7 +380,11 @@ public class Scanner implements Closeable {
    * the buffer history. No validation is performed.</p>
    * @param to
    */
-  public void walkBack(long to){ while (to != getIndex()) back(); }
+  public void walkBack(long to){
+    if (getIndex() < to)
+      throw new IllegalArgumentException("destination is in front of the current position, cannot walk back to the future");
+    while (to != getIndex()) back();
+  }
 
   /**
    * <p>Tries to silently fetch the requested sequence match, from the beginning. if it fails
@@ -417,6 +410,26 @@ public class Scanner implements Closeable {
     return match;
   }
 
+  /**
+   * <p>Like above, but returning only a boolean for branch on keyword condition</p>
+   * <br>
+   * @param sequence
+   * @param caseSensitive
+   * @return
+   */
+  public boolean nextSequenceMatch(String sequence, boolean caseSensitive){
+    return  nextOptionalSequence(sequence, caseSensitive).equals(sequence);
+  }
+
+  /**
+   * <p>Case sensitive version of {@link #nextOptionalSequence(String, boolean)}</p>
+   * <br>
+   * @param sequence
+   * @return
+   */
+  public boolean nextSequenceMatch(String sequence){
+    return  nextOptionalSequence(sequence, true).equals(sequence);
+  }
   /**
    *
    * @param label the text to use for this operation if something goes wrong
@@ -481,15 +494,12 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(String label, char character, boolean caseSensitive) {
     char c = next();
-    // TODO: null embedding support in Scanner.next() issue #4
-    if (c == 0)
-      throw syntaxError("Expected " + label + " and located end of text stream");
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + label + " and located `" + translateCharacter(c) + "'");
+      throw this.syntaxError("Expected " + translateCharacter(character) + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 
@@ -524,10 +534,10 @@ public class Scanner implements Closeable {
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
       else {
-        this.back();
+        if (! endOfSource()) this.back();
         break;
       }
-    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #5
+    } while (true);
     return sb.toString();
   }
 
@@ -548,10 +558,10 @@ public class Scanner implements Closeable {
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
       else {
-        this.back();
+        if (! endOfSource()) this.back();
         break;
       }
-    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #6
+    } while (true);
 
     return sb.toString();
   }
@@ -583,7 +593,7 @@ public class Scanner implements Closeable {
     do {
       char c = this.next(); // step
       ++bl; // count buffer length
-      if (c == 0) // die // TODO: null embedding support in Scanner.next() issue #7
+      if (endOfSource()) // die
         throw syntaxError("Expected `" + sequence + "' and found end of text stream");
       sb.append(c); // add to collection
       char find = (caseSensitive?c:Char.toLowerCase(c)); // transliterate if needed
@@ -611,11 +621,11 @@ public class Scanner implements Closeable {
     do {
       c = this.next();
       if (Char.mapContains(c, map)) {
-        this.back();
+        if (!endOfSource()) this.back();
         break;
       }
       sb.append(c);
-    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #8
+    } while (true);
     return sb.toString();
   }
 
@@ -635,7 +645,6 @@ public class Scanner implements Closeable {
    * @return the collection of characters allowed by the driver
    * @throws Exception by call to {@link #next()}
    */
-  @NotNull
   public String nextScanOf(@NotNull ScanControl driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
@@ -653,10 +662,10 @@ public class Scanner implements Closeable {
         if (doExpand = ((ScanControl.WithExpansionPort)driver).expand(this)) continue;
       }
 
-      if (c == 0) {
-        if (expansionControl != null && escapeMode() && !haveNext())
+      if (endOfSource()) {
+        if (expansionControl != null && doExpand && escapeMode())
           throw syntaxError("expected character escape sequence, found end of stream");
-        if (state.eof) return sb.toString();
+        return sb.toString();
       }
 
       if (expansionControl != null && doExpand && escapeMode()) {
@@ -805,10 +814,10 @@ public class Scanner implements Closeable {
       c = this.next();
       if (!Char.mapContains(c, map)) sb.append(c);
       else {
-        this.back();
+        if (! endOfSource()) this.back();
         break;
       }
-    } while (c != 0); // TODO: null embedding support in Scanner.next() issue #9
+    } while (haveNext());
 
     return sb.toString();
   }
@@ -819,16 +828,12 @@ public class Scanner implements Closeable {
    * @return an empty string (n<=0), all the characters requested, or a truncated buffer (eof = true), whichever comes first
    */
   public String nextOptionalLength(int n){
-    if (n <= 0) {
-      return Tools.EMPTY_STRING;
-    }
+    if (n <= 0) return Tools.EMPTY_STRING;
     char[] chars = new char[n];
     int pos = 0;
     while (pos < n) {
       chars[pos] = this.next();
-      if (this.endOfSource()) {
-        break;
-      }
+      if (this.endOfSource()) break;
       pos += 1;
     }
     return new String(chars);
@@ -843,16 +848,12 @@ public class Scanner implements Closeable {
    */
   @NotNull
   public String nextLength(int n) throws Exception {
-    if (n == 0) {
-      return Tools.EMPTY_STRING;
-    }
+    if (n == 0) return Tools.EMPTY_STRING;
     char[] chars = new char[n];
     int pos = 0;
     while (pos < n) {
       chars[pos] = this.next();
-      if (this.endOfSource()) {
-        throw this.syntaxError("Substring bounds error");
-      }
+      if (this.endOfSource()) throw this.syntaxError("Substring bounds error");
       pos += 1;
     }
     return new String(chars);
@@ -1025,10 +1026,8 @@ public class Scanner implements Closeable {
    */
   public char nextCharacter(char character) throws SyntaxError {
     char c = next();
-    if (c == 0 && character != 0) // TODO: null embedding support in Scanner.next() issue #10
-      throw syntaxError("Expected " + translateCharacter(character) + " and found end of text stream");
     if (character != c)
-      throw this.syntaxError("Expected " + translateCharacter(character) + " and found " + translateCharacter(c));
+      throw this.syntaxError("Expected " + translateCharacter(character) + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 

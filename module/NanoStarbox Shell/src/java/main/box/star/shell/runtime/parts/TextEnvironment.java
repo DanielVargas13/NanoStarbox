@@ -15,7 +15,7 @@ public class TextEnvironment extends Stack<String[]> {
       scanner.nextAllWhiteSpace();
       String[] op = processEnvironmentOperation(scanner);
       if (op == null) {
-        //scanner.walkBack(start);
+        scanner.walkBack(start);
         break;
       }
       operations.push(op);
@@ -25,17 +25,6 @@ public class TextEnvironment extends Stack<String[]> {
 
   private static String processEnvironmentLabel(Scanner scanner) {
     return scanner.nextScanOf(new GenericProgramIdentifier());
-//    StringBuilder output = new StringBuilder();
-//    char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('-', '_').toMap();
-//    do {
-//      char c = scanner.next();
-//      if (c == 0) return null;
-//      else if (c == '=') break;
-//      else if (!Char.mapContains(c, okay1)) return null;
-//      else output.append(c);
-//    } while (true);
-//    scanner.back();
-//    return output.toString();
   }
 
   static String[] processEnvironmentOperation(Scanner scanner) {
