@@ -1,6 +1,9 @@
 package box.star.shell;
 
-import box.star.shell.io.StreamTable;
+import box.star.shell.runtime.Environment;
+import box.star.shell.runtime.Shell;
+import box.star.shell.runtime.etc.SettingsManager;
+import box.star.shell.runtime.io.StreamTable;
 import box.star.state.Configuration;
 
 import java.io.Serializable;
@@ -10,7 +13,7 @@ import java.util.Stack;
 /**
  * Product Spec: code name: System Commander
  */
-public class Main extends Context.Shell.MainContext {
+public class Main extends Shell.MainContext {
 
   public final static String
 
@@ -39,7 +42,8 @@ public class Main extends Context.Shell.MainContext {
    */
   public Main(String... parameters){
     super(null, null);
-    environment = new Environment().loadFactoryEnvironment(true);
+    Environment environment = new Environment().loadFactoryEnvironment(true);
+    importEnvironment(environment);
     importStreamTable(null);
     settings = new SettingsManager(environment);
     configuration = settings.getConfiguration();
