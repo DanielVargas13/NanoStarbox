@@ -78,11 +78,17 @@ public class Context {
 
   /**
    * <p>For the definitions phase, and String reporting</p>
-   * <br>
-   *   <p>The main context must, use this field to create the default stream table io.</p>
-   *   <br>
    */
   Map<Integer, String> redirects;
+  String redirectionText(){
+    StringBuilder out = new StringBuilder();
+    for (Integer k:redirects.keySet()){
+      String table = redirects.get(k);
+      String[] fields = table.split(":", 2);
+      out.append(k).append(fields[0]).append(' ').append('"').append(fields[1]).append("\" ");
+    }
+    return out.substring(0, Math.max(0, out.length() - 1));
+  }
 
   public interface Shell {
     abstract class MainClass extends Context {
@@ -136,9 +142,6 @@ public class Context {
       public String getName() {
         return name;
       }
-      private final String redirectionText(){
-        return " redirection text here";
-      }
       protected String sourceText(){
         return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
       }
@@ -155,7 +158,6 @@ public class Context {
         return 0;
       }
       /**
-       *
        * @param context
        * @return the newly created function instance
        */
@@ -252,7 +254,7 @@ public class Context {
       }
       /**
        * If you are hosting a direct object call, you'll need to override
-       * this method to return the string interpretation, the text expansion
+       * this method to return the string interpretation, to the text expansion
        * routines.
        * @return
        */
