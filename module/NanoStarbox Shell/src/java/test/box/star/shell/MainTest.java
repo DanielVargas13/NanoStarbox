@@ -13,7 +13,7 @@ class MainTest {
     System.out.println(shell.getShellBaseDirectory());
     Scanner scanner = new Scanner("test", "1 > 'colloqial ism'");
    // TextRedirection r = TextRedirection.parseRedirect(scanner);
-    scanner = new Scanner("test2", "A21=44 b72=33 cout >> data.log");
+    scanner = new Scanner("test2", "A21=44 b72=33 cout shit >> data.log");
     TextCommand e = TextCommand.parseCommandLine(scanner);
     System.out.println(String.join(", ", TextRedirection.redirectionOperators));
   }

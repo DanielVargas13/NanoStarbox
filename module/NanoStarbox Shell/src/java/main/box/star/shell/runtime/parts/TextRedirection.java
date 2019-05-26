@@ -36,7 +36,9 @@ public class TextRedirection {
     try { redirect.channel = scanner.nextUnsignedInteger(); }
     catch (Exception e){redirect.channel = -1; scanner.walkBack(redirect.bookmark.index - 1);}
     scanner.nextLineWhiteSpace();
-    redirect.operation = scanner.nextWord("redirection operator", redirectionOperators);
+    try {
+      redirect.operation = scanner.nextWord("redirection operator", redirectionOperators);
+    } catch (Exception e){scanner.walkBack(redirect.bookmark.index - 1); return null;}
     if (redirect.channel == -1){
       if (redirect.operation.contains(">")) redirect.channel = 1;
       else redirect.channel = 0;

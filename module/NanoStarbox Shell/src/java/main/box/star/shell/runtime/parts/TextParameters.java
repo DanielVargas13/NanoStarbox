@@ -1,6 +1,7 @@
 package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
+import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 import java.util.Stack;
@@ -21,10 +22,12 @@ public class TextParameters extends Stack<String> {
 
   public static String parseParameter(Scanner scanner) {
     TextParameters p = new TextParameters();
+    p.bookmark = scanner.nextBookmark();
     if (parseParameter(scanner, p)) return String.join(" ", p);
     return null;
   }
 
+  public Bookmark bookmark;
   public static boolean parseParameter(Scanner scanner, TextParameters parameters) {
     scanner.nextLineWhiteSpace();
     StringBuilder builder = new StringBuilder();
@@ -77,6 +80,7 @@ public class TextParameters extends Stack<String> {
 
   static TextParameters processParameters(Scanner scanner) {
     TextParameters parameters = new TextParameters();
+    parameters.bookmark = scanner.nextBookmark();
     do {
       long start = scanner.getIndex();
       if (!parseParameter(scanner, parameters)) {

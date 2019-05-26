@@ -69,7 +69,7 @@ public class TextCommand {
   public String source;
   public Stack<String[]> environmentOperations;
   public Stack<String> parameters;
-  public TextRedirection redirects;
+  public Stack<TextRedirection> redirects = new Stack<>();
   public String terminator; // whatever terminated this command
   public TextCommand next; // if terminator == pipe
   public TextCommand(String source) {this.source = source;}
@@ -79,7 +79,11 @@ public class TextCommand {
     TextCommand textCommand = new TextCommand(scanner.nextBookmark().origin.substring(1));
     textCommand.environmentOperations = TextEnvironment.parseEnvironmentOperations(scanner);
     textCommand.parameters = TextParameters.parseParameters(scanner);
-    textCommand.redirects = TextRedirection.parseRedirect(scanner);
+    //textCommand.redirects = TextRedirection.parseRedirect(scanner);
+    TextRedirection r;
+    while ((r = TextRedirection.parseRedirect(scanner))!= null){
+      textCommand.redirects.push(r);
+    }
     return processPipes(scanner, textCommand);
   }
 

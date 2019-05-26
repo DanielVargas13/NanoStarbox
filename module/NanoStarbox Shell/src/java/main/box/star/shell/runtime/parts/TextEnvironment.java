@@ -1,6 +1,7 @@
 package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
+import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 import box.star.text.basic.driver.GenericProgramIdentifier;
 
@@ -8,8 +9,11 @@ import java.util.Stack;
 
 public class TextEnvironment extends Stack<String[]> {
 
+  public Bookmark bookmark;
+
   public static TextEnvironment parseEnvironmentOperations(Scanner scanner) {
     TextEnvironment operations = new TextEnvironment();
+    operations.bookmark = scanner.nextBookmark();
     do {
       long start = scanner.getIndex();
       scanner.nextAllWhiteSpace();
