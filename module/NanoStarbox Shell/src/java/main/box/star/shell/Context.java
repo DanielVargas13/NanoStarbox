@@ -244,8 +244,6 @@ public class Context {
        * <br>
        * <p>When called via text-script, all parameters will be strings.</p>
        * <br>
-       * <p>A plugin object may access the context scanner.</p>
-       * <br>
        * @param parameters
        * @return
        */
