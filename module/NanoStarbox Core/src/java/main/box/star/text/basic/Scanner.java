@@ -519,17 +519,16 @@ public class Scanner implements Closeable {
     char[] mini = null;
     if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
     if (max == 0) --max;
+    boolean found;
+    char c, v;
     do {
-      char c, v = next(), character;
-      if (!caseSensitive) {
-        c = Char.toLowerCase(v);
-      } else c = v;
-      boolean found=false;
-      for (char t:caseSensitive?map:mini){
-        if (c == t) { found = true; break;}
-      }
+      found = false; v = next();
+      if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
+      for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
       if (!found)
-        throw this.syntaxError("Expected " + label + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
+        throw this.syntaxError("Expected " + label +
+            " and located " + (endOfSource()?"end of text stream":
+                "`"+translateCharacter(c)+ "'"));
       mapped.append(v);
     } while (mapped.length() != max && ! endOfSource());
     return mapped.toString();
