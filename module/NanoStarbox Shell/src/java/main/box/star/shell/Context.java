@@ -190,15 +190,49 @@ public class Context {
         return exec(this.parameters);
       }
     }
+    /**
+     * <p>Extended Java Operations Context with a pure Java call mechanism</p>
+     * <br>
+     * <p>A pure Java call, is a Java method invocation that doesn't require strings,
+     * but accepts objects. In addition, the pure call does not return an int to
+     * represent status, but an object which is not null to indicate a status of
+     * 0=(success).</p>
+     * <br>
+     * <p>When a plugin is called as a function through the text interface, all
+     * parameters are strings.</p>
+     */
     abstract class PluginClass extends /* virtual function NAME() {} */ FunctionClass {
+      Stack<String>parameters;
       PluginClass(String origin, String name) {
         super(origin, name);
       }
-      final protected Scanner getScanner(){
-        return ((MainClass)getMain()).scanner;
-      }
+      /**
+       * <p>Fetches the scanner from the main class</p>
+       * <br>
+       * <p>In theory, a plugin might read source commands, from a main
+       * context, advancing its interpretation position. Can't do that without
+       * access to the main scanner. This method fetches the main context, and
+       * returns the scanner.</p>
+       * <br>
+       * <p>If the plugin does such an operation with the scanner during a source
+       * read, all text following the command stream parameters, will be considered
+       * source for the plugin</p>
+       * <br>
+       *   Disabled for now. no repeat call strategy for direct stream interpretation.
+       * @return the main context scanner.
+       */
+//      final protected Scanner getScanner(){
+//        return ((MainClass)getMain()).scanner;
+//      }
+      /**
+       * <p>Forwards the text based function call to the object call</p>
+       * <br>
+       * @param parameters the specified parameters, partitioned and fully-shell-expanded.
+       * @return success if the object result is not null
+       */
       @Override
       final protected int exec(Stack<String> parameters) {
+        this.parameters = parameters;
         Stack<java.lang.Object> p = new Stack<>();
         p.addAll(parameters);
         return (call(p) == null)?1:0;
@@ -215,8 +249,18 @@ public class Context {
        * @param parameters
        * @return
        */
-      protected <ANY> ANY call(Stack<java.lang.Object> parameters) {
+      public <ANY> ANY call(Stack<java.lang.Object> parameters) {
         return (ANY) null;
+      }
+      /**
+       * If you are hosting a direct object call, you'll need to override
+       * this method to return the string interpretation, the text expansion
+       * routines.
+       * @return
+       */
+      @Override
+      protected @NotNull Stack<String> getParameters() {
+        return parameters;
       }
     }
     class CommandShellContext extends /* [$](COMMAND...) */ MainClass {
