@@ -4,14 +4,13 @@ import box.star.shell.io.StreamTable;
 import box.star.state.Configuration;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Stack;
 
 /**
  * Product Spec: code name: System Commander
  */
-public class Main extends Context.Shell.MainClass {
+public class Main extends Context.Shell.MainContext {
 
   public final static String
 

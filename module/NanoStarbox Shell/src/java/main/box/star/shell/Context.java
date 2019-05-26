@@ -4,7 +4,6 @@ import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.shell.io.Stream;
 import box.star.shell.io.StreamTable;
-import box.star.text.basic.Scanner;
 
 import java.io.File;
 import java.net.URI;
@@ -67,7 +66,7 @@ public class Context {
 
   void importContext(@NotNull Context parent){
     if (parent == null) {
-      if (this instanceof Shell.MainClass) return;
+      if (this instanceof Shell.MainContext) return;
       throw new IllegalArgumentException("parent context is null");
     }
     this.parent = parent;
@@ -123,10 +122,10 @@ public class Context {
   }
 
   public interface Shell {
-    abstract class MainClass extends Context {
+    class MainContext extends Context {
       Stack<String> parameters;
       URI shellBaseDirectory;
-      MainClass(Context parent, String origin) {
+      MainContext(Context parent, String origin) {
         super(parent, origin);
       }
       @Override
@@ -152,14 +151,12 @@ public class Context {
         return this;
       }
     }
-    abstract class CommandClass extends /* COMMAND [ | COMMAND... ] */ Context {
-      CommandClass(Context parent, String origin) {
+    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {
+      CommandContext(Context parent, String origin) {
         super(parent, origin);
       }
     }
-    class SourceContext extends /* source ... */ MainClass implements FirstClassExecutive {
-      private final StringBuilder script = new StringBuilder();
-      Scanner scanner;
+    class SourceContext extends /* source ... */ MainContext implements FirstClassExecutive {
       @Override
       void importContext(Context parent){
         this.parent = parent;
@@ -167,26 +164,14 @@ public class Context {
         importStreamTable(parent.io);
         importParameters(parent);
       }
-      SourceContext(Context parent, String origin, String script) {
+      SourceContext(Context parent, String origin) {
         super(parent, origin);
-        this.script.append(script);
       }
       public int exec(Stack<String> parameters) {
         return 0;
       }
-      public String getScript() {
-        return script.toString();
-      }
-      boolean isFile(){
-        // todo:
-        return false;
-      }
-      long getLastModified(){
-        // todo: if file or some other container providing meta-data, return container meta data
-        return timeStamp;
-      }
     }
-    class CommandShellContext extends /* [$](COMMAND...) */ MainClass implements FirstClassExecutive {
+    class CommandShellContext extends /* [$](COMMAND...) */ MainContext implements FirstClassExecutive {
       @Override
       void importContext(Context parent) {
         super.importContext(parent);
@@ -218,7 +203,7 @@ public class Context {
 
   @NotNull
   final protected Context getMain(){
-    if (this instanceof Shell.MainClass) return this;
+    if (this instanceof Shell.MainContext) return this;
     else return parent.getMain();
   }
 
@@ -233,7 +218,7 @@ public class Context {
    */
   @NotNull
   final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
-    if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).getParameters();
+    if (this instanceof Shell.MainContext) return ((Shell.MainContext)this).getParameters();
     //else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).getParameters();
     else return parent.getContextParameters();
   }
