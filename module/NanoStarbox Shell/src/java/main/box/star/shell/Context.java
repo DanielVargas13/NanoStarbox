@@ -62,14 +62,14 @@ public class Context {
   }
 
   @NotNull final protected Context importEnvironment(@NotNull Environment environment){
-    if (environment == null){
+    if (this.environment == null){
       this.environment = environment.getExports();
     } else this.environment.putAll(environment.getExports());
     return this;
   }
 
   @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
-    if (io == null){
+    if (this.io == null){
       this.io = new StreamTable();
       this.io.putAll(io);
     } else this.io.putAll(io);
