@@ -8,6 +8,8 @@ import box.star.text.Exception;
 import box.star.text.SyntaxError;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -419,6 +421,28 @@ public class Scanner implements Closeable {
       else return operation; }
     flagNextCharacterSyntaxError(label, '\0');
     return null;
+  }
+
+  /**
+   * <p>Call this method on a word list to make sure it doesn't short-circuit</p>
+   * <br>
+   * <p>A word-list short-circuit is a condition, where a word list fails to correctly
+   * match an item because a shorter item matches the longer item first. This method
+   * sorts the array from longest to shortest, to ensure that a short-circuit
+   * is not possible.</p>
+   * <br>
+   * @param words
+   */
+  final public void preventWordListShortCircuit(String[] words){
+    boolean longestFirst = true;
+    Arrays.sort(words, new Comparator<String>() {
+      @Override
+      public int compare(String o1, String o2) {
+        return (longestFirst)?
+            Integer.compare(o2.length(), o1.length()):
+            Integer.compare(o1.length(), o2.length());
+      }
+    });
   }
 
   /**
