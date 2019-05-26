@@ -33,7 +33,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
    * <p>Each variable marked for export is copied to the new environment.</p>
    * @return a newly exported Environment
    */
-  public Environment getExports(){
+  Environment getExports(){
     Environment exports = new Environment();
     for(String k: keySet()){
       Variable v = get(k);
@@ -47,7 +47,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
    *   <p>Objects will be converted to string using their toString method.</p>
    * @return the newly serialized export copy
    */
-  public Map<String, String> getSerializedExports() {
+  Map<String, String> getSerializedExports() {
     Map<String, String> serialized = new Hashtable<>();
     for(String k: keySet()){
       Variable v = get(k);
@@ -60,12 +60,10 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     if (! containsKey(name)) return null;
     return get(name).toString();
   }
-
   public <T> T getObject(Class<? extends T> type, String name){
     if (! containsKey(name)) return null;
     return get(name).getObject(type);
   }
-
   public void export(String name, boolean value){
     Variable var = get(name);
     var.export = value;
@@ -74,8 +72,12 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
     Variable var = get(name);
     return var.export;
   }
-  void mapAllObjects(Environment map, boolean export){
-    mapAllObjects(map.getExports(), export);
+  public void mapAllObjects(Environment map, boolean export){
+    for (String k: map.exportList()){
+      Variable v = map.get(k).clone();
+      v.export = export;
+      this.put(k, v);
+    }
   }
   public void mapAllObjects(Map<String, Object> map, boolean export){
     for (String k: map.keySet()) put(k, new Variable(map.get(k), export));
@@ -86,10 +88,17 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
   public void removeAllKeys(List<String> keys){
     for (String k: keys) remove(k);
   }
-  List<String> keyList(){
+  public List<String> keyList(){
     return new ArrayList<>(keySet());
   }
-
+  public List<String> exportList(){
+    List<String> out = new ArrayList<>();
+    for (String k: keyList()){
+      Variable v = get(k);
+      if (v.export) out.add(k);
+    }
+    return out;
+  }
   public void setSystemDirectoryKey(String currentDirectoryKey) {
     this.currentDirectoryKey = currentDirectoryKey;
   }
@@ -99,11 +108,11 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
   }
 
   public void setCurrentDirectory(String currentDirectory){
-    if (new File(currentDirectory).exists())
+    if (!new File(currentDirectory).exists())
       throw new RuntimeException(new FileNotFoundException(currentDirectory));
     Variable var = new Variable(currentDirectory);
     var.export = true;
-    put(defaultCurrentDirectoryKey, var);
+    this.put(defaultCurrentDirectoryKey, var);
     if (currentDirectoryKey != null) put(currentDirectoryKey, var);
   }
 
@@ -116,7 +125,7 @@ public class Environment extends ConcurrentHashMap<String, Variable> {
   }
 
   public Environment loadFactoryEnvironment(boolean export)  {
-    mapAllStrings(System.getenv(), export);
+    this.mapAllStrings(System.getenv(), export);
     return this;
   }
 

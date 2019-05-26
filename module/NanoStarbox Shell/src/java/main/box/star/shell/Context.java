@@ -61,14 +61,16 @@ public class Context {
     if (this.parent != null)
       throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
     importContext(parent);
-    this.shellLevel = (parent.shellLevel + 1);
+    if (parent != null) this.shellLevel = (parent.shellLevel + 1);
     initialized = true;
     return this;
   }
 
   void importContext(@NotNull Context parent){
-    if (parent == null)
+    if (parent == null) {
+      if (this instanceof Shell.MainClass) return;
       throw new IllegalArgumentException("parent context is null");
+    }
     this.parent = parent;
     importEnvironment(parent.environment);
     importStreamTable(parent.io);
@@ -154,137 +156,6 @@ public class Context {
         // todo: overwrite the inherited parameters with new parameters if available
       }
     }
-    abstract class FunctionClass extends /* function NAME() {} */ Context implements Cloneable {
-      Stack<String> parameters;
-      private String name;
-      FunctionClass(String origin, String name) {
-        super(null, origin);
-        this.name = name;
-      }
-      public String getName() {
-        return name;
-      }
-      protected String sourceText(){
-        return "function "+getName()+"(){"+"\n\t# Native Function: "+this.origin+"\n}" + redirectionText();
-      }
-      @Override
-      public String toString() {
-          return sourceText();
-      }
-      /**
-       * User implementation
-       * @param parameters the specified parameters, partitioned and fully-shell-expanded.
-       * @return the execution status of this function
-       */
-      protected int exec(Stack<String> parameters){
-        return 0;
-      }
-      /**
-       * @param context
-       * @return the newly created function instance
-       */
-      protected Function createContextInstance(Context context) {
-        try /* never throwing runtime exceptions with closure */ {
-          if (this.parent != null)
-            throw new IllegalStateException("trying to create function instance from function instance");
-          Function newInstance = (Function) super.clone();
-          newInstance.parent = context;
-          return newInstance;
-        } catch (Exception e){throw new RuntimeException(e);}
-        // finally /* never complete */ { ; }
-      }
-      @NotNull
-      protected Stack<String> getParameters(){
-        return parameters;
-      }
-      final public int invoke(String... parameters){
-        if (parent == null)
-          throw new IllegalStateException("trying to invoke function definition");
-        this.parameters = new Stack<>();
-        this.parameters.add(getName());
-        this.parameters.addAll(Arrays.asList(parameters));
-        return exec(this.parameters);
-      }
-      final public int invoke(String name, String... parameters){
-        if (parent == null)
-          throw new IllegalStateException("trying to invoke function definition");
-        this.parameters = new Stack<>();
-        this.parameters.add(name);
-        this.parameters.addAll(Arrays.asList(parameters));
-        return exec(this.parameters);
-      }
-    }
-    /**
-     * <p>Extended Java Operations Context with a pure Java call mechanism</p>
-     * <br>
-     * <p>A pure Java call, is a Java method invocation that doesn't require strings,
-     * but accepts objects. In addition, the pure call does not return an int to
-     * represent status, but an object which is not null to indicate a status of
-     * 0=(success).</p>
-     * <br>
-     * <p>When a plugin is called as a function through the text interface, all
-     * parameters are strings.</p>
-     */
-    abstract class PluginClass extends /* virtual function NAME() {} */ FunctionClass {
-      Stack<String>parameters;
-      PluginClass(String origin, String name) {
-        super(origin, name);
-      }
-      /**
-       * <p>Fetches the scanner from the main class</p>
-       * <br>
-       * <p>In theory, a plugin might read source commands, from a main
-       * context, advancing its interpretation position. Can't do that without
-       * access to the main scanner. This method fetches the main context, and
-       * returns the scanner.</p>
-       * <br>
-       * <p>If the plugin does such an operation with the scanner during a source
-       * read, all text following the command stream parameters, will be considered
-       * source for the plugin</p>
-       * <br>
-       *   Disabled for now. no repeat call strategy for direct stream interpretation.
-       * @return the main context scanner.
-       */
-//      final protected Scanner getScanner(){
-//        return ((MainClass)getMain()).scanner;
-//      }
-      /**
-       * <p>Forwards the text based function call to the object call</p>
-       * <br>
-       * @param parameters the specified parameters, partitioned and fully-shell-expanded.
-       * @return success if the object result is not null
-       */
-      @Override
-      final protected int exec(Stack<String> parameters) {
-        this.parameters = parameters;
-        Stack<java.lang.Object> p = new Stack<>();
-        p.addAll(parameters);
-        return (call(p) == null)?1:0;
-      }
-      /**
-       * <p>Plugin gets Object array parameters for exec</p>
-       * <br>
-       * <p>Plugins operate as functions that can service object requests.</p>
-       * <br>
-       * <p>When called via text-script, all parameters will be strings.</p>
-       * <br>
-       * @param parameters
-       * @return
-       */
-      public <ANY> ANY call(Stack<java.lang.Object> parameters) {
-        return (ANY) null;
-      }
-      /**
-       * If you are hosting a direct object call, you'll need to override
-       * this method to return the string interpretation, to the text expansion
-       * routines.
-       * @return
-       */
-      @Override
-      protected @NotNull Stack<String> getParameters() {
-        return parameters;
-      }
-    }
     class CommandShellContext extends /* [$](COMMAND...) */ MainClass {
       @Override
       void importContext(Context parent) {
@@ -311,16 +182,6 @@ public class Context {
         super(parent, origin);
       }
     }
-    class ObjectContext extends /* UNKNOWN */ Context {
-      void importContext(Context parent){
-        this.parent = parent;
-        this.environment = parent.environment;
-        this.io = this.parent.io;
-      }
-      ObjectContext(Context parent, String origin){
-        super(parent, origin);
-      }
-    }
   }
 
   @NotNull
@@ -336,7 +197,7 @@ public class Context {
   @NotNull
   final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
     if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).getParameters();
-    else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).getParameters();
+    //else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).getParameters();
     else return parent.getContextParameters();
   }
 
@@ -384,14 +245,6 @@ public class Context {
     return null;
   }
 
-  final public Function getFunction(String name){
-    return environment.getObject(Function.class, name);
-  }
-
-  final public Plugin getPlugin(String name){
-    return environment.getObject(Plugin.class, name);
-  }
-
   final public <T> T getObject(Class<T> type, String name){
     return environment.getObject(type, name);
   }
@@ -426,19 +279,6 @@ public class Context {
 
   public boolean have(String key, Class type){
     return environment.containsKey(key) && environment.get(key).isObjectOfClass(type);
-  }
-
-  final public void defineFunction(Function userFunction, boolean export){
-    environment.put(userFunction.getName(), new Variable(userFunction, export));
-  }
-
-  final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
-    Shell.ObjectContext objectContext = new Shell.ObjectContext(this, origin);
-    if (io != null) objectContext.importStreamTable(io);
-    Object newObjInstance = plugin.construct(objectContext, parameters);
-    if (newObjInstance == null) return false;
-    this.set(key, newObjInstance, export);
-    return true;
   }
 
   public void export(String name, boolean value) {environment.export(name, value);}

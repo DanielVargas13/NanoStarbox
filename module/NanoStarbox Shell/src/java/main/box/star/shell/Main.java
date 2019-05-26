@@ -4,6 +4,7 @@ import box.star.shell.io.StreamTable;
 import box.star.state.Configuration;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -33,6 +34,13 @@ public class Main extends Context.Shell.MainClass {
     return configuration;
   }
 
+  public final URI path;
+  {
+    try /*  throwing runtime exceptions with closure */ {
+      path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+    } catch (Exception e){throw new RuntimeException(e);}
+  }
+
   /**
    * Classic start main shell
    * @param parameters
@@ -40,16 +48,18 @@ public class Main extends Context.Shell.MainClass {
   public Main(String... parameters){
     super(null, null);
     environment = new Environment().loadFactoryEnvironment(true);
+    importStreamTable(null);
     settings = new SettingsManager(environment);
     configuration = settings.getConfiguration();
-    Stack<String> p = new Stack();
-    p.addAll(Arrays.asList(parameters));
-    WithParametersOf(p);
-    processParameters();
+    processParameters(parameters);
     // TODO: start scanning, store result
   }
 
-  private void processParameters() {
+  private void processParameters(String[] parameters) {
+    Stack<String> p = new Stack();
+    p.add(getClass().getName());
+    p.addAll(Arrays.asList(parameters));
+    WithParametersOf(p);
     // TODO: actually process parameters
     StreamTable io = new StreamTable().loadFactoryStreams();
   }
