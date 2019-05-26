@@ -3,6 +3,7 @@ package box.star.shell;
 import box.star.contract.NotNull;
 import box.star.shell.runtime.Environment;
 import box.star.shell.runtime.io.StreamTable;
+import box.star.shell.runtime.parts.TextCommand;
 import box.star.text.Char;
 import box.star.text.SyntaxError;
 import box.star.text.basic.Scanner;
@@ -10,7 +11,6 @@ import box.star.text.basic.ScannerMethod;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Stack;
 
 import static box.star.text.Char.*;
@@ -103,23 +103,13 @@ public class Host {
 
   public static class Main extends ScannerMethod {
 
-    static class TextCommandEntry {
-      String source;
-      Stack<String[]> environmentOperations;
-      Stack<String> parameters;
-      Map<Integer, String> redirects = new Hashtable<>();
-      char terminator; // whatever terminated this command
-      TextCommandEntry next; // if terminator == pipe
-      TextCommandEntry(String source) {this.source = source;}
-    }
-
     Host context;
 
     public Main(Host context) { this.context = context; }
 
-    TextCommandEntry processCommandLine(Scanner scanner) {
+    TextCommand processCommandLine(Scanner scanner) {
       scanner.nextAllWhiteSpace();
-      TextCommandEntry textCommand = new TextCommandEntry(scanner.nextCharacterClaim().substring(1));
+      TextCommand textCommand = new TextCommand(scanner.nextCharacterClaim().substring(1));
       textCommand.environmentOperations = processEnvironmentOperations(scanner);
       textCommand.parameters = processParameters(scanner);
       return processRedirects(scanner, textCommand);
@@ -247,7 +237,7 @@ public class Host {
       return parameters;
     }
 
-    TextCommandEntry processRedirects(Scanner scanner, TextCommandEntry commandEntry) {
+    TextCommand processRedirects(Scanner scanner, TextCommand commandEntry) {
       char c = scanner.next();
       commandEntry.redirects = new Hashtable<>();
       while (Char.mapContains(c, '<', '>', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9')) {
@@ -315,9 +305,10 @@ public class Host {
         }
       }
       backStep(scanner);
-      TextCommandEntry tce = processCommandLine(scanner);
+      TextCommand tce = processCommandLine(scanner);
       //swap(processCommandLine(scanner));
       return false;
     }
   }
+
 }
