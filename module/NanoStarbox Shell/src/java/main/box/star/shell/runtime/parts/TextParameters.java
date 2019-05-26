@@ -29,10 +29,11 @@ public class TextParameters extends Stack<String> {
 
   public Bookmark bookmark;
   public static boolean parseParameter(Scanner scanner, TextParameters parameters) {
-    scanner.nextLineWhiteSpace();
-    StringBuilder builder = new StringBuilder();
 
     if (TextRedirection.findRedirection(scanner)) return false;
+
+    StringBuilder builder = new StringBuilder();
+    scanner.nextLineWhiteSpace();
 
     char c;
     do {
@@ -61,7 +62,7 @@ public class TextParameters extends Stack<String> {
           builder.append(c).append(processLiteralText(scanner));
         }
       }
-    } while (c != 0 && !Char.mapContains(c, PARAMETER_TERMINATOR_MAP));
+    } while (! scanner.endOfSource() && !Char.mapContains(c, PARAMETER_TERMINATOR_MAP));
     parameters.push(builder.toString());
     return true;
   }
@@ -76,7 +77,7 @@ public class TextParameters extends Stack<String> {
         if (parameters.isEmpty()) { return null; }
         break;
       }
-    } while (true);
+    } while (! scanner.endOfSource());
     return parameters;
   }
 

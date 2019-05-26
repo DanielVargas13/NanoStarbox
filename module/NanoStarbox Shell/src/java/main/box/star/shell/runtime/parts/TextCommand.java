@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import static box.star.text.Char.*;
 
-public class TextCommand {
+public class TextCommand implements TextElement {
 
   public static final String
       KEYWORD_IF = "if",
@@ -90,9 +90,9 @@ public class TextCommand {
   static char processCommandEnding(Scanner scanner) {
     char c;
     switch (c = scanner.next()) {
+      case '\0': return ';';
       case ';':
       case '#':
-      case '\0':
       case '\n':
         return c;
       case '\r':
@@ -119,7 +119,7 @@ public class TextCommand {
       commandEntry.terminator = "|";
       commandEntry.next = TextCommand.parseCommandLine(scanner);
       return commandEntry;
-    }
+    } else scanner.back();
     commandEntry.terminator = Char.toString(processCommandEnding(scanner));
     return commandEntry;
   }

@@ -32,11 +32,10 @@ public class TextRedirection {
 
   public static boolean findRedirection(Scanner scanner){
     long start = scanner.getIndex();
-    int channel;
+    int stream;
     scanner.nextLineWhiteSpace();
-    try { channel = scanner.nextUnsignedInteger(); }
-    catch (Exception e) {channel = -1; scanner.walkBack(start);}
-    scanner.nextLineWhiteSpace();
+    try { stream = scanner.nextUnsignedInteger(); }
+    catch (Exception e) {stream = -1; scanner.walkBack(start);}
     try {
       if (scanner.nextWordListMatch(redirectionOperators, Scanner.WORD_BREAK, true)) {
         scanner.walkBack(start);
@@ -49,16 +48,16 @@ public class TextRedirection {
 
   public static TextRedirection parseRedirect(Scanner scanner){
     TextRedirection redirect = new TextRedirection();
-    redirect.bookmark = scanner.nextBookmark();
-    try { redirect.channel = scanner.nextUnsignedInteger(); }
-    catch (Exception e){redirect.channel = -1; scanner.walkBack(redirect.bookmark.index - 1);}
     scanner.nextLineWhiteSpace();
+    redirect.bookmark = scanner.nextBookmark();
+    try { redirect.stream = scanner.nextUnsignedInteger(); }
+    catch (Exception e){redirect.stream = -1; scanner.walkBack(redirect.bookmark.index - 1);}
     try {
       redirect.operation = scanner.nextWord("redirection operator", redirectionOperators);
     } catch (Exception e){scanner.walkBack(redirect.bookmark.index - 1); return null;}
-    if (redirect.channel == -1){
-      if (redirect.operation.contains(">")) redirect.channel = 1;
-      else redirect.channel = 0;
+    if (redirect.stream == -1){
+      if (redirect.operation.contains(">")) redirect.stream = 1;
+      else redirect.stream = 0;
     }
     scanner.nextLineWhiteSpace();
     if (! redirect.isCloseOperation()){
@@ -72,7 +71,7 @@ public class TextRedirection {
   }
 
   public Bookmark bookmark;
-  public int channel;
+  public int stream;
   public String operation;
   public String file;
 
