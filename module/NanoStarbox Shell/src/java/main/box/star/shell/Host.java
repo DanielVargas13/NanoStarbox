@@ -108,10 +108,10 @@ public class Host {
     public Main(Host context) { this.context = context; }
 
     TextCommand processCommandLine(Scanner scanner) {
-      scanner.nextAllWhiteSpace();
-      TextCommand textCommand = new TextCommand(scanner.nextCharacterClaim().substring(1));
-      textCommand.environmentOperations = processEnvironmentOperations(scanner);
-      textCommand.parameters = processParameters(scanner);
+     // scanner.nextAllWhiteSpace();
+      //TextCommand textCommand = new TextCommand(scanner.nextCharacterClaim().substring(1));
+//      textCommand.environmentOperations = processEnvironmentOperations(scanner);
+//      textCommand.parameters = processParameters(scanner);
       return null;//processRedirects(scanner, textCommand);
     }
 

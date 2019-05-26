@@ -30,6 +30,23 @@ public class TextRedirection {
     Scanner.preventWordListShortCircuit(redirectionOperators);
   }
 
+  public static boolean findRedirection(Scanner scanner){
+    long start = scanner.getIndex();
+    int channel;
+    scanner.nextLineWhiteSpace();
+    try { channel = scanner.nextUnsignedInteger(); }
+    catch (Exception e) {channel = -1; scanner.walkBack(start);}
+    scanner.nextLineWhiteSpace();
+    try {
+      if (scanner.nextWordListMatch(redirectionOperators, Scanner.WORD_BREAK, true)) {
+        scanner.walkBack(start);
+        return true;
+      }
+    } catch (Exception e){}
+    scanner.walkBack(start);
+    return false;
+  }
+
   public static TextRedirection parseRedirect(Scanner scanner){
     TextRedirection redirect = new TextRedirection();
     redirect.bookmark = scanner.nextBookmark();
@@ -47,13 +64,6 @@ public class TextRedirection {
     if (! redirect.isCloseOperation()){
       if (redirect.isCopyOperation()){
         redirect.file = "/dev/fd/"+scanner.nextUnsignedInteger();
-      } else if (redirect.isHereDoc()){
-        char c = scanner.next();
-        scanner.back();
-        if (Char.mapContains(c, Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE)){
-          redirect.expandText = (c == Char.DOUBLE_QUOTE);
-        }
-        redirect.file = TextParameters.parseParameter(scanner);
       } else {
         redirect.file = TextParameters.parseParameter(scanner);
       }
@@ -65,7 +75,6 @@ public class TextRedirection {
   public int channel;
   public String operation;
   public String file;
-  public boolean expandText;
 
   boolean isCopyOperation(){
     return OP_COPY_READABLE.equals(operation) || OP_COPY_WRITABLE.equals(operation);

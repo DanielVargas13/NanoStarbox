@@ -418,9 +418,18 @@ public class Scanner implements Closeable {
    * @return
    */
   public boolean nextSequenceMatch(String sequence, boolean caseSensitive){
-    return  nextOptionalSequence(sequence, caseSensitive).equals(sequence);
+    return nextOptionalSequence(sequence, caseSensitive).equals(sequence);
   }
 
+  public boolean nextWordListMatch(String[] words, char[] wordBreak, boolean caseSensitive){
+    for (String word:words){
+      if (nextSequenceMatch(word, caseSensitive)) {
+        if (wordBreak != null && wordBreak.length > 0) nextMap(wordBreak);
+        return true;
+      }
+    }
+    return false;
+  }
   /**
    * <p>Case sensitive version of {@link #nextOptionalSequence(String, boolean)}</p>
    * <br>

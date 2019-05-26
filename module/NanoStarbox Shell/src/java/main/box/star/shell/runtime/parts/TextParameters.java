@@ -31,26 +31,14 @@ public class TextParameters extends Stack<String> {
   public static boolean parseParameter(Scanner scanner, TextParameters parameters) {
     scanner.nextLineWhiteSpace();
     StringBuilder builder = new StringBuilder();
-    long start = scanner.getIndex();
+
+    if (TextRedirection.findRedirection(scanner)) return false;
+
     char c;
     do {
       c = scanner.next();
       if (Char.mapContains(c, MAP_ASCII_ALL_WHITE_SPACE)) break;
       switch (c) {
-        case '<':
-        case '>': {
-          boolean notAnumber = false;
-          try {
-            int v = Integer.parseInt(builder.toString());
-          }
-          catch (NumberFormatException nfe) { notAnumber = true; }
-          if (notAnumber == false) {
-            scanner.walkBack(start);
-            return false;
-          }
-          scanner.back();
-          return false;
-        }
         case '\'': {
           builder.append(c).append(processQuotedLiteralText(scanner));
           scanner.nextCharacter(c);

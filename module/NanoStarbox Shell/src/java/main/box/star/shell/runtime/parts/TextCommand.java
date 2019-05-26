@@ -67,8 +67,8 @@ public class TextCommand {
       new Char.Assembler(Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')).toMap();
 
   public String source;
-  public Stack<String[]> environmentOperations;
-  public Stack<String> parameters;
+  public TextEnvironment environmentOperations;
+  public TextParameters parameters;
   public Stack<TextRedirection> redirects = new Stack<>();
   public String terminator; // whatever terminated this command
   public TextCommand next; // if terminator == pipe

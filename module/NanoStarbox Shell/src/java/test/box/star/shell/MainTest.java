@@ -11,9 +11,9 @@ class MainTest {
   @Test void main(){
     Main shell = new Main("hi");
     System.out.println(shell.getShellBaseDirectory());
-    Scanner scanner = new Scanner("test", "1 > 'colloqial ism'");
-   // TextRedirection r = TextRedirection.parseRedirect(scanner);
-    scanner = new Scanner("test2", "A21=44 b72=33 cout shit >> data.log");
+    Scanner scanner = new Scanner("test", "shit hit the fan 1 > 'colloqial ism'");
+    //TextRedirection r = TextRedirection.parseRedirect(scanner);
+    //scanner = new Scanner("test2", "A21=44 b72=33 cout shit | grep fu");
     TextCommand e = TextCommand.parseCommandLine(scanner);
     System.out.println(String.join(", ", TextRedirection.redirectionOperators));
   }
