@@ -30,6 +30,12 @@ public class Context {
   protected int exitValue;
   public final long timeStamp;
 
+  public final static long bootTimeStamp;
+
+  static {
+    bootTimeStamp = System.currentTimeMillis();
+  }
+
   {
     this.timeStamp = System.currentTimeMillis();
   }
