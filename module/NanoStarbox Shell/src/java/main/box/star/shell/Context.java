@@ -312,13 +312,13 @@ public class Context {
   }
 
   /**
-   * Provides the $1...$N variables for text-expansion and other uses within all contexts.
+   * Provides the $0...$N variables for text-expansion and other uses within all contexts.
    * @return
    */
   @NotNull
   final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
-    if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).parameters;
-    else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).parameters;
+    if (this instanceof Shell.MainClass) return ((Shell.MainClass)this).getParameters();
+    else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).getParameters();
     else return parent.getContextParameters();
   }
 
