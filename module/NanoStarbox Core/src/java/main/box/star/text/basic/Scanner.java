@@ -60,6 +60,9 @@ import static box.star.text.Char.*;
  */
 public class Scanner implements Closeable {
 
+  public final static char[] WORD_BREAK =
+      new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap();
+
   private Map<Character, String> TRANSLATION = new Hashtable<>();
 
   /**
@@ -414,15 +417,41 @@ public class Scanner implements Closeable {
     return match;
   }
 
-  public String nextWord(String label, String[] words, boolean caseSensitive){
+  /**
+   *
+   * @param label the text to use for this operation if something goes wrong
+   * @param words the word list to use for searching the input
+   * @param wordBreaks a set of characters which if supplied and longer than zero, must follow word match to complete the match
+   * @param caseSensitive
+   * @return
+   */
+  public String nextWord(String label, String[] words, char[] wordBreaks, boolean caseSensitive){
     for (String test:words){
       String operation = nextOptionalSequence(test, caseSensitive);
       if (Tools.EMPTY_STRING.equals(operation)) continue;
-      else return operation; }
+      else {
+        if (wordBreaks != null && wordBreaks.length > 0){
+          if (Char.mapContains(next(), wordBreaks)) return operation;
+          else back();
+        } else return operation;
+      }
+    }
     flagNextCharacterSyntaxError(label, '\0');
     return null;
   }
 
+  /**
+   * <p>Calls next word with a word-space requirement</p>
+   * @param label
+   * @param words
+   * @return
+   */
+  public String nextWord(String label, String[] words, boolean caseSensitive){
+    return nextWord(label, words, null, caseSensitive);
+  }
+  public String nextWord(String label, String[] words){
+    return nextWord(label, words, null, true);
+  }
   /**
    * <p>Call this method on a word list to make sure it doesn't short-circuit</p>
    * <br>
@@ -433,7 +462,7 @@ public class Scanner implements Closeable {
    * <br>
    * @param words
    */
-  final public void preventWordListShortCircuit(String[] words){
+  final static public void preventWordListShortCircuit(String[] words){
     boolean longestFirst = true;
     Arrays.sort(words, new Comparator<String>() {
       @Override
@@ -581,12 +610,67 @@ public class Scanner implements Closeable {
     StringBuilder sb = new StringBuilder();
     do {
       c = this.next();
-      if (Char.mapContains(c, map) || c == 0) {
+      if (Char.mapContains(c, map)) {
         this.back();
         break;
       }
       sb.append(c);
     } while (c != 0); // TODO: null embedding support in Scanner.next() issue #8
+    return sb.toString();
+  }
+
+  /**
+   * <p>A hack on next bound field that can use a macro filter to expand escapes,
+   * control buffer content, and control scanner delimiter chomp.</p>
+   * <br>
+   * <p>This method provides full service buffer seek control.
+   * A driver is asked if it wants to expand a backslash, if the answer is yes,
+   * it will be interpreted and placed in the buffer. if the driver says
+   * no, the backslash will be appended to the buffer. All other data is placed
+   * into the buffer if the driver says its okay to collect the character. The
+   * driver must perform any back-stepping needed to preserve field delimiter.</p>
+   * <br>
+   * <p>This method deprecates most of this library.</p>
+   * @param driver the collector control to use
+   * @return the collection of characters allowed by the driver
+   * @throws Exception by call to {@link #next()}
+   */
+  @NotNull
+  public String nextScanOf(@NotNull ScanControl driver) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    boolean doExpand = false;
+    ScanControl.WithExpansionPort expansionControl;
+    if (driver instanceof ScanControl.WithExpansionPort){
+      expansionControl = ((ScanControl.WithExpansionPort)driver);
+    } else {
+      expansionControl = null;
+    }
+    do {
+      c = this.next();
+      ///
+      if (expansionControl != null && c == BACKSLASH && !escapeMode()) {
+        if (doExpand = ((ScanControl.WithExpansionPort)driver).expand(this)) continue;
+      }
+
+      if (c == 0) {
+        if (expansionControl != null && escapeMode() && !haveNext())
+          throw syntaxError("expected character escape sequence, found end of stream");
+        if (state.eof) return sb.toString();
+      }
+
+      if (expansionControl != null && doExpand && escapeMode()) {
+        String swap = expand(c);
+        sb.append(swap);
+        doExpand = false;
+        continue;
+      }
+
+      if (! driver.collect(this, c)) { break; }
+
+      sb.append(c);
+
+    } while (haveNext());
     return sb.toString();
   }
 
