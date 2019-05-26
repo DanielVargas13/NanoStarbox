@@ -329,6 +329,8 @@ public class Scanner implements Closeable {
     state.stepBackward();
   }
 
+  public void back(int count) throws Exception { while (count-- > 0) back(); }
+
   /**
    * Get the next character.
    *
@@ -512,6 +514,26 @@ public class Scanner implements Closeable {
     return c;
   }
 
+  public String nextCharacterMap(String label, int max, char[] map, boolean caseSensitive){
+    StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
+    char[] mini = null;
+    if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
+    if (max == 0) --max;
+    do {
+      char c, v = next(), character;
+      if (!caseSensitive) {
+        c = Char.toLowerCase(v);
+      } else c = v;
+      boolean found=false;
+      for (char t:caseSensitive?map:mini){
+        if (c == t) { found = true; break;}
+      }
+      if (!found)
+        throw this.syntaxError("Expected " + label + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
+      mapped.append(v);
+    } while (mapped.length() != max && ! endOfSource());
+    return mapped.toString();
+  }
   /**
    * Match the next string input with a source string.
    *

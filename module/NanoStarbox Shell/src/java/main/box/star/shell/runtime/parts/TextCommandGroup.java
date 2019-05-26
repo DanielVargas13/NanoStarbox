@@ -1,5 +1,6 @@
 package box.star.shell.runtime.parts;
 
+import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
 import java.util.Stack;
@@ -16,9 +17,14 @@ public class TextCommandGroup extends TextCommand {
     TextCommandGroup textCommands = new TextCommandGroup("");
     scanner.nextCharacter('{');
     do {
+      scanner.nextAllWhiteSpace();
       char c = scanner.next();
+      if (c == 0){
+        if (scanner.endOfSource()) break;
+      }
       if (c == '}') {
-        scanner.back();
+        scanner.back(2);
+        scanner.nextCharacterMap("white-space", 1, Char.MAP_ASCII_ALL_WHITE_SPACE, true);
         break;
       }
       TextCommand command = TextCommand.parseCommandLine(scanner);
