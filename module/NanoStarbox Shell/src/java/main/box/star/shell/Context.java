@@ -75,19 +75,26 @@ public class Context {
   }
 
   @NotNull final protected Context importEnvironment(@NotNull Environment environment){
-    if (environment == null) return this;
     if (this.environment == null){
-      this.environment = environment.getExports();
-    } else this.environment.putAll(environment.getExports());
+      this.environment = new Environment();
+      if (environment == null) {
+        this.environment.loadFactoryEnvironment(true);
+        return this;
+      }
+    }
+    if (environment != null) this.environment.putAll(environment.getExports());
     return this;
   }
 
   @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
-    if (io == null) return this;
-    if (this.io == null){
+    if (this.io == null) {
       this.io = new StreamTable();
-      this.io.putAll(io);
-    } else this.io.putAll(io);
+      if (io == null) {
+        this.io.loadFactoryStreams();
+        return this;
+      }
+    }
+    if (io != null) this.io.putAll(io);
     return this;
   }
 
