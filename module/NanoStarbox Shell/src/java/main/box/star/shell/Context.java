@@ -19,6 +19,98 @@ public class Context {
 
   final static public boolean systemConsoleMode = System.console() != null;
 
+  private interface FirstClassExecutive {
+    int exec();
+  }
+
+  private interface SecondClassExecutive {
+    int exec(Stack<String> parameters);
+  }
+
+  public interface Shell {
+    class MainContext extends Context {
+      Stack<String> parameters;
+      URI shellBaseDirectory;
+      MainContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+      @Override
+      final protected URI getShellBaseDirectory() {
+        if (shellBaseDirectory == null) try /*  throwing runtime exceptions with closure */ {
+          shellBaseDirectory = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+        } catch (Exception e){throw new RuntimeException("failed to get main context path", e);}
+        return shellBaseDirectory;
+      }
+      final protected Context WithParametersOf(Stack<String> parameters){
+        if (this.parameters != null)
+          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
+        this.parameters = parameters;
+        return this;
+      }
+      @NotNull
+      protected Stack<String> getParameters(){
+        return parameters;
+      }
+      @NotNull final protected Context importParameters(Context parent){
+        this.parameters = new Stack<>();
+        this.parameters.addAll(parent.getParameters());
+        return this;
+      }
+    }
+    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {
+      CommandContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+    }
+    class CommandShellContext extends /* [$](COMMAND...) */ MainContext implements FirstClassExecutive {
+      @Override
+      void importContext(Context parent) {
+        super.importContext(parent);
+        this.shellLevel++;
+        // spec uses a parameter copy
+        importParameters(parent);
+      }
+      CommandShellContext(Context parent, String origin) { super(parent, origin); }
+      @Override
+      public int exec() {
+        return 0;
+      }
+    }
+    class CommandGroupContext extends /* { COMMAND... } */ Context implements FirstClassExecutive {
+      void importContext(Context parent){
+        this.parent = parent;
+        this.environment = parent.environment;
+        importStreamTable(parent.io);
+      }
+      CommandGroupContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+      @Override
+      public int exec() {
+        return 0;
+      }
+    }
+    class SourceContext extends /* source ... */ MainContext implements SecondClassExecutive {
+      @Override
+      void importContext(Context parent){
+        this.parent = parent;
+        this.environment = parent.environment;
+        importStreamTable(parent.io);
+        importParameters(parent);
+      }
+      SourceContext(Context parent, String origin) {
+        super(parent, origin);
+      }
+      public int exec(Stack<String> parameters) {
+        return 0;
+      }
+      @Override
+      protected @NotNull Stack<String> getParameters() {
+        return parameters;
+      }
+    }
+  }
+
   Context parent;
   Environment environment;
   StreamTable io;
@@ -113,94 +205,6 @@ public class Context {
     return out.substring(0, Math.max(0, out.length() - 1));
   }
 
-  private interface FirstClassExecutive {
-    int exec(Stack<String> parameters);
-  }
-
-  private interface SecondClassExecutive {
-    int exec(Stack<Object> parameters);
-  }
-
-  public interface Shell {
-    class MainContext extends Context {
-      Stack<String> parameters;
-      URI shellBaseDirectory;
-      MainContext(Context parent, String origin) {
-        super(parent, origin);
-      }
-      @Override
-      final protected URI getShellBaseDirectory() {
-        if (shellBaseDirectory == null) try /*  throwing runtime exceptions with closure */ {
-          shellBaseDirectory = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-        } catch (Exception e){throw new RuntimeException("failed to get main context path", e);}
-        return shellBaseDirectory;
-      }
-      final protected Context WithParametersOf(Stack<String> parameters){
-        if (this.parameters != null)
-          throw new IllegalStateException(PROPERTY_ACCESS_READ_ONLY);
-        this.parameters = parameters;
-        return this;
-      }
-      @NotNull
-      protected Stack<String> getParameters(){
-        return parameters;
-      }
-      @NotNull final protected Context importParameters(Context parent){
-        this.parameters = new Stack<>();
-        this.parameters.addAll(parent.getContextParameters());
-        return this;
-      }
-    }
-    class CommandContext extends /* COMMAND [ | COMMAND... ] */ Context {
-      CommandContext(Context parent, String origin) {
-        super(parent, origin);
-      }
-    }
-    class SourceContext extends /* source ... */ MainContext implements FirstClassExecutive {
-      @Override
-      void importContext(Context parent){
-        this.parent = parent;
-        this.environment = parent.environment;
-        importStreamTable(parent.io);
-        importParameters(parent);
-      }
-      SourceContext(Context parent, String origin) {
-        super(parent, origin);
-      }
-      public int exec(Stack<String> parameters) {
-        return 0;
-      }
-    }
-    class CommandShellContext extends /* [$](COMMAND...) */ MainContext implements FirstClassExecutive {
-      @Override
-      void importContext(Context parent) {
-        super.importContext(parent);
-        this.shellLevel++;
-        // spec uses a parameter copy
-        importParameters(parent);
-      }
-      CommandShellContext(Context parent, String origin) { super(parent, origin); }
-      @Override
-      public int exec(Stack<String> parameters) {
-        return 0;
-      }
-    }
-    class CommandGroupContext extends /* { COMMAND... } */ Context implements FirstClassExecutive {
-      void importContext(Context parent){
-        this.parent = parent;
-        this.environment = parent.environment;
-        importStreamTable(parent.io);
-      }
-      CommandGroupContext(Context parent, String origin) {
-        super(parent, origin);
-      }
-      @Override
-      public int exec(Stack<String> parameters) {
-        return 0;
-      }
-    }
-  }
-
   @NotNull
   final protected Context getMain(){
     if (this instanceof Shell.MainContext) return this;
@@ -217,10 +221,8 @@ public class Context {
    * @return
    */
   @NotNull
-  final protected Stack<String> getContextParameters(){ /* current-variables: $0...$N */
-    if (this instanceof Shell.MainContext) return ((Shell.MainContext)this).getParameters();
-    //else if (this instanceof Shell.FunctionClass) return ((Shell.FunctionClass)this).getParameters();
-    else return parent.getContextParameters();
+  protected Stack<String> getParameters(){ /* current-variables: $0...$N */
+    return parent.getParameters();
   }
 
   @Nullable
@@ -270,11 +272,9 @@ public class Context {
   final public <T> T getObject(Class<T> type, String name){
     return environment.getObject(type, name);
   }
+  final public Class getObjectType(String name){return environment.get(name).getObjectClass();}
 
-  public String get(String name){
-    return environment.getString(name);
-  }
-
+  public String get(String name){ return environment.getString(name); }
   final public Stream get(int stream){
     return io.get(stream);
   }
@@ -291,15 +291,15 @@ public class Context {
     io.put(number, value);
   }
 
-  public boolean have(String key){
+  public boolean has(String key){
     return environment.containsKey(key);
   }
 
-  final public boolean have(int stream){
+  final public boolean has(int stream){
     return io.containsKey(stream);
   }
 
-  public boolean have(String key, Class type){
+  public boolean has(String key, Class type){
     return environment.containsKey(key) && environment.get(key).isObjectOfClass(type);
   }
 
@@ -307,7 +307,9 @@ public class Context {
   public boolean exporting(String name) {return environment.exporting(name);}
   public void mapAllStrings(Map<String, String> map, boolean export) {environment.mapAllStrings(map, export);}
   public void removeAllKeys(List<String> keys) {environment.removeAllKeys(keys);}
+
   public List<String> keyList() {return environment.keyList();}
+  public List<String> exportList(){return environment.exportList();}
 
   final public void mapAllObjects(Map<String, Object> map, boolean export) {environment.mapAllObjects(map, export);}
   final public String getCurrentDirectory() {return environment.getCurrentDirectory();}
