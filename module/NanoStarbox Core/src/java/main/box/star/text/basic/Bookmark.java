@@ -38,8 +38,8 @@ public class Bookmark {
   }
   private static String quoteSource(String source){
     return source
-        .replaceAll(Char.toString(BACKSLASH), Char.toString(BACKSLASH, BACKSLASH))
-        .replaceAll(Char.toString(BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
+        .replaceAll(Char.toString(BACKSLASH, BACKSLASH), Char.toString(BACKSLASH, BACKSLASH))
+        .replaceAll(Char.toString(BACKSLASH, BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
   }
   private String compileToString() {
     return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";

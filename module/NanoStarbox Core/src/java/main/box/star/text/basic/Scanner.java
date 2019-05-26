@@ -370,14 +370,14 @@ public class Scanner implements Closeable {
   /**
    * @return the white-space-scanned
    */
-  public String scanAllWhiteSpace(){
+  public String nextAllWhiteSpace(){
     return nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
   }
 
   /**
    * @return all white-space characters which do not escape lines
    */
-  public String scanLineWhiteSpace(){
+  public String nextLineWhiteSpace(){
     return nextMap(MAP_ASCII_LINE_WHITE_SPACE);
   }
 
@@ -410,6 +410,15 @@ public class Scanner implements Closeable {
       walkBack(start); return "";
     }
     return match;
+  }
+
+  public String nextWord(String label, String[] words, boolean caseSensitive){
+    for (String test:words){
+      String operation = nextOptionalSequence(test, caseSensitive);
+      if (Tools.EMPTY_STRING.equals(operation)) continue;
+      else return operation; }
+    flagNextCharacterSyntaxError(label, '\0');
+    return null;
   }
 
   /**
@@ -548,7 +557,7 @@ public class Scanner implements Closeable {
     StringBuilder sb = new StringBuilder();
     do {
       c = this.next();
-      if (Char.mapContains(c, map)) {
+      if (Char.mapContains(c, map) || c == 0) {
         this.back();
         break;
       }
@@ -849,6 +858,14 @@ public class Scanner implements Closeable {
     return new Bookmark(this);
   }
 
+  public Bookmark nextBookmark(){
+    Bookmark x;
+    next();
+    x = createBookmark();
+    back();
+    return x;
+  }
+
   @Deprecated public String claim() {
     return toString();
   }
@@ -905,6 +922,12 @@ public class Scanner implements Closeable {
     if (character != c)
       throw this.syntaxError("Expected " + translateCharacter(character) + " and found " + translateCharacter(c));
     return c;
+  }
+
+  public int nextUnsignedInteger() {
+    flagNextCharacterSyntaxError("unsigned integer", MAP_ASCII_NUMBERS);
+    String numbers = nextMap(MAP_ASCII_NUMBERS);
+    return Integer.parseInt(numbers);
   }
 
 }
