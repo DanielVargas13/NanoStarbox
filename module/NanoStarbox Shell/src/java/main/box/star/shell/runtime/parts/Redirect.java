@@ -1,10 +1,22 @@
-package box.star.shell.runtime.script;
+package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
 import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 public class Redirect {
+
+  public final static int OP_OPEN_RANDOM = 0,
+  OP_CLOSE_READER = 1,
+  OP_CLOSE_WRITER = 2,
+  OP_COPY_READER = 3,
+  OP_COPY_WRITER = 4,
+  OP_APPEND_FILE = 5,
+  OP_CLOBBER_FILE = 6,
+  OP_HERE_DOC_JUSTIFIED = 7,
+  OP_HERE_DOC = 8,
+  OP_OPEN_READER = 9,
+  OP_OPEN_WRITER = 10;
 
   public Bookmark bookmark;
   public int channel;
