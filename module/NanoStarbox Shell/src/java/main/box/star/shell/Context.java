@@ -71,7 +71,7 @@ public class Context {
   @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
     if (io == null){
       this.io = new StreamTable();
-      this.io.putAll(parent.io);
+      this.io.putAll(io);
     } else this.io.putAll(io);
     return this;
   }
