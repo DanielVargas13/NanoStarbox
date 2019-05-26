@@ -250,7 +250,7 @@ public interface Shell {
       super(parent, origin);
     }
     @Override
-    final protected URI getShellBaseDirectory() {
+    public final URI getShellBaseDirectory() {
       if (shellBaseDirectory == null) try /*  throwing runtime exceptions with closure */ {
         shellBaseDirectory = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
       } catch (Exception e){throw new RuntimeException("failed to get main context path", e);}

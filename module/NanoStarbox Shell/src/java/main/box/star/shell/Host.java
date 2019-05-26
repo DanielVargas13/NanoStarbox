@@ -118,7 +118,7 @@ public class Host {
     public Main(Host context) { this.context = context; }
 
     TextCommandEntry processCommandLine(Scanner scanner) {
-      scanner.scanAllWhiteSpace();
+      scanner.nextAllWhiteSpace();
       TextCommandEntry textCommand = new TextCommandEntry(scanner.nextCharacterClaim().substring(1));
       textCommand.environmentOperations = processEnvironmentOperations(scanner);
       textCommand.parameters = processParameters(scanner);
@@ -129,7 +129,7 @@ public class Host {
       Stack<String[]> operations = new Stack<>();
       do {
         long start = scanner.getIndex();
-        scanner.scanAllWhiteSpace();
+        scanner.nextAllWhiteSpace();
         String[] op = processEnvironmentOperation(scanner);
         if (op == null) {
           scanner.walkBack(start);
@@ -185,7 +185,7 @@ public class Host {
     }
 
     boolean processParameter(Scanner scanner, Stack<String> parameters) {
-      scanner.scanLineWhiteSpace();
+      scanner.nextLineWhiteSpace();
       StringBuilder builder = new StringBuilder();
       long start = scanner.getIndex();
       char c;
@@ -253,12 +253,12 @@ public class Host {
       while (Char.mapContains(c, '<', '>', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9')) {
         switch (c) {
           case '<': {
-            scanner.scanAllWhiteSpace();
+            scanner.nextAllWhiteSpace();
             commandEntry.redirects.put(0, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
             break;
           }
           case '>': {
-            scanner.scanAllWhiteSpace();
+            scanner.nextAllWhiteSpace();
             commandEntry.redirects.put(1, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
             break;
           }
@@ -270,7 +270,7 @@ public class Host {
               scanner.flagThisCharacterSyntaxError("< or >");
               return null; // not reached
             }
-            scanner.scanAllWhiteSpace();
+            scanner.nextAllWhiteSpace();
             commandEntry.redirects.put(v, c + scanner.nextBoundField(MAP_ASCII_ALL_WHITE_SPACE));
           }
         }
