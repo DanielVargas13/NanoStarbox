@@ -49,6 +49,7 @@ public class TextRedirection {
   public static TextRedirection parseRedirect(Scanner scanner){
     TextRedirection redirect = new TextRedirection();
     scanner.nextLineWhiteSpace();
+    if (scanner.endOfSource()) return null;
     redirect.bookmark = scanner.nextBookmark();
     try { redirect.stream = scanner.nextUnsignedInteger(); }
     catch (Exception e){redirect.stream = -1; scanner.walkBack(redirect.bookmark.index - 1);}

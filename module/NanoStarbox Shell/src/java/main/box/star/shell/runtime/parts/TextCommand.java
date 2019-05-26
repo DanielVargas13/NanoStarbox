@@ -79,20 +79,22 @@ public class TextCommand implements TextElement {
     TextCommand textCommand = new TextCommand(scanner.nextBookmark().origin.substring(1));
     textCommand.environmentOperations = TextEnvironment.parseEnvironmentOperations(scanner);
     textCommand.parameters = TextParameters.parseParameters(scanner);
-    //textCommand.redirects = TextRedirection.parseRedirect(scanner);
     TextRedirection r;
     while ((r = TextRedirection.parseRedirect(scanner))!= null){
       textCommand.redirects.push(r);
     }
-    return processPipes(scanner, textCommand);
+    processPipes(scanner, textCommand);
+    return textCommand;
   }
 
   static char processCommandEnding(Scanner scanner) {
     char c;
     switch (c = scanner.next()) {
-      case '\0': return ';';
       case ';':
-      case '#':
+      case '\0': return ';';
+      case '#': {
+
+      }
       case '\n':
         return c;
       case '\r':
@@ -104,6 +106,7 @@ public class TextCommand implements TextElement {
   }
 
   static TextCommand processPipes(Scanner scanner, TextCommand commandEntry) {
+    if (scanner.endOfSource()) return null;
     if (scanner.nextSequenceMatch(COMMAND_TERMINATOR_DOUBLE_PIPE)){
       commandEntry.terminator = COMMAND_TERMINATOR_DOUBLE_PIPE;
       return commandEntry;
@@ -115,13 +118,31 @@ public class TextCommand implements TextElement {
       return commandEntry;
     }
     char c = scanner.next();
+    if (c == ')') {
+      scanner.back();
+      return commandEntry;
+    }
     if (c == PIPE) {
       commandEntry.terminator = "|";
-      commandEntry.next = TextCommand.parseCommandLine(scanner);
+      commandEntry.next = TextCommandGroup.parseTextCommands(scanner);
       return commandEntry;
-    } else scanner.back();
+    } else {
+      scanner.back();
+    }
     commandEntry.terminator = Char.toString(processCommandEnding(scanner));
     return commandEntry;
   }
 
 }
+
+/*
+      c = scanner.next();
+      scanner.back();
+      if (c == '('){
+        commandEntry.next = TextCommandGroup.parseTextCommandShell(scanner);
+      } else if (c == '{'){
+        commandEntry.next = TextCommandGroup.parseTextCommandGroup(scanner);
+      } else commandEntry.next = TextCommand.parseCommandLine(scanner);
+      //commandEntry.next = TextCommand.parseCommandLine(scanner);
+
+ */

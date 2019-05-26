@@ -13,21 +13,49 @@ public class TextCommandGroup extends TextCommand {
     super(source);
   }
 
-  public static TextCommandGroup parseTextCommandGroup(Scanner scanner) {
+  public static TextCommand parseTextCommands(Scanner scanner){
+    if (scanner.endOfSource()) return null;
+    scanner.nextLineWhiteSpace();
+    char c = scanner.next(); scanner.back();
+    if (c == '(') return parseTextCommandShell(scanner);
+    if (c == '{') return parseTextCommandGroup(scanner);
+    return TextCommand.parseCommandLine(scanner);
+  }
+
+  public static TextCommandGroup parseTextCommandShell(Scanner scanner){
+    return parseTextCommandGroup(scanner, '(', ')');
+  }
+
+  public static TextCommandGroup parseTextCommandGroup(Scanner scanner){
+    return parseTextCommandGroup(scanner, '{', '}');
+  }
+
+  private static TextCommandGroup parseTextCommandGroup(Scanner scanner, char open, char close) {
     TextCommandGroup textCommands = new TextCommandGroup("");
-    scanner.nextCharacter('{');
+    scanner.nextCharacter(open);
+    TextCommand command = null;
     do {
       scanner.nextAllWhiteSpace();
       char c = scanner.next();
+      scanner.back();
       if (c == 0){
         if (scanner.endOfSource()) break;
       }
-      if (c == '}') {
-        scanner.back(2);
+      else if (c == ')') {
+        break;
+      }
+      else if (c == '}') {
+        scanner.back(1);
         scanner.nextCharacterMap("white-space", 1, Char.MAP_ASCII_ALL_WHITE_SPACE, true);
         break;
       }
-      TextCommand command = TextCommand.parseCommandLine(scanner);
+      else if (c == '('){
+        command = TextCommandGroup.parseTextCommandShell(scanner);
+      } else if (c == '{'){
+        command = TextCommandGroup.parseTextCommandGroup(scanner);
+      } else {
+        command = TextCommand.parseCommandLine(scanner);
+      }
       if (command == null) {
         break;
       }
@@ -35,7 +63,7 @@ public class TextCommandGroup extends TextCommand {
       textCommands.stack.push(command);
     } while (! scanner.endOfSource());
 
-    scanner.nextCharacter('}');
+    scanner.nextCharacter(close);
 
     TextRedirection r;
     while ((r = TextRedirection.parseRedirect(scanner))!= null){

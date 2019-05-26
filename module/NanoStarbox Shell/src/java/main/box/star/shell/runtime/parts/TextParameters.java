@@ -42,8 +42,7 @@ public class TextParameters extends Stack<String> {
       switch (c) {
         case '\'': {
           builder.append(c).append(processQuotedLiteralText(scanner));
-          scanner.nextCharacter(c);
-          builder.append(c);
+          builder.append(scanner.nextCharacter(c));
           break;
         }
         case '"': {
@@ -62,12 +61,13 @@ public class TextParameters extends Stack<String> {
           builder.append(c).append(processLiteralText(scanner));
         }
       }
-    } while (! scanner.endOfSource() && !Char.mapContains(c, PARAMETER_TERMINATOR_MAP));
+    } while (!Char.mapContains(c, PARAMETER_TERMINATOR_MAP) && ! scanner.endOfSource());
     parameters.push(builder.toString());
     return true;
   }
 
   static TextParameters processParameters(Scanner scanner) {
+    if (scanner.endOfSource()) return null;
     TextParameters parameters = new TextParameters();
     parameters.bookmark = scanner.nextBookmark();
     do {

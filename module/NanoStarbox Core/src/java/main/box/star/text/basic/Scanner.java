@@ -270,7 +270,7 @@ public class Scanner implements Closeable {
    * @throws SyntaxError representing this character at this position with this expected content message
    */
   public void flagThisCharacterSyntaxError(String message) throws SyntaxError {
-    this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
+    throw this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
   }
 
   /**
@@ -339,7 +339,8 @@ public class Scanner implements Closeable {
    */
   public char next() throws Exception {
     if (state.haveNext()) return state.next();
-    else try {
+    if (state.eof) throw new Exception("end of source"+toString());
+    try {
         int c = this.reader.read();
         if (c == -1) { state.eof = true; return 0; }
         state.recordCharacter(Char.valueOf(c));

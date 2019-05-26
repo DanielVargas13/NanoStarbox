@@ -11,10 +11,10 @@ class MainTest {
   @Test void main(){
     Main shell = new Main("hi");
     System.out.println(shell.getShellBaseDirectory());
-    Scanner scanner = new Scanner("test", "{shit hit the fan 1> 'colloqial ism'; } < redir | grep fu");
+    Scanner scanner = new Scanner("test", "(shit hit the fan < 'colloqial ism') | (grep shell)");
     //TextRedirection r = TextRedirection.parseRedirect(scanner);
     //scanner = new Scanner("test2", "A21=44 b72=33 cout shit | grep fu");
-    TextCommandGroup e = TextCommandGroup.parseTextCommandGroup(scanner);
+    TextCommandGroup e = TextCommandGroup.parseTextCommandShell(scanner);
     System.out.println(String.join(", ", TextRedirection.redirectionOperators));
   }
 

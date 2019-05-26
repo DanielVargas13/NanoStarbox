@@ -14,16 +14,24 @@ public class TextEnvironment extends Stack<String[]> {
   public static TextEnvironment parseEnvironmentOperations(Scanner scanner) {
     TextEnvironment operations = new TextEnvironment();
     operations.bookmark = scanner.nextBookmark();
+    long start = scanner.getIndex();
     do {
-      long start = scanner.getIndex();
       scanner.nextAllWhiteSpace();
       String[] op = processEnvironmentOperation(scanner);
       if (op == null) {
         scanner.walkBack(start);
+        if (scanner.endOfSource()) {
+          return null;
+        }
         break;
       }
       operations.push(op);
+      start = scanner.getIndex();
     } while (true);
+    if (operations.isEmpty()) {
+      scanner.walkBack(start);
+      return null;
+    }
     return operations;
   }
 
