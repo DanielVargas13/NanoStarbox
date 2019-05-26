@@ -28,10 +28,14 @@ public class Context {
   boolean initialized;
 
   protected int exitValue;
+  public final long timeStamp;
 
-  Context(){}
+  Context(){
+    this.timeStamp = System.currentTimeMillis();
+  }
 
   Context(Context parent, String origin) {
+    this();
     WithParentOf(parent).AndOriginOf(origin);
   }
 
@@ -56,12 +60,15 @@ public class Context {
   }
 
   void importContext(@NotNull Context impl){
+    if (impl == null)
+      throw new IllegalArgumentException("parent context is null");
     this.parent = impl;
     importEnvironment(impl.environment);
     importStreamTable(impl.io);
   }
 
   @NotNull final protected Context importEnvironment(@NotNull Environment environment){
+    if (environment == null) return this;
     if (this.environment == null){
       this.environment = environment.getExports();
     } else this.environment.putAll(environment.getExports());
@@ -69,6 +76,7 @@ public class Context {
   }
 
   @NotNull final protected Context importStreamTable(@NotNull StreamTable io){
+    if (io == null) return this;
     if (this.io == null){
       this.io = new StreamTable();
       this.io.putAll(io);
@@ -298,10 +306,6 @@ public class Context {
       ObjectContext(Context parent, String origin){
         super(parent, origin);
       }
-      ObjectContext(Context parent, String origin, StreamTable io){
-        this(parent, origin);
-        importStreamTable(io);
-      }
     }
   }
 
@@ -415,7 +419,8 @@ public class Context {
   }
 
   final public boolean newObject(Constructor plugin, String origin, String key, boolean export, StreamTable io, Object... parameters) {
-    Shell.ObjectContext objectContext = new Shell.ObjectContext(this, origin, io);
+    Shell.ObjectContext objectContext = new Shell.ObjectContext(this, origin);
+    if (io != null) objectContext.importStreamTable(io);
     Object newObjInstance = plugin.construct(objectContext, parameters);
     if (newObjInstance == null) return false;
     this.set(key, newObjInstance, export);
