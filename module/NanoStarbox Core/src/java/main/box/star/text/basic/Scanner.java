@@ -676,37 +676,44 @@ public class Scanner implements Closeable {
    * @return the collection of characters allowed by the driver
    * @throws Exception by call to {@link #next()}
    */
-  public String nextScanOf(@NotNull ScanControl driver) throws Exception {
+  public String nextScanOf(@NotNull ScannerDriver driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     boolean doExpand = false;
-    ScanControl.WithExpansionPort expansionControl;
-    if (driver instanceof ScanControl.WithExpansionPort){
-      expansionControl = ((ScanControl.WithExpansionPort)driver);
+    ScannerDriver.WithExpansionControlPort expansionControlPort;
+    if (driver instanceof ScannerDriver.WithExpansionControlPort){
+      expansionControlPort = ((ScannerDriver.WithExpansionControlPort)driver);
     } else {
-      expansionControl = null;
+      expansionControlPort = null;
     }
+    ScannerDriver.WithBufferControlPort bufferControlPort;
+    if (driver instanceof ScannerDriver.WithBufferControlPort) {
+      bufferControlPort = ((ScannerDriver.WithBufferControlPort)driver);
+    } else bufferControlPort = null;
     do {
       c = this.next();
       ///
-      if (expansionControl != null && c == BACKSLASH && !escapeMode()) {
-        if (doExpand = ((ScanControl.WithExpansionPort)driver).expand(this)) continue;
+      if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) {
+        if (doExpand = ((ScannerDriver.WithExpansionControlPort)driver).expand(this)) continue;
       }
 
       if (endOfSource()) {
-        if (expansionControl != null && doExpand && escapeMode())
+        if (expansionControlPort != null && doExpand && escapeMode())
           throw syntaxError("expected character escape sequence, found end of stream");
         return sb.toString();
       }
 
-      if (expansionControl != null && doExpand && escapeMode()) {
+      if (expansionControlPort != null && doExpand && escapeMode()) {
         String swap = expand(c);
         sb.append(swap);
         doExpand = false;
         continue;
       }
 
-      if (! driver.collect(this, c)) { break; }
+      if (bufferControlPort != null){
+        if (!bufferControlPort.collect(this, sb, c)) break;
+        continue;
+      } else if (! driver.collect(this, c)) { break; }
 
       sb.append(c);
 

@@ -5,33 +5,31 @@ import box.star.text.basic.Scanner;
 
 import java.util.Stack;
 
-public class TextCommandGroup extends TextCommand {
+public class TextMain extends TextCommand {
 
   Stack<TextCommand> stack;
 
-  public TextCommandGroup(String source) {
-    super(source);
-  }
+  TextMain(String source){super(source);}
 
   public static TextCommand parseTextCommands(Scanner scanner){
     if (scanner.endOfSource()) return null;
     scanner.nextLineWhiteSpace();
     char c = scanner.next(); scanner.back();
     if (c == '(') return parseTextCommandShell(scanner);
-    if (c == '{') return parseTextCommandGroup(scanner);
-    return TextCommand.parseCommandLine(scanner);
+    else if (c == '{') return parseTextCommandGroup(scanner);
+    else return TextCommand.parseTextCommandStream(scanner);
   }
 
-  public static TextCommandGroup parseTextCommandShell(Scanner scanner){
+  private static TextMain parseTextCommandShell(Scanner scanner){
     return parseTextCommandGroup(scanner, '(', ')');
   }
 
-  public static TextCommandGroup parseTextCommandGroup(Scanner scanner){
+  private static TextMain parseTextCommandGroup(Scanner scanner){
     return parseTextCommandGroup(scanner, '{', '}');
   }
 
-  private static TextCommandGroup parseTextCommandGroup(Scanner scanner, char open, char close) {
-    TextCommandGroup textCommands = new TextCommandGroup("");
+  private static TextMain parseTextCommandGroup(Scanner scanner, char open, char close) {
+    TextMain textCommands = new TextMain(scanner.toString());
     scanner.nextCharacter(open);
     TextCommand command = null;
     do {
@@ -49,13 +47,7 @@ public class TextCommandGroup extends TextCommand {
         scanner.nextCharacterMap("white-space", 1, Char.MAP_ASCII_ALL_WHITE_SPACE, true);
         break;
       }
-      else if (c == '('){
-        command = TextCommandGroup.parseTextCommandShell(scanner);
-      } else if (c == '{'){
-        command = TextCommandGroup.parseTextCommandGroup(scanner);
-      } else {
-        command = TextCommand.parseCommandLine(scanner);
-      }
+      command = parseTextCommands(scanner);
       if (command == null) {
         break;
       }

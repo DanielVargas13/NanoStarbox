@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import static box.star.text.Char.*;
 
-public class TextCommand implements TextElement {
+public class TextCommand {
 
   public static final String
       KEYWORD_IF = "if",
@@ -74,7 +74,7 @@ public class TextCommand implements TextElement {
   public TextCommand next; // if terminator == pipe
   public TextCommand(String source) {this.source = source;}
 
-  public static TextCommand parseCommandLine(Scanner scanner) {
+  public static TextCommand parseTextCommandStream(Scanner scanner) {
     scanner.nextAllWhiteSpace();
     TextCommand textCommand = new TextCommand(scanner.nextBookmark().origin.substring(1));
     textCommand.environmentOperations = TextEnvironment.parseEnvironmentOperations(scanner);
@@ -87,22 +87,22 @@ public class TextCommand implements TextElement {
     return textCommand;
   }
 
-  static char processCommandEnding(Scanner scanner) {
+  static String processCommandEnding(Scanner scanner) {
     char c;
     switch (c = scanner.next()) {
       case ';':
-      case '\0': return ';';
+      case '\0': return Char.toString(';');
       case '#': {
 
       }
       case '\n':
-        return c;
+        return Char.toString(c);
       case '\r':
-        return processCommandEnding(scanner);
+        return c + processCommandEnding(scanner);
     }
     scanner.flagThisCharacterSyntaxError
         ("semi-colon, hash-mark, carriage-return, line-feed or end of source");
-    return 0; // not reached
+    return null; // not reached
   }
 
   static TextCommand processPipes(Scanner scanner, TextCommand commandEntry) {
@@ -124,25 +124,15 @@ public class TextCommand implements TextElement {
     }
     if (c == PIPE) {
       commandEntry.terminator = "|";
-      commandEntry.next = TextCommandGroup.parseTextCommands(scanner);
+      commandEntry.next = TextMain.parseTextCommands(scanner);
       return commandEntry;
     } else {
       scanner.back();
     }
-    commandEntry.terminator = Char.toString(processCommandEnding(scanner));
+    commandEntry.terminator = (processCommandEnding(scanner));
     return commandEntry;
   }
 
+  protected TextCommand(){}
+
 }
-
-/*
-      c = scanner.next();
-      scanner.back();
-      if (c == '('){
-        commandEntry.next = TextCommandGroup.parseTextCommandShell(scanner);
-      } else if (c == '{'){
-        commandEntry.next = TextCommandGroup.parseTextCommandGroup(scanner);
-      } else commandEntry.next = TextCommand.parseCommandLine(scanner);
-      //commandEntry.next = TextCommand.parseCommandLine(scanner);
-
- */
