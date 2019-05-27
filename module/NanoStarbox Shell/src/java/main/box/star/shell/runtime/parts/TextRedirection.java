@@ -4,7 +4,7 @@ import box.star.text.Char;
 import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
-public class TextRedirection {
+@Deprecated public class TextRedirection {
 
   public final static String
       OP_OPEN_RANDOM = "<>",

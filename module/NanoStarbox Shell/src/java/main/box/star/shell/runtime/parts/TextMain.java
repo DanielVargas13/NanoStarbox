@@ -5,7 +5,7 @@ import box.star.text.basic.Scanner;
 
 import java.util.Stack;
 
-public class TextMain extends TextCommand {
+@Deprecated public class TextMain extends TextCommand {
 
   Stack<TextCommand> stack;
 

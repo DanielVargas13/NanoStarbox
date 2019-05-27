@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import static box.star.text.Char.*;
 
-public class TextCommand {
+@Deprecated public class TextCommand {
 
   public static final String
       KEYWORD_IF = "if",
@@ -76,7 +76,7 @@ public class TextCommand {
 
   public static TextCommand parseTextCommandStream(Scanner scanner) {
     scanner.nextAllWhiteSpace();
-    TextCommand textCommand = new TextCommand(scanner.nextBookmark().origin.substring(1));
+    TextCommand textCommand = new TextCommand(scanner.nextBookmark().path.substring(1));
     textCommand.environmentOperations = TextEnvironment.parseEnvironmentOperations(scanner);
     textCommand.parameters = TextParameters.parseParameters(scanner);
     TextRedirection r;

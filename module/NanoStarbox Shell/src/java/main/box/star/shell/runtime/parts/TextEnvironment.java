@@ -7,7 +7,7 @@ import box.star.text.basic.driver.GenericProgramIdentifier;
 
 import java.util.Stack;
 
-public class TextEnvironment extends Stack<String[]> {
+@Deprecated public class TextEnvironment extends Stack<String[]> {
 
   public Bookmark bookmark;
 
@@ -36,7 +36,7 @@ public class TextEnvironment extends Stack<String[]> {
   }
 
   private static String processEnvironmentLabel(Scanner scanner) {
-    return scanner.nextScanOf(new GenericProgramIdentifier());
+    return scanner.assemble(new GenericProgramIdentifier());
   }
 
   static String[] processEnvironmentOperation(Scanner scanner) {

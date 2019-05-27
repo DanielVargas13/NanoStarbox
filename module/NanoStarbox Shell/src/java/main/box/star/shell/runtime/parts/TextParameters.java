@@ -10,7 +10,7 @@ import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.MAP_ASCII_ALL_WHITE_SPACE;
 import static box.star.text.Char.PIPE;
 
-public class TextParameters extends Stack<String> {
+@Deprecated public class TextParameters extends Stack<String> {
 
   public static final char[] PARAMETER_TERMINATOR_MAP =
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
