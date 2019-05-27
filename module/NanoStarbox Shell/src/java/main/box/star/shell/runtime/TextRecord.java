@@ -14,12 +14,17 @@ import static box.star.shell.runtime.TextRecord.Status.*;
 /**
  * <p>The Shell Runtime TextRecord</p>
  * <br>
- * <p>A text record contains an optimized representation of a shell script, or
- * one of it's constituent components. Like the shell context model, TextRecords
- * can be thought of as contexts, which may host other contexts. The mirroring,
- * is intentional and each text model should integrate with each other as the
- * secondary design goal; the first design goal being superior and consistent,
- * syntax handling capabilities, through Java's model inheritance features.</p>
+ *   <p>A text record contains an optimized representation of a shell script, or
+ * one of it's constituent components. </p>
+ *  <br>
+ *   <h4>Class Design Goals</h4>
+ *   <ol>
+ *     <li>Consistent Syntax Handling</li>
+ *     <li>Shell Context Modeling Struts</li>
+ *   </ol>
+ * <br>
+ * <p>Each text model forms or conforms with the struts about which each shell
+ * execution context interface is built.</p>
  * <br>
  * <p>A text record does not perform any expansions, evaluations, or interact
  * with any shell specific environment settings.</p>
@@ -155,7 +160,7 @@ public abstract class TextRecord {
           break;
         }
         default:
-          scanner.flagThisCharacterSyntaxError("program");
+          scanner.flagThisCharacterSyntaxError("shell command");
       }
       this.finish();
       return true;
