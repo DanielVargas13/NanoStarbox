@@ -273,6 +273,10 @@ public class Scanner implements Closeable {
     throw this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
   }
 
+  public @NotNull SyntaxError getThisCharacterSyntaxError(String message) throws SyntaxError {
+    return this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
+  }
+
   /**
    * Obtains a state lock, which can reset the reader and state if needed.
    *
@@ -505,13 +509,20 @@ public class Scanner implements Closeable {
    * @return
    */
   public char nextCharacter(String label, char character, boolean caseSensitive) {
-    char c = next();
+    char c = endOfSource()?0:next();
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
       character = Char.toLowerCase(character);
     }
     if (character != c)
-      throw this.syntaxError("Expected " + translateCharacter(character) + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
+      throw this.syntaxError("Expected " + label + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
+    return c;
+  }
+
+  public char nextCharacter(String label, char character) {
+    char c = endOfSource()?0:next();
+    if (character != c)
+      throw this.syntaxError("Expected " + label + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 
@@ -676,7 +687,7 @@ public class Scanner implements Closeable {
    * @return the collection of characters allowed by the driver
    * @throws Exception by call to {@link #next()}
    */
-  public String nextScanOf(@NotNull ScannerDriver driver) throws Exception {
+  public String assemble(@NotNull ScannerDriver driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     boolean doExpand = false;

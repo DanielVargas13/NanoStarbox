@@ -2,9 +2,6 @@ package box.star.text.basic;
 
 import box.star.text.Char;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static box.star.text.Char.BACKSLASH;
 import static box.star.text.Char.DOUBLE_QUOTE;
 
@@ -13,28 +10,17 @@ import static box.star.text.Char.DOUBLE_QUOTE;
  */
 public class Bookmark {
   public final long line, column, index;
-  public final String origin, quote;
-  Enum subType;
-  public final List<Object> notes = new ArrayList<>();
+  public final String path;
+  private String quotedOrigin;
   Bookmark(Scanner source){
    this.line = source.state.line;
    this.column = source.state.column;
    this.index = source.state.index;
-   this.quote = quoteSource(source.getPath());
-   this.origin = compileToString();
+   this.path = source.getPath();
   }
-  public Bookmark setSubType(Enum type){
-    if (hasSubType())
-      throw new IllegalStateException("you can't do that,"+
-          " the underlying property is marked read only for clients");
-    this.subType = type;
-    return this;
-  }
-  public Enum getSubType() {
-    return subType;
-  }
-  public boolean hasSubType(){
-    return subType != null;
+  final public String getQuotedOrigin(){
+    if (quotedOrigin == null) this.quotedOrigin = quoteSource(path);
+    return quotedOrigin;
   }
   private static String quoteSource(String source){
     return source
@@ -42,10 +28,10 @@ public class Bookmark {
         .replaceAll(Char.toString(BACKSLASH, BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
   }
   private String compileToString() {
-    return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + quote + "\"};";
+    return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + getQuotedOrigin() + "\"};";
   }
   @Override
   public String toString() {
-    return origin;
+    return compileToString();
   }
 }
