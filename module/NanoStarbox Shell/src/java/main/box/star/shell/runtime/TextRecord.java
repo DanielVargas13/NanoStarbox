@@ -244,7 +244,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class Redirect extends TextRecord implements Final {
+  public static class Redirect extends ParameterText implements Final {
     Redirect(Scanner scanner) {
       super(scanner);
     }
