@@ -2,10 +2,14 @@ package box.star.shell;
 
 import box.star.shell.runtime.parts.TextCommand;
 import box.star.shell.runtime.parts.TextMain;
+import box.star.shell.runtime.TextRecord;
 import box.star.shell.runtime.parts.TextRedirection;
 import box.star.shell.runtime.text.MainControl;
 import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
 class MainTest {
 
   @Test void main(){
@@ -21,7 +25,13 @@ class MainTest {
   @Test void scanControl(){
     MainControl mc = new MainControl();
     Scanner scanner = new Scanner(getClass().getSimpleName(), "Hello to you");
-    scanner.nextScanOf(mc);
+    scanner.assemble(mc);
   }
 
+  @Test void text_record_main(){
+    File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
+    Scanner scanner = new Scanner(shebang_line_file);
+    TextRecord.Main result = TextRecord.parse(TextRecord.Main.class, scanner);
+    System.err.println(result.getOrigin());
+  }
 }

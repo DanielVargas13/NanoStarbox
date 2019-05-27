@@ -1,1 +1,1 @@
-a=b b=c c=d echo 'eat shit' | grep 'shit' 0< /some-file
+#!/usr/bin/bash
