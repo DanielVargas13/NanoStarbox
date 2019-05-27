@@ -47,6 +47,7 @@ public abstract class TextRecord {
     TEXT_RECORD_TYPE_CHILD,
     TEXT_RECORD_TYPE_COMMENT,
     TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION,
+    TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION_LIST,
     TEXT_RECORD_TYPE_COMMAND,
     TEXT_RECORD_TYPE_PARAMETER,
     TEXT_RECORD_TYPE_PARAMETER_TEXT,
@@ -54,6 +55,7 @@ public abstract class TextRecord {
     TEXT_RECORD_TYPE_PARAMETER_QUOTED,
     TEXT_RECORD_TYPE_PARAMETER_LIST,
     TEXT_RECORD_TYPE_REDIRECT,
+    TEXT_RECORD_TYPE_REDIRECT_LIST,
     TEXT_RECORD_TYPE_COMMAND_LIST,
     TEXT_RECORD_TYPE_HERE_DOCUMENT
   }
@@ -214,7 +216,13 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
+  static public class EnvironmentOperationList extends TextRecord {
+    public EnvironmentOperationList(Scanner scanner) {
+      super(scanner);
+    }
+  }
   static public class Command extends TextRecord implements Final {
+    CommandList pipeChain;
     Command(Scanner scanner) {
       super(scanner);
     }
@@ -225,16 +233,17 @@ public abstract class TextRecord {
     }
   }
   public static class ParameterText extends Parameter {
-    ParameterText(Scanner scanner) {
+    protected String text;
+    public ParameterText(Scanner scanner) {
       super(scanner);
     }
   }
-  public static class ParameterLiteral extends Parameter implements Final {
+  public static class ParameterLiteral extends ParameterText implements Final {
     ParameterLiteral(Scanner scanner) {
       super(scanner);
     }
   }
-  public static class ParameterQuoted extends Parameter implements Final {
+  public static class ParameterQuoted extends ParameterText implements Final {
     ParameterQuoted(Scanner scanner) {
       super(scanner);
     }
@@ -246,6 +255,11 @@ public abstract class TextRecord {
   }
   public static class Redirect extends ParameterText implements Final {
     Redirect(Scanner scanner) {
+      super(scanner);
+    }
+  }
+  public static class RedirectList extends TextRecord implements Final {
+    public RedirectList(Scanner scanner) {
       super(scanner);
     }
   }
