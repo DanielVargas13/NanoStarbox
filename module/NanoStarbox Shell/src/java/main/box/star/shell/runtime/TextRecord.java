@@ -214,7 +214,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  static public class Command extends TextRecord {
+  static public class Command extends TextRecord implements Final {
     Command(Scanner scanner) {
       super(scanner);
     }
@@ -229,12 +229,12 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class ParameterLiteral extends Parameter {
+  public static class ParameterLiteral extends Parameter implements Final {
     ParameterLiteral(Scanner scanner) {
       super(scanner);
     }
   }
-  public static class ParameterQuoted extends Parameter {
+  public static class ParameterQuoted extends Parameter implements Final {
     ParameterQuoted(Scanner scanner) {
       super(scanner);
     }
