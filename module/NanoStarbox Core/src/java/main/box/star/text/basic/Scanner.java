@@ -680,19 +680,25 @@ public class Scanner implements Closeable {
     char c;
     StringBuilder sb = new StringBuilder();
     boolean doExpand = false;
-    ScannerDriver.WithExpansionControlPort expansionControlPort;
-    if (driver instanceof ScannerDriver.WithExpansionControlPort){
+    /* driver-loading */
+    ScannerDriver.WithSimpleControlPort simpleControlPort = null;
+    ScannerDriver.WithExpansionControlPort expansionControlPort = null;
+    ScannerDriver.WithBufferControlPort bufferControlPort = null;
+    if (driver instanceof ScannerDriver.WithExpansionControlPort)
       expansionControlPort = ((ScannerDriver.WithExpansionControlPort)driver);
-    } else {
-      expansionControlPort = null;
-    }
-    ScannerDriver.WithBufferControlPort bufferControlPort;
-    if (driver instanceof ScannerDriver.WithBufferControlPort) {
+    if (driver instanceof ScannerDriver.WithBufferControlPort)
       bufferControlPort = ((ScannerDriver.WithBufferControlPort)driver);
-    } else bufferControlPort = null;
+    else {
+      if (driver instanceof ScannerDriver.WithSimpleControlPort)
+        simpleControlPort = ((ScannerDriver.WithSimpleControlPort)driver);
+      else
+        throw new IllegalStateException
+            ("ScannerDriver does not host any valid control ports");
+    }
+    /* end-driver-loading */
     do {
       c = this.next();
-      ///
+
       if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) {
         if (doExpand = ((ScannerDriver.WithExpansionControlPort)driver).expand(this)) continue;
       }
@@ -713,7 +719,7 @@ public class Scanner implements Closeable {
       if (bufferControlPort != null){
         if (!bufferControlPort.collect(this, sb, c)) break;
         continue;
-      } else if (! driver.collect(this, c)) { break; }
+      } else if (! simpleControlPort.collect(this, c)) { break; }
 
       sb.append(c);
 

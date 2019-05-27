@@ -4,7 +4,7 @@ import box.star.text.Char;
 import box.star.text.basic.ScannerDriver;
 import box.star.text.basic.Scanner;
 
-public class GenericProgramIdentifier implements ScannerDriver {
+public class GenericProgramIdentifier implements ScannerDriver.WithSimpleControlPort {
 
   private int depth = 0;
 
