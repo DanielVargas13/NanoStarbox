@@ -35,6 +35,12 @@ import static box.star.shell.runtime.TextRecord.Status.*;
  */
 public abstract class TextRecord {
 
+  /**
+   * The Final Interface allows a TextRecord to specify that navigating backward
+   * from it's completion is not possible
+   */
+  public interface Final {}
+
   public enum Type {
     TEXT_RECORD_TYPE_SHEBANG,
     TEXT_RECORD_TYPE_MAIN,
@@ -70,13 +76,17 @@ public abstract class TextRecord {
   final public boolean success(){return status.equals(OK);}
 
   final protected Bookmark cancel() {
+    if (this instanceof Final){
+      throw new IllegalStateException("cannot cancel " + getClass().getName() +
+          "; task is Final");
+    }
     Bookmark bookmark = scanner.createBookmark();
     scanner.walkBack(this.end = this.start);
     this.status = FAILED;
     return bookmark;
   }
 
-  final protected boolean isActive(){
+  final protected boolean hasEnding(){
     return end == 0;
   }
 
@@ -100,11 +110,6 @@ public abstract class TextRecord {
     return (end==0)?scanner.getIndex()-start:end-start;
   }
 
-  private static boolean classListContains(Class test, Class... list){
-    for(Class t:list) if (test.equals(t)) return true;
-    return false;
-  }
-
   public final static <T extends TextRecord> T parse(Class<T> recordClass, Scanner scanner) {
     T textRecord;
     try {
@@ -114,22 +119,17 @@ public abstract class TextRecord {
     } catch (Exception e){throw new RuntimeException(e);}
     if (textRecord.success()) {
       textRecord.start();
-      if (textRecord.success() && textRecord.isActive()){
+      if (textRecord.success() && textRecord.hasEnding()){
         throw new IllegalStateException("text record acquisition for "+recordClass.getName()+" did not complete");
       }
-      // after each main record is compiled, it's history is discarded
-      // this allows cancellation on parsed objects, but keeps scanner's history
-      // within sane limitations. the operative theory is that, after processing
-      // a main, sub-main, or command, history is no longer applicable for scanning.
-      if (classListContains(recordClass, Main.class, Child.class, Command.class))
-        scanner.flushHistory();
+      if (textRecord instanceof Final) scanner.flushHistory();
     }
     return textRecord;
   }
 
   protected void start(){}
 
-  static public class Main extends TextRecord implements ScannerDriver.WithBufferControlPort {
+  static public class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, Final {
     List<TextRecord> records = new ArrayList<>();
     public Main(Scanner scanner) {
       super(scanner);
@@ -182,7 +182,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  static public class Comment extends TextRecord {
+  static public class Comment extends TextRecord implements Final {
     protected String text;
     public Comment(Scanner scanner) {
       super(scanner);
@@ -239,12 +239,12 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class ParameterList extends TextRecord {
+  public static class ParameterList extends TextRecord implements Final {
     ParameterList(Scanner scanner) {
       super(scanner);
     }
   }
-  public static class Redirect extends TextRecord {
+  public static class Redirect extends TextRecord implements Final {
     Redirect(Scanner scanner) {
       super(scanner);
     }
@@ -254,7 +254,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class HereDocument extends TextRecord {
+  public static class HereDocument extends TextRecord implements Final {
     HereDocument(Scanner scanner) {
       super(scanner);
     }
