@@ -7,7 +7,6 @@ import box.star.text.basic.ScannerDriver;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.List;
 
 import static box.star.shell.runtime.TextRecord.Status.*;
 
@@ -41,23 +40,29 @@ public abstract class TextRecord {
    */
   public interface Final {}
 
-  public enum Type {
+  public static class List<T extends TextRecord> extends ArrayList<T>{}
+  
+  public enum Types {
     TEXT_RECORD_TYPE_SHEBANG,
     TEXT_RECORD_TYPE_MAIN,
     TEXT_RECORD_TYPE_CHILD,
+    TEXT_RECORD_TYPE_COMMAND_GROUP,
     TEXT_RECORD_TYPE_COMMENT,
     TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION,
-    TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION_LIST,
     TEXT_RECORD_TYPE_COMMAND,
     TEXT_RECORD_TYPE_PARAMETER,
     TEXT_RECORD_TYPE_PARAMETER_TEXT,
     TEXT_RECORD_TYPE_PARAMETER_LITERAL,
     TEXT_RECORD_TYPE_PARAMETER_QUOTED,
-    TEXT_RECORD_TYPE_PARAMETER_LIST,
     TEXT_RECORD_TYPE_REDIRECT,
-    TEXT_RECORD_TYPE_REDIRECT_LIST,
-    TEXT_RECORD_TYPE_COMMAND_LIST,
     TEXT_RECORD_TYPE_HERE_DOCUMENT
+  }
+  
+  public enum Lists {
+    TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION_LIST,
+    TEXT_RECORD_TYPE_PARAMETER_LIST,
+    TEXT_RECORD_TYPE_REDIRECT_LIST,
+    TEXT_RECORD_TYPE_COMMAND_LIST
   }
 
   public enum Status {OK, FAILED}
@@ -131,8 +136,9 @@ public abstract class TextRecord {
 
   protected void start(){}
 
-  static public class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, Final {
-    List<TextRecord> records = new ArrayList<>();
+  // Types
+  public static class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, Final {
+    List records = new List();
     public Main(Scanner scanner) {
       super(scanner);
     }
@@ -166,7 +172,7 @@ public abstract class TextRecord {
           break;
         }
         case '{': {
-          CommandList list = parse(CommandList.class, scanner);
+          CommandGroup list = parse(CommandGroup.class, scanner);
           if (list.success()) records.add(list);
           break;
         }
@@ -179,12 +185,18 @@ public abstract class TextRecord {
     @Override
     protected void start() { scanner.assemble(this); }
   }
-  static public class Child extends Main {
+  public static class Child extends Main {
     Child(Scanner scanner) {
       super(scanner);
     }
   }
-  static public class Comment extends TextRecord implements Final {
+  public static class CommandGroup extends TextRecord {
+    CommandList commands;
+    public CommandGroup(Scanner scanner) {
+      super(scanner);
+    }
+  }
+  public static class Comment extends TextRecord implements Final {
     protected String text;
     public Comment(Scanner scanner) {
       super(scanner);
@@ -202,7 +214,7 @@ public abstract class TextRecord {
       return;
     }
   }
-  static public class Shebang extends Comment {
+  public static class Shebang extends Comment {
     public Shebang(Scanner scanner) {
       super(scanner);
     }
@@ -211,23 +223,18 @@ public abstract class TextRecord {
       return data[data.length - 1];
     }
   }
-  static public class EnvironmentOperation extends TextRecord {
+  public static class EnvironmentOperation extends TextRecord {
     EnvironmentOperation(Scanner scanner) {
       super(scanner);
     }
   }
-  static public class EnvironmentOperationList extends TextRecord {
-    public EnvironmentOperationList(Scanner scanner) {
-      super(scanner);
-    }
-  }
-  static public class Command extends TextRecord implements Final {
+  public static class Command extends TextRecord implements Final {
     CommandList pipeChain;
     Command(Scanner scanner) {
       super(scanner);
     }
   }
-  static public abstract class Parameter extends TextRecord {
+  public static abstract class Parameter extends TextRecord {
     Parameter(Scanner scanner) {
       super(scanner);
     }
@@ -248,23 +255,8 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class ParameterList extends TextRecord implements Final {
-    ParameterList(Scanner scanner) {
-      super(scanner);
-    }
-  }
   public static class Redirect extends ParameterText implements Final {
     Redirect(Scanner scanner) {
-      super(scanner);
-    }
-  }
-  public static class RedirectList extends TextRecord implements Final {
-    public RedirectList(Scanner scanner) {
-      super(scanner);
-    }
-  }
-  public static class CommandList extends TextRecord {
-    CommandList(Scanner scanner) {
       super(scanner);
     }
   }
@@ -273,4 +265,11 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
+
+  // Lists
+  public static class EnvironmentOperationList extends TextRecord.List<EnvironmentOperation> {}
+  public static class ParameterList extends TextRecord.List<Parameter> {}
+  public static class RedirectList extends TextRecord.List<Redirect> {}
+  public static class CommandList extends TextRecord.List<Command> {}
+
 }
