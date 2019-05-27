@@ -8,4 +8,5 @@ public interface ScannerDriver {
   interface WithBufferControlPort extends ScannerDriver {
     boolean collect(Scanner scanner, StringBuilder buffer, char character);
   }
+  interface WithMasterControlPorts extends WithExpansionControlPort, WithBufferControlPort {}
 }
