@@ -100,6 +100,11 @@ public abstract class TextRecord {
     return (end==0)?scanner.getIndex()-start:end-start;
   }
 
+  private static boolean classListContains(Class test, Class... list){
+    for(Class t:list) if (test.equals(t)) return true;
+    return false;
+  }
+
   public final static <T extends TextRecord> T parse(Class<T> recordClass, Scanner scanner) {
     T textRecord;
     try {
@@ -112,8 +117,12 @@ public abstract class TextRecord {
       if (textRecord.success() && textRecord.isActive()){
         throw new IllegalStateException("text record acquisition for "+recordClass.getName()+" did not complete");
       }
-      // after each record is compiled, it's history is discarded
-      scanner.flushHistory();
+      // after each main record is compiled, it's history is discarded
+      // this allows cancellation on parsed objects, but keeps scanner's history
+      // within sane limitations. the operative theory is that, after processing
+      // a main, sub-main, or command, history is no longer applicable for scanning.
+      if (classListContains(recordClass, Main.class, Child.class, Command.class))
+        scanner.flushHistory();
     }
     return textRecord;
   }
