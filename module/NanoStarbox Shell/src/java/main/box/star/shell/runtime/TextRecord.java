@@ -42,7 +42,7 @@ public abstract class TextRecord {
 
   public static class List<T extends TextRecord> extends ArrayList<T>{}
   
-  public enum Types {
+  public enum Type {
     TEXT_RECORD_TYPE_SHEBANG,
     TEXT_RECORD_TYPE_MAIN,
     TEXT_RECORD_TYPE_CHILD,
@@ -58,11 +58,11 @@ public abstract class TextRecord {
     TEXT_RECORD_TYPE_HERE_DOCUMENT
   }
   
-  public enum Lists {
-    TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION_LIST,
-    TEXT_RECORD_TYPE_PARAMETER_LIST,
-    TEXT_RECORD_TYPE_REDIRECT_LIST,
-    TEXT_RECORD_TYPE_COMMAND_LIST
+  public enum ListType {
+    TEXT_RECORD_LIST_TYPE_ENVIRONMENT_OPERATION_LIST,
+    TEXT_RECORD_LIST_TYPE_PARAMETER_LIST,
+    TEXT_RECORD_LIST_TYPE_REDIRECT_LIST,
+    TEXT_RECORD_LIST_TYPE_COMMAND_LIST
   }
 
   public enum Status {OK, FAILED}
@@ -229,8 +229,11 @@ public abstract class TextRecord {
     }
   }
   public static class Command extends TextRecord implements Final {
-    CommandList pipeChain;
-    Command(Scanner scanner) {
+    protected EnvironmentOperationList environmentOperations;
+    protected ParameterList parameters;
+    protected RedirectList redirects;
+    protected Command pipe;
+    public Command(Scanner scanner) {
       super(scanner);
     }
   }
