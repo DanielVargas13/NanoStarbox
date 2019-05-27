@@ -12,7 +12,7 @@ import java.io.File;
 
 class MainTest {
 
-  @Test void main(){
+  void main(){
     Main shell = new Main("hi");
     System.out.println(shell.getShellBaseDirectory());
     Scanner scanner = new Scanner("test", "(shit hit the fan < 'colloqial ism') | (grep shell)");
@@ -22,7 +22,7 @@ class MainTest {
     System.out.println(String.join(", ", TextRedirection.redirectionOperators));
   }
 
-  @Test void scanControl(){
+  void scanControl(){
     MainControl mc = new MainControl();
     Scanner scanner = new Scanner(getClass().getSimpleName(), "Hello to you");
     scanner.assemble(mc);
@@ -32,6 +32,6 @@ class MainTest {
     File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
     Scanner scanner = new Scanner(shebang_line_file);
     TextRecord.Main result = TextRecord.parse(TextRecord.Main.class, scanner);
-    System.err.println(result.getOrigin());
+    System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
   }
 }
