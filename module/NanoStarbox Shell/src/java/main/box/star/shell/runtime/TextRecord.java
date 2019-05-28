@@ -85,10 +85,6 @@ public abstract class TextRecord {
   final public boolean successful(){return status.equals(OK);}
 
   final protected Bookmark cancel() {
-    if (this instanceof WithAutoFlush){
-      throw new IllegalStateException("cannot cancel " + getClass().getName() +
-          "; task is Final");
-    }
     Bookmark bookmark = scanner.createBookmark();
     scanner.walkBack(this.end = this.start);
     this.status = FAILED;
