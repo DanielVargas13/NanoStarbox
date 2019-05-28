@@ -29,6 +29,14 @@ import static box.star.text.basic.Parser.Status.*;
  */
 public abstract class Parser {
 
+  private final static String
+      PARSER_DID_NOT_SYNC = ": parser did not synchronize its end result with the scanner state",
+      PARSER_DID_NOT_FINISH = ": parser must call finish before it exits",
+      PARSER_ALREADY_FINISHED = ": parsing already finished",
+      PARSER_QA_BUG = " (parser quality assurance bug)",
+      PARSER_CODE_QUALITY_BUG = " (code optimization bug)"
+  ;
+
   // Public Static Class Provisions
   public static class
     List<T extends Parser> extends ArrayList<T> {}
@@ -94,8 +102,11 @@ public abstract class Parser {
     return ((scanner.endOfSource()?-1:0))+scanner.getIndex() != this.end;
   }
 
+  /**
+   * A parser must call finish before it exits {@link #start()}
+   */
   final protected void finish(){
-    if (finished) throw new IllegalStateException("this task is already finished (code optimization bug)");
+    if (finished) throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, new IllegalStateException(this.getClass().getName()+PARSER_ALREADY_FINISHED));
     this.end = scanner.getIndex();
     this.finished = true;
   }
@@ -104,39 +115,37 @@ public abstract class Parser {
 
   // Public Static Methods
 
-  final public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserClass, @NotNull Scanner scanner) throws IllegalStateException {
+  final public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
     T parser;
     try {
-      Constructor<T> classConstructor = parserClass.getConstructor(Scanner.class);
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(e);}
     if (parser.successful()) { parser.start();
       if (! parser.isFinished())
-        throw new IllegalStateException(parserClass.getName()+
-            " did not finish parsing");
+        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
-        throw new IllegalStateException(parserClass.getName()+
-            " did not synchronize its end result with the scanner state");
+        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
       if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
   }
 
-  protected <T extends Parser> @NotNull T parse(@NotNull Class<T> parserClass){
+  // Protected Method (located here for mirroring with static method above)
+
+  protected <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass){
     T parser;
     try {
-      Constructor<T> classConstructor = parserClass.getConstructor(Scanner.class);
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(e);}
     if (parser.successful()) { parser.start();
       if (! parser.isFinished())
-        throw new IllegalStateException(parserClass.getName()+
-            " did not finish parsing");
+        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
-        throw new IllegalStateException(parserClass.getName()+
-            " did not synchronize its end result with the scanner state");
+        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
       if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
