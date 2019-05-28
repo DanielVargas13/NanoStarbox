@@ -168,7 +168,7 @@ public class Parser {
   public static class SyntaxError extends RuntimeException {
     protected Parser parser;
     private String tag(){
-      return parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
+      return parser.getClass().getName()+".SyntaxError: ";
     }
     @Override
     public String toString() {
