@@ -7,27 +7,46 @@ import static box.star.text.basic.Parser.Status.*;
 
 public abstract class Parser {
 
+  // Public Static Class Provisions
+  public static class
+    List<T extends Parser> extends ArrayList<T> {}
+  public static enum
+    Status {OK, FAILED}
+
+  // Protected Properties
+  protected Status status;
+  protected Scanner scanner;
+
+  // Private Properties
+  private long start, end;
+  private boolean finished;
+  private Bookmark origin;
+
+  // Public Properties
+  final public boolean successful(){return status.equals(OK);}
+  final public boolean isFinished() { return finished; }
+  final public long getStart() { return start; }
+  final public long getEnd() { return end; }
+  final public Bookmark getOrigin() { return origin; }
+
+  // Protected Static Class Provisions
   /**
    * This Interface allows a Parser to specify that upon successful
    * completion the scanner history should be synchronized (flushed) with the
    * current position.
    */
-  public static interface WithAutoFlush {}
-  public static enum Status {OK, FAILED}
+  protected static interface WithAutoFlush {}
 
+  // Protected Constructors
+  protected Parser(Scanner scanner){
+    if (scanner.endOfSource()){ status = FAILED; return; }
+    this.scanner = scanner;
+    this.origin = scanner.nextBookmark();
+    start = origin.index - 1;
+    status = OK;
+  }
 
-  public static class List<T extends Parser> extends ArrayList<T> {}
-
-  // Properties
-  protected Status status = OK;
-  protected Scanner scanner;
-
-  private long start, end;
-  private boolean finished;
-  private Bookmark origin;
-
-  final public boolean successful(){return status.equals(OK);}
-
+  // Protected Methods
   final protected Bookmark cancel() {
     Bookmark bookmark = scanner.createBookmark();
     scanner.walkBack(this.end = this.start);
@@ -48,26 +67,10 @@ public abstract class Parser {
     return ((scanner.endOfSource()?-1:0))+scanner.getIndex() != this.end;
   }
 
-  final public boolean isFinished() {
-    return finished;
-  }
-
   final protected void finish(){
     if (finished) throw new IllegalStateException("this task is already finished (code optimization bug)");
     this.end = scanner.getIndex();
     this.finished = true;
-  }
-
-  final public long getStart() {
-    return start;
-  }
-
-  final public long getEnd() {
-    return end;
-  }
-
-  final public Bookmark getOrigin() {
-    return origin;
   }
 
   final protected long length(){
@@ -76,6 +79,8 @@ public abstract class Parser {
   }
 
   protected abstract void start();
+
+  // Public Static Methods
 
   final public static <T extends Parser> T parse(Class<T> parserClass, Scanner scanner) throws IllegalStateException {
     T parser;
