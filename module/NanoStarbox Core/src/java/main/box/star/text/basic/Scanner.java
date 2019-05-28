@@ -11,7 +11,6 @@ import box.star.text.SyntaxError;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
@@ -1364,26 +1363,29 @@ public class Scanner implements Closeable, Iterable<Character> {
     return Integer.parseInt(numbers);
   }
 
-  private Iterator<Character> iterator;
-
-  {
-    Scanner scanner = this;
-    iterator =new Iterator<Character>() {
-      @Override
-      public boolean hasNext() {
-        return scanner.haveNext();
-      }
-
-      @Override
-      public Character next() {
-        return scanner.next();
-      }
-    };
+  @Override
+  public Iterator iterator() {
+    return new Iterator(this);
   }
 
-  @Override
-  public Iterator<Character> iterator() {
-    return iterator;
+  final public static class Iterator implements java.util.Iterator<Character>{
+    private Scanner scanner;
+    private long start;
+    public Iterator(Scanner scanner){
+      this.scanner = scanner;
+      start = scanner.getIndex();
+    }
+    @Override
+    final public boolean hasNext() {
+      return scanner.haveNext();
+    }
+    @Override
+    final public Character next() {
+      return scanner.next();
+    }
+    final public void cancel(){
+      scanner.walkBack(start);
+    }
   }
 
   public static interface SourceDriver {
