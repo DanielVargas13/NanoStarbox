@@ -1,7 +1,6 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
-import box.star.text.SyntaxError;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,17 +13,17 @@ class TextScannerTest {
 
   @Test
   void general_testing() {
-    Scanner x = new Scanner(new File("src/java/resource/mixed-content-page.html"));
+    LegacyScanner x = new LegacyScanner(new File("src/java/resource/mixed-content-page.html"));
     String result;
 
     result = x.nextField('<');
     assertEquals("", result);
 
-    result = x.run(new ScannerMethod() {
+    result = x.run(new LegacyScanner.ScannerMethod() {
       char[] terminator = new char[]{META_DOCUMENT_TAG_END};
 
       @Override
-      public boolean terminate(@NotNull Scanner scanner, char character) {
+      public boolean terminate(@NotNull LegacyScanner scanner, char character) {
         if (zeroTerminator(scanner, character)) return true;
         else return mapContains(character, terminator);
       }
@@ -34,9 +33,9 @@ class TextScannerTest {
 
   @Test
   void snapshot_lifecycle() {
-    Scanner x = new Scanner("test-string", "0123456789");
+    LegacyScanner x = new LegacyScanner("test-string", "0123456789");
     assertEquals(false, x.hasStateRecordLock());
-    ScannerStateRecord s = x.getStateLock();
+    LegacyScanner.ScannerStateRecord s = x.getStateLock();
     assertEquals(true, x.hasStateRecordLock());
     assertEquals("01", x.nextMap(2, MAP_ASCII_NUMBERS));
     s.free();
@@ -46,9 +45,9 @@ class TextScannerTest {
   }
 
   void snapshot_rewind_lifecycle() {
-    Scanner x = new Scanner("test-string", "0123456789");
+    LegacyScanner x = new LegacyScanner("test-string", "0123456789");
     assertEquals(false, x.hasStateRecordLock());
-    ScannerStateRecord s = x.getStateLock();
+    LegacyScanner.ScannerStateRecord s = x.getStateLock();
     assertEquals(true, x.hasStateRecordLock());
     assertEquals("01", x.nextMap(2, MAP_ASCII_NUMBERS));
     s.restore();
@@ -61,15 +60,15 @@ class TextScannerTest {
     String s = "0123456789";
     String s2 = s + "A";
     String s3 = s + "a";
-    Scanner x = new Scanner("test-string", s2);
-    ScannerStateRecord sx = x.getStateLock();
+    LegacyScanner x = new LegacyScanner("test-string", s2);
+    LegacyScanner.ScannerStateRecord sx = x.getStateLock();
     assertEquals(s2, x.nextString(s2, true));
     sx.restore();
     try {
       sx = x.getStateLock();
       x.nextString(s3, true);
     }
-    catch (SyntaxError e) {
+    catch (LegacyScanner.SyntaxError e) {
       String certification = "Expected A and found a at location = " +
           "{line: 1, column: 11, index: 10, source: 'test-string'}";
       assertEquals(certification, e.getMessage());
@@ -84,12 +83,12 @@ class TextScannerTest {
   @Test
   void location_tracking() {
     String s = "0123456789";
-    Scanner x = new Scanner("test-string", s);
+    LegacyScanner x = new LegacyScanner("test-string", s);
     x.next();
     assertEquals(1, x.getColumn());
     x.back();
     assertEquals(0, x.getColumn());
-    System.err.println(x.run(new ScannerMethod() {}));
+    System.err.println(x.run(new LegacyScanner.ScannerMethod() {}));
     assertEquals(s.indexOf("9"), x.getIndex());
     assertEquals(s.length(), x.getColumn());
     assertTrue(x.endOfSource());
@@ -97,9 +96,9 @@ class TextScannerTest {
     x.back();
     x.back();
     assertEquals(s.length() - 3, x.getColumn());
-    System.err.println(x.run(new ScannerMethod() {
+    System.err.println(x.run(new LegacyScanner.ScannerMethod() {
       @Override
-      protected @NotNull String compile(@NotNull Scanner scanner) {
+      protected @NotNull String compile(@NotNull LegacyScanner scanner) {
         if (scanner.getIndex() == 9) {
           backStep(scanner);
           backStep(scanner);

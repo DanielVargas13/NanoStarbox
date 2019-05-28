@@ -2,8 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
-import box.star.text.basic.Scanner;
-import box.star.text.basic.ScannerMethod;
+import box.star.text.basic.LegacyScanner;
 
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -67,27 +66,27 @@ public class MacroShell {
     return this;
   }
 
-  private String nextMacroBody(Scanner scanner, char closure) {
+  private String nextMacroBody(LegacyScanner scanner, char closure) {
     String data = scanner.nextField(closure);
     scanner.nextCharacter(closure);
     return data;
   }
 
-  public String start(Scanner scanner) {
+  public String start(LegacyScanner scanner) {
     return scanner.run(macroRunner);
   }
 
   public String start(String file, String text) {
-    Scanner scanner = new Scanner(file, text);
+    LegacyScanner scanner = new LegacyScanner(file, text);
     return scanner.run(macroRunner);
   }
 
   public String start(String file, String text, long line, long column, long index) {
-    Scanner scanner = new Scanner(file, text).At(line, column, index);
+    LegacyScanner scanner = new LegacyScanner(file, text).At(line, column, index);
     return scanner.run(macroRunner);
   }
 
-  private String doMacro(Scanner scanner) {
+  private String doMacro(LegacyScanner scanner) {
     MacroShell context = this;
     char next = scanner.next();
     switch (next) {
@@ -110,7 +109,7 @@ public class MacroShell {
     return Char.toString(macroTrigger);
   }
 
-  private String doCommand(Scanner scanner, String commandName, Stack<String> parameters) {
+  private String doCommand(LegacyScanner scanner, String commandName, Stack<String> parameters) {
     if (commands.containsKey(commandName)) {
       Command command = commands.get(commandName);
       command.enterContext(scanner, this);
@@ -137,7 +136,7 @@ public class MacroShell {
   }
 
   public static class Command implements Cloneable {
-    protected Scanner scanner;
+    protected LegacyScanner scanner;
     protected MacroShell main;
     protected String nameTag;
 
@@ -158,13 +157,13 @@ public class MacroShell {
 
     protected Stack<String> split(String source) {
       ParameterBuilder pb = new ParameterBuilder();
-      Scanner scanner = new Scanner("split", source + EXIT_PROCEDURE);
+      LegacyScanner scanner = new LegacyScanner("split", source + EXIT_PROCEDURE);
       Stack<String> parameters = new Stack<>();
       scanner.run(pb, main, parameters);
       return parameters;
     }
 
-    protected void enterContext(Scanner scanner, MacroShell main) {
+    protected void enterContext(LegacyScanner scanner, MacroShell main) {
       this.scanner = scanner;
       this.main = main;
     }
@@ -185,14 +184,14 @@ public class MacroShell {
     }
   }
 
-  public static class Main extends ScannerMethod {
+  public static class Main extends LegacyScanner.ScannerMethod {
 
     MacroShell context;
 
     public Main(MacroShell context) { this.context = context; }
 
     @Override
-    protected boolean terminate(@NotNull Scanner scanner, char character) {
+    protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
       if (character == context.macroTrigger) {
         swap(context.doMacro(scanner));
         return false;
@@ -202,7 +201,7 @@ public class MacroShell {
 
   }
 
-  private static class ParameterBuilder extends ScannerMethod {
+  private static class ParameterBuilder extends LegacyScanner.ScannerMethod {
 
     private static final Char.Assembler assembler =
         new Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
@@ -211,7 +210,7 @@ public class MacroShell {
     private char[] PARAMETER_TEXT_MAP;
 
     @Override
-    protected void start(@NotNull Scanner scanner, Object[] parameters) {
+    protected void start(@NotNull LegacyScanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>) parameters[1];
       PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger, ENTER_PROCEDURE).toMap();
@@ -219,13 +218,13 @@ public class MacroShell {
     }
 
     @Override
-    protected boolean scan(@NotNull Scanner scanner) {
+    protected boolean scan(@NotNull LegacyScanner scanner) {
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       return true;
     }
 
     protected Stack<String> split(String source) {
-      Scanner scanner = new Scanner("split", source + EXIT_PROCEDURE);
+      LegacyScanner scanner = new LegacyScanner("split", source + EXIT_PROCEDURE);
       Stack<String> parameters = new Stack<>();
       scanner.run(this, context, parameters);
       return parameters;
@@ -236,9 +235,9 @@ public class MacroShell {
      *
      * @param scanner
      * @return
-     * @throws SyntaxError
+     * @throws LegacyScanner.SyntaxError
      */
-    private String extractQuote(Scanner scanner) throws SyntaxError {
+    private String extractQuote(LegacyScanner scanner) throws LegacyScanner.SyntaxError {
 
       StringBuilder sb = new StringBuilder();
 
@@ -277,7 +276,7 @@ public class MacroShell {
       return sb.toString();
     }
 
-    private String getParameter(Scanner scanner, char character) {
+    private String getParameter(LegacyScanner scanner, char character) {
       char c;
       StringBuilder data = new StringBuilder();
       if (character == context.macroTrigger) {
@@ -313,7 +312,7 @@ public class MacroShell {
     }
 
     @Override
-    protected boolean terminate(@NotNull Scanner scanner, char character) {
+    protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
       if (character == EXIT_PROCEDURE) {
         backStep(scanner);
         return true;
@@ -326,22 +325,22 @@ public class MacroShell {
     }
 
     @Override
-    protected @NotNull String compile(@NotNull Scanner scanner) { return Tools.EMPTY_STRING; }
+    protected @NotNull String compile(@NotNull LegacyScanner scanner) { return Tools.EMPTY_STRING; }
 
   }
 
-  private class CommandBuilder extends ScannerMethod {
+  private class CommandBuilder extends LegacyScanner.ScannerMethod {
 
     MacroShell context;
     private ParameterBuilder parameterBuilder = new ParameterBuilder();
 
     @Override
-    protected void start(@NotNull Scanner scanner, Object[] parameters) {
+    protected void start(@NotNull LegacyScanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
     }
 
     @Override
-    protected boolean scan(@NotNull Scanner scanner) {
+    protected boolean scan(@NotNull LegacyScanner scanner) {
       if (current() == EXIT_PROCEDURE) { backStep(scanner); } else {
         String name = current() + scanner.nextField(BREAK_COMMAND_MAP);
         char c = scanner.next();

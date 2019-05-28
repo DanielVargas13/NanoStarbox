@@ -5,12 +5,10 @@ import box.star.shell.runtime.Environment;
 import box.star.shell.runtime.io.StreamTable;
 import box.star.shell.runtime.parts.TextCommand;
 import box.star.text.Char;
-import box.star.text.SyntaxError;
+import box.star.text.basic.LegacyScanner;
 import box.star.text.basic.Scanner;
-import box.star.text.basic.ScannerMethod;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.Stack;
 
 import static box.star.text.Char.*;
@@ -101,7 +99,7 @@ public class Host {
     return out.substring(0, Math.max(0, out.length() - 1));
   }
 
-  public static class Main extends ScannerMethod {
+  public static class Main extends LegacyScanner.ScannerMethod {
 
     Host context;
 
@@ -258,7 +256,7 @@ public class Host {
       if (Char.mapContains(character, Char.MAP_ASCII_ALL_WHITE_SPACE)) {return false;}
       switch (character) {
         case 0: {
-          if (scanner.escapeMode()) throw new SyntaxError("escaped end of stream");
+          if (scanner.escapeMode()) throw new LegacyScanner.SyntaxError("escaped end of stream");
           return true;
         }
         case '#': {

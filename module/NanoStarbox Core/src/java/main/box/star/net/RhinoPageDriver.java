@@ -10,7 +10,7 @@ import box.star.net.tools.ServerContent;
 import box.star.net.tools.ServerResult;
 import box.star.text.Char;
 import box.star.text.MacroShell;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
@@ -234,7 +234,7 @@ public class RhinoPageDriver implements
     try {
       Scriptable jsThis = getScriptShell(cx, global);
       InputStream sourceStream = content.getStream();
-      Scanner scanner = new Scanner(content.session.getUri(), Streams.readWholeString(sourceStream));
+      LegacyScanner scanner = new LegacyScanner(content.session.getUri(), Streams.readWholeString(sourceStream));
       sourceStream.close();
       MacroShell documentBuilder = new MacroShell(System.getenv());
       ScriptRuntime.setObjectProp(jsThis, "directory", Context.javaToJS(content.getDirectory(), jsThis), cx);
@@ -261,7 +261,7 @@ public class RhinoPageDriver implements
     String scan;
     int SEEK = HTML_MAGIC.length();
     source.mark(SEEK);
-    scan = new Scanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextFieldLength(SEEK, '>');
+    scan = new LegacyScanner(NANO_STARBOX_JAVASCRIPT_SERVER_PAGE, source).nextFieldLength(SEEK, '>');
     source.reset();
     if ((scan + '>').equals(HTML_MAGIC)) {
       //noinspection ResultOfMethodCallIgnored
