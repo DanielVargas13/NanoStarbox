@@ -844,6 +844,8 @@ public class Scanner implements Closeable {
     do {
       c = this.next();
 
+      if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) continue;
+
       if (endOfSource()) {
         if (expansionControlPort != null && escapeMode())
           throw new FormatException("expected character escape sequence, found end of stream");
