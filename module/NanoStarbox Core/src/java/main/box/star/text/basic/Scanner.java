@@ -494,7 +494,7 @@ public class Scanner implements Closeable, Iterable<Character> {
       if (endOfSource()) {
         if (expansionControlPort != null && escapeMode())
           throw new FormatException("expected character escape sequence, found end of stream");
-        return sb.toString();
+        //return sb.toString();
       }
 
       if (expansionControlPort != null && escapeMode()) {

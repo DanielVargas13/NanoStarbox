@@ -113,7 +113,10 @@ public class Parser extends box.star.text.basic.Parser {
      * @see #collect(Scanner, StringBuilder, char)
      */
     @Override
-    protected void start() { scanner.run(this); this.finish(); }
+    protected void start() {
+      scanner.run(this);
+      finish();
+    }
   }
   public static class Child extends Main {
     Child(Scanner scanner) {
