@@ -134,18 +134,12 @@ public abstract class TextRecord {
    * <p>Common TextRecord Parser Factory Parse Method</p>
    * <br>
    * <p>This method constructs TextRecord parsers with a given TextRecord class
-   * and scanner. The method then executes the parser for it's results. This
+   * and scanner. The method then {@link #start() executes} the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
    * parser's current position, which provides a boundary over-read-sanity-check
    * </p>
    * <br>
-   * <p>Each parser is executed using it's {@link #start()} method. The parser
-   * is then in command of what to do with that scanner, at the current point
-   * within it's stream. It may use this method to start other parsers, or
-   * may do any number of things, but it must synchronize with the scanner by the
-   * end of its execution pipe-line.</p>
-   *
    * @param subclass the TextRecord parser class reference
    * @param scanner the source scanner
    * @param <T> the TextRecord subclass specification
@@ -172,11 +166,15 @@ public abstract class TextRecord {
 
   /**
    * <p>A class implements this method to begin parsing</p>
+   * <br>
+   * <p>Each parser is executed using it's {@link #start()} method. The parser
+   * is then in command of what to do with that scanner, at the current point
+   * within it's stream. It may use this method to start other parsers, or
+   * may do any number of things, but it must synchronize with the scanner by the
+   * end of its execution pipe-line.</p>
    * @see Main#start()
    */
   protected void start(){}
-
-  // Types
 
   /**
    * <p>Main TextRecord</p>
@@ -346,7 +344,6 @@ public abstract class TextRecord {
     }
   }
 
-  // Lists
   public static class EnvironmentOperationList extends TextRecord.List<EnvironmentOperation> {}
   public static class ParameterList extends TextRecord.List<Parameter> {}
   public static class RedirectList extends TextRecord.List<Redirect> {}
