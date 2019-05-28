@@ -1,6 +1,5 @@
 package box.star.state;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -18,15 +17,12 @@ public class MachineStorage implements Map<Enum, Object> {
   IdentityHashMap<Enum, Object> objectTable = new IdentityHashMap<>();
 
   @Override
-  public boolean equals(Object o) {return objectTable.equals(o);}
-
-  @Override
   public int hashCode() {return objectTable.hashCode();}
 
   @Override
   public Object get(Object key) {return objectTable.get(key);}
 
-  public <T extends Object> T get(Class<T> type, Enum key){
+  public <T> T get(Class<T> type, Enum key){
     return type.cast(get(key));
   }
 
@@ -82,6 +78,5 @@ public class MachineStorage implements Map<Enum, Object> {
   public Object compute(Enum key, BiFunction<? super Enum, ? super Object, ?> remappingFunction) {return objectTable.compute(key, remappingFunction);}
 
   public Object merge(Enum key, Object value, BiFunction<? super Object, ? super Object, ?> remappingFunction) {return objectTable.merge(key, value, remappingFunction);}
-
 
 }
