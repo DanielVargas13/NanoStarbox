@@ -25,6 +25,11 @@ import static box.star.text.basic.Parser.Status.*;
  *   {@link List} class, which can be used to store a list of parser instances
  *   as a list of parsed results.
  * </p>
+ * <br>
+ * <p>Additionally this class provides a custom {@link SyntaxError syntax error class},
+ * inheriting from {@link RuntimeException} which enables uniform and exact
+ * syntax error reporting for all parser subclasses regardless of
+ * implementation.</p>
  * @see Scanner
  */
 public abstract class Parser {
