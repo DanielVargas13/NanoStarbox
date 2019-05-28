@@ -1131,6 +1131,26 @@ public class Scanner implements Closeable {
     return null;
   }
 
+  public String nextNumeric(int min, int max) {
+    String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
+    return assertLengthFormat(min, "expected a minimum of "+min+" numeric characters, have "+nextNumeric.length(), nextNumeric);
+  }
+
+  public String nextAlpha(int min, int max){
+    String nextNumeric = nextMap(max, MAP_ASCII_LETTERS);
+    return assertLengthFormat(min, "expected a minimum of "+min+" alpha characters, have "+nextNumeric.length(), nextNumeric);
+  }
+
+  public String nextHex(int min, int max){
+    String nextNumeric = nextMap(max, MAP_ASCII_HEX);
+    return assertLengthFormat(min, "expected a minimum of "+min+" hex characters, have "+nextNumeric.length(), nextNumeric);
+  }
+
+  public String nextOctal(int min, int max){
+    String nextNumeric = nextMap(max, MAP_ASCII_OCTAL);
+    return assertLengthFormat(min, "expected a minimum of "+min+" octal characters, have "+nextNumeric.length(), nextNumeric);
+  }
+
   /**
    * <p>Starts a {@link ScannerMethod}</p>
    * <br>
