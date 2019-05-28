@@ -1,7 +1,7 @@
 package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 
 import java.util.Stack;
 
@@ -59,8 +59,8 @@ import static box.star.text.Char.*;
   };
 
   static {
-    Scanner.preventWordListShortCircuit(keyWords);
-    Scanner.preventWordListShortCircuit(commandTerminators);
+    LegacyScanner.preventWordListShortCircuit(keyWords);
+    LegacyScanner.preventWordListShortCircuit(commandTerminators);
   }
 
   public static final char[] COMMAND_TERMINATOR_MAP =
@@ -74,7 +74,7 @@ import static box.star.text.Char.*;
   public TextCommand next; // if terminator == pipe
   public TextCommand(String source) {this.source = source;}
 
-  public static TextCommand parseTextCommandStream(Scanner scanner) {
+  public static TextCommand parseTextCommandStream(LegacyScanner scanner) {
     scanner.nextAllWhiteSpace();
     TextCommand textCommand = new TextCommand(scanner.nextBookmark().path.substring(1));
     textCommand.environmentOperations = TextEnvironment.parseEnvironmentOperations(scanner);
@@ -87,7 +87,7 @@ import static box.star.text.Char.*;
     return textCommand;
   }
 
-  static String processCommandEnding(Scanner scanner) {
+  static String processCommandEnding(LegacyScanner scanner) {
     char c;
     switch (c = scanner.next()) {
       case ';':
@@ -105,7 +105,7 @@ import static box.star.text.Char.*;
     return null; // not reached
   }
 
-  static TextCommand processPipes(Scanner scanner, TextCommand commandEntry) {
+  static TextCommand processPipes(LegacyScanner scanner, TextCommand commandEntry) {
     if (scanner.endOfSource()) return null;
     if (scanner.nextSequenceMatch(COMMAND_TERMINATOR_DOUBLE_PIPE)){
       commandEntry.terminator = COMMAND_TERMINATOR_DOUBLE_PIPE;

@@ -2,7 +2,7 @@ package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
 import box.star.text.basic.Bookmark;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 import box.star.text.basic.driver.GenericProgramIdentifier;
 
 import java.util.Stack;
@@ -11,7 +11,7 @@ import java.util.Stack;
 
   public Bookmark bookmark;
 
-  public static TextEnvironment parseEnvironmentOperations(Scanner scanner) {
+  public static TextEnvironment parseEnvironmentOperations(LegacyScanner scanner) {
     TextEnvironment operations = new TextEnvironment();
     operations.bookmark = scanner.nextBookmark();
     long start = scanner.getIndex();
@@ -35,11 +35,11 @@ import java.util.Stack;
     return operations;
   }
 
-  private static String processEnvironmentLabel(Scanner scanner) {
+  private static String processEnvironmentLabel(LegacyScanner scanner) {
     return scanner.run(new GenericProgramIdentifier());
   }
 
-  static String[] processEnvironmentOperation(Scanner scanner) {
+  static String[] processEnvironmentOperation(LegacyScanner scanner) {
     String[] operation = new String[3];
     operation[0] = processEnvironmentLabel(scanner);
     if (operation[0] == null) return null;

@@ -2,7 +2,7 @@ package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
 import box.star.text.basic.Bookmark;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 
 @Deprecated public class TextRedirection {
 
@@ -27,17 +27,17 @@ import box.star.text.basic.Scanner;
   };
 
   static {
-    Scanner.preventWordListShortCircuit(redirectionOperators);
+    LegacyScanner.preventWordListShortCircuit(redirectionOperators);
   }
 
-  public static boolean findRedirection(Scanner scanner){
+  public static boolean findRedirection(LegacyScanner scanner){
     long start = scanner.getIndex();
     int stream;
     scanner.nextLineWhiteSpace();
     try { stream = scanner.nextUnsignedInteger(); }
     catch (Exception e) {stream = -1; scanner.walkBack(start);}
     try {
-      if (scanner.nextWordListMatch(redirectionOperators, Scanner.WORD_BREAK, true)) {
+      if (scanner.nextWordListMatch(redirectionOperators, LegacyScanner.WORD_BREAK, true)) {
         scanner.walkBack(start);
         return true;
       }
@@ -46,7 +46,7 @@ import box.star.text.basic.Scanner;
     return false;
   }
 
-  public static TextRedirection parseRedirect(Scanner scanner){
+  public static TextRedirection parseRedirect(LegacyScanner scanner){
     TextRedirection redirect = new TextRedirection();
     scanner.nextLineWhiteSpace();
     if (scanner.endOfSource()) return null;

@@ -18,7 +18,7 @@ import static box.star.text.basic.Parser.Status.*;
  * <p>This class and it's subclasses can be used to execute any parser
  * implementation through it's {@link #parse(Class, Scanner) static parse}
  * method. Each subclass also has an {@link #parse(Class) instance parse} method, which uses the
- * parser's {@link #scanner} to create and start a new parser as an inline scanner pipeline task.</p>
+ * parser's {@link #scanner} to create and start a new parser as an serial scanner pipeline task.</p>
  * <br>
  * <p>
  *   In a typical parser implementation, there is the notion of an elliptical
@@ -121,10 +121,35 @@ public class Parser {
     this.finished = true;
   }
 
+  /**
+   * <p>A class implements this method to begin parsing</p>
+   * <br>
+   * <p>Each parser is executed using it's {@link #start()} method. The parser
+   * is then in command of what to do with that scanner, at the current point
+   * within it's stream. It may use this method to start other parsers, or
+   * may do any number of things, but it must synchronize with the scanner by the
+   * end of it's execution pipe-line.</p>
+   */
   protected void start(){finish();};
 
   // Public Static Methods
 
+  /**
+   * <p>Factory Parse Method</p>
+   * <br>
+   * <p>This method constructs parsers with a given class
+   * and scanner. The method then {@link #start() executes} the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a boundary over-read-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param scanner the source scanner
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
   final public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
     T parser;
     try {
@@ -146,6 +171,21 @@ public class Parser {
 
   // Protected Method (located here for mirroring with static method above)
 
+  /**
+   * <p>Factory Parse Method: serial scanner pipeline task</p>
+   * <br>
+   * <p>This method constructs serial pipeline [co]parsers with a given class.
+   * The method then {@link #start() executes} the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a boundary over-read-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
   protected <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass){
     T parser;
     try {

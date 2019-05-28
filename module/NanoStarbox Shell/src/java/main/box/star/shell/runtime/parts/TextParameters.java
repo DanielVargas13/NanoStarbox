@@ -2,7 +2,7 @@ package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
 import box.star.text.basic.Bookmark;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 
 import java.util.Stack;
 
@@ -16,11 +16,11 @@ import static box.star.text.Char.PIPE;
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
           .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
-  public static TextParameters parseParameters(Scanner scanner){
+  public static TextParameters parseParameters(LegacyScanner scanner){
     return processParameters(scanner);
   }
 
-  public static String parseParameter(Scanner scanner) {
+  public static String parseParameter(LegacyScanner scanner) {
     TextParameters p = new TextParameters();
     p.bookmark = scanner.nextBookmark();
     if (parseParameter(scanner, p)) return String.join(" ", p);
@@ -28,7 +28,7 @@ import static box.star.text.Char.PIPE;
   }
 
   public Bookmark bookmark;
-  public static boolean parseParameter(Scanner scanner, TextParameters parameters) {
+  public static boolean parseParameter(LegacyScanner scanner, TextParameters parameters) {
 
     if (TextRedirection.findRedirection(scanner)) return false;
 
@@ -66,7 +66,7 @@ import static box.star.text.Char.PIPE;
     return true;
   }
 
-  static TextParameters processParameters(Scanner scanner) {
+  static TextParameters processParameters(LegacyScanner scanner) {
     if (scanner.endOfSource()) return null;
     TextParameters parameters = new TextParameters();
     parameters.bookmark = scanner.nextBookmark();
@@ -81,15 +81,15 @@ import static box.star.text.Char.PIPE;
     return parameters;
   }
 
-  static String processLiteralText(Scanner scanner) {
+  static String processLiteralText(LegacyScanner scanner) {
     return scanner.nextField(PARAMETER_TERMINATOR_MAP);
   }
 
-  static String processQuotedLiteralText(Scanner scanner) {
+  static String processQuotedLiteralText(LegacyScanner scanner) {
     return scanner.nextField('\'');
   }
 
-  static String processQuotedMacroText(Scanner scanner) {
+  static String processQuotedMacroText(LegacyScanner scanner) {
     return scanner.nextBoundField('"');
   }
 

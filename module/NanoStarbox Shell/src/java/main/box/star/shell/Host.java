@@ -6,7 +6,6 @@ import box.star.shell.runtime.io.StreamTable;
 import box.star.shell.runtime.parts.TextCommand;
 import box.star.text.Char;
 import box.star.text.basic.LegacyScanner;
-import box.star.text.basic.Scanner;
 
 import java.io.File;
 import java.util.Stack;
@@ -57,17 +56,17 @@ public class Host {
     this.parameters = new Stack<>();
     this.parameters.push(file.getPath());
     for (int i = 0; i < parameters.length; i++) this.parameters.push(parameters[i]);
-    Scanner scanner = new Scanner(file);
+    LegacyScanner scanner = new LegacyScanner(file);
     return scanner.run(macroRunner);
   }
 
-  private String nextMacroBody(Scanner scanner, char closure) {
+  private String nextMacroBody(LegacyScanner scanner, char closure) {
     String data = scanner.nextField(closure);
     scanner.nextCharacter(closure);
     return data;
   }
 
-  private String getMacroText(Scanner scanner){
+  private String getMacroText(LegacyScanner scanner){
     char next = scanner.next();
     if (Char.mapContains(next, Char.MAP_ASCII_NUMBERS)){
       return next+scanner.nextMap(Char.MAP_ASCII_NUMBERS); }
@@ -78,7 +77,7 @@ public class Host {
     return null; // not reached
   }
 
-  private String doMacro(Scanner scanner) {
+  private String doMacro(LegacyScanner scanner) {
     char next = scanner.next();
     if (Char.mapContains(next, Char.MAP_ASCII_NUMBERS)){
       int index = Integer.parseInt(next+scanner.nextMap(Char.MAP_ASCII_NUMBERS));
@@ -93,7 +92,7 @@ public class Host {
     return Char.toString(MACRO_TRIGGER);
   }
 
-  private String doCommand(Scanner scanner, Stack<String> parameters) {
+  private String doCommand(LegacyScanner scanner, Stack<String> parameters) {
     StringBuilder out = new StringBuilder();
     for(String p: parameters) out.append(p).append(SPACE);
     return out.substring(0, Math.max(0, out.length() - 1));
@@ -105,7 +104,7 @@ public class Host {
 
     public Main(Host context) { this.context = context; }
 
-    TextCommand processCommandLine(Scanner scanner) {
+    TextCommand processCommandLine(LegacyScanner scanner) {
      // scanner.nextAllWhiteSpace();
       //TextCommand textCommand = new TextCommand(scanner.nextCharacterClaim().substring(1));
 //      textCommand.environmentOperations = processEnvironmentOperations(scanner);
@@ -113,7 +112,7 @@ public class Host {
       return null;//processRedirects(scanner, textCommand);
     }
 
-    Stack<String[]> processEnvironmentOperations(Scanner scanner) {
+    Stack<String[]> processEnvironmentOperations(LegacyScanner scanner) {
       Stack<String[]> operations = new Stack<>();
       do {
         long start = scanner.getIndex();
@@ -128,7 +127,7 @@ public class Host {
       return operations;
     }
 
-    String processEnvironmentLabel(Scanner scanner) {
+    String processEnvironmentLabel(LegacyScanner scanner) {
       StringBuilder output = new StringBuilder();
       char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('-', '_').toMap();
       do {
@@ -142,7 +141,7 @@ public class Host {
       return output.toString();
     }
 
-    String[] processEnvironmentOperation(Scanner scanner) {
+    String[] processEnvironmentOperation(LegacyScanner scanner) {
       String[] operation = new String[3];
       operation[0] = processEnvironmentLabel(scanner);
       if (operation[0] == null) return null;
@@ -154,25 +153,25 @@ public class Host {
       return operation;
     }
 
-    String processLiteralText(Scanner scanner) {
+    String processLiteralText(LegacyScanner scanner) {
       return scanner.nextField(BREAK_PARAMETER_MAP);
     }
 
-    String processQuotedLiteralText(Scanner scanner) {
+    String processQuotedLiteralText(LegacyScanner scanner) {
       return scanner.nextField('\'');
     }
 
-    String processQuotedMacroText(Scanner scanner) {
+    String processQuotedMacroText(LegacyScanner scanner) {
       return scanner.nextBoundField('"');
     }
 
-    String processParameter(Scanner scanner) {
+    String processParameter(LegacyScanner scanner) {
       Stack<String> p = new Stack<>();
       if (processParameter(scanner, p)) return String.join(" ", p);
       return null;
     }
 
-    boolean processParameter(Scanner scanner, Stack<String> parameters) {
+    boolean processParameter(LegacyScanner scanner, Stack<String> parameters) {
       scanner.nextLineWhiteSpace();
       StringBuilder builder = new StringBuilder();
       long start = scanner.getIndex();
@@ -222,7 +221,7 @@ public class Host {
       return true;
     }
 
-    Stack<String> processParameters(Scanner scanner) {
+    Stack<String> processParameters(LegacyScanner scanner) {
       Stack<String> parameters = new Stack<>();
       do {
         long start = scanner.getIndex();
@@ -235,7 +234,7 @@ public class Host {
       return parameters;
     }
 
-    char processCommandEnding(Scanner scanner) {
+    char processCommandEnding(LegacyScanner scanner) {
       char c;
       switch (c = scanner.next()) {
         case ';':
@@ -252,7 +251,7 @@ public class Host {
     }
 
     @Override
-    protected boolean terminate(@NotNull Scanner scanner, char character) {
+    protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
       if (Char.mapContains(character, Char.MAP_ASCII_ALL_WHITE_SPACE)) {return false;}
       switch (character) {
         case 0: {

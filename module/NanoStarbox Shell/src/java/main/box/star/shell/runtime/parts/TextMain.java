@@ -1,7 +1,7 @@
 package box.star.shell.runtime.parts;
 
 import box.star.text.Char;
-import box.star.text.basic.Scanner;
+import box.star.text.basic.LegacyScanner;
 
 import java.util.Stack;
 
@@ -11,7 +11,7 @@ import java.util.Stack;
 
   TextMain(String source){super(source);}
 
-  public static TextCommand parseTextCommands(Scanner scanner){
+  public static TextCommand parseTextCommands(LegacyScanner scanner){
     if (scanner.endOfSource()) return null;
     scanner.nextLineWhiteSpace();
     char c = scanner.next(); scanner.back();
@@ -20,15 +20,15 @@ import java.util.Stack;
     else return TextCommand.parseTextCommandStream(scanner);
   }
 
-  private static TextMain parseTextCommandShell(Scanner scanner){
+  private static TextMain parseTextCommandShell(LegacyScanner scanner){
     return parseTextCommandGroup(scanner, '(', ')');
   }
 
-  private static TextMain parseTextCommandGroup(Scanner scanner){
+  private static TextMain parseTextCommandGroup(LegacyScanner scanner){
     return parseTextCommandGroup(scanner, '{', '}');
   }
 
-  private static TextMain parseTextCommandGroup(Scanner scanner, char open, char close) {
+  private static TextMain parseTextCommandGroup(LegacyScanner scanner, char open, char close) {
     TextMain textCommands = new TextMain(scanner.toString());
     scanner.nextCharacter(open);
     TextCommand command = null;
