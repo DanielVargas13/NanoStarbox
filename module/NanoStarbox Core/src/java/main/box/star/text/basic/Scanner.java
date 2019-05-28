@@ -580,7 +580,7 @@ public class Scanner implements Closeable {
         if (! endOfSource()) this.back();
         break;
       }
-    } while (true);
+    } while (! endOfSource());
     return sb.toString();
   }
 
@@ -596,7 +596,7 @@ public class Scanner implements Closeable {
     if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
     boolean found;
     char c, v;
-    do {
+    if (! endOfSource()) do {
       found = false; v = next();
       if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
       for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
@@ -620,14 +620,13 @@ public class Scanner implements Closeable {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
-      if (sb.length() == max) break;
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
       else {
         if (! endOfSource()) this.back();
         break;
       }
-    } while (true);
+    } while (! endOfSource() && sb.length() < max);
 
     return sb.toString();
   }
@@ -646,7 +645,7 @@ public class Scanner implements Closeable {
     if (max == 0) --max;
     boolean found;
     char c, v;
-    do {
+    if (! endOfSource()) do {
       found = false; v = next();
       if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
       for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
