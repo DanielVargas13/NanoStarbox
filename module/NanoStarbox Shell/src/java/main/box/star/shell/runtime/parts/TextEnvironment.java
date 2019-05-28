@@ -36,7 +36,7 @@ import java.util.Stack;
   }
 
   private static String processEnvironmentLabel(Scanner scanner) {
-    return scanner.assemble(new GenericProgramIdentifier());
+    return scanner.run(new GenericProgramIdentifier());
   }
 
   static String[] processEnvironmentOperation(Scanner scanner) {

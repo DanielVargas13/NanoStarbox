@@ -684,7 +684,7 @@ public class Scanner implements Closeable {
    * @return the collection of characters allowed by the driver
    * @throws Exception by call to {@link #next()}
    */
-  public String assemble(@NotNull SourceDriver driver) throws Exception {
+  public String run(@NotNull SourceDriver driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     boolean doExpand = false;

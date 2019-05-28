@@ -236,7 +236,7 @@ public abstract class TextRecord {
      * @see #collect(Scanner, StringBuilder, char)
      */
     @Override
-    protected void start() { scanner.assemble(this); }
+    protected void start() { scanner.run(this); }
   }
   public static class Child extends Main {
     Child(Scanner scanner) {

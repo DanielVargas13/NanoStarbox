@@ -27,7 +27,7 @@ class MainTest {
   void scanControl(){
     MainControl mc = new MainControl();
     Scanner scanner = new Scanner(getClass().getSimpleName(), "Hello to you");
-    scanner.assemble(mc);
+    scanner.run(mc);
   }
 
   @Test void text_record_main(){
