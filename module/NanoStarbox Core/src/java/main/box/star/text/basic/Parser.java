@@ -134,7 +134,7 @@ public class Parser {
     } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
       try { parser.start(); }
-      catch (FormatException fe) {throw new SyntaxError(parser, fe.getMessage());}
+      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage());}
       if (! parser.isFinished())
         throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
@@ -155,7 +155,7 @@ public class Parser {
     } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
       try { parser.start(); }
-      catch (FormatException fe) {throw new SyntaxError(parser, fe.getMessage());}
+      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage());}
       if (! parser.isFinished())
         throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
