@@ -1084,7 +1084,7 @@ public class Scanner implements Closeable {
     return Tools.EMPTY_STRING;
   }
 
-  public String nextMatch(int max, Pattern pattern){
+  public @NotNull String nextMatch(int max, @NotNull Pattern pattern){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
     if (! endOfSource()) do {
@@ -1096,7 +1096,7 @@ public class Scanner implements Closeable {
     return Tools.EMPTY_STRING;
   }
 
-  public String nextMatch(int max, Pattern... patterns){
+  public @NotNull String nextMatch(int max, @NotNull Pattern... patterns){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
     if (! endOfSource()) do {
