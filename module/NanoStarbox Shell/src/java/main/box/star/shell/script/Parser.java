@@ -78,7 +78,7 @@ public class Parser extends box.star.text.basic.Parser {
     public boolean collect(Scanner scanner, StringBuilder buffer, char character) {
       if (scanner.endOfSource()) return false;
       else if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) return true;
-      else if (mapContains(character, MAP_ASCII_NUMBERS)){
+      else if (mapContains(character, MAP_ASCII_NUMBERS.toMap())){
         throw new SyntaxError(this, "expected command found digits");
       }
       else switch (character){

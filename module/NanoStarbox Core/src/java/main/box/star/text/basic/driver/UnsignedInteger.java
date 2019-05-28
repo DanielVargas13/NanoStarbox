@@ -6,6 +6,6 @@ import box.star.text.basic.Scanner;
 public class UnsignedInteger implements Scanner.SourceDriver.WithSimpleControlPort {
   @Override
   public boolean collect(Scanner scanner, char character) {
-    return Char.mapContains(character, Char.MAP_ASCII_NUMBERS);
+    return Char.MAP_ASCII_NUMBERS.contains(character);
   }
 }

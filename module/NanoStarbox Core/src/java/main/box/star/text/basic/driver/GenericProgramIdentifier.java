@@ -7,20 +7,20 @@ public class GenericProgramIdentifier implements Scanner.SourceDriver.WithSimple
 
   private int depth = 0;
 
-  protected static char[] FIRST_LETTER_MAP =
-      new Char.Assembler(Char.MAP_ASCII_LETTERS)
-          .merge('_').toMap();
+  protected static Char.Map FIRST_LETTER_MAP =
+      new Char.Map("first identifier letter", new Char.Assembler(Char.MAP_ASCII_LETTERS.toMap())
+          .merge('_'));
 
-  protected static char[] NEXT_LETTER_MAP =
-      new Char.Assembler(FIRST_LETTER_MAP)
-          .merge(Char.MAP_ASCII_NUMBERS).merge('.').toMap();
+  protected static Char.Map NEXT_LETTER_MAP =
+      new Char.Map("identifier character", new Char.Assembler(FIRST_LETTER_MAP.toMap())
+          .merge(Char.MAP_ASCII_NUMBERS.toMap()).merge('.'));
 
   @Override
   public boolean collect(Scanner scanner, char character) {
     boolean status;
     if (depth == 0){ depth++;
-      status = Char.mapContains(character, FIRST_LETTER_MAP);
-    } else status = Char.mapContains(character, NEXT_LETTER_MAP);
+      status = FIRST_LETTER_MAP.contains(character);
+    } else status = NEXT_LETTER_MAP.contains(character);
     if (! scanner.endOfSource() && ! status) scanner.back();
     return status;
   }

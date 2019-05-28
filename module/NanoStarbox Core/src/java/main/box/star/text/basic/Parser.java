@@ -94,7 +94,8 @@ public class Parser {
   // Protected Methods
   final protected @NotNull Bookmark cancel() {
     Bookmark bookmark = scanner.createBookmark();
-    scanner.walkBack(this.end = this.start);
+    if (scanner.getHistoryLength() > 0)
+      scanner.walkBack(this.end = this.start);
     this.status = FAILED;
     return bookmark;
   }
@@ -159,8 +160,10 @@ public class Parser {
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      try { parser.start(); }
-      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage());}
+      try {
+        parser.start();
+      }
+      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage(), fromScannerOrParser);}
       if (! parser.isFinished())
         throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())

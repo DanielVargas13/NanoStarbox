@@ -6,9 +6,7 @@ import box.star.io.Streams;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public final class Char {
@@ -72,12 +70,12 @@ public final class Char {
   public final static char[] MAP_ASCII_EXTENDED = loadResourceMap("MAP_ASCII_EXTENDED");
   public final static char[] MAP_ASCII_ALL_WHITE_SPACE = loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE");
   public final static char[] MAP_ASCII_LINE_WHITE_SPACE = loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE");
-  public final static char[] MAP_ASCII_LETTERS = loadResourceMap("MAP_ASCII_LETTERS");
-  public final static char[] MAP_ASCII_NUMBERS = loadResourceMap("MAP_ASCII_NUMBERS");
+  public final static Char.Map MAP_ASCII_LETTERS = new Char.Map("letters", loadResourceMap("MAP_ASCII_LETTERS"));
+  public final static Char.Map MAP_ASCII_NUMBERS = new Char.Map("digits", loadResourceMap("MAP_ASCII_NUMBERS"));
   public final static char[] MAP_ASCII_CONTROL = loadResourceMap("MAP_ASCII_CONTROL");
   public final static char[] MAP_ASCII_SYMBOLS = loadResourceMap("MAP_ASCII_SYMBOLS");
-  public final static char[] MAP_ASCII_HEX = loadResourceMap("MAP_ASCII_HEX");
-  public final static char[] MAP_ASCII_OCTAL = loadResourceMap("MAP_ASCII_OCTAL");
+  public final static Char.Map MAP_ASCII_HEX = new Char.Map("hex values", loadResourceMap("MAP_ASCII_HEX"));
+  public final static Char.Map MAP_ASCII_OCTAL = new Char.Map("octal values", loadResourceMap("MAP_ASCII_OCTAL"));
 
   private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
   private static Locale locale;
@@ -105,16 +103,16 @@ public final class Char {
   }
 
   public static void importLocaleEnglishASCII() {
-    translate(DELETE, "delete (\\d)");
-    translate(ESCAPE, "escape (\\e)");
+    translate(DELETE, "delete");
+    translate(ESCAPE, "escape");
     translate(BELL, "bell");
-    translate(BACKSPACE, "backspace (\\b)");
-    translate(FORM_FEED, "form-feed (\\f)");
-    translate(VERTICAL_TAB, "vertical-tab (\\v)");
-    translate(HORIZONTAL_TAB, "tab (\\t)");
-    translate(BACKSLASH, "backslash (\\)");
-    translate(LINE_FEED, "line-feed (\\n)");
-    translate(CARRIAGE_RETURN, "carriage-return (\\r)");
+    translate(BACKSPACE, "backspace");
+    translate(FORM_FEED, "form-feed");
+    translate(VERTICAL_TAB, "vertical-tab");
+    translate(HORIZONTAL_TAB, "tab");
+    translate(BACKSLASH, "backslash");
+    translate(LINE_FEED, "line-feed");
+    translate(CARRIAGE_RETURN, "carriage-return");
     translate(SPACE, "space");
   }
 
@@ -394,4 +392,42 @@ public final class Char {
       return buildRangeMap(this);
     }
   }
+
+  public static String mapToTranslation(String conjunction, char... map){
+    if (map.length == 1) return translate(map[0]);
+    String[] out = new String[map.length];
+    int i; for (i = 0; i < map.length - 1; i++) out[i] = translate(map[i]);
+    out[i++] = conjunction+" "+translate(map[map.length - 1]);
+    return String.join(", ", out);
+  }
+
+  public static class Map {
+    private char[] map, lowerCaseMap;
+    private String label;
+    public Map(String label, Assembler assembler){
+      this(label, assembler.toMap());
+    }
+    public Map(String label, char... map){
+      this.label = label; this.map = map;
+    }
+    public boolean contains(char c){
+      for (char t: map) if (c == t) return true;
+      return false;
+    }
+    public boolean containsIgnoreCase(char c){
+      if (lowerCaseMap == null) {
+        lowerCaseMap = new char[map.length];
+        for (int i = 0; i < lowerCaseMap.length; i++)
+          lowerCaseMap[i] = Char.toLowerCase(map[i]);
+      }
+      char a = Char.toLowerCase(c);
+      for (char b: lowerCaseMap) if (a == b) return true;
+      return false;
+    }
+    @Override public String toString() { return label; }
+    public char[] toMap(){
+      return map;
+    }
+  }
+
 }

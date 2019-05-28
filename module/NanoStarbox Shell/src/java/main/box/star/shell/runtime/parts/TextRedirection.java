@@ -37,7 +37,7 @@ import box.star.text.basic.LegacyScanner;
     try { stream = scanner.nextUnsignedInteger(); }
     catch (Exception e) {stream = -1; scanner.walkBack(start);}
     try {
-      if (scanner.nextWordListMatch(redirectionOperators, LegacyScanner.WORD_BREAK, true)) {
+      if (scanner.nextWordListMatch(redirectionOperators, LegacyScanner.WORD_BREAK.toMap(), true)) {
         scanner.walkBack(start);
         return true;
       }

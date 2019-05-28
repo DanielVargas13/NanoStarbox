@@ -68,7 +68,7 @@ public class Host {
 
   private String getMacroText(LegacyScanner scanner){
     char next = scanner.next();
-    if (Char.mapContains(next, Char.MAP_ASCII_NUMBERS)){
+    if (MAP_ASCII_NUMBERS.contains(next)){
       return next+scanner.nextMap(Char.MAP_ASCII_NUMBERS); }
     switch (next) {
       case '_': case '#': return Char.toString(next);
@@ -79,7 +79,7 @@ public class Host {
 
   private String doMacro(LegacyScanner scanner) {
     char next = scanner.next();
-    if (Char.mapContains(next, Char.MAP_ASCII_NUMBERS)){
+    if (MAP_ASCII_NUMBERS.contains(next)){
       int index = Integer.parseInt(next+scanner.nextMap(Char.MAP_ASCII_NUMBERS));
       return parameters.get(index);
     }
@@ -129,7 +129,7 @@ public class Host {
 
     String processEnvironmentLabel(LegacyScanner scanner) {
       StringBuilder output = new StringBuilder();
-      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('-', '_').toMap();
+      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS.toMap()).merge('-', '_').toMap();
       do {
         char c = scanner.next();
         if (c == 0) return null;

@@ -7,6 +7,7 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.text.FormatException;
+import org.mozilla.javascript.ast.FunctionNode;
 
 import java.io.*;
 import java.util.*;
@@ -30,8 +31,8 @@ public class Scanner implements Closeable, Iterable<Character> {
 
   public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
 
-  public final static char[] WORD_BREAK =
-      new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap();
+  public final static Char.Map WORD_BREAK =
+      new Char.Map("word boundary", new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER));
 
   /**
    * Reader for the input.
@@ -202,7 +203,7 @@ public class Scanner implements Closeable, Iterable<Character> {
             +": virtual private int EOF = (-1) is final and"+
             " is not convertible to character value through this interface",
         new IOException("end of source\n   at "+getPath()
-            +String.format(":%i", getLine())
+            +String.format(":%s", getLine())
         ));
     try {
         int i = this.reader.read();
@@ -225,11 +226,9 @@ public class Scanner implements Closeable, Iterable<Character> {
 
   /**
    * Scan and assemble characters while scan is in map.
-   *
-   * @param map
-   * @return
+   * @see #nextMap(Char.Map) Replacement Option
    */
-  public @NotNull String nextMap(@NotNull char... map) {
+  @Deprecated public @NotNull String nextMap(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -243,13 +242,40 @@ public class Scanner implements Closeable, Iterable<Character> {
     return sb.toString();
   }
 
+  public @NotNull char next(char character) {
+    char c = next();
+    if (c != character) {
+      back();
+      throw new FormatException("expected "+translate(character)+" and located "+translate(c));
+    }
+    return c;
+  }
+
   /**
    * Scan and assemble characters while scan is in map.
-   * @param caseSensitive
+   *
    * @param map
    * @return
    */
-  public @NotNull String nextMap(boolean caseSensitive, @NotNull char... map) {
+  public @NotNull String nextMap(@NotNull Char.Map map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) sb.append(c);
+      else {
+        if (! endOfSource()) this.back();
+        break;
+      }
+    } while (! endOfSource());
+    return sb.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is in map.
+   * @see #nextMap(boolean, Char.Map) Replacement Option
+   */
+  @Deprecated public @NotNull String nextMap(boolean caseSensitive, @NotNull char... map) {
     StringBuilder mapped = new StringBuilder();
     char[] mini = null;
     if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
@@ -269,13 +295,32 @@ public class Scanner implements Closeable, Iterable<Character> {
   }
 
   /**
-   * Scan and assemble characters while scan is in map and scan-length < max.
-   *
-   * @param max
+   * Scan and assemble characters while scan is in map.
+   * @param caseSensitive
    * @param map
    * @return
    */
-  public @NotNull String nextMap(int max, @NotNull char... map) {
+  public @NotNull String nextMap(boolean caseSensitive, @NotNull Char.Map map) {
+    StringBuilder mapped = new StringBuilder();
+    boolean found;
+    char c;
+    if (! endOfSource()) do {
+      found = false; c = next();
+      if ((caseSensitive)?map.contains(c):map.containsIgnoreCase(c)) {
+        found = true; break;
+      }
+      if (!found) {
+        back(); break;
+      }
+      mapped.append(c);
+    } while (! endOfSource());
+    return mapped.toString();
+  }
+  /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
+   * @see #nextMap(int, Char.Map) Replacement Option
+   */
+  @Deprecated public @NotNull String nextMap(int max, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -292,12 +337,31 @@ public class Scanner implements Closeable, Iterable<Character> {
 
   /**
    * Scan and assemble characters while scan is in map and scan-length < max.
+   *
    * @param max
-   * @param caseSensitive
    * @param map
    * @return
    */
-  public @NotNull String nextMap(int max, boolean caseSensitive, @NotNull char... map) {
+  public @NotNull String nextMap(int max, @NotNull Char.Map map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) sb.append(c);
+      else {
+        if (! endOfSource()) this.back();
+        break;
+      }
+    } while (! endOfSource() && sb.length() < max);
+
+    return sb.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
+   * @see #nextMap(int, boolean, Char.Map) Replacement Option
+   */
+  @Deprecated public @NotNull String nextMap(int max, boolean caseSensitive, @NotNull char... map) {
     StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
     char[] mini = null;
     if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
@@ -318,16 +382,32 @@ public class Scanner implements Closeable, Iterable<Character> {
   }
 
   /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
+   * @param max
+   * @param caseSensitive
+   * @param map
+   * @return
+   */
+  public @NotNull String nextMap(int max, boolean caseSensitive, @NotNull Char.Map map) {
+    StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
+    if (max == 0) --max;
+    boolean found;
+    char c;
+    if (! endOfSource()) do {
+      found = false; c = next();
+      if (caseSensitive?map.contains(c):map.containsIgnoreCase(c)) { found = true; break;}
+      if (!found) { back(); break; }
+      mapped.append(c);
+    } while (mapped.length() != max && ! endOfSource());
+    return mapped.toString();
+  }
+
+  /**
    * <p>Scan and assemble characters while scan is not in map</p>
-   * <br>
-   * <p>Automatically eats the delimiter. The delimiter can be read through
-   * {@link #previous()}.</p>
-   * <br>
-   * @param map the collection of delimiters to break scanning with
-   * @return the delimited text; could be truncated
+   * @see #nextField(Char.Map) Replacement Option
    */
   @NotNull
-  public String nextField(@NotNull char... map) {
+  @Deprecated public String nextField(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -340,14 +420,30 @@ public class Scanner implements Closeable, Iterable<Character> {
 
   /**
    * <p>Scan and assemble characters while scan is not in map</p>
-   *
-   * @param eatDelimiter if true: the delimiter is discarded and can be read
-   *                     through {@link #previous()}; else: {@link #next()} will
-   *                     contain the delimiter
+   * <br>
+   * <p>Automatically eats the delimiter. The delimiter can be read through
+   * {@link #previous()}.</p>
+   * <br>
    * @param map the collection of delimiters to break scanning with
    * @return the delimited text; could be truncated
    */
-  public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
+  @NotNull
+  public String nextField(@NotNull Char.Map map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) break;
+      else sb.append(c);
+    } while (! endOfSource());
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map</p>
+   * @see #nextField(boolean, Char.Map) Replacement Option
+   */
+  @Deprecated public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (!endOfSource()) do {
@@ -356,8 +452,61 @@ public class Scanner implements Closeable, Iterable<Character> {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
+      if (endOfSource()) {
+        if (eatDelimiter)
+          throw new FormatException("expected "+Char.mapToTranslation("or", map)+" and found end of source");
+        break;
+      }
       sb.append(c);
-    } while (! endOfSource());
+    } while (true);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map</p>
+   *
+   * @param eatDelimiter if true: the delimiter is discarded and can be read
+   *                     through {@link #previous()}; else: {@link #next()} will
+   *                     contain the delimiter
+   * @param map the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
+   */
+  public @NotNull String nextField(boolean eatDelimiter, @NotNull Char.Map map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (!endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      if (endOfSource()) {
+        if (eatDelimiter)
+          throw new FormatException("expected "+map+" and found end of source");
+        break;
+      }
+      sb.append(c);
+    } while (true);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map, and length < max</p>
+   * @see #nextField(int, boolean, Char.Map) Replacement Option
+   */
+  @NotNull
+  @Deprecated public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (max == 0) --max;
+    if (! endOfSource()) do {
+      c = this.next();
+      if (Char.mapContains(c, map)) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (! endOfSource() && sb.length() != max);
     return sb.toString();
   }
 
@@ -372,13 +521,33 @@ public class Scanner implements Closeable, Iterable<Character> {
    * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
+  public String nextField(int max, boolean eatDelimiter, @NotNull Char.Map map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) {
+      if (map.contains(c)) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (! endOfSource() && sb.length() != max);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map, and length < max</p>
+   * @see #nextField(int, boolean, boolean, Char.Map) Replacement Option
+   */
+  @NotNull
+  @Deprecated public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (max == 0) --max;
+    if (! endOfSource()) do {
+      c = this.next();
+      if (Char.mapContains(c, map) && ! (handleEscape && escapeMode())) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
@@ -399,13 +568,13 @@ public class Scanner implements Closeable, Iterable<Character> {
    * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
+  public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull Char.Map map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map) && ! (handleEscape && escapeMode())) {
+      if (map.contains(c) && ! (handleEscape && escapeMode())) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
@@ -456,11 +625,17 @@ public class Scanner implements Closeable, Iterable<Character> {
     return source;
   }
 
-  public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
-  public String nextLineSpace(){ return nextMap(SPACE, HORIZONTAL_TAB);}
-  public String nextLine(){ return nextField(true, '\n');}
-  public String nextSpace(){return nextMap(SPACE);}
-  public String nextTab(){ return nextMap(HORIZONTAL_TAB); }
+  private static final Char.Map ALL_WHITE_SPACE_MAP = new Char.Map("white space", MAP_ASCII_ALL_WHITE_SPACE);
+  private static final Char.Map SPACE_TAB_MAP = new Char.Map("line space", SPACE, HORIZONTAL_TAB);
+  private static final Char.Map LINE_MAP = new Char.Map("line feed", '\n');
+  private static final Char.Map SPACE_MAP = new Char.Map("space", SPACE);
+  private static final Char.Map TAB_MAP = new Char.Map("tab", HORIZONTAL_TAB);
+
+  public String nextWhiteSpace(){return nextField(ALL_WHITE_SPACE_MAP);}
+  public String nextLineSpace(){ return nextMap(SPACE_TAB_MAP);}
+  public String nextLine(){ return nextField(true, LINE_MAP);}
+  public String nextSpace(){return nextMap(SPACE_MAP);}
+  public String nextTab(){ return nextMap(TAB_MAP); }
 
  /**
   * <p>Runs the given source driver</p>
@@ -487,16 +662,20 @@ public class Scanner implements Closeable, Iterable<Character> {
             ("SourceDriver does not host any valid control ports");
     }
     /* end-driver-loading */
-    boolean ending = endOfSource(), escaping;
+    boolean ending, escaping;
     do {
 
-      c = ending?0:this.next();
+      if (ending = endOfSource()) c = 0;
+      else {
+        c = this.next();
+        ending = endOfSource();
+      }
 
       escaping = escapeMode();
 
       if (expansionControlPort != null && c == BACKSLASH && ! escaping) continue;
 
-      if (ending = endOfSource()) {
+      if (ending) {
         if (expansionControlPort == null && escaping)
           throw new FormatException("expected character escape sequence, found end of stream");
         //return sb.toString();
@@ -510,11 +689,12 @@ public class Scanner implements Closeable, Iterable<Character> {
 
       if (bufferControlPort != null){
         if (!bufferControlPort.collect(this, sb, c)) break;
+        if (ending) break;
         continue;
       } else if (! simpleControlPort.collect(this, c)) { break; }
 
-      // don't append EOF signal
-      if (! ending) sb.append(c);
+      if (ending) break;
+     sb.append(c);
 
     } while (! ending);
     if (autoBackStep && ! endOfSource()) back();
@@ -542,7 +722,7 @@ public class Scanner implements Closeable, Iterable<Character> {
     StringBuilder word = new StringBuilder();
     if (! endOfSource() ) do {
       char c = next();
-      if (Char.mapContains(c, WORD_BREAK)) word.append(c);
+      if (!WORD_BREAK.contains(c)) word.append(c);
       else {
         if (! endOfSource()) back();
         break;
@@ -838,7 +1018,7 @@ public class Scanner implements Closeable, Iterable<Character> {
           }
           /*integer or pass-through */
           default: {
-            if (mapContains(character, MAP_ASCII_NUMBERS)) {
+            if (MAP_ASCII_NUMBERS.contains(character)) {
               String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
               int value = Integer.parseInt(chars);
               if (value > 255) {
