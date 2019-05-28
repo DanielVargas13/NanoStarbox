@@ -91,7 +91,7 @@ public class Parser extends box.star.text.basic.Parser {
    * @see Scanner.SourceDriver
    */
   public static class Main extends Parser 
-      implements Scanner.SourceDriver.WithBufferControlPort, Parser.NewFuturePromise {
+      implements Scanner.SourceDriver.WithBufferControlPort, NewFuturePromise {
     List records = new List();
     public Main(Scanner scanner) {
       super(scanner);
@@ -154,7 +154,7 @@ public class Parser extends box.star.text.basic.Parser {
       super(scanner);
     }
   }
-  public static class Comment extends Parser implements Parser.NewFuturePromise {
+  public static class Comment extends Parser implements NewFuturePromise {
     protected String text;
     public Comment(Scanner scanner) {
       super(scanner);
@@ -185,7 +185,7 @@ public class Parser extends box.star.text.basic.Parser {
       super(scanner);
     }
   }
-  public static class Command extends Parser implements Parser.NewFuturePromise {
+  public static class Command extends Parser implements NewFuturePromise {
     protected EnvironmentOperationList environmentOperations;
     protected ParameterList parameters;
     protected RedirectList redirects;
@@ -226,22 +226,22 @@ public class Parser extends box.star.text.basic.Parser {
       super(scanner, quoting);
     }
   }
-  public static class ParameterLiteral extends ParameterText implements Parser.NewFuturePromise {
+  public static class ParameterLiteral extends ParameterText implements NewFuturePromise {
     ParameterLiteral(Scanner scanner) {
       super(scanner, QuoteType.SINGLE_QUOTING);
     }
   }
-  public static class ParameterQuoted extends ParameterText implements Parser.NewFuturePromise {
+  public static class ParameterQuoted extends ParameterText implements NewFuturePromise {
     ParameterQuoted(Scanner scanner) {
       super(scanner, QuoteType.DOUBLE_QUOTING);
     }
   }
-  public static class Redirect extends Parameter implements Parser.NewFuturePromise {
+  public static class Redirect extends Parameter implements NewFuturePromise {
     Redirect(Scanner scanner) {
       super(scanner, QuoteType.NOT_QUOTING);
     }
   }
-  public static class HereDocument extends Parameter implements Parser.NewFuturePromise {
+  public static class HereDocument extends Parameter implements NewFuturePromise {
     HereDocument(Scanner scanner) {
       super(scanner);
     }
