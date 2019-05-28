@@ -668,7 +668,7 @@ public class LegacyScanner extends Scanner {
    * <br>
    * <p>For example, you want to collect some meta-document-language attributes into a hash-map.
    * What you will do is send a hash map to the method through the text-scanner's
-   * {@link Scanner#run(ScannerMethod, Object...)} method, and when the run method
+   * {@link LegacyScanner#run(ScannerMethod, Object...)} method, and when the run method
    * calls your {@link #compile(LegacyScanner)} method, you simply parse the data you
    * collected in your buffer, and store it in your attribute-map. To obtain your
    * method parameters you must record them during the Scanner's call to your
