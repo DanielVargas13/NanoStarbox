@@ -95,7 +95,6 @@ public class Scanner implements Closeable, Iterable<Character> {
    * <br>
    * <p>Allows a scanner user to configure a custom scanner environment with
    * machine-state-variables (enum-keyed-objects).</p>
-   * <br>
    */
   public MachineStorage getMap() {
     return userMap;
