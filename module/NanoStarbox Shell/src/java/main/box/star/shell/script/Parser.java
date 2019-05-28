@@ -1,11 +1,9 @@
 package box.star.shell.script;
 
 import box.star.contract.NotNull;
-import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
-import static box.star.shell.script.Parser.Status.*;
 
 /**
  * <p>The Shell Script Parser</p>
@@ -57,22 +55,7 @@ public class Parser extends box.star.text.basic.Parser {
     TEXT_RECORD_LIST_TYPE_COMMAND_LIST
   }
 
-  public enum Status {OK, FAILED}
-
-  protected Scanner scanner;
-  private Bookmark origin;
-  private long start, end;
-  private Status status;
-  private boolean finished;
-
-  public Parser(@NotNull Scanner scanner) {
-    super(scanner);
-    if (scanner.endOfSource()){ status = FAILED; return; }
-    this.scanner = scanner;
-    this.origin = scanner.nextBookmark();
-    start = origin.index - 1;
-    status = OK;
-  }
+  public Parser(@NotNull Scanner scanner) { super(scanner); }
   
   @Override
   protected void start() {
