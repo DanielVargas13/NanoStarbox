@@ -1368,22 +1368,22 @@ public class Scanner implements Closeable, Iterable<Character> {
     return new Iterator(this);
   }
 
-  final public static class Iterator implements java.util.Iterator<Character>{
-    private Scanner scanner;
-    private long start;
+  public static class Iterator implements java.util.Iterator<Character> {
+    protected Scanner scanner;
+    protected long start;
     public Iterator(Scanner scanner){
       this.scanner = scanner;
       start = scanner.getIndex();
     }
     @Override
-    final public boolean hasNext() {
+    public boolean hasNext() {
       return scanner.haveNext();
     }
     @Override
-    final public Character next() {
+    public Character next() {
       return scanner.next();
     }
-    final public void cancel(){
+    public void cancel(){
       scanner.walkBack(start);
     }
   }
