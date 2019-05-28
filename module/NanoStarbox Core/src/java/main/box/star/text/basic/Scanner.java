@@ -1054,6 +1054,51 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * <p>Gets the next word and tests it against match</p>
+   * <br>
+   * <p>The test is case sensitive.</p>
+   * <br>
+   * @param match
+   * @return if equals: return true; else: restore scanner, return false
+   */
+  public boolean nextWord(String match){
+    long start = getIndex();
+    String word = nextWord();
+    if (word.equals(match)) return true;
+    walkBack(start);
+    return false;
+  }
+
+  /**
+   * <p>Gets the next word and tests it against match</p>
+   * @param caseSensitive if true: the test is case sensitive
+   * @param match the string to match
+   * @return if equals: return true; else: restore scanner state and return false
+   */
+  public boolean nextWord(boolean caseSensitive, String match){
+    long start = getIndex();
+    String word = nextWord();
+    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return true;
+    walkBack(start);
+    return false;
+  }
+
+  /**
+   * <p>Gets the next word and tests it against a list of inputs</p>
+   * @param caseSensitive if true: the tests are case sensitive
+   * @param matches the set of strings to match
+   * @return if equals: return word; else: restore scanner state and return null
+   */
+  public @Nullable String nextWord(boolean caseSensitive, String... matches){
+    long start = getIndex();
+    String word = nextWord();
+    for (String match:matches)
+    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
+    walkBack(start);
+    return null;
+  }
+
+  /**
    * <p>Starts a {@link ScannerMethod}</p>
    * <br>
    * <p>Creates a copy of the method, and calls its
