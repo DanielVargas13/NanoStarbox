@@ -2,6 +2,7 @@ package box.star.text.basic;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
+import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.text.Char;
 import box.star.text.Exception;
@@ -57,6 +58,8 @@ import static box.star.text.Char.*;
  * <p></p>
  */
 public class Scanner implements Closeable {
+
+  public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
 
   public final static char[] WORD_BREAK =
       new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap();
@@ -303,22 +306,8 @@ public class Scanner implements Closeable {
    * @throws Exception thrown if there is an error stepping forward
    *                   or backward while checking for more data.
    */
-  @Deprecated public boolean haveNext() throws Exception {
-    if (state.haveNext()) return true;
-    else if (state.eof) return false;
-    else {
-      try {
-        int c = this.reader.read();
-        if (c == -1) {
-          state.eof = true;
-          return false;
-        }
-        state.recordCharacter(Char.valueOf(c));
-        state.stepBackward();
-        return true;
-      }
-      catch (IOException exception) { throw new Exception(exception); }
-    }
+  public boolean haveNext() throws Exception {
+    return ! endOfSource();
   }
 
   /**
@@ -327,37 +316,42 @@ public class Scanner implements Closeable {
    * @return true if at the end of the file and we didn't step back
    */
   public boolean endOfSource() {
-    return state.eof && !state.haveNext();
+    return state.eof && ! state.haveNext();
   }
 
   /**
    * Step backward one position.
    *
-   * @throws Exception if unable to step backward
+   * @throws IllegalStateException if unable to step backward
    */
-  public void back() throws Exception {
-    if (state.bufferPosition == -1)
-      throw new IllegalStateException("cannot step back");
+  public void back() throws IllegalStateException {
+    if (state.bufferPosition == -1) throw new IllegalStateException("cannot step back");
     state.stepBackward();
   }
 
-  public void back(int count) throws Exception { while (count-- > 0) back(); }
+  public void back(int count) throws IllegalStateException { while (count-- > 0) back(); }
 
   /**
    * Get the next character.
    *
    * @return
-   * @throws Exception if read fails
+   * @throws FormatException if read fails
    */
-  public char next() throws Exception {
+  public char next() throws FormatException {
     if (state.haveNext()) return state.next();
-    if (state.eof) throw new Exception("end of source"+toString());
+    else if (state.eof) throw new FormatException(
+        Scanner.class.getSimpleName()+SCANNER_CODE_QUALITY_BUG
+            +": virtual private int EOF = (-1) is final and"+
+            " is not convertible to character value through this interface",
+        new IOException("end of source\n   at "+getPath()
+            +String.format(":%i", getLine())
+        ));
     try {
-        int c = this.reader.read();
-        if (c == -1) { state.eof = true; return 0; }
-        state.recordCharacter(Char.valueOf(c));
-        return Char.valueOf(c);
-    } catch (IOException exception) { throw new Exception(exception); }
+        int i = this.reader.read();
+        if (i == -1) { state.eof = true; return 0; }
+        state.recordCharacter((char) i);
+        return (char) i;
+    } catch (IOException exception) { throw new RuntimeException(exception.getMessage(), exception.getCause()); }
   }
 
   /**
@@ -667,46 +661,44 @@ public class Scanner implements Closeable {
   /**
    * <p>Scan and assemble characters while scan is not in map</p>
    * <br>
-   * <p>Automatically eats the delimiter.</p>
+   * <p>Automatically eats the delimiter. The delimiter can be read through
+   * {@link #previous()}.</p>
    * <br>
-   * @param map the collection of characters to break scanning with
-   * @return the collection of characters not found in map
-   * @throws Exception by call to {@link #next()}
+   * @param map the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(@NotNull char... map) throws Exception {
+  public String nextField(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
-    do {
+    if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) {
-        //if (!endOfSource()) this.back();
-        break;
-      }
-      sb.append(c);
-    } while (true);
+      if (Char.mapContains(c, map)) break;
+      else sb.append(c);
+    } while (! endOfSource());
     return sb.toString();
   }
 
   /**
    * <p>Scan and assemble characters while scan is not in map</p>
    *
-   * @param eatDelimiter if true, the delimiter is discarded else the next call to {@link #next()} will contain the delimiter
-   * @param map the collection of characters to break scanning with
-   * @return the collection of characters not found in map
+   * @param eatDelimiter if true: the delimiter is discarded and can be read
+   *                     through {@link #previous()}; else: {@link #next()} will
+   *                     contain the delimiter
+   * @param map the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
    */
-  @NotNull
-  public String nextField(boolean eatDelimiter, @NotNull char... map) {
+  public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
-    do {
+    if (!endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
       sb.append(c);
-    } while (true);
+    } while (! endOfSource());
     return sb.toString();
   }
 
@@ -714,24 +706,61 @@ public class Scanner implements Closeable {
    * <p>Scan and assemble characters while scan is not in map, and length < max</p>
    *
    * @param max
-   * @param eatDelimiter if true, the delimiter is discarded else the next call to {@link #next()} will contain the delimiter
-   * @param map the collection of characters to break scanning with
-   * @return the collection of characters not found in map
+   * @param eatDelimiter if true: the delimiter is discarded and can be read
+   *                     through {@link #previous()}; else: {@link #next()} will
+   *                     contain the delimiter
+   * @param map the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
    */
   @NotNull
   public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
-    do {
+    if (! endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
       sb.append(c);
-    } while (sb.length() != max);
+    } while (! endOfSource() && sb.length() != max);
     return sb.toString();
+  }
+
+  /**
+   * <p>Checks the required string to see if it's length member meets requirements</p>
+   * @param min the minimum amount of characters to accept from the source input
+   * @param backStep if true: failure will rewind the scanner before throwing any FormatException
+   * @param format the string format that will be used during the call to {@link String#format(String, Object...) String.format(String format, String required)}
+   * @param source
+   * @throws FormatException if the required string does not meet requirements
+   */
+  public void assertLengthFormat(int min, boolean backStep, @NotNull String format, @Nullable String source) throws FormatException {
+    if (min <= 0) return;
+    else if (source == null || source.length() < min) {
+      if (backStep && source != null) back(source.length());
+      throw new FormatException(String.format(format, source));
+    }
+  }
+
+  /**
+   * <p>Checks the required string to see if it's length member meets requirements</p>
+   * <br>
+   * <p>If this operation fails, the scanner will walk-back to the beginning
+   * of this string, and flag the format exception from that point.</p>
+   * <br>
+   * @param min the minimum amount of characters to accept from the source input
+   * @param format the string format that will be used during the call to {@link String#format(String, Object...) String.format(String format, String required)}
+   * @param source
+   * @throws FormatException if the required string does not meet requirements
+   */
+  public void assertLengthFormat(int min, @NotNull String format, @Nullable String source) throws FormatException {
+    if (min <= 0) return;
+    else if (source == null || source.length() < min) {
+      if (source != null) back(source.length());
+      throw new FormatException(String.format(format, source));
+    }
   }
 
   public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
@@ -991,30 +1020,27 @@ public class Scanner implements Closeable {
    * Get the next n characters.
    *
    * @param n The number of characters to take.
-   * @return A string of n characters.
-   * @throws Exception Substring bounds error if there are not
-   *                   n characters remaining in the source string.
+   * @return A string of n characters, could be zero length or truncated.
    */
-  @NotNull
-  public String nextLength(int n) throws Exception {
-    if (n == 0) return Tools.EMPTY_STRING;
+  public @NotNull String nextLength(int n) {
+    if (endOfSource() || n == 0) return Tools.EMPTY_STRING;
     char[] chars = new char[n];
     int pos = 0;
     while (pos < n) {
-      chars[pos] = this.next();
-      if (this.endOfSource()) throw this.syntaxError("Substring bounds error");
-      pos += 1;
+      chars[pos++] = this.next();
+      if (this.endOfSource()) break;
     }
     return new String(chars);
   }
 
-  public String nextWord(){
+  public @NotNull String nextWord(){
     StringBuilder word = new StringBuilder();
     if (! endOfSource() ) do {
       char c = next();
       if (Char.mapContains(c, WORD_BREAK)) word.append(c);
       else {
-        back(); break;
+        if (! endOfSource()) back();
+        break;
       }
     } while (! endOfSource());
     return word.toString();
