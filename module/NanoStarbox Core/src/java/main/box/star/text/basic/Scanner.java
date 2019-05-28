@@ -808,7 +808,7 @@ public class Scanner implements Closeable, Iterable<Character> {
         simpleControlPort = ((SourceDriver.WithSimpleControlPort)driver);
       else
         throw new IllegalStateException
-            ("ScannerDriver does not host any valid control ports");
+            ("SourceDriver does not host any valid control ports");
     }
     /* end-driver-loading */
     do {
