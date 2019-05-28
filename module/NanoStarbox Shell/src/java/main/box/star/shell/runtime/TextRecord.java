@@ -81,7 +81,7 @@ public abstract class TextRecord {
     status = OK;
   }
 
-  final public boolean success(){return status.equals(OK);}
+  final public boolean successful(){return status.equals(OK);}
 
   final protected Bookmark cancel() {
     if (this instanceof Final){
@@ -93,11 +93,15 @@ public abstract class TextRecord {
     this.status = FAILED;
     return bookmark;
   }
-
+  /**
+   * @return true if end is not zero
+   */
   final protected boolean hasEnding(){
     return end != 0;
   }
-
+  /**
+   * @return true if the current scanner position is NOT synchronized with this record's ending
+   */
   protected final boolean isNotSynchronized(){
     return ((scanner.endOfSource()?-1:0))+scanner.getIndex() != this.end;
   }
@@ -132,13 +136,17 @@ public abstract class TextRecord {
    * <p>Common TextRecord Parser Factory Parse Method</p>
    * <br>
    * <p>This method constructs TextRecord parsers with a given TextRecord class
-   * and scanner. The method then execute the parser for it's results.</p>
+   * and scanner. The method then executes the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a boundary over-read-sanity-check
+   * </p>
    * <br>
    * @param subclass the TextRecord parser class reference
    * @param scanner the source scanner
    * @param <T> the TextRecord subclass specification
-   * @return the result of the parser's execution
-   * @throws IllegalStateException if the parser does not correctly finish it's session
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
    */
   public final static <T extends TextRecord> T parse(Class<T> subclass, Scanner scanner) throws IllegalStateException {
     T textRecord;
@@ -147,7 +155,7 @@ public abstract class TextRecord {
       ctor.setAccessible(true);
       textRecord = ctor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(e);}
-    if (textRecord.success()) {
+    if (textRecord.successful()) {
       textRecord.start();
       if (! textRecord.isFinished())
         throw new IllegalStateException(subclass.getName()+" did not finish parsing");
@@ -199,21 +207,21 @@ public abstract class TextRecord {
           boolean bang = scanner.getLine() == 1 && scanner.getColumn() == 1;
           if (bang){
             Shebang line = parse(Shebang.class, scanner);
-            if (line.success()) records.add(line);
+            if (line.successful()) records.add(line);
           } else {
             Comment comment = parse(Comment.class, scanner);
-            if (comment.success()) records.add(comment);
+            if (comment.successful()) records.add(comment);
           }
           break;
         }
         case '(': {
           Child child = parse(Child.class, scanner);
-          if (child.success()) records.add(child);
+          if (child.successful()) records.add(child);
           break;
         }
         case '{': {
           CommandGroup list = parse(CommandGroup.class, scanner);
-          if (list.success()) records.add(list);
+          if (list.successful()) records.add(list);
           break;
         }
         default:
