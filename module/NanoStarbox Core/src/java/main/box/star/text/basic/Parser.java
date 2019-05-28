@@ -109,14 +109,15 @@ public class Parser {
    * @return true if the current scanner position is NOT synchronized with this record's ending
    */
   final protected boolean isNotSynchronized(){
-    return ((scanner.endOfSource()?-1:0))+scanner.getIndex() != this.end;
+    return scanner.getIndex() != this.end;
   }
 
   /**
    * A parser must call finish before it exits {@link #start()}
    */
   final protected void finish(){
-    if (finished) throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, new IllegalStateException(this.getClass().getName()+PARSER_ALREADY_FINISHED));
+    if (finished)
+      throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, new IllegalStateException(this.getClass().getName()+PARSER_ALREADY_FINISHED));
     this.end = scanner.getIndex();
     this.finished = true;
   }
@@ -130,7 +131,7 @@ public class Parser {
    * may do any number of things, but it must synchronize with the scanner by the
    * end of it's execution pipe-line.</p>
    */
-  protected void start(){finish();};
+  protected void start(){};
 
   // Public Static Methods
 

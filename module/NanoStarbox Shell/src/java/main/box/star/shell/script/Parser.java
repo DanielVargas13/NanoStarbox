@@ -76,17 +76,12 @@ public class Parser extends box.star.text.basic.Parser {
     }
     @Override
     public boolean collect(Scanner scanner, StringBuilder buffer, char character) {
-      if (scanner.endOfSource()){
-        finish();
-        return false;
-      }
-      if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)){
-        return true;
-      }
-      if (mapContains(character, MAP_ASCII_NUMBERS)){
+      if (scanner.endOfSource()) return false;
+      else if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) return true;
+      else if (mapContains(character, MAP_ASCII_NUMBERS)){
         throw new SyntaxError(this, "expected command found digits");
       }
-      switch (character){
+      else switch (character){
         case '#': {
           boolean bang = scanner.getLine() == 1 && scanner.getColumn() == 1;
           if (bang){
@@ -111,7 +106,6 @@ public class Parser extends box.star.text.basic.Parser {
         default:
           throw new SyntaxError(this, "expected shell command");
       }
-      this.finish();
       return true;
     }
     /**
@@ -119,7 +113,7 @@ public class Parser extends box.star.text.basic.Parser {
      * @see #collect(Scanner, StringBuilder, char)
      */
     @Override
-    protected void start() { scanner.run(this); }
+    protected void start() { scanner.run(this); this.finish(); }
   }
   public static class Child extends Main {
     Child(Scanner scanner) {
