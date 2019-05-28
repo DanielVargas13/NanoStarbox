@@ -1,10 +1,9 @@
 package box.star.text.basic.driver;
 
 import box.star.text.Char;
-import box.star.text.basic.ScannerDriver;
 import box.star.text.basic.Scanner;
 
-public class GenericProgramIdentifier implements ScannerDriver.WithSimpleControlPort {
+public class GenericProgramIdentifier implements Scanner.SourceDriver.WithSimpleControlPort {
 
   private int depth = 0;
 

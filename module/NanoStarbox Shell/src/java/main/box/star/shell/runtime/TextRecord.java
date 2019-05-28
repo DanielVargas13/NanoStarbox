@@ -3,7 +3,6 @@ package box.star.shell.runtime;
 import box.star.text.Char;
 import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
-import box.star.text.basic.ScannerDriver;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -185,9 +184,9 @@ public abstract class TextRecord {
    * <br>
    * @see box.star.shell.runtime.TextRecord#parse(Class, Scanner)  Parsing Text Records with the TextRecord class
    * @see box.star.text.basic.Scanner
-   * @see box.star.text.basic.ScannerDriver
+   * @see Scanner.SourceDriver
    */
-  public static class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, WithAutoFlush {
+  public static class Main extends TextRecord implements Scanner.SourceDriver.WithBufferControlPort, WithAutoFlush {
     List records = new List();
     public Main(Scanner scanner) {
       super(scanner);

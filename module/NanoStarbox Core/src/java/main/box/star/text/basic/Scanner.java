@@ -8,10 +8,7 @@ import box.star.text.Exception;
 import box.star.text.SyntaxError;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 import static box.star.text.Char.*;
 
@@ -116,11 +113,11 @@ public class Scanner implements Closeable {
    */
   protected Reader reader;
   protected boolean closeable;
-  protected ScannerState state;
+  protected State state;
 
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
-    this.state = new ScannerState(path);
+    this.state = new State(path);
   }
 
   public Scanner(@NotNull String path, @NotNull InputStream inputStream) {
@@ -687,21 +684,21 @@ public class Scanner implements Closeable {
    * @return the collection of characters allowed by the driver
    * @throws Exception by call to {@link #next()}
    */
-  public String assemble(@NotNull ScannerDriver driver) throws Exception {
+  public String assemble(@NotNull SourceDriver driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     boolean doExpand = false;
     /* driver-loading */
-    ScannerDriver.WithSimpleControlPort simpleControlPort = null;
-    ScannerDriver.WithExpansionControlPort expansionControlPort = null;
-    ScannerDriver.WithBufferControlPort bufferControlPort = null;
-    if (driver instanceof ScannerDriver.WithExpansionControlPort)
-      expansionControlPort = ((ScannerDriver.WithExpansionControlPort)driver);
-    if (driver instanceof ScannerDriver.WithBufferControlPort)
-      bufferControlPort = ((ScannerDriver.WithBufferControlPort)driver);
+    SourceDriver.WithSimpleControlPort simpleControlPort = null;
+    SourceDriver.WithExpansionControlPort expansionControlPort = null;
+    SourceDriver.WithBufferControlPort bufferControlPort = null;
+    if (driver instanceof SourceDriver.WithExpansionControlPort)
+      expansionControlPort = ((SourceDriver.WithExpansionControlPort)driver);
+    if (driver instanceof SourceDriver.WithBufferControlPort)
+      bufferControlPort = ((SourceDriver.WithBufferControlPort)driver);
     else {
-      if (driver instanceof ScannerDriver.WithSimpleControlPort)
-        simpleControlPort = ((ScannerDriver.WithSimpleControlPort)driver);
+      if (driver instanceof SourceDriver.WithSimpleControlPort)
+        simpleControlPort = ((SourceDriver.WithSimpleControlPort)driver);
       else
         throw new IllegalStateException
             ("ScannerDriver does not host any valid control ports");
@@ -711,7 +708,7 @@ public class Scanner implements Closeable {
       c = this.next();
 
       if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) {
-        if (doExpand = ((ScannerDriver.WithExpansionControlPort)driver).expand(this)) continue;
+        if (doExpand = ((SourceDriver.WithExpansionControlPort)driver).expand(this)) continue;
       }
 
       if (endOfSource()) {
@@ -1092,4 +1089,190 @@ public class Scanner implements Closeable {
     return Integer.parseInt(numbers);
   }
 
+  public static interface SourceDriver {
+    interface WithSimpleControlPort extends SourceDriver {
+      boolean collect(Scanner scanner, char character);
+    }
+    interface WithExpansionControlPort extends SourceDriver {
+      boolean expand(Scanner scanner);
+    }
+    interface WithBufferControlPort extends SourceDriver {
+      boolean collect(Scanner scanner, StringBuilder buffer, char character);
+    }
+    interface WithMasterControlPorts extends WithExpansionControlPort, SourceDriver.WithBufferControlPort {}
+  }
+
+  public static class State implements Cloneable, Serializable {
+
+    protected static final int historySize = 1024;
+
+    protected String path;
+    protected long column, index, line;
+
+    protected Stack<Long> columnHistory;
+    protected StringBuilder buffer;
+    protected int bufferPosition;
+    @Deprecated protected boolean locked, escapeLines, escapeUnderscoreLine;
+    protected boolean eof, slashing, escaped;
+
+    public State(String path) {
+      State state = this;
+      state.path = path;
+      state.index = -1;
+      state.line = 1;
+      state.clearHistory();
+    }
+
+    public void trimHistoryLength(int length) {
+      if (haveNext()) {
+        // in any case, we don't want to move the user's cursor (bufferPosition).
+        throw new IllegalStateException("trying to trim history while browsing history");
+      }
+      int max = getHistoryLength();
+      // don't trim if we have not met the length
+      if (length >= max) {return;}
+      // zero or less means clear-all
+      if (length <= 0) {
+        clearHistory();
+        return;
+      }
+      Stack<Long> cHist = new Stack<>();
+      // collect the column positions for back-stepping through lines
+      for (int i = 0, y = max, z = columnHistory.size(); i < length; i++) {
+        switch (buffer.charAt(--y)) {
+          case LINE_FEED:
+          case CARRIAGE_RETURN:
+            cHist.add(0, columnHistory.get(--z));
+            break;
+        }
+      }
+      StringBuilder cbuffer = new StringBuilder(historySize);
+      // trim the buffer
+      cbuffer.append(buffer.substring(max - length));
+      // apply the buffer
+      buffer = cbuffer;
+      // restore the user's cursor
+      bufferPosition = length - 1;
+      // apply the column history
+      columnHistory = cHist;
+    }
+
+    public int getHistoryLength() {
+      return buffer.length();
+    }
+
+    public void clearHistory() {
+      buffer = new StringBuilder(128);
+      bufferPosition = -1;
+      columnHistory = new Stack<>();
+    }
+
+    protected char escape(char c) {
+
+      char previous = previousCharacter();
+
+      boolean lineMode = (c == CARRIAGE_RETURN || c == LINE_FEED);
+      boolean slashMode = (c == BACKSLASH);
+
+      if (previous == BACKSLASH && slashing == true) escaped = true;
+      else escaped = escapeUnderscoreLine && previous == '_' && lineMode;
+
+      if (slashMode) this.slashing = !this.slashing;
+      else this.slashing = false;
+
+      if (escaped && escapeLines && lineMode) c = 0;
+
+      return c;
+
+    }
+
+    public boolean haveNext() {
+      return bufferPosition != (buffer.length() - 1);
+    }
+
+    protected char previousCharacter() {
+      if (bufferPosition < 0) return NULL_CHARACTER;
+      return buffer.charAt(bufferPosition);
+    }
+
+    protected long nextColumn() {
+      columnHistory.push(column);
+      return 0;
+    }
+
+    protected long previousColumn() {
+      return columnHistory.pop();
+    }
+
+    protected char nextCharacter(char c) {
+      switch (escape(c)) {
+        case CARRIAGE_RETURN: {
+          this.column = nextColumn();
+          break;
+        }
+        case LINE_FEED: {
+          this.column = nextColumn();
+          this.line++;
+          break;
+        }
+        default:
+          this.column++;
+      }
+      return c;
+    }
+
+    protected void recordCharacter(char c) {
+      if (this.buffer.length() == this.buffer.capacity()) {
+        this.buffer.ensureCapacity(this.buffer.length() + historySize);
+      }
+      this.buffer.append(nextCharacter(c));
+      this.bufferPosition++;
+      this.index++;
+    }
+
+    protected void stepBackward() {
+      char c = previousCharacter();
+      bufferPosition--;
+      this.index--;
+      this.eof = false;
+      switch (escape(c)) {
+        case CARRIAGE_RETURN:
+          this.column = previousColumn();
+          break;
+        case LINE_FEED:
+          this.column = previousColumn();
+          this.line--;
+          break;
+        default:
+          this.column--;
+      }
+    }
+
+    protected char next() {
+      this.index++;
+      this.bufferPosition++;
+      return nextCharacter(previousCharacter());
+    }
+
+    /**
+     * An alias for previous character (disambiguation)
+     * @return
+     */
+    public char current(){
+      return previousCharacter();
+    }
+
+    @Override
+    @Deprecated protected State clone() {
+      try /*  throwing runtime exceptions with closure */ {
+        return (State) super.clone();
+      }
+      catch (CloneNotSupportedException e) {throw new RuntimeException(e);}
+    }
+
+  }
+
+  public static interface CharacterExpander {
+    String expand(Scanner scanner, char character);
+  }
 }

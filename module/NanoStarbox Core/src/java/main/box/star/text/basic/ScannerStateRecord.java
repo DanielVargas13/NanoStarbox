@@ -18,7 +18,7 @@ import java.io.IOException;
 @Deprecated public class ScannerStateRecord {
 
   protected Scanner main;
-  protected ScannerState backupState;
+  protected Scanner.State backupState;
 
   protected ScannerStateRecord(@NotNull Scanner main) {
     if (main.hasStateRecordLock())
