@@ -158,7 +158,7 @@ public abstract class Parser {
       return tag + super.getMessage();
     }
     public SyntaxError(Parser parser, String message) {
-      super("\n\n"+message+":\n\n   "+parser.getOrigin()+"\n");
+      super("\n\n"+message+":\n\n   "+parser.scanner.createBookmark()+"\n");
       this.tag = parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
     }
   }

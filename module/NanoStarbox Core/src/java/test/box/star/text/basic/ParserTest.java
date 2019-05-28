@@ -11,6 +11,7 @@ class ParserTest {
     }
     @Override
     protected void start() {
+      scanner.next();
      throw new SyntaxError(this, "sorry, i expected this to fail");
     }
   }
