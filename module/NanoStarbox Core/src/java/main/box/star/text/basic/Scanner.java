@@ -1383,8 +1383,28 @@ public class Scanner implements Closeable, Iterable<Character> {
     public Character next() {
       return scanner.next();
     }
-    public void cancel(){
+    public Bookmark cancel(){
+      Bookmark from = scanner.createBookmark();
       scanner.walkBack(start);
+      return from;
+    }
+    public static class SyntaxError extends RuntimeException {
+      protected Iterator parser;
+      private String tag(){
+        return parser.getClass().getName()+".SyntaxError: ";
+      }
+      @Override
+      public String toString() {
+        return tag() + super.getMessage();
+      }
+      public SyntaxError(Iterator parser, String message) {
+        super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
+        this.parser = parser;
+      }
+      public SyntaxError(Iterator parser, String message, Throwable cause) {
+        super("\n\n"+message+":\n\n   "+parser.cancel()+"\n", cause);
+        this.parser = parser;
+      }
     }
   }
 
