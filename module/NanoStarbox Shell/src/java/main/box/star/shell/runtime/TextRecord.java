@@ -146,7 +146,7 @@ public abstract class TextRecord {
    * <p>Each parser is executed using it's {@link #start()} method. The parser
    * is then in command of what to do with that scanner, at the current point
    * within it's stream. It may use this method to start other parsers, or
-   * may do any number of things, but it must synchronize with the parser by the
+   * may do any number of things, but it must synchronize with the scanner by the
    * end of its execution pipe-line.</p>
    *
    * @param subclass the TextRecord parser class reference
