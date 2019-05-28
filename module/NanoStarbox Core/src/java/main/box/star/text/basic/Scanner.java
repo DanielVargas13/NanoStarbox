@@ -18,42 +18,11 @@ import static box.star.text.Char.*;
 /**
  * <h2>Basic Text Scanner</h2>
  * <p>Provides the basic facilities to (optimistically) scan text formats, with
- * precision text format error-reporting and sub-processing capabilities. The
- * scanner also supports custom character-to-string translation so that each
- * scanner may provide standardized: `hard to define character error
- * disambiguation` to its users. In addition, the scanner supports overridable
- * backslash escape expansion with customizable fallback support, for the
- * default implementation.</p>
- * <br>
- *   <p><i>The term "optimistaclly" means all operations are assumed to be
- *   successful, though results may prove otherwise.</i></p>
+ * precision text format error-reporting and sub-processing capabilities.</p>
  *<br>
- * <p>The scanner automatically tracks backslash escape activation, and in some
- * built-in scanner methods, automatically handles backslash expansion and output
- * string insertion. However the scanner does not usually provide such facilities,
- * as the meaning of "character escape sequence" is often text format dependent.
- * The design methodology of these features is passive, which allows for them to
- * be safely ignored by any custom implementation.</p><br>
- *
- * <p>The default implementation understands escaped
- * and not escaped, according to the status of the previous character. This could cause
- * logical errors in a text-stream that has not been correctly back-stepped (to the beginning
- * of an escape sequence), but most implementations which call upon expansion routines,
- * will never need back-step support within that context.</p>
- *<br>
- * <p>Ultimately, the Basic Text Scanner provides a working language agnostic interface
- * by which any text-stream or string processor could be constructed.</p>
- * <br>
- * <p>Quick Overview</p>
- * <ul>
- * <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}, and {@link #branch(ScannerMethod, Object...)}</li>
- * <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
- * <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
- * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMap(int, char...)}</li>
- * <li>Character Map Field Boundary Searching through {@link #nextField(char...)}, {@link #nextFieldLength(int, char...)} and {@link #nextBoundField(char...)}</li>
- * <li>Buffer Position Backstep through {@link #back()}, and {@link #walkBack(long)}</li>
- * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
- * </ul>
+ * <p>At a minimum, the Basic Text Scanner provides a working, language-neutral
+ * interface by which any text-stream or string-processor could be constructed.
+ * </p>
  * <br>
  * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA (Triston-Jerard: Taylor)</tt>
  * <p></p>
