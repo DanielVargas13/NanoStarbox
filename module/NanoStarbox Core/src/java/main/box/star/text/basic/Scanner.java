@@ -1132,7 +1132,7 @@ public class Scanner implements Closeable, Iterable<Character> {
     return null;
   }
 
-  public String nextNumeric(int min, int max) {
+  public String nextDigit(int min, int max) {
     String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
     return assertLengthFormat(min, "expected a minimum of "+min+" numeric characters, have "+nextNumeric.length(), nextNumeric);
   }
