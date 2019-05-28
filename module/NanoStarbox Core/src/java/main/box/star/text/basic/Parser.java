@@ -29,8 +29,8 @@ import static box.star.text.basic.Parser.Status.*;
  * <br>
  * <p>Additionally this class provides a custom {@link SyntaxError} class,
  * inheriting from {@link RuntimeException} which enables uniform and exact
- * syntax error reporting for all parser subclasses regardless of
- * implementation.</p>
+ * syntax error reporting and automatic error recovery for all parser
+ * subclasses regardless of implementation.</p>
  * @see Scanner
  */
 public abstract class Parser {
