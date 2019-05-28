@@ -716,7 +716,7 @@ public class Scanner implements Closeable, Iterable<Character> {
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map) && ! escapeMode()) {
+      if (Char.mapContains(c, map) && ! (handleEscape && escapeMode())) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
