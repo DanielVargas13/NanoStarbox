@@ -7,14 +7,15 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * <p>An implementation of map for storing enum keyed objects</p>
+ * <p>An implementation of map for storing {@link Enum enum} keyed objects</p>
  * <br>
- * <p>Features object class introspection</p>
+ * <p>Features object class introspection and enum mash-ups using
+ * an {@link IdentityHashMap}.</p>
  * <br>
  */
-public class EnumMap implements Map<Enum, Object> {
+public class MachineStorage implements Map<Enum, Object> {
 
-  Hashtable<Enum, Object> objectTable = new Hashtable<>();
+  IdentityHashMap<Enum, Object> objectTable = new IdentityHashMap<>();
 
   @Override
   public boolean equals(Object o) {return objectTable.equals(o);}
@@ -45,12 +46,6 @@ public class EnumMap implements Map<Enum, Object> {
   public int size() {return objectTable.size();}
 
   public boolean isEmpty() {return objectTable.isEmpty();}
-
-  public Enumeration<Enum> keys() {return objectTable.keys();}
-
-  public Enumeration<Object> elements() {return objectTable.elements();}
-
-  public boolean contains(Object value) {return objectTable.contains(value);}
 
   public boolean containsValue(Object value) {return objectTable.containsValue(value);}
 

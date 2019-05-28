@@ -4,7 +4,7 @@ import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
-import box.star.state.EnumMap;
+import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.text.Exception;
 import box.star.text.FormatException;
@@ -89,7 +89,7 @@ public class Scanner implements Closeable, Iterable<Character> {
   protected Reader reader;
   protected boolean closeable;
   protected State state;
-  protected final EnumMap userMap = new EnumMap();
+  protected final MachineStorage userMap = new MachineStorage();
   /**
    * <p>User Settings Pool</p>
    * <br>
@@ -97,7 +97,7 @@ public class Scanner implements Closeable, Iterable<Character> {
    * machine-state-variables (enum-keyed-objects).</p>
    * <br>
    */
-  public EnumMap getMap() {
+  public MachineStorage getMap() {
     return userMap;
   }
 
