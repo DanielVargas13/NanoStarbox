@@ -35,10 +35,11 @@ import static box.star.shell.runtime.TextRecord.Status.*;
 public abstract class TextRecord {
 
   /**
-   * The Final Interface allows a TextRecord to specify that navigating backward
-   * from it's completion is not possible
+   * This Interface allows a TextRecord to specify that upon successful
+   * completion the scanner history should be synchronized (flushed) with the
+   * current position.
    */
-  public interface Final {}
+  public interface WithAutoFlush {}
 
   public static class List<T extends TextRecord> extends ArrayList<T>{}
   
@@ -84,7 +85,7 @@ public abstract class TextRecord {
   final public boolean successful(){return status.equals(OK);}
 
   final protected Bookmark cancel() {
-    if (this instanceof Final){
+    if (this instanceof WithAutoFlush){
       throw new IllegalStateException("cannot cancel " + getClass().getName() +
           "; task is Final");
     }
@@ -161,7 +162,7 @@ public abstract class TextRecord {
         throw new IllegalStateException(subclass.getName()+" did not finish parsing");
       else if (textRecord.isNotSynchronized())
         throw new IllegalStateException(subclass.getName()+" did not synchronize its end result with the scanner state");
-      if (textRecord instanceof Final) scanner.flushHistory();
+      if (textRecord instanceof WithAutoFlush) scanner.flushHistory();
     }
     return textRecord;
   }
@@ -185,7 +186,7 @@ public abstract class TextRecord {
    * @see box.star.text.basic.Scanner
    * @see box.star.text.basic.ScannerDriver
    */
-  public static class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, Final {
+  public static class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, WithAutoFlush {
     List records = new List();
     public Main(Scanner scanner) {
       super(scanner);
@@ -249,7 +250,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class Comment extends TextRecord implements Final {
+  public static class Comment extends TextRecord implements WithAutoFlush {
     protected String text;
     public Comment(Scanner scanner) {
       super(scanner);
@@ -281,7 +282,7 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static class Command extends TextRecord implements Final {
+  public static class Command extends TextRecord implements WithAutoFlush {
     protected EnvironmentOperationList environmentOperations;
     protected ParameterList parameters;
     protected RedirectList redirects;
@@ -322,22 +323,22 @@ public abstract class TextRecord {
       super(scanner, quoting);
     }
   }
-  public static class ParameterLiteral extends ParameterText implements Final {
+  public static class ParameterLiteral extends ParameterText implements WithAutoFlush {
     ParameterLiteral(Scanner scanner) {
       super(scanner, QuoteType.SINGLE_QUOTING);
     }
   }
-  public static class ParameterQuoted extends ParameterText implements Final {
+  public static class ParameterQuoted extends ParameterText implements WithAutoFlush {
     ParameterQuoted(Scanner scanner) {
       super(scanner, QuoteType.DOUBLE_QUOTING);
     }
   }
-  public static class Redirect extends Parameter implements Final {
+  public static class Redirect extends Parameter implements WithAutoFlush {
     Redirect(Scanner scanner) {
       super(scanner, QuoteType.NOT_QUOTING);
     }
   }
-  public static class HereDocument extends Parameter implements Final {
+  public static class HereDocument extends Parameter implements WithAutoFlush {
     HereDocument(Scanner scanner) {
       super(scanner);
     }
