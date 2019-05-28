@@ -11,6 +11,7 @@ import box.star.text.SyntaxError;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
@@ -27,7 +28,7 @@ import static box.star.text.Char.*;
  * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA (Triston-Jerard: Taylor)</tt>
  * <p></p>
  */
-public class Scanner implements Closeable {
+public class Scanner implements Closeable, Iterable<Character> {
 
   public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
 
@@ -1334,6 +1335,22 @@ public class Scanner implements Closeable {
     flagNextCharacterSyntaxError("unsigned integer", MAP_ASCII_NUMBERS);
     String numbers = nextMap(MAP_ASCII_NUMBERS);
     return Integer.parseInt(numbers);
+  }
+
+  @Override
+  public Iterator<Character> iterator() {
+    Scanner scanner = this;
+    return new Iterator<Character>() {
+      @Override
+      public boolean hasNext() {
+        return scanner.haveNext();
+      }
+
+      @Override
+      public Character next() {
+        return scanner.next();
+      }
+    };
   }
 
   public static interface SourceDriver {
