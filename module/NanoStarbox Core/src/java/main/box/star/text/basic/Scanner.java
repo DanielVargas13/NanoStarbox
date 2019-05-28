@@ -1371,7 +1371,7 @@ public class Scanner implements Closeable, Iterable<Character> {
   public static class Iterator implements java.util.Iterator<Character> {
     protected Scanner scanner;
     protected long start;
-    public Iterator(Scanner scanner){
+    public Iterator(@NotNull Scanner scanner){
       this.scanner = scanner;
       start = scanner.getIndex();
     }
@@ -1383,25 +1383,25 @@ public class Scanner implements Closeable, Iterable<Character> {
     public Character next() {
       return scanner.next();
     }
-    public Bookmark cancel(){
+    public @NotNull Bookmark cancel(){
       Bookmark from = scanner.createBookmark();
       scanner.walkBack(start);
       return from;
     }
     public static class SyntaxError extends RuntimeException {
       protected Iterator parser;
-      private String tag(){
+      private @NotNull String tag(){
         return parser.getClass().getName()+".SyntaxError: ";
       }
       @Override
-      public String toString() {
+      public @NotNull String toString() {
         return tag() + super.getMessage();
       }
-      public SyntaxError(Iterator parser, String message) {
+      public SyntaxError(@NotNull Iterator parser, @NotNull String message) {
         super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
         this.parser = parser;
       }
-      public SyntaxError(Iterator parser, String message, Throwable cause) {
+      public SyntaxError(@NotNull Iterator parser, @NotNull String message, @NotNull Throwable cause) {
         super("\n\n"+message+":\n\n   "+parser.cancel()+"\n", cause);
         this.parser = parser;
       }
