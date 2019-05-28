@@ -7,11 +7,33 @@ import java.util.ArrayList;
 
 import static box.star.text.basic.Parser.Status.*;
 
+/**
+ * <p>Provides an interface to parse text with a {@link Scanner}</p>
+ * <br>
+ * <p>A parser implementation is a subclass of this class. In addition to
+ * handling the scanner, a parser implementation can store properties in it's
+ * own fields and create discrete (pure) object types.</p>
+ * <br>
+ * <p>This class and it's subclasses can be used to execute any parser
+ * implementation through it's {@link #parse(Class, Scanner) static: parse method}.
+ * </p>
+ * <br>
+ * <p>
+ *   In a typical parser implementation, there is the notion of an elliptical
+ *   list, which is a repeating sequence of inputs, following a particular type
+ *   of pattern. To support that, this parser interface provides the
+ *   {@link List} class, which can be used to store a list of parser instances
+ *   as a list of parsed results. Every subclass of Parser has an associated
+ *   list class.
+ * </p>
+ * @see Scanner
+ */
 public abstract class Parser {
 
   // Public Static Class Provisions
   public static class
     List<T extends Parser> extends ArrayList<T> {}
+
   public static enum
     Status {OK, FAILED}
 
