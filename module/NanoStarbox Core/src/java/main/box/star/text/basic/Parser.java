@@ -15,8 +15,8 @@ import static box.star.text.basic.Parser.Status.*;
  * own fields and create discrete (pure) object types.</p>
  * <br>
  * <p>This class and it's subclasses can be used to execute any parser
- * implementation through it's static {@link #parse(Class, Scanner) parse}
- * method. Each subclass also has an instance {@link #parse(Class)} method, which uses the
+ * implementation through it's {@link #parse(Class, Scanner) static parse}
+ * method. Each subclass also has an {@link #parse(Class) instance parse} method, which uses the
  * parser's {@link #scanner} to create and start a new parser as an inline scanner pipeline task.</p>
  * <br>
  * <p>
@@ -27,10 +27,13 @@ import static box.star.text.basic.Parser.Status.*;
  *   as a list of parsed results.
  * </p>
  * <br>
- * <p>Additionally this class provides a custom {@link SyntaxError} class,
- * inheriting from {@link RuntimeException} which enables uniform and exact
- * syntax error reporting and automatic error recovery for all parser
- * subclasses regardless of implementation.</p>
+ * <p>Additionally this class provides a call based integrated {@link SyntaxError}
+ * class inheriting from {@link RuntimeException}, which enables uniform and exact
+ * syntax error reporting for all parser implementations. As a compliment
+ * <i>of</i> and testament <i>to</i> the <i>isometric design</i> of this
+ * <i>parser system</i>, the class features automatic syntax error recovery for
+ * the scanner, which allows syntax errors to be caught, and safely ignored.</p>
+ *
  * @see Scanner
  */
 public abstract class Parser {
