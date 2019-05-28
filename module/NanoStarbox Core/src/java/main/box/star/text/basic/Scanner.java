@@ -303,7 +303,7 @@ public class Scanner implements Closeable {
    * @throws Exception thrown if there is an error stepping forward
    *                   or backward while checking for more data.
    */
-  public boolean haveNext() throws Exception {
+  @Deprecated public boolean haveNext() throws Exception {
     if (state.haveNext()) return true;
     else if (state.eof) return false;
     else {
