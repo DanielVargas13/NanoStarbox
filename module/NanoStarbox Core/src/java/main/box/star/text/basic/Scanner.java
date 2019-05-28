@@ -157,6 +157,16 @@ public class Scanner implements Closeable {
     return this;
   }
 
+  public Scanner WithTabSizeOf(int tabSize){
+    // since this is a profile-method, raise hell if state is
+    // in post-initialization status.
+    if (state.index != -1) {
+      throw new IllegalStateException("Scanner has already been initialized");
+    }
+    state.tabSize = tabSize;
+    return this;
+  }
+
   /**
    * This method enables lines to be escaped by the state, and probably should
    * not be used for any reason.
@@ -1124,6 +1134,7 @@ public class Scanner implements Closeable {
   private static class State implements Cloneable, Serializable {
 
     protected static final int historySize = 256;
+    protected int tabSize;
 
     protected String path;
     protected long column, index, line;
@@ -1225,6 +1236,10 @@ public class Scanner implements Closeable {
 
     protected char nextCharacter(char c) {
       switch (escape(c)) {
+        case HORIZONTAL_TAB: {
+          this.column += tabSize;
+          break;
+        }
         case CARRIAGE_RETURN: {
           this.column = nextColumn();
           break;
@@ -1255,6 +1270,10 @@ public class Scanner implements Closeable {
       this.index--;
       this.eof = false;
       switch (escape(c)) {
+        case HORIZONTAL_TAB:{
+          this.column -= tabSize;
+          break;
+        }
         case CARRIAGE_RETURN:
           this.column = previousColumn();
           break;
