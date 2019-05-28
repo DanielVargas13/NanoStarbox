@@ -18,7 +18,7 @@ import java.io.IOException;
 @Deprecated public class ScannerStateRecord {
 
   protected Scanner main;
-  protected Scanner.State backupState;
+  //protected Scanner.State backupState;
 
   protected ScannerStateRecord(@NotNull Scanner main) {
     if (main.hasStateRecordLock())
@@ -29,14 +29,14 @@ import java.io.IOException;
           new IllegalStateException("end of source data"));
     }
     this.main = main;
-    this.backupState = main.state.clone();
+   // this.backupState = main.state.clone();
     try {
       main.reader.mark(1000000);
     }
     catch (IOException e) {
       throw new Exception("failed to configure source reader", e);
     }
-    main.state.locked = true;
+   // main.state.locked = true;
   }
 
   public void restore() throws Exception {
@@ -44,7 +44,7 @@ import java.io.IOException;
     try {
       try {
         main.reader.reset();
-        main.state = backupState;
+      //  main.state = backupState;
       }
       catch (IOException e) {
         throw new Exception("failed to restore backup state", e);
@@ -60,9 +60,9 @@ import java.io.IOException;
       catch (IOException ignore) {}
     }
     finally {
-      this.main.state.locked = false;
+      //this.main.state.locked = false;
       this.main = null;
-      this.backupState = null;
+    //  this.backupState = null;
     }
   }
 }

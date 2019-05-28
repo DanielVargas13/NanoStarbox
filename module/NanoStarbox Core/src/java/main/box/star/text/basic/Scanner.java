@@ -5,6 +5,7 @@ import box.star.contract.NotNull;
 import box.star.io.Streams;
 import box.star.text.Char;
 import box.star.text.Exception;
+import box.star.text.FormatException;
 import box.star.text.SyntaxError;
 
 import java.io.*;
@@ -679,25 +680,12 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * <p>A hack on next bound field that can use a macro filter to expand escapes,
-   * control buffer content, and control scanner delimiter chomp.</p>
-   * <br>
-   * <p>This method provides full service buffer seek control.
-   * A driver is asked if it wants to expand a backslash, if the answer is yes,
-   * it will be interpreted and placed in the buffer. if the driver says
-   * no, the backslash will be appended to the buffer. All other data is placed
-   * into the buffer if the driver says its okay to collect the character. The
-   * driver must perform any back-stepping needed to preserve field delimiter.</p>
-   * <br>
-   * <p>This method deprecates most of this library.</p>
-   * @param driver the collector control to use
-   * @return the collection of characters allowed by the driver
-   * @throws Exception by call to {@link #next()}
+   * @param driver the source driver to use
+   * @return the compiled string output of the driver
    */
   public String run(@NotNull SourceDriver driver) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
-    boolean doExpand = false;
     /* driver-loading */
     SourceDriver.WithSimpleControlPort simpleControlPort = null;
     SourceDriver.WithExpansionControlPort expansionControlPort = null;
@@ -717,20 +705,15 @@ public class Scanner implements Closeable {
     do {
       c = this.next();
 
-      if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) {
-        if (doExpand = ((SourceDriver.WithExpansionControlPort)driver).expand(this)) continue;
-      }
-
       if (endOfSource()) {
-        if (expansionControlPort != null && doExpand && escapeMode())
-          throw syntaxError("expected character escape sequence, found end of stream");
+        if (expansionControlPort != null && escapeMode())
+          throw new FormatException("expected character escape sequence, found end of stream");
         return sb.toString();
       }
 
-      if (expansionControlPort != null && doExpand && escapeMode()) {
-        String swap = expand(c);
+      if (expansionControlPort != null && escapeMode()) {
+        String swap = expansionControlPort.expand(this);
         sb.append(swap);
-        doExpand = false;
         continue;
       }
 
@@ -1123,7 +1106,62 @@ public class Scanner implements Closeable {
       boolean collect(Scanner scanner, char character);
     }
     interface WithExpansionControlPort extends SourceDriver {
-      boolean expand(Scanner scanner);
+      default String expand(Scanner scanner){
+        char character = scanner.current();
+        switch (character) {
+          case 'd':
+            return DELETE + Tools.EMPTY_STRING;
+          case 'e':
+            return ESCAPE + Tools.EMPTY_STRING;
+          case 't':
+            return "\t";
+          case 'b':
+            return "\b";
+          case 'v':
+            return VERTICAL_TAB + Tools.EMPTY_STRING;
+          case 'r':
+            return "\r";
+          case 'n':
+            return "\n";
+          case 'f':
+            return "\f";
+          /*unicode*/
+          case 'u': {
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+            catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
+          }
+          /*hex or octal*/
+          case '0': {
+            char c = scanner.next();
+            if (c == 'x') {
+              try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+              catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
+            } else {
+              scanner.back();
+            }
+            String chars = '0' + scanner.nextMapLength(3, MAP_ASCII_OCTAL);
+            int value = Integer.parseInt(chars, 8);
+            if (value > 255) {
+              throw new FormatException("octal escape subscript out of range; expected 00-0377; have: " + value);
+            }
+            char out = (char) value;
+            return out + Tools.EMPTY_STRING;
+          }
+          /*integer or pass-through */
+          default: {
+            if (mapContains(character, MAP_ASCII_NUMBERS)) {
+              String chars = character + scanner.nextMapLength(2, MAP_ASCII_NUMBERS);
+              int value = Integer.parseInt(chars);
+              if (value > 255) {
+                throw new FormatException("integer escape subscript out of range; expected 0-255; have: " + value);
+              } else {
+                char out = (char) value;
+                return out + Tools.EMPTY_STRING;
+              }
+            } else return String.valueOf(character);
+          }
+        }
+      }
     }
     interface WithBufferControlPort extends SourceDriver {
       boolean collect(Scanner scanner, StringBuilder buffer, char character);
@@ -1318,4 +1356,6 @@ public class Scanner implements Closeable {
   public static interface CharacterExpander {
     String expand(Scanner scanner, char character);
   }
+
 }
+

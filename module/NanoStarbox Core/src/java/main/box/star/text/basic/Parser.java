@@ -1,6 +1,7 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
+import box.star.text.FormatException;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -131,7 +132,9 @@ public class Parser {
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
-    if (parser.successful()) { parser.start();
+    if (parser.successful()) {
+      try { parser.start(); }
+      catch (FormatException fe) {throw new SyntaxError(parser, fe.getMessage());}
       if (! parser.isFinished())
         throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
@@ -150,7 +153,9 @@ public class Parser {
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
-    if (parser.successful()) { parser.start();
+    if (parser.successful()) {
+      try { parser.start(); }
+      catch (FormatException fe) {throw new SyntaxError(parser, fe.getMessage());}
       if (! parser.isFinished())
         throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
@@ -171,6 +176,10 @@ public class Parser {
     }
     public SyntaxError(Parser parser, String message) {
       super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
+      this.parser = parser;
+    }
+    public SyntaxError(Parser parser, String message, Throwable cause) {
+      super("\n\n"+message+":\n\n   "+parser.cancel()+"\n", cause);
       this.parser = parser;
     }
   }

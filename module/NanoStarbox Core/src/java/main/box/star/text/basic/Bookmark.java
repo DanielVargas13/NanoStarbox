@@ -6,16 +6,16 @@ import static box.star.text.Char.BACKSLASH;
 import static box.star.text.Char.DOUBLE_QUOTE;
 
 /**
- * An optimally compiled source tag, with notebook function
+ * An optimally compiled source pointer
  */
 public class Bookmark {
   public final long line, column, index;
   public final String path;
   private String quotedOrigin;
   Bookmark(Scanner source){
-   this.line = source.state.line;
-   this.column = source.state.column;
-   this.index = source.state.index;
+   this.line = source.getLine();
+   this.column = source.getColumn();
+   this.index = source.getIndex();
    this.path = source.getPath();
   }
   final public String getQuotedOrigin(){
