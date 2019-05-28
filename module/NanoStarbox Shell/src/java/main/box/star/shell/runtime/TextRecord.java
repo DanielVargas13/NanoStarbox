@@ -143,6 +143,12 @@ public abstract class TextRecord {
    * parser's current position, which provides a boundary over-read-sanity-check
    * </p>
    * <br>
+   * <p>Each parser is executed using it's {@link #start()} method. The parser
+   * is then in command of what to do with that scanner, at the current point
+   * within it's stream. It may use this method to start other parsers, or
+   * may do any number of things, but it must synchronize with the parser by the
+   * end of its execution pipe-line.</p>
+   *
    * @param subclass the TextRecord parser class reference
    * @param scanner the source scanner
    * @param <T> the TextRecord subclass specification
@@ -231,7 +237,6 @@ public abstract class TextRecord {
       this.finish();
       return true;
     }
-
     /**
      * <p>Calls the scanner to begin main text record assembly</p>
      * @see #collect(Scanner, StringBuilder, char)
