@@ -89,13 +89,12 @@ public class Scanner implements Closeable, Iterable<Character> {
   protected Reader reader;
   protected boolean closeable;
   protected State state;
+  protected final EnumMap userMap = new EnumMap();
   /**
    * <p>User Settings Pool</p>
    */
-  protected final EnumMap settings = new EnumMap();
-
-  public EnumMap getSettings() {
-    return settings;
+  public EnumMap getMap() {
+    return userMap;
   }
 
   public Scanner(@NotNull String path, @NotNull Reader reader) {
