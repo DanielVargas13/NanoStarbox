@@ -116,7 +116,6 @@ public class Scanner implements Closeable {
   /**
    * Reader for the input.
    */
-  private java.util.Scanner javaScanner;
   protected Reader reader;
   protected boolean closeable;
   protected State state;
@@ -124,7 +123,6 @@ public class Scanner implements Closeable {
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
     this.state = new State(path);
-    javaScanner = new java.util.Scanner(reader);
   }
 
   public Scanner(@NotNull String path, @NotNull InputStream inputStream) {
