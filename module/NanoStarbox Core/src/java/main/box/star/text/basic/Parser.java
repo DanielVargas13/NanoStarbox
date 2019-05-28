@@ -123,4 +123,23 @@ public abstract class Parser {
     return parser;
   }
 
+  protected <T extends Parser> @NotNull T parse(@NotNull Class<T> parserClass){
+    T parser;
+    try {
+      Constructor<T> classConstructor = parserClass.getConstructor(Scanner.class);
+      classConstructor.setAccessible(true);
+      parser = classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(e);}
+    if (parser.successful()) { parser.start();
+      if (! parser.isFinished())
+        throw new IllegalStateException(parserClass.getName()+
+            " did not finish parsing");
+      else if (parser.isNotSynchronized())
+        throw new IllegalStateException(parserClass.getName()+
+            " did not synchronize its end result with the scanner state");
+      if (parser instanceof NewFuturePromise) scanner.flushHistory();
+    }
+    return parser;
+  }
+
 }
