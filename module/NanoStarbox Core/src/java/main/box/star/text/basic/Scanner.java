@@ -47,7 +47,7 @@ import static box.star.text.Char.*;
  * <li>Foreign Batch Operation Method interface through {@link #run(ScannerMethod, Object...)}, and {@link #branch(ScannerMethod, Object...)}</li>
  * <li>Case Controlled Syntax Character Match Mandate through {@link #nextCharacter(char, boolean)}</li>
  * <li>Case Controlled Syntax Keyword Match Mandate through {@link #nextString(String, boolean)}</li>
- * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMapLength(int, char...)}</li>
+ * <li>Character Map Searching through {@link #nextMap(char...)} and {@link #nextMap(int, char...)}</li>
  * <li>Character Map Field Boundary Searching through {@link #nextField(char...)}, {@link #nextFieldLength(int, char...)} and {@link #nextBoundField(char...)}</li>
  * <li>Buffer Position Backstep through {@link #back()}, and {@link #walkBack(long)}</li>
  * <li>Integral Back Step Buffer Control Method through {@link #flushHistory()}</li>
@@ -570,17 +570,15 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scan and assemble characters while scan in map.
+   * Scan and assemble characters while scan is in map.
    *
    * @param map
    * @return
-   * @throws Exception if read fails.
    */
-  @NotNull
-  @Deprecated public String nextMap(@NotNull char... map) throws Exception {
+  public @NotNull String nextMap(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
-    do {
+    if (! endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
       else {
@@ -592,18 +590,41 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * Scan and assemble characters while scan in map and scan-length < max.
+   * Scan and assemble characters while scan is in map.
+   * @param caseSensitive
+   * @param map
+   * @return
+   */
+  public @NotNull String nextMap(boolean caseSensitive, @NotNull char... map) {
+    StringBuilder mapped = new StringBuilder();
+    char[] mini = null;
+    if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
+    boolean found;
+    char c, v;
+    do {
+      found = false; v = next();
+      if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
+      for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
+      if (!found) {
+        back();
+        break;
+      }
+      mapped.append(v);
+    } while (! endOfSource());
+    return mapped.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
    *
    * @param max
    * @param map
    * @return
-   * @throws Exception if read fails.
    */
-  @NotNull
-  @Deprecated public String nextMapLength(int max, @NotNull char... map) throws Exception {
+  public @NotNull String nextMap(int max, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
-    do {
+    if (! endOfSource()) do {
       if (sb.length() == max) break;
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
@@ -614,6 +635,33 @@ public class Scanner implements Closeable {
     } while (true);
 
     return sb.toString();
+  }
+
+  /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
+   * @param max
+   * @param caseSensitive
+   * @param map
+   * @return
+   */
+  public @NotNull String nextMap(int max, boolean caseSensitive, @NotNull char... map) {
+    StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
+    char[] mini = null;
+    if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
+    if (max == 0) --max;
+    boolean found;
+    char c, v;
+    do {
+      found = false; v = next();
+      if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
+      for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
+      if (!found) {
+        back();
+        break;
+      }
+      mapped.append(v);
+    } while (mapped.length() != max && ! endOfSource());
+    return mapped.toString();
   }
 
   /**
@@ -764,19 +812,19 @@ public class Scanner implements Closeable {
         return "\f";
       /*unicode*/
       case 'u': {
-        try { return String.valueOf((char) Integer.parseInt(this.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+        try { return String.valueOf((char) Integer.parseInt(this.nextMap(4, MAP_ASCII_HEX), 16)); }
         catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
       }
       /*hex or octal*/
       case '0': {
         char c = this.next();
         if (c == 'x') {
-          try { return String.valueOf((char) Integer.parseInt(this.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+          try { return String.valueOf((char) Integer.parseInt(this.nextMap(4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
         } else {
           this.back();
         }
-        String chars = '0' + this.nextMapLength(3, MAP_ASCII_OCTAL);
+        String chars = '0' + this.nextMap(3, MAP_ASCII_OCTAL);
         int value = Integer.parseInt(chars, 8);
         if (value > 255) {
           throw this.syntaxError("octal escape subscript out of range; expected 00-0377; have: " + value);
@@ -787,7 +835,7 @@ public class Scanner implements Closeable {
       /*integer or pass-through */
       default: {
         if (mapContains(character, MAP_ASCII_NUMBERS)) {
-          String chars = character + this.nextMapLength(2, MAP_ASCII_NUMBERS);
+          String chars = character + this.nextMap(2, MAP_ASCII_NUMBERS);
           int value = Integer.parseInt(chars);
           if (value > 255) {
             throw this.syntaxError("integer escape subscript out of range; expected 0-255; have: " + value);
@@ -1130,19 +1178,19 @@ public class Scanner implements Closeable {
             return "\f";
           /*unicode*/
           case 'u': {
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
             catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
           }
           /*hex or octal*/
           case '0': {
             char c = scanner.next();
             if (c == 'x') {
-              try { return String.valueOf((char) Integer.parseInt(scanner.nextMapLength(4, MAP_ASCII_HEX), 16)); }
+              try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
               catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
             } else {
               scanner.back();
             }
-            String chars = '0' + scanner.nextMapLength(3, MAP_ASCII_OCTAL);
+            String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
             int value = Integer.parseInt(chars, 8);
             if (value > 255) {
               throw new FormatException("octal escape subscript out of range; expected 00-0377; have: " + value);
@@ -1153,7 +1201,7 @@ public class Scanner implements Closeable {
           /*integer or pass-through */
           default: {
             if (mapContains(character, MAP_ASCII_NUMBERS)) {
-              String chars = character + scanner.nextMapLength(2, MAP_ASCII_NUMBERS);
+              String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
               int value = Integer.parseInt(chars);
               if (value > 255) {
                 throw new FormatException("integer escape subscript out of range; expected 0-255; have: " + value);
