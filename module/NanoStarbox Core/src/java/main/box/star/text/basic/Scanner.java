@@ -1337,10 +1337,11 @@ public class Scanner implements Closeable, Iterable<Character> {
     return Integer.parseInt(numbers);
   }
 
-  @Override
-  public Iterator<Character> iterator() {
+  private Iterator<Character> iterator;
+
+  {
     Scanner scanner = this;
-    return new Iterator<Character>() {
+    iterator =new Iterator<Character>() {
       @Override
       public boolean hasNext() {
         return scanner.haveNext();
@@ -1351,6 +1352,11 @@ public class Scanner implements Closeable, Iterable<Character> {
         return scanner.next();
       }
     };
+  }
+
+  @Override
+  public Iterator<Character> iterator() {
+    return iterator;
   }
 
   public static interface SourceDriver {
