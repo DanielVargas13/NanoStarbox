@@ -108,6 +108,7 @@ public abstract class TextRecord {
   }
 
   final protected void finish(){
+    if (finished) throw new IllegalStateException("this task is already finished (code optimization bug)");
     this.end = scanner.getIndex();
     this.finished = true;
   }
