@@ -116,6 +116,7 @@ public class Scanner implements Closeable {
   /**
    * Reader for the input.
    */
+  private java.util.Scanner javaScanner;
   protected Reader reader;
   protected boolean closeable;
   protected State state;
@@ -123,6 +124,7 @@ public class Scanner implements Closeable {
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
     this.state = new State(path);
+    javaScanner = new java.util.Scanner(reader);
   }
 
   public Scanner(@NotNull String path, @NotNull InputStream inputStream) {
@@ -1108,6 +1110,30 @@ public class Scanner implements Closeable {
     } while (! endOfSource() && buffer.length() < max);
     walkBack(start);
     return Tools.EMPTY_STRING;
+  }
+
+  public int nextPatternLength(Pattern pattern) {
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next(); if (endOfSource()) break;
+      buffer.append(c);
+      if (pattern.matcher(buffer.toString()).matches()) return buffer.length();
+    } while (! endOfSource());
+    walkBack(start);
+    return 0;
+  }
+
+  public int nextPatternLength(int max, Pattern pattern){
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next(); if (endOfSource()) break;
+      buffer.append(c);
+      if (pattern.matcher(buffer.toString()).matches()) return buffer.length();
+    } while (! endOfSource() && buffer.length() < max);
+    walkBack(start);
+    return 0;
   }
 
   /**
