@@ -151,4 +151,16 @@ public abstract class Parser {
     return parser;
   }
 
+  public static class SyntaxError extends RuntimeException {
+    protected String tag;
+    @Override
+    public String toString() {
+      return tag + super.getMessage();
+    }
+    public SyntaxError(Parser parser, String message) {
+      super("\n\n"+message+":\n\n   "+parser.getOrigin()+"\n");
+      this.tag = parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
+    }
+  }
+
 }
