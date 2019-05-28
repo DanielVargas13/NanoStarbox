@@ -724,7 +724,8 @@ public class Scanner implements Closeable {
 
       sb.append(c);
 
-    } while (haveNext());
+    } while (! endOfSource());
+    if (! endOfSource() && driver instanceof SourceDriver.WithAutoBackStep) back();
     return sb.toString();
   }
 
@@ -1102,6 +1103,7 @@ public class Scanner implements Closeable {
   }
 
   public static interface SourceDriver {
+    interface WithAutoBackStep {}
     interface WithSimpleControlPort extends SourceDriver {
       boolean collect(Scanner scanner, char character);
     }
