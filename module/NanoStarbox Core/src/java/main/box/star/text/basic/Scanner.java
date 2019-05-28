@@ -4,6 +4,7 @@ import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
+import box.star.state.EnumMap;
 import box.star.text.Char;
 import box.star.text.Exception;
 import box.star.text.FormatException;
@@ -88,6 +89,7 @@ public class Scanner implements Closeable, Iterable<Character> {
   protected Reader reader;
   protected boolean closeable;
   protected State state;
+  protected final EnumMap settings = new EnumMap();
 
   public Scanner(@NotNull String path, @NotNull Reader reader) {
     this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
