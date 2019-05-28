@@ -6,6 +6,7 @@ import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
+import static box.star.text.basic.Parser.*;
 import static box.star.shell.script.Parser.Status.*;
 
 /**
@@ -105,7 +106,7 @@ public class Parser extends box.star.text.basic.Parser {
         return true;
       }
       if (mapContains(character, MAP_ASCII_NUMBERS)){
-        //throw new Parser.SyntaxError(this, "expected command found digits");
+        throw new SyntaxError(this, "expected command found digits");
       }
       switch (character){
         case '#': {
@@ -130,7 +131,7 @@ public class Parser extends box.star.text.basic.Parser {
           break;
         }
         default:
-          //scanner.flagThisCharacterSyntaxError("shell command");
+          throw new SyntaxError(this, "expected shell command");
       }
       this.finish();
       return true;
