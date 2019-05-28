@@ -92,6 +92,10 @@ public class Scanner implements Closeable, Iterable<Character> {
   protected final EnumMap userMap = new EnumMap();
   /**
    * <p>User Settings Pool</p>
+   * <br>
+   * <p>Allows a scanner user to configure a custom scanner environment with
+   * machine-state-variables (enum-keyed-objects).</p>
+   * <br>
    */
   public EnumMap getMap() {
     return userMap;
