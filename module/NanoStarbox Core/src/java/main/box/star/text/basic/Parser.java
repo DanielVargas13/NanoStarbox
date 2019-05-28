@@ -65,8 +65,8 @@ public abstract class Parser {
    */
   protected static interface NewFuturePromise {}
 
-  // Protected Constructors
-  protected Parser(@NotNull Scanner scanner){
+  // Public Constructors
+  public Parser(@NotNull Scanner scanner){
     if (scanner.endOfSource()){ status = FAILED; return; }
     this.scanner = scanner;
     this.origin = scanner.nextBookmark();
