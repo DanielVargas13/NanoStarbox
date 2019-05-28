@@ -525,8 +525,8 @@ public class Scanner implements Closeable, Iterable<Character> {
    * @return
    * @throws SyntaxError if match fails
    */
-  @NotNull
-  @Deprecated public String nextString(@NotNull String seek, boolean caseSensitive) throws SyntaxError {
+  @NotNull @Deprecated
+  public String nextString(@NotNull String seek, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
     char[] sequence = seek.toCharArray();
     for (char c : sequence) out.append(nextCharacter(seek, c, caseSensitive));
@@ -1411,10 +1411,10 @@ public class Scanner implements Closeable, Iterable<Character> {
   public static interface SourceDriver {
     interface WithAutoBackStep {}
     interface WithSimpleControlPort extends SourceDriver {
-      boolean collect(Scanner scanner, char character);
+      boolean collect(@NotNull Scanner scanner, char character);
     }
     interface WithExpansionControlPort extends SourceDriver {
-      default String expand(Scanner scanner){
+      default String expand(@NotNull Scanner scanner){
         char character = scanner.current();
         switch (character) {
           case 'd':
@@ -1472,7 +1472,7 @@ public class Scanner implements Closeable, Iterable<Character> {
       }
     }
     interface WithBufferControlPort extends SourceDriver {
-      boolean collect(Scanner scanner, StringBuilder buffer, char character);
+      boolean collect(@NotNull Scanner scanner, @NotNull StringBuilder buffer, char character);
     }
     interface WithMasterControlPorts extends WithExpansionControlPort, SourceDriver.WithBufferControlPort {}
   }
@@ -1491,7 +1491,7 @@ public class Scanner implements Closeable, Iterable<Character> {
     @Deprecated protected boolean locked, escapeLines, escapeUnderscoreLine;
     protected boolean eof, slashing, escaped;
 
-    public State(String path) {
+    public State(@NotNull String path) {
       State state = this;
       state.path = path;
       state.index = -1;
@@ -1662,7 +1662,7 @@ public class Scanner implements Closeable, Iterable<Character> {
   }
 
   public static interface CharacterExpander {
-    String expand(Scanner scanner, char character);
+    @NotNull String expand(@NotNull Scanner scanner, char character);
   }
 
 }
