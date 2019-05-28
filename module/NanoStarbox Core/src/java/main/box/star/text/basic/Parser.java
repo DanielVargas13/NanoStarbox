@@ -152,15 +152,17 @@ public abstract class Parser {
   }
 
   public static class SyntaxError extends RuntimeException {
-    protected String tag;
+    protected Parser parser;
+    private String tag(){
+      return parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
+    }
     @Override
     public String toString() {
-      return tag + super.getMessage();
+      return tag() + super.getMessage();
     }
     public SyntaxError(Parser parser, String message) {
-      super("\n\n"+message+":\n\n   "+parser.scanner.createBookmark()+"\n");
-      this.tag = parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
-      parser.cancel();
+      super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
+      this.parser = parser;
     }
   }
 
