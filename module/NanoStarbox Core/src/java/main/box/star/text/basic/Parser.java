@@ -143,9 +143,9 @@ public abstract class Parser {
     } catch (Exception e){throw new RuntimeException(e);}
     if (parser.successful()) { parser.start();
       if (! parser.isFinished())
-        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
       else if (parser.isNotSynchronized())
-        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
       if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
