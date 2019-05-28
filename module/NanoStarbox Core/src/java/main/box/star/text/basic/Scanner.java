@@ -113,9 +113,9 @@ public class Scanner implements Closeable, Iterable<Character> {
    * Sometimes you need to parse some sub-text, so here is a method to set
    * the location data, after you create the scanner.
    *
-   * @param line
-   * @param column
-   * @param index
+   * @param line the line to use as the starting position
+   * @param column the column to use as the starting position
+   * @param index the index to use as the starting position
    * @return the new Scanner
    * @throws IllegalStateException if this is not a new {@link Scanner}
    */
@@ -142,33 +142,9 @@ public class Scanner implements Closeable, Iterable<Character> {
   }
 
   /**
-   * This method enables lines to be escaped by the state, and probably should
-   * not be used for any reason.
-   *
-   * @param escapeLines
-   */
-  @Deprecated
-  public void setLineEscape(boolean escapeLines) {
-    state.escapeLines = escapeLines;
-  }
-
-  /**
-   * This method enables lines to be escaped by the state, and probably should
-   * not be used for any reason.
-   *
-   * @param escapeLines
-   * @param useUnderscore
-   */
-  @Deprecated
-  public void setLineEscape(boolean escapeLines, boolean useUnderscore) {
-    state.escapeLines = escapeLines;
-    state.escapeUnderscoreLine = useUnderscore;
-  }
-
-  /**
    * Determines the size of the current history buffer.
    *
-   * @return
+   * @return the length of the history
    */
   public int getHistoryLength() {
     return state.getHistoryLength();
@@ -180,7 +156,7 @@ public class Scanner implements Closeable, Iterable<Character> {
    * if the amount is zero or less, the history is flushed.
    * if the amount is not reached, nothing is done.
    *
-   * @param size
+   * @param size the new target size of the history
    * @throws IllegalStateException if the current position is within the history.
    */
   public void trimHistoryLength(int size) throws IllegalStateException {
@@ -207,14 +183,10 @@ public class Scanner implements Closeable, Iterable<Character> {
       if (closeable) reader.close();
     }
     catch (IOException ignored) {}
-    finally /*  complete */ {
-    }
   }
 
   /**
    * Closes the file if closeable when the object is garbage collected.
-   *
-   * @throws Throwable
    */
   @Override
   protected void finalize() throws Throwable {
