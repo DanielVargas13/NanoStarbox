@@ -28,7 +28,7 @@ public class Bookmark {
         .replaceAll(Char.toString(BACKSLASH, BACKSLASH, DOUBLE_QUOTE), Char.toString(BACKSLASH, DOUBLE_QUOTE));
   }
   private String compileToString() {
-    return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + getQuotedOrigin() + "\"};";
+    return " at location = " + "{line: " + line + ", column: " + column + ", index: " + index + ", source: \"" + getQuotedOrigin() + "\"}";
   }
   @Override
   public String toString() {
