@@ -685,6 +685,7 @@ public class Scanner implements Closeable {
    */
   public String run(@NotNull SourceDriver driver) throws Exception {
     char c;
+    boolean autoBackStep = driver instanceof SourceDriver.WithAutoBackStep;
     StringBuilder sb = new StringBuilder();
     /* driver-loading */
     SourceDriver.WithSimpleControlPort simpleControlPort = null;
@@ -725,7 +726,7 @@ public class Scanner implements Closeable {
       sb.append(c);
 
     } while (! endOfSource());
-    if (! endOfSource() && driver instanceof SourceDriver.WithAutoBackStep) back();
+    if (autoBackStep && ! endOfSource()) back();
     return sb.toString();
   }
 
