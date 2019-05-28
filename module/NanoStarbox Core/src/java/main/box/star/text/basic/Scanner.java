@@ -1387,14 +1387,14 @@ public class Scanner implements Closeable, Iterable<Character> {
           /*unicode*/
           case 'u': {
             try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
+            catch (NumberFormatException e) { throw new FormatException("failed to parse unicode escape sequence using hex method", e); }
           }
           /*hex or octal*/
           case '0': {
             char c = scanner.next();
             if (c == 'x') {
               try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-              catch (NumberFormatException e) { throw new FormatException("Illegal escape", e); }
+              catch (NumberFormatException e) { throw new FormatException("failed to parse hex escape sequence", e); }
             } else {
               scanner.back();
             }
