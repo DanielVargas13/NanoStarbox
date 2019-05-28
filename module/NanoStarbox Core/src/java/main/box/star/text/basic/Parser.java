@@ -63,7 +63,7 @@ public abstract class Parser {
    * completion the scanner history should be synchronized (flushed) with the
    * current position.
    */
-  protected static interface WithAutoFlush {}
+  protected static interface NewFuturePromise {}
 
   // Protected Constructors
   protected Parser(@NotNull Scanner scanner){
@@ -119,7 +119,7 @@ public abstract class Parser {
       else if (parser.isNotSynchronized())
         throw new IllegalStateException(parserClass.getName()+
             " did not synchronize its end result with the scanner state");
-      if (parser instanceof WithAutoFlush) scanner.flushHistory();
+      if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
   }
