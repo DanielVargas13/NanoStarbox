@@ -730,18 +730,22 @@ public class Scanner implements Closeable {
 
   /**
    * <p>Checks the required string to see if it's length member meets requirements</p>
+   * <br>
+   * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
    * @param min the minimum amount of characters to accept from the source input
    * @param backStep if true: failure will rewind the scanner before throwing any FormatException
-   * @param format the string format that will be used during the call to {@link String#format(String, Object...) String.format(String format, String required)}
-   * @param source
+   * @param format the string format that will be used during the call to new FormatException({@link String#format(String, Object...) String.format(format, required)});
+   * @param source null or test value assembled from scanner
+   * @return the source parameter given (operates as a pass-through filter)
    * @throws FormatException if the required string does not meet requirements
    */
-  public void assertLengthFormat(int min, boolean backStep, @NotNull String format, @Nullable String source) throws FormatException {
-    if (min <= 0) return;
+  public String assertLengthFormat(int min, boolean backStep, @NotNull String format, @Nullable String source) throws FormatException {
+    if (min <= 0) return source;
     else if (source == null || source.length() < min) {
       if (backStep && source != null) back(source.length());
       throw new FormatException(String.format(format, source));
     }
+    return source;
   }
 
   /**
@@ -750,17 +754,20 @@ public class Scanner implements Closeable {
    * <p>If this operation fails, the scanner will walk-back to the beginning
    * of this string, and flag the format exception from that point.</p>
    * <br>
+   * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
    * @param min the minimum amount of characters to accept from the source input
-   * @param format the string format that will be used during the call to {@link String#format(String, Object...) String.format(String format, String required)}
-   * @param source
+   * @param format the string format that will be used during the call to new FormatException({@link String#format(String, Object...) String.format(format, required)});
+   * @param source null or test value assembled from scanner
+   * @return the source parameter given (operates as a pass-through filter)
    * @throws FormatException if the required string does not meet requirements
    */
-  public void assertLengthFormat(int min, @NotNull String format, @Nullable String source) throws FormatException {
-    if (min <= 0) return;
+  public String assertLengthFormat(int min, @NotNull String format, @Nullable String source) throws FormatException {
+    if (min <= 0) return source;
     else if (source == null || source.length() < min) {
       if (source != null) back(source.length());
       throw new FormatException(String.format(format, source));
     }
+    return source;
   }
 
   public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
