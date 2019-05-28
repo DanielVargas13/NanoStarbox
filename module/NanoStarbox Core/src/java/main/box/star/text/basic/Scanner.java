@@ -1036,9 +1036,5 @@ public class Scanner implements Closeable, Iterable<Character> {
 
   }
 
-  public static interface CharacterExpander {
-    @NotNull String expand(@NotNull Scanner scanner, char character);
-  }
-
 }
 

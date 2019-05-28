@@ -651,6 +651,10 @@ public class LegacyScanner extends Scanner {
     return method.compile(this);
   }
 
+  public static interface CharacterExpander {
+    @NotNull String expand(@NotNull Scanner scanner, char character);
+  }
+
   /**
    * <h2>ScannerMethod</h2>
    *
