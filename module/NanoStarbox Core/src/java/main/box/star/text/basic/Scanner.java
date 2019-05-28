@@ -60,7 +60,7 @@ public class Scanner implements Closeable {
   public final static char[] WORD_BREAK =
       new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap();
 
-  private Map<Character, String> TRANSLATION = new Hashtable<>();
+  @Deprecated private Map<Character, String> TRANSLATION = new Hashtable<>();
 
   /**
    * <p>Call this method to configure the translation for a particular character</p>
@@ -86,7 +86,7 @@ public class Scanner implements Closeable {
     else return Tools.switchNull(Char.translate(c), String.valueOf(c));
   }
 
-  private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
+  @Deprecated private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {
     @Override
     public String expand(Scanner scanner, char c) {
       return Char.toString(c);
@@ -100,13 +100,13 @@ public class Scanner implements Closeable {
    * implementation will be used.</p>
    * <p></p>
    */
-  public CharacterExpander characterExpander = null;
+  @Deprecated public CharacterExpander characterExpander = null;
 
   /**
    * The character expander that will resolve backslash escapes, if the current
    * configuration does not handle the escape.
    */
-  public CharacterExpander fallBackCharacterExpander = defaultCharacterExpander;
+  @Deprecated public CharacterExpander fallBackCharacterExpander = defaultCharacterExpander;
 
   /**
    * Reader for the input.
