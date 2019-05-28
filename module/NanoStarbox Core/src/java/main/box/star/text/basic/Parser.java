@@ -1,5 +1,7 @@
 package box.star.text.basic;
 
+import box.star.contract.NotNull;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -27,7 +29,11 @@ public abstract class Parser {
   final public boolean isFinished() { return finished; }
   final public long getStart() { return start; }
   final public long getEnd() { return end; }
-  final public Bookmark getOrigin() { return origin; }
+  final public @NotNull Bookmark getOrigin() { return origin; }
+  final public long length(){
+    long start = Math.max(0, this.start);
+    return (end==0)?scanner.getIndex()-start:end-start;
+  }
 
   // Protected Static Class Provisions
   /**
@@ -38,7 +44,7 @@ public abstract class Parser {
   protected static interface WithAutoFlush {}
 
   // Protected Constructors
-  protected Parser(Scanner scanner){
+  protected Parser(@NotNull Scanner scanner){
     if (scanner.endOfSource()){ status = FAILED; return; }
     this.scanner = scanner;
     this.origin = scanner.nextBookmark();
@@ -47,7 +53,7 @@ public abstract class Parser {
   }
 
   // Protected Methods
-  final protected Bookmark cancel() {
+  final protected @NotNull Bookmark cancel() {
     Bookmark bookmark = scanner.createBookmark();
     scanner.walkBack(this.end = this.start);
     this.status = FAILED;
@@ -73,16 +79,11 @@ public abstract class Parser {
     this.finished = true;
   }
 
-  final protected long length(){
-    long start = Math.max(0, this.start);
-    return (end==0)?scanner.getIndex()-start:end-start;
-  }
-
   protected abstract void start();
 
   // Public Static Methods
 
-  final public static <T extends Parser> T parse(Class<T> parserClass, Scanner scanner) throws IllegalStateException {
+  final public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserClass, @NotNull Scanner scanner) throws IllegalStateException {
     T parser;
     try {
       Constructor<T> classConstructor = parserClass.getConstructor(Scanner.class);
