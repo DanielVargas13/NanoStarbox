@@ -487,13 +487,14 @@ public class Scanner implements Closeable, Iterable<Character> {
             ("SourceDriver does not host any valid control ports");
     }
     /* end-driver-loading */
+    boolean ending;
     do {
       c = this.next();
 
       if (expansionControlPort != null && c == BACKSLASH && !escapeMode()) continue;
 
-      if (endOfSource()) {
-        if (expansionControlPort != null && escapeMode())
+      if (ending = endOfSource()) {
+        if (expansionControlPort == null && escapeMode())
           throw new FormatException("expected character escape sequence, found end of stream");
         //return sb.toString();
       }
@@ -509,7 +510,8 @@ public class Scanner implements Closeable, Iterable<Character> {
         continue;
       } else if (! simpleControlPort.collect(this, c)) { break; }
 
-      sb.append(c);
+      // don't append EOF signal
+      if (! ending) sb.append(c);
 
     } while (! endOfSource());
     if (autoBackStep && ! endOfSource()) back();
