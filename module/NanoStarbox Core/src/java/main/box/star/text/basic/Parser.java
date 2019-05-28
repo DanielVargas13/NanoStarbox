@@ -160,6 +160,7 @@ public abstract class Parser {
     public SyntaxError(Parser parser, String message) {
       super("\n\n"+message+":\n\n   "+parser.scanner.createBookmark()+"\n");
       this.tag = parser.getClass().getName().replaceAll("\\$", ".")+".SyntaxError: ";
+      parser.cancel();
     }
   }
 
