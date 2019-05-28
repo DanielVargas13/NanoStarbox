@@ -1,12 +1,10 @@
 package box.star.shell.script;
 
 import box.star.contract.NotNull;
-import box.star.text.Char;
 import box.star.text.basic.Bookmark;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
-import static box.star.text.basic.Parser.*;
 import static box.star.shell.script.Parser.Status.*;
 
 /**
