@@ -11,6 +11,7 @@ import box.star.text.SyntaxError;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
 
@@ -1069,6 +1070,44 @@ public class Scanner implements Closeable {
     if (word.equals(match)) return true;
     walkBack(start);
     return false;
+  }
+
+  public @NotNull String nextMatch(@NotNull Pattern pattern){
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next(); if (endOfSource()) break;
+      buffer.append(c);
+      if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
+    } while (! endOfSource());
+    walkBack(start);
+    return Tools.EMPTY_STRING;
+  }
+
+  public String nextMatch(int max, Pattern pattern){
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next(); if (endOfSource()) break;
+      buffer.append(c);
+      if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
+    } while (! endOfSource() && buffer.length() < max);
+    walkBack(start);
+    return Tools.EMPTY_STRING;
+  }
+
+  public String nextMatch(int max, Pattern... patterns){
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next(); if (endOfSource()) break;
+      buffer.append(c);
+      for (Pattern pattern:patterns)
+        if (pattern.matcher(buffer.toString()).matches())
+          return buffer.toString();
+    } while (! endOfSource() && buffer.length() < max);
+    walkBack(start);
+    return Tools.EMPTY_STRING;
   }
 
   /**
