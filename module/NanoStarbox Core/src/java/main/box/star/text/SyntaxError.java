@@ -3,7 +3,7 @@ package box.star.text;
 /**
  * The TextScanner.Exception is thrown by the TextScanner interface classes when things are amiss.
  */
-public class SyntaxError extends RuntimeException {
+@Deprecated public class SyntaxError extends RuntimeException {
   /**
    * Serialization ID
    */

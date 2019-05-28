@@ -6,7 +6,7 @@ package box.star.text;
  * @author Hypersoft-Systems: USA
  * @version 2015-12-09
  */
-public class Exception extends RuntimeException {
+@Deprecated public class Exception extends RuntimeException {
   /**
    * Serialization ID
    */
