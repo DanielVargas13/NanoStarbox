@@ -121,7 +121,7 @@ public abstract class Parser {
       Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
-    } catch (Exception e){throw new RuntimeException(e);}
+    } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) { parser.start();
       if (! parser.isFinished())
         throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
@@ -140,7 +140,7 @@ public abstract class Parser {
       Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
       parser = classConstructor.newInstance(scanner);
-    } catch (Exception e){throw new RuntimeException(e);}
+    } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) { parser.start();
       if (! parser.isFinished())
         throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
