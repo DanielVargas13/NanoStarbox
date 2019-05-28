@@ -23,7 +23,9 @@ import static box.star.shell.script.Parser.Status.*;
  * execution context interface is built.</p>
  * <br>
  * <p>A script parser does not perform any expansions, evaluations, or interact
- * with any shell specific environment settings.</p>
+ * with any shell specific environment settings. In short, these parsers
+ * interpret the script components, and the shell contexts interpret these
+ * models.</p>
  * <br>
  * <p>{@link Type} lists a manually curated enumeration for each parser model
  * kind of this class and {@link ListType} lists a manually curated enumeration
@@ -244,6 +246,7 @@ public class Parser extends box.star.text.basic.Parser {
       super(scanner);
     }
   }
+
   public static class EnvironmentOperationList extends List<EnvironmentOperation> {}
   public static class ParameterList extends List<Parameter> {}
   public static class RedirectList extends List<Redirect> {}
