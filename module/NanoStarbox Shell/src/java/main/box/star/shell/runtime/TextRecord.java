@@ -71,6 +71,7 @@ public abstract class TextRecord {
   private Bookmark origin;
   private long start, end;
   private Status status;
+  private boolean finished;
 
   public TextRecord(Scanner scanner){
     if (scanner.endOfSource()){ status = FAILED; return; }
@@ -94,11 +95,20 @@ public abstract class TextRecord {
   }
 
   final protected boolean hasEnding(){
-    return end == 0;
+    return end != 0;
+  }
+
+  protected final boolean isNotSynchronized(){
+    return ((scanner.endOfSource()?-1:0))+scanner.getIndex() != this.end;
+  }
+
+  public boolean isFinished() {
+    return finished;
   }
 
   final protected void finish(){
     this.end = scanner.getIndex();
+    this.finished = true;
   }
 
   final public long getStart() {
@@ -114,29 +124,59 @@ public abstract class TextRecord {
   }
 
   final protected long length(){
+    long start = Math.max(0, this.start);
     return (end==0)?scanner.getIndex()-start:end-start;
   }
 
-  public final static <T extends TextRecord> T parse(Class<T> recordClass, Scanner scanner) {
+  /**
+   * <p>Common TextRecord Parser Factory Parse Method</p>
+   * <br>
+   * <p>This method constructs TextRecord parsers with a given TextRecord class
+   * and scanner. The method then execute the parser for it's results.</p>
+   * <br>
+   * @param subclass the TextRecord parser class reference
+   * @param scanner the source scanner
+   * @param <T> the TextRecord subclass specification
+   * @return the result of the parser's execution
+   * @throws IllegalStateException if the parser does not correctly finish it's session
+   */
+  public final static <T extends TextRecord> T parse(Class<T> subclass, Scanner scanner) throws IllegalStateException {
     T textRecord;
     try {
-      Constructor<T> ctor = recordClass.getConstructor(Scanner.class);
+      Constructor<T> ctor = subclass.getConstructor(Scanner.class);
       ctor.setAccessible(true);
       textRecord = ctor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(e);}
     if (textRecord.success()) {
       textRecord.start();
-      if (textRecord.success() && textRecord.hasEnding()){
-        throw new IllegalStateException("text record acquisition for "+recordClass.getName()+" did not complete");
-      }
+      if (! textRecord.isFinished())
+        throw new IllegalStateException(subclass.getName()+" did not finish parsing");
+      else if (textRecord.isNotSynchronized())
+        throw new IllegalStateException(subclass.getName()+" did not synchronize its end result with the scanner state");
       if (textRecord instanceof Final) scanner.flushHistory();
     }
     return textRecord;
   }
 
+  /**
+   * <p>A class implements this method to begin parsing</p>
+   * @see Main#start()
+   */
   protected void start(){}
 
   // Types
+
+  /**
+   * <p>Main TextRecord</p>
+   * <br>
+   * <p>{@link Main} looks for a specific shell program word and processes that word,
+   * using the associated {@link TextRecord} sub-class. Additionally, this
+   * class is responsible for parsing white-space-characters and unidentified garbage.</p>
+   * <br>
+   * @see box.star.shell.runtime.TextRecord#parse(Class, Scanner)  Parsing Text Records with the TextRecord class
+   * @see box.star.text.basic.Scanner
+   * @see box.star.text.basic.ScannerDriver
+   */
   public static class Main extends TextRecord implements ScannerDriver.WithBufferControlPort, Final {
     List records = new List();
     public Main(Scanner scanner) {
@@ -182,6 +222,11 @@ public abstract class TextRecord {
       this.finish();
       return true;
     }
+
+    /**
+     * <p>Calls the scanner to begin main text record assembly</p>
+     * @see #collect(Scanner, StringBuilder, char)
+     */
     @Override
     protected void start() { scanner.assemble(this); }
   }
@@ -237,33 +282,54 @@ public abstract class TextRecord {
       super(scanner);
     }
   }
-  public static abstract class Parameter extends TextRecord {
+  static abstract class Parameter extends TextRecord {
+    public static enum QuoteType {
+      NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING
+    }
+    protected QuoteType quoteType;
+    protected String text;
     Parameter(Scanner scanner) {
+      this(scanner, QuoteType.NOT_QUOTING);
+    }
+    Parameter(Scanner scanner, QuoteType quoteType){
       super(scanner);
+      this.quoteType = quoteType;
+    }
+    private final String extractText(){
+      return text.substring(1, text.length()-1);
+    }
+    public String getText() {
+      switch (quoteType) {
+        case NOT_QUOTING: return text;
+        default: return extractText();
+      }
+    }
+    @Override
+    public String toString() {
+      return text;
     }
   }
   public static class ParameterText extends Parameter {
-    protected String text;
-    public ParameterText(Scanner scanner) {
-      super(scanner);
+    public ParameterText(Scanner scanner, QuoteType quoting) {
+      super(scanner, quoting);
     }
   }
   public static class ParameterLiteral extends ParameterText implements Final {
     ParameterLiteral(Scanner scanner) {
-      super(scanner);
+      super(scanner, QuoteType.SINGLE_QUOTING);
     }
   }
   public static class ParameterQuoted extends ParameterText implements Final {
     ParameterQuoted(Scanner scanner) {
-      super(scanner);
+      super(scanner, QuoteType.DOUBLE_QUOTING);
     }
   }
-  public static class Redirect extends ParameterText implements Final {
+  public static class Redirect extends Parameter implements Final {
     Redirect(Scanner scanner) {
-      super(scanner);
+      super(scanner, QuoteType.NOT_QUOTING);
     }
   }
-  public static class HereDocument extends TextRecord implements Final {
+  public static class HereDocument extends Parameter implements Final {
     HereDocument(Scanner scanner) {
       super(scanner);
     }
