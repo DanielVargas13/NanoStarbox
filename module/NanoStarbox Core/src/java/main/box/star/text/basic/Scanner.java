@@ -699,6 +699,33 @@ public class Scanner implements Closeable, Iterable<Character> {
   }
 
   /**
+   * <p>Scan and assemble characters while scan is not in map, and length < max</p>
+   *
+   * @param max
+   * @param handleEscape if true: detect and pass-through escaped delimiters
+   * @param eatDelimiter if true: the delimiter is discarded and can be read
+   *                     through {@link #previous()}; else: {@link #next()} will
+   *                     contain the delimiter
+   * @param map the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
+   */
+  @NotNull
+  public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (max == 0) --max;
+    if (! endOfSource()) do {
+      c = this.next();
+      if (Char.mapContains(c, map) && ! escapeMode()) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (! endOfSource() && sb.length() != max);
+    return sb.toString();
+  }
+
+  /**
    * <p>Checks the required string to see if it's length member meets requirements</p>
    * <br>
    * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
