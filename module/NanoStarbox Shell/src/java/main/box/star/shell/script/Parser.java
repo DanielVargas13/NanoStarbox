@@ -56,11 +56,6 @@ public class Parser extends box.star.text.basic.Parser {
   }
 
   public Parser(@NotNull Scanner scanner) { super(scanner); }
-  
-  @Override
-  protected void start() {
-    super.start();
-  }
 
   /**
    * <p>Main Parser</p>
@@ -74,7 +69,7 @@ public class Parser extends box.star.text.basic.Parser {
    * @see Scanner.SourceDriver
    */
   public static class Main extends Parser 
-      implements Scanner.SourceDriver.WithBufferControlPort, NewFuturePromise {
+      implements NewFuturePromise, Scanner.SourceDriver.WithBufferControlPort {
     List records = new List();
     public Main(Scanner scanner) {
       super(scanner);
