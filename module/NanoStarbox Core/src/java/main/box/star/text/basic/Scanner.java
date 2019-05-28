@@ -463,6 +463,7 @@ public class Scanner implements Closeable, Iterable<Character> {
   public String nextTab(){ return nextMap(HORIZONTAL_TAB); }
 
  /**
+  * <p>Runs the given source driver</p>
    * @param driver the source driver to use
    * @return the compiled string output of the driver
    */
