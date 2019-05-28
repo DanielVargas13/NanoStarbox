@@ -665,6 +665,82 @@ public class Scanner implements Closeable {
   }
 
   /**
+   * <p>Scan and assemble characters while scan is not in map</p>
+   * <br>
+   * <p>Automatically eats the delimiter.</p>
+   * <br>
+   * @param map the collection of characters to break scanning with
+   * @return the collection of characters not found in map
+   * @throws Exception by call to {@link #next()}
+   */
+  @NotNull
+  public String nextField(@NotNull char... map) throws Exception {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      c = this.next();
+      if (Char.mapContains(c, map)) {
+        //if (!endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (true);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map</p>
+   *
+   * @param eatDelimiter if true, the delimiter is discarded else the next call to {@link #next()} will contain the delimiter
+   * @param map the collection of characters to break scanning with
+   * @return the collection of characters not found in map
+   */
+  @NotNull
+  public String nextField(boolean eatDelimiter, @NotNull char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    do {
+      c = this.next();
+      if (Char.mapContains(c, map)) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (true);
+    return sb.toString();
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in map, and length < max</p>
+   *
+   * @param max
+   * @param eatDelimiter if true, the delimiter is discarded else the next call to {@link #next()} will contain the delimiter
+   * @param map the collection of characters to break scanning with
+   * @return the collection of characters not found in map
+   */
+  @NotNull
+  public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (max == 0) --max;
+    do {
+      c = this.next();
+      if (Char.mapContains(c, map)) {
+        if (! eatDelimiter && ! endOfSource()) this.back();
+        break;
+      }
+      sb.append(c);
+    } while (sb.length() != max);
+    return sb.toString();
+  }
+
+  public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
+  public String nextLineSpace(){ return nextMap(SPACE, HORIZONTAL_TAB);}
+  public String nextLine(){ return nextField(true, '\n');}
+  public String nextSpace(){return nextMap(SPACE);}
+  public String nextTab(){ return nextMap(HORIZONTAL_TAB); }
+
+  /**
    * <p>A rendition of {@link #nextField(char...)} that searches for a character sequence
    * with case sensitivity and optional backslash detection.</p>
    * <br>
@@ -705,29 +781,7 @@ public class Scanner implements Closeable {
     return sb.substring(0, bl - sourceLength); // chop off the ending, returning what we scanned.
   }
 
-  /**
-   * <p>Scan and assemble characters while scan is not in map</p>
-   *
-   * @param map the collection of characters to break scanning with
-   * @return the collection of characters not found in map
-   * @throws Exception by call to {@link #next()}
-   */
-  @NotNull
-  @Deprecated public String nextField(@NotNull char... map) throws Exception {
-    char c;
-    StringBuilder sb = new StringBuilder();
-    do {
-      c = this.next();
-      if (Char.mapContains(c, map)) {
-        if (!endOfSource()) this.back();
-        break;
-      }
-      sb.append(c);
-    } while (true);
-    return sb.toString();
-  }
-
-  /**
+ /**
    * @param driver the source driver to use
    * @return the compiled string output of the driver
    */
