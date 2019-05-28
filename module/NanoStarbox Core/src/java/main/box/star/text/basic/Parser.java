@@ -23,8 +23,7 @@ import static box.star.text.basic.Parser.Status.*;
  *   list, which is a repeating sequence of inputs, following a particular type
  *   of pattern. To support that, this parser interface provides the
  *   {@link List} class, which can be used to store a list of parser instances
- *   as a list of parsed results. Every subclass of Parser has an associated
- *   list class.
+ *   as a list of parsed results.
  * </p>
  * @see Scanner
  */
