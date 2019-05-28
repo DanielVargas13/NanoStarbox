@@ -68,7 +68,7 @@ public class Scanner implements Closeable {
    * @param translation the string to use when displaying this character to a user
    * @return the translation given
    */
-  public String mapCharacterTranslation(char c, String translation) {
+  @Deprecated public String mapCharacterTranslation(char c, String translation) {
     TRANSLATION.put(c, translation);
     return translation;
   }
@@ -80,7 +80,7 @@ public class Scanner implements Closeable {
    * @param c the character to translate
    * @return the translation of the character
    */
-  public String translateCharacter(char c) {
+  @Deprecated public String translateCharacter(char c) {
     if (c == 0) return "null";
     if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
     else return Tools.switchNull(Char.translate(c), String.valueOf(c));
@@ -254,7 +254,7 @@ public class Scanner implements Closeable {
    * @param map the list of characters to match the current character with
    * @throws SyntaxError if the current character is not found within the given map
    */
-  public void flagNextCharacterSyntaxError(String message, char... map) throws SyntaxError {
+  @Deprecated public void flagNextCharacterSyntaxError(String message, char... map) throws SyntaxError {
     char c = next();
     if (! Char.mapContains(c, map))
       throw this.syntaxError("Expected " + message + " and located `" + translateCharacter(c) + "'");
@@ -266,11 +266,11 @@ public class Scanner implements Closeable {
    * @param message the content type expected by the driver (caller)
    * @throws SyntaxError representing this character at this position with this expected content message
    */
-  public void flagThisCharacterSyntaxError(String message) throws SyntaxError {
+  @Deprecated public void flagThisCharacterSyntaxError(String message) throws SyntaxError {
     throw this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
   }
 
-  public @NotNull SyntaxError getThisCharacterSyntaxError(String message) throws SyntaxError {
+  @Deprecated public @NotNull SyntaxError getThisCharacterSyntaxError(String message) throws SyntaxError {
     return this.syntaxError("Expected " + message + " and located `" + translateCharacter(state.current()) + "'");
   }
 
@@ -354,7 +354,7 @@ public class Scanner implements Closeable {
    * @param caseSensitive
    * @return
    */
-  public char nextCharacter(char character, boolean caseSensitive) {
+  @Deprecated public char nextCharacter(char character, boolean caseSensitive) {
     char c = next();
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
@@ -368,14 +368,14 @@ public class Scanner implements Closeable {
   /**
    * @return the white-space-scanned
    */
-  public String nextAllWhiteSpace(){
+  @Deprecated public String nextAllWhiteSpace(){
     return nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
   }
 
   /**
    * @return all white-space characters which do not escape lines
    */
-  public String nextLineWhiteSpace(){
+  @Deprecated public String nextLineWhiteSpace(){
     return nextMap(MAP_ASCII_LINE_WHITE_SPACE);
   }
 
@@ -400,7 +400,7 @@ public class Scanner implements Closeable {
    * @param caseSensitive
    * @return
    */
-  public String nextOptionalSequence(String sequence, boolean caseSensitive){
+  @Deprecated public String nextOptionalSequence(String sequence, boolean caseSensitive){
     long start = getIndex();
     String test;
     String match = test = nextOptionalLength(sequence.length());
@@ -421,11 +421,11 @@ public class Scanner implements Closeable {
    * @param caseSensitive
    * @return
    */
-  public boolean nextSequenceMatch(String sequence, boolean caseSensitive){
+  @Deprecated public boolean nextSequenceMatch(String sequence, boolean caseSensitive){
     return nextOptionalSequence(sequence, caseSensitive).equals(sequence);
   }
 
-  public boolean nextWordListMatch(String[] words, char[] wordBreak, boolean caseSensitive){
+  @Deprecated public boolean nextWordListMatch(String[] words, char[] wordBreak, boolean caseSensitive){
     for (String word:words){
       if (nextSequenceMatch(word, caseSensitive)) {
         if (wordBreak != null && wordBreak.length > 0) nextMap(wordBreak);
@@ -440,7 +440,7 @@ public class Scanner implements Closeable {
    * @param sequence
    * @return
    */
-  public boolean nextSequenceMatch(String sequence){
+  @Deprecated public boolean nextSequenceMatch(String sequence){
     return  nextOptionalSequence(sequence, true).equals(sequence);
   }
   /**
@@ -451,7 +451,7 @@ public class Scanner implements Closeable {
    * @param caseSensitive
    * @return
    */
-  public String nextWord(String label, String[] words, char[] wordBreaks, boolean caseSensitive){
+  @Deprecated public String nextWord(String label, String[] words, char[] wordBreaks, boolean caseSensitive){
     for (String test:words){
       String operation = nextOptionalSequence(test, caseSensitive);
       if (Tools.EMPTY_STRING.equals(operation)) continue;
@@ -472,10 +472,10 @@ public class Scanner implements Closeable {
    * @param words
    * @return
    */
-  public String nextWord(String label, String[] words, boolean caseSensitive){
+  @Deprecated public String nextWord(String label, String[] words, boolean caseSensitive){
     return nextWord(label, words, null, caseSensitive);
   }
-  public String nextWord(String label, String[] words){
+  @Deprecated public String nextWord(String label, String[] words){
     return nextWord(label, words, null, true);
   }
   /**
@@ -488,7 +488,7 @@ public class Scanner implements Closeable {
    * <br>
    * @param words
    */
-  final static public void preventWordListShortCircuit(String[] words){
+  @Deprecated final static public void preventWordListShortCircuit(String[] words){
     boolean longestFirst = true;
     Arrays.sort(words, new Comparator<String>() {
       @Override
@@ -505,7 +505,7 @@ public class Scanner implements Closeable {
    * @param caseSensitive
    * @return
    */
-  public char nextCharacter(String label, char character, boolean caseSensitive) {
+  @Deprecated public char nextCharacter(String label, char character, boolean caseSensitive) {
     char c = endOfSource()?0:next();
     if (!caseSensitive) {
       c = Char.toLowerCase(c);
@@ -516,14 +516,14 @@ public class Scanner implements Closeable {
     return c;
   }
 
-  public char nextCharacter(String label, char character) {
+  @Deprecated public char nextCharacter(String label, char character) {
     char c = endOfSource()?0:next();
     if (character != c)
       throw this.syntaxError("Expected " + label + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 
-  public String nextCharacterMap(String label, int max, char[] map, boolean caseSensitive){
+  @Deprecated public String nextCharacterMap(String label, int max, char[] map, boolean caseSensitive){
     StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
     char[] mini = null;
     if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
@@ -551,7 +551,7 @@ public class Scanner implements Closeable {
    * @throws SyntaxError if match fails
    */
   @NotNull
-  public String nextString(@NotNull String seek, boolean caseSensitive) throws SyntaxError {
+  @Deprecated public String nextString(@NotNull String seek, boolean caseSensitive) throws SyntaxError {
     StringBuilder out = new StringBuilder();
     char[] sequence = seek.toCharArray();
     for (char c : sequence) out.append(nextCharacter(seek, c, caseSensitive));
@@ -566,7 +566,7 @@ public class Scanner implements Closeable {
    * @throws Exception if read fails.
    */
   @NotNull
-  public String nextMap(@NotNull char... map) throws Exception {
+  @Deprecated public String nextMap(@NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -589,7 +589,7 @@ public class Scanner implements Closeable {
    * @throws Exception if read fails.
    */
   @NotNull
-  public String nextMapLength(int max, @NotNull char... map) throws Exception {
+  @Deprecated public String nextMapLength(int max, @NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -624,7 +624,7 @@ public class Scanner implements Closeable {
    * @throws SyntaxError if not found
    */
   @NotNull
-  public String nextSequence(String sequence, boolean caseSensitive, boolean detectEscape) throws SyntaxError {
+  @Deprecated public String nextSequence(String sequence, boolean caseSensitive, boolean detectEscape) throws SyntaxError {
     int sourceLength = sequence.length(), bl = 0, matchIndex = 0;
     if (sourceLength == 0) return "";
     char[] search = ((caseSensitive)?sequence:sequence.toLowerCase()).toCharArray();
@@ -654,7 +654,7 @@ public class Scanner implements Closeable {
    * @throws Exception by call to {@link #next()}
    */
   @NotNull
-  public String nextField(@NotNull char... map) throws Exception {
+  @Deprecated public String nextField(@NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -745,7 +745,7 @@ public class Scanner implements Closeable {
    * @param character the first character of the text to expand. technically this is not correct usage. any character-sequence that requires further scanning, may invoke the scanner for its input. in some cases it may be possible to expand a character without further scanning, therefore this method provides the route
    * @return the string expansion of the escaped interpretation provided by the implementation.
    */
-  @NotNull public String expand(char character) {
+  @Deprecated @NotNull public String expand(char character) {
     if (characterExpander != null) {
       String expansion = characterExpander.expand(this, character);
       if (expansion != null) return expansion;
@@ -816,7 +816,7 @@ public class Scanner implements Closeable {
    * @throws SyntaxError if trying to escape end of stream.
    */
   @NotNull
-  public String nextBoundField(@NotNull char... map) throws SyntaxError {
+  @Deprecated public String nextBoundField(@NotNull char... map) throws SyntaxError {
 
     StringBuilder sb = new StringBuilder();
 
@@ -858,7 +858,7 @@ public class Scanner implements Closeable {
    * @throws Exception if read fails.
    */
   @NotNull
-  public String nextFieldLength(int max, @NotNull char... map) throws Exception {
+  @Deprecated public String nextFieldLength(int max, @NotNull char... map) throws Exception {
     char c;
     StringBuilder sb = new StringBuilder();
     do {
@@ -879,7 +879,7 @@ public class Scanner implements Closeable {
    * @param n the size of the string request
    * @return an empty string (n<=0), all the characters requested, or a truncated buffer (eof = true), whichever comes first
    */
-  public String nextOptionalLength(int n){
+  @Deprecated public String nextOptionalLength(int n){
     if (n <= 0) return Tools.EMPTY_STRING;
     char[] chars = new char[n];
     int pos = 0;
@@ -911,6 +911,18 @@ public class Scanner implements Closeable {
     return new String(chars);
   }
 
+  public String nextWord(){
+    StringBuilder word = new StringBuilder();
+    if (! endOfSource() ) do {
+      char c = next();
+      if (Char.mapContains(c, WORD_BREAK)) word.append(c);
+      else {
+        back(); break;
+      }
+    } while (! endOfSource());
+    return word.toString();
+  }
+
   /**
    * <p>Starts a {@link ScannerMethod}</p>
    * <br>
@@ -923,7 +935,7 @@ public class Scanner implements Closeable {
    * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
-  final public String run(ScannerMethod method, Object... parameters) {
+  @Deprecated final public String run(ScannerMethod method, Object... parameters) {
     method = method.clone();
     method.start(this, parameters);
     do {
@@ -942,7 +954,7 @@ public class Scanner implements Closeable {
    * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
-  final public String branch(ScannerMethod method, Object... parameters) {
+  @Deprecated final public String branch(ScannerMethod method, Object... parameters) {
     method = method.clone();
     method.start(this, parameters);
     method.collect(this, state.current());
@@ -963,7 +975,7 @@ public class Scanner implements Closeable {
    *
    * @return true if the current state is in backslash mode.
    */
-  public boolean backSlashMode() {
+  @Deprecated public boolean backSlashMode() {
     return state.slashing;
   }
 
@@ -981,7 +993,7 @@ public class Scanner implements Closeable {
    * @return A Exception object, suitable for throwing
    */
   @NotNull
-  public SyntaxError syntaxError(String message) {
+  @Deprecated public SyntaxError syntaxError(String message) {
     return new SyntaxError(message +":\n\n   "+this.claim());
   }
 
@@ -993,7 +1005,7 @@ public class Scanner implements Closeable {
    * @return A Exception object, suitable for throwing
    */
   @NotNull
-  public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
+  @Deprecated public SyntaxError syntaxError(@NotNull String message, @NotNull Throwable causedBy) {
     return new SyntaxError(message + ":\n\n   " +this.claim(), causedBy);
   }
 
@@ -1036,10 +1048,17 @@ public class Scanner implements Closeable {
   }
 
   /**
-   * @return the current scanner character
+   * @return the current scanner character or {@link Char#NULL_CHARACTER}
    */
   public char current(){
     return state.current();
+  }
+
+  /**
+   * @return the previous scanner character or {@link Char#NULL_CHARACTER}
+   */
+  public char previous(){
+    return state.previous();
   }
 
   /**
@@ -1076,14 +1095,14 @@ public class Scanner implements Closeable {
    * @return the character matched
    * @throws SyntaxError if the character in the stream does not match the character specified.
    */
-  public char nextCharacter(char character) throws SyntaxError {
+  @Deprecated public char nextCharacter(char character) throws SyntaxError {
     char c = next();
     if (character != c)
       throw this.syntaxError("Expected " + translateCharacter(character) + " and located " + (endOfSource()?"end of text stream":"`"+translateCharacter(c)+ "'"));
     return c;
   }
 
-  public int nextUnsignedInteger() {
+  @Deprecated public int nextUnsignedInteger() {
     flagNextCharacterSyntaxError("unsigned integer", MAP_ASCII_NUMBERS);
     String numbers = nextMap(MAP_ASCII_NUMBERS);
     return Integer.parseInt(numbers);
@@ -1102,9 +1121,9 @@ public class Scanner implements Closeable {
     interface WithMasterControlPorts extends WithExpansionControlPort, SourceDriver.WithBufferControlPort {}
   }
 
-  public static class State implements Cloneable, Serializable {
+  private static class State implements Cloneable, Serializable {
 
-    protected static final int historySize = 1024;
+    protected static final int historySize = 256;
 
     protected String path;
     protected long column, index, line;
@@ -1162,7 +1181,7 @@ public class Scanner implements Closeable {
     }
 
     public void clearHistory() {
-      buffer = new StringBuilder(128);
+      buffer = new StringBuilder(historySize);
       bufferPosition = -1;
       columnHistory = new Stack<>();
     }
@@ -1180,7 +1199,7 @@ public class Scanner implements Closeable {
       if (slashMode) this.slashing = !this.slashing;
       else this.slashing = false;
 
-      if (escaped && escapeLines && lineMode) c = 0;
+      if (escaped && escapeLines && lineMode) c = NULL_CHARACTER;
 
       return c;
 
@@ -1191,7 +1210,7 @@ public class Scanner implements Closeable {
     }
 
     protected char previousCharacter() {
-      if (bufferPosition < 0) return NULL_CHARACTER;
+      if (bufferPosition < NULL_CHARACTER) return NULL_CHARACTER;
       return buffer.charAt(bufferPosition);
     }
 
@@ -1260,6 +1279,11 @@ public class Scanner implements Closeable {
      */
     public char current(){
       return previousCharacter();
+    }
+
+    public char previous(){
+      if (bufferPosition < START_OF_HEADING) return NULL_CHARACTER;
+      return buffer.charAt(bufferPosition - START_OF_HEADING);
     }
 
     @Override

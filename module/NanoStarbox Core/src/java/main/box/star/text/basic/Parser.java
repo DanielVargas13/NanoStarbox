@@ -36,7 +36,7 @@ import static box.star.text.basic.Parser.Status.*;
  *
  * @see Scanner
  */
-public abstract class Parser {
+public class Parser {
 
   protected final static String
       PARSER_DID_NOT_SYNC = ": parser did not synchronize its end result with the scanner state",
@@ -120,7 +120,7 @@ public abstract class Parser {
     this.finished = true;
   }
 
-  protected abstract void start();
+  protected void start(){finish();};
 
   // Public Static Methods
 
