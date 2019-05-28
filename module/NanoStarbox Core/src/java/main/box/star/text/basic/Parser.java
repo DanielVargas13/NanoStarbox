@@ -15,8 +15,9 @@ import static box.star.text.basic.Parser.Status.*;
  * own fields and create discrete (pure) object types.</p>
  * <br>
  * <p>This class and it's subclasses can be used to execute any parser
- * implementation through it's {@link #parse(Class, Scanner) static: parse method}.
- * </p>
+ * implementation through it's static {@link #parse(Class, Scanner) parse}
+ * method. Each subclass also has an instance {@link #parse(Class)} method, which uses the
+ * parser's {@link #scanner} to create and start a new parser as an inline scanner pipeline task.</p>
  * <br>
  * <p>
  *   In a typical parser implementation, there is the notion of an elliptical
@@ -26,7 +27,7 @@ import static box.star.text.basic.Parser.Status.*;
  *   as a list of parsed results.
  * </p>
  * <br>
- * <p>Additionally this class provides a custom {@link SyntaxError syntax error class},
+ * <p>Additionally this class provides a custom {@link SyntaxError} class,
  * inheriting from {@link RuntimeException} which enables uniform and exact
  * syntax error reporting for all parser subclasses regardless of
  * implementation.</p>
