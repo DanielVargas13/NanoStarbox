@@ -38,7 +38,7 @@ import static box.star.text.basic.Parser.Status.*;
  */
 public abstract class Parser {
 
-  private final static String
+  protected final static String
       PARSER_DID_NOT_SYNC = ": parser did not synchronize its end result with the scanner state",
       PARSER_DID_NOT_FINISH = ": parser must call finish before it exits",
       PARSER_ALREADY_FINISHED = ": parsing already finished",
