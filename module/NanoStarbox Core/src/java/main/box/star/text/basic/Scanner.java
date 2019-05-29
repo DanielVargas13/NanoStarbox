@@ -40,22 +40,22 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   RuntimeObjectMapping.Dictionary runtimeObjectLabels =
       new RuntimeObjectMapping.Dictionary();
 
-  private Scanner sharedRuntimeMapping;
+  private Scanner runtimeLabelResolver;
 
   @Override
-  public Scanner clearObjectLabel(Object constVal) {
+  public Scanner deleteRuntimeLabel(Object constVal) {
     runtimeObjectLabels.remove(constVal);
     return this;
   }
 
   @Override
-  public Scanner resolveLookupsWith(Scanner source) {
-    sharedRuntimeMapping = source;
+  public Scanner setRuntimeLabelResolver(Scanner source) {
+    runtimeLabelResolver = source;
     return this;
   }
 
   @Override
-  public Scanner copyObjectLabels(Map<Object, String> map) {
+  public Scanner loadRuntimeLabels(Map<Object, String> map) {
     runtimeObjectLabels.putAll(map);
     return this;
   }
@@ -64,8 +64,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * Retrieve the best available representation of an object
    * @param constVal the runtime object to get the label for
    * @return <ol>
-   *   <li>The value defined on this interface through {@link #setObjectLabel(Object, String)}</li>
-   *   <li>The value of the {@link #getObjectLabel(Object)} call on the scanner that has been set through {@link #resolveLookupsWith(Scanner)}</li>
+   *   <li>The value defined on this interface through {@link #setRuntimeLabel(Object, String)}</li>
+   *   <li>The value of the {@link #getRuntimeLabel(Object)} call on the scanner that has been set through {@link #setRuntimeLabelResolver(Scanner)}</li>
    *   <li>The object label defined by the object's {@link box.star.state.RuntimeObjectMapping.ObjectWithLabel known mapping interface}</li>
    *   <li>The translation offered by the {@link Char#translate(char) global character translator}</li>
    *   <li>The translation offered by the object's toString method.</li>
@@ -73,11 +73,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * </ol>
    */
   @Override
-  public String getObjectLabel(Object constVal) {
+  public String getRuntimeLabel(Object constVal) {
     if (runtimeObjectLabels.containsKey(constVal))
       return runtimeObjectLabels.get(constVal);
-    else if (sharedRuntimeMapping != null)
-      return sharedRuntimeMapping.getObjectLabel(constVal);
+    else if (runtimeLabelResolver != null)
+      return runtimeLabelResolver.getRuntimeLabel(constVal);
     else if (constVal instanceof RuntimeObjectMapping.ObjectWithLabel)
       return ((RuntimeObjectMapping.ObjectWithLabel)constVal).getRuntimeLabel();
     else if (constVal instanceof Character)
@@ -95,7 +95,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the scanner
    */
   @Override
-  public Scanner setObjectLabel(Object constVal, String label) {
+  public Scanner setRuntimeLabel(Object constVal, String label) {
     runtimeObjectLabels.put(constVal, label);
     return this;
   }

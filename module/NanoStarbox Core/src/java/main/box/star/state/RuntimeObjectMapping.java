@@ -11,16 +11,16 @@ import java.util.Map;
 
 public interface RuntimeObjectMapping<HOST> {
   interface ConfigurationPort<HOST> {
-    HOST resolveLookupsWith(HOST source);
-    HOST copyObjectLabels(Map<Object, String> map);
+    HOST setRuntimeLabelResolver(HOST source);
+    HOST loadRuntimeLabels(Map<Object, String> map);
   }
   /**
    * @param constVal
    * @return the object label or null
    */
-  @Nullable String getObjectLabel(Object constVal);
-  HOST setObjectLabel(Object constVal, String label);
-  HOST clearObjectLabel(Object constVal);
+  @Nullable String getRuntimeLabel(Object constVal);
+  HOST setRuntimeLabel(Object constVal, String label);
+  HOST deleteRuntimeLabel(Object constVal);
   interface WithConfigurationPort<HOST> extends RuntimeObjectMapping<HOST>, ConfigurationPort<HOST>{}
 
   /**
