@@ -1,8 +1,15 @@
 package box.star.shell.script;
 
 import box.star.contract.NotNull;
+import box.star.text.Char;
+import box.star.text.FormatException;
 import box.star.text.basic.Scanner;
+import box.star.text.basic.driver.GenericProgramIdentifier;
 
+import java.util.regex.Pattern;
+
+import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
+import static box.star.shell.runtime.parts.TextParameters.PARAMETER_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
 /**
@@ -77,8 +84,8 @@ public class Parser extends box.star.text.basic.Parser {
     @Override
     public boolean collect(Scanner scanner, StringBuilder buffer, char character) {
       if (scanner.endOfSource()) return false;
-      else if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) return true;
-      else if (mapContains(character, MAP_ASCII_NUMBERS.toMap())){
+      else if (MAP_ASCII_ALL_WHITE_SPACE.contains(character)) return true;
+      else if (MAP_ASCII_NUMBERS.contains(character)){
         throw new SyntaxError(this, "expected command found digits");
       }
       else switch (character){
@@ -156,32 +163,47 @@ public class Parser extends box.star.text.basic.Parser {
     }
   }
   public static class EnvironmentOperation extends Parser {
-    EnvironmentOperation(Scanner scanner) {
+    String variable, operation, value;
+    public EnvironmentOperation(Scanner scanner) {
       super(scanner);
+    }
+    @Override
+    protected void start() {
+      variable = scanner.run(new GenericProgramIdentifier());
+      operation = scanner.nextMatch(2, Pattern.compile("="));
+      if (operation.length() == 0) { cancel(); return; }
+      Parameter data = parse(Parameter.class);
+      if (data.status.equals(Status.OK)) value = data.getText();
     }
   }
   public static class Command extends Parser implements NewFuturePromise {
-    protected EnvironmentOperationList environmentOperations;
-    protected ParameterList parameters;
-    protected RedirectList redirects;
-    protected Command pipe;
+    public EnvironmentOperationList environmentOperations;
+    public ParameterList parameters;
+    public RedirectList redirects;
+    public Command pipe;
     public Command(Scanner scanner) {
       super(scanner);
     }
-  }
-  static abstract class Parameter extends Parser {
-    public static enum QuoteType {
-      NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING
+    protected void main(){
+      environmentOperations = EnvironmentOperationList.parse(scanner);
+      String name;
+      name = "breaking point";
     }
+    @Override
+    protected void start() {
+      main(); finish();
+    }
+  }
+  static public class Parameter extends Parser {
+
+    public static final char[] PARAMETER_TERMINATOR_MAP =
+        new Char.Assembler(Char.toMap(PIPE, '<', '>'))
+            .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE.toMap()).toMap();
+
+    public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING }
     protected QuoteType quoteType;
     protected String text;
-    Parameter(Scanner scanner) {
-      this(scanner, QuoteType.NOT_QUOTING);
-    }
-    Parameter(Scanner scanner, QuoteType quoteType){
-      super(scanner);
-      this.quoteType = quoteType;
-    }
+    public Parameter(Scanner scanner) { super(scanner); }
     private final String extractText(){
       return text.substring(1, text.length()-1);
     }
@@ -191,30 +213,42 @@ public class Parser extends box.star.text.basic.Parser {
         default: return extractText();
       }
     }
-    @Override
-    public String toString() {
-      return text;
+    @Override public String toString() { return text; }
+    @Override protected void start() {
+      scanner.nextLineSpace();
+      char c = scanner.next();
+      switch (c) {
+        case SINGLE_QUOTE: { parseSingleQuotedText(); break; }
+        case DOUBLE_QUOTE: { parseDoubleQuotedText(); break; }
+        default: parseLiteralText();
+      }
+      finish();
+    }
+    private void parseSingleQuotedText() {
+      char delim = scanner.current();
+      if (delim != SINGLE_QUOTE)
+        throw new SyntaxError(this, "expected literal quotation mark");
+      quoteType = QuoteType.SINGLE_QUOTING;
+      text = delim+scanner.nextField(SINGLE_QUOTE);
+      text += scanner.next(delim);
+    }
+    private void parseLiteralText() {
+      // todo check for illegal characters
+      quoteType = QuoteType.NOT_QUOTING;
+      text = scanner.current()
+          +scanner.nextField(
+              new Char.Map("end of parameter",
+                  new Char.Assembler(PARAMETER_TERMINATOR_MAP))) + SINGLE_QUOTE;
+    }
+    private void parseDoubleQuotedText(){
+      if (scanner.current() != DOUBLE_QUOTE)
+        throw new SyntaxError(this, "expected double quotation mark");
+      quoteType = QuoteType.DOUBLE_QUOTING;
+      text = scanner.nextField(new Char.Map("end of quotation", DOUBLE_QUOTE));
     }
   }
-  public static class ParameterText extends Parameter {
-    public ParameterText(Scanner scanner, QuoteType quoting) {
-      super(scanner, quoting);
-    }
-  }
-  public static class ParameterLiteral extends ParameterText implements NewFuturePromise {
-    ParameterLiteral(Scanner scanner) {
-      super(scanner, QuoteType.SINGLE_QUOTING);
-    }
-  }
-  public static class ParameterQuoted extends ParameterText implements NewFuturePromise {
-    ParameterQuoted(Scanner scanner) {
-      super(scanner, QuoteType.DOUBLE_QUOTING);
-    }
-  }
-  public static class Redirect extends Parameter implements NewFuturePromise {
-    Redirect(Scanner scanner) {
-      super(scanner, QuoteType.NOT_QUOTING);
-    }
+  public static class Redirect extends Parser implements NewFuturePromise {
+    Redirect(Scanner scanner) { super(scanner); }
   }
   public static class HereDocument extends Parameter implements NewFuturePromise {
     HereDocument(Scanner scanner) {
@@ -222,9 +256,31 @@ public class Parser extends box.star.text.basic.Parser {
     }
   }
 
-  public static class EnvironmentOperationList extends List<EnvironmentOperation> {}
-  public static class ParameterList extends List<Parameter> {}
+  public static class EnvironmentOperationList extends List<EnvironmentOperation> {
+    public static EnvironmentOperationList parse(Scanner scanner){
+      EnvironmentOperationList operationList = new EnvironmentOperationList();
+      while (! scanner.endOfSource()) {
+        EnvironmentOperation op = Parser.parse(EnvironmentOperation.class, scanner);
+        if (op.status == Status.OK) operationList.add(op);
+        else break;
+      }
+      return operationList;
+    }
+  }
+
+  public static class ParameterList extends List<Parameter> {
+    public static ParameterList parse(Scanner scanner){
+      ParameterList parameters = new ParameterList();
+      if (scanner.haveNext()) do {
+        Parameter parameter = Parser.parse(Parameter.class, scanner);
+        if (parameter.status.equals(Status.OK)) { parameters.add(parameter); }
+        else { break; }
+      } while (true);
+      return parameters;
+    }
+  }
   public static class RedirectList extends List<Redirect> {}
   public static class CommandList extends List<Command> {}
 
 }
+

@@ -7,10 +7,11 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.text.FormatException;
-import org.mozilla.javascript.ast.FunctionNode;
+import box.star.state.RuntimeObjectMapping;
 
 import java.io.*;
 import java.util.*;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
@@ -27,12 +28,77 @@ import static box.star.text.Char.*;
  * <tt>Basic Text Scanner (c) 2019 Hypersoft-Systems: USA (Triston-Jerard: Taylor)</tt>
  * <p></p>
  */
-public class Scanner implements Closeable, Iterable<Character> {
+public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMapping.WithConfigurationPort<Scanner> {
 
   public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
 
   public final static Char.Map WORD_BREAK =
-      new Char.Map("word boundary", new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER));
+      new Char.Map("word boundary",
+          new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER));
+
+  // runtime object mapping
+  RuntimeObjectMapping.Dictionary runtimeObjectLabels =
+      new RuntimeObjectMapping.Dictionary();
+
+  private Scanner sharedRuntimeMapping;
+
+  @Override
+  public Scanner clearObjectLabel(Object constVal) {
+    runtimeObjectLabels.remove(constVal);
+    return this;
+  }
+
+  @Override
+  public Scanner resolveLookupsWith(Scanner source) {
+    sharedRuntimeMapping = source;
+    return this;
+  }
+
+  @Override
+  public Scanner copyObjectLabels(Map<Object, String> map) {
+    runtimeObjectLabels.putAll(map);
+    return this;
+  }
+
+  /**
+   * Retrieve the best available representation of an object
+   * @param constVal the runtime object to get the label for
+   * @return <ol>
+   *   <li>The value defined on this interface through {@link #setObjectLabel(Object, String)}</li>
+   *   <li>The value of the {@link #getObjectLabel(Object)} call on the scanner that has been set through {@link #resolveLookupsWith(Scanner)}</li>
+   *   <li>The object label defined by the object's {@link box.star.state.RuntimeObjectMapping.ObjectWithLabel known mapping interface}</li>
+   *   <li>The translation offered by the {@link Char#translate(char) global character translator}</li>
+   *   <li>The translation offered by the object's toString method.</li>
+   *   <li>null, because the value is null</li>
+   * </ol>
+   */
+  @Override
+  public String getObjectLabel(Object constVal) {
+    if (runtimeObjectLabels.containsKey(constVal))
+      return runtimeObjectLabels.get(constVal);
+    else if (sharedRuntimeMapping != null)
+      return sharedRuntimeMapping.getObjectLabel(constVal);
+    else if (constVal instanceof RuntimeObjectMapping.ObjectWithLabel)
+      return ((RuntimeObjectMapping.ObjectWithLabel)constVal).getRuntimeLabel();
+    else if (constVal instanceof Character)
+      return translate((char) constVal);
+    else if (constVal != null)
+      return constVal.toString();
+    else
+      return null;
+  }
+
+  /**
+   * Set the best available representation of an object
+   * @param constVal
+   * @param label
+   * @return the scanner
+   */
+  @Override
+  public Scanner setObjectLabel(Object constVal, String label) {
+    runtimeObjectLabels.put(constVal, label);
+    return this;
+  }
 
   /**
    * Reader for the input.
@@ -427,15 +493,27 @@ public class Scanner implements Closeable, Iterable<Character> {
    * @param map the collection of delimiters to break scanning with
    * @return the delimited text; could be truncated
    */
-  @NotNull
-  public String nextField(@NotNull Char.Map map) {
-    char c;
+  public @NotNull String nextField(@NotNull Char.Map map) {
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
-      c = this.next();
+      char c = this.next();
       if (map.contains(c)) break;
+      else if (endOfSource())
+        throw new FormatException("expected "+map+" and found end of source");
       else sb.append(c);
-    } while (! endOfSource());
+    } while (true);
+    return sb.toString();
+  }
+
+  public @NotNull String nextField(char delimiter) {
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = this.next();
+      if (c == delimiter) break;
+      if (endOfSource())
+        throw new FormatException("expected "+translate(delimiter)+" and found end of source");
+      sb.append(c);
+    } while (true);
     return sb.toString();
   }
 
@@ -625,13 +703,12 @@ public class Scanner implements Closeable, Iterable<Character> {
     return source;
   }
 
-  private static final Char.Map ALL_WHITE_SPACE_MAP = new Char.Map("white space", MAP_ASCII_ALL_WHITE_SPACE);
   private static final Char.Map SPACE_TAB_MAP = new Char.Map("line space", SPACE, HORIZONTAL_TAB);
   private static final Char.Map LINE_MAP = new Char.Map("line feed", '\n');
   private static final Char.Map SPACE_MAP = new Char.Map("space", SPACE);
   private static final Char.Map TAB_MAP = new Char.Map("tab", HORIZONTAL_TAB);
 
-  public String nextWhiteSpace(){return nextField(ALL_WHITE_SPACE_MAP);}
+  public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
   public String nextLineSpace(){ return nextMap(SPACE_TAB_MAP);}
   public String nextLine(){ return nextField(true, LINE_MAP);}
   public String nextSpace(){return nextMap(SPACE_MAP);}

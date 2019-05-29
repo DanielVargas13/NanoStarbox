@@ -178,7 +178,7 @@ public class Host {
       char c;
       do {
         c = scanner.next();
-        if (Char.mapContains(c, MAP_ASCII_ALL_WHITE_SPACE)) break;
+        if (MAP_ASCII_ALL_WHITE_SPACE.contains(c)) break;
         switch (c) {
           case '<':
           case '>': {
@@ -252,7 +252,7 @@ public class Host {
 
     @Override
     protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
-      if (Char.mapContains(character, Char.MAP_ASCII_ALL_WHITE_SPACE)) {return false;}
+      if (MAP_ASCII_ALL_WHITE_SPACE.contains(character)) {return false;}
       switch (character) {
         case 0: {
           if (scanner.escapeMode()) throw new LegacyScanner.SyntaxError("escaped end of stream");

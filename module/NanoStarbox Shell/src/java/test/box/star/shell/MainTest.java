@@ -30,4 +30,9 @@ class MainTest {
     Parser.Main result = Parser.parse(Parser.Main.class, scanner);
     System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
   }
+  @Test void parser_parameter_list(){
+    Scanner scanner = new Scanner("test", "'echo'");
+    Parser.ParameterList pl = Parser.ParameterList.parse(scanner);
+    System.err.println(pl);
+  }
 }

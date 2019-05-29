@@ -68,8 +68,8 @@ public final class Char {
 
   public final static char[] MAP_ASCII = loadResourceMap("MAP_ASCII");
   public final static char[] MAP_ASCII_EXTENDED = loadResourceMap("MAP_ASCII_EXTENDED");
-  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE");
-  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE");
+  public final static Char.Map MAP_ASCII_ALL_WHITE_SPACE = new Char.Map("white space", loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE"));
+  public final static Char.Map MAP_ASCII_LINE_WHITE_SPACE = new Char.Map("line white space", loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE"));
   public final static Char.Map MAP_ASCII_LETTERS = new Char.Map("letters", loadResourceMap("MAP_ASCII_LETTERS"));
   public final static Char.Map MAP_ASCII_NUMBERS = new Char.Map("digits", loadResourceMap("MAP_ASCII_NUMBERS"));
   public final static char[] MAP_ASCII_CONTROL = loadResourceMap("MAP_ASCII_CONTROL");
@@ -123,7 +123,7 @@ public final class Char {
 
   public static String translate(char c) {
     if (c == 0) return "null";
-    else return Char.TRANSLATION.getOrDefault(c, null);
+    else return Char.TRANSLATION.getOrDefault(c, String.format("`%s'", c));
   }
 
   public static int min(int val) { return (val < 0) ? 0 : val; }
@@ -207,6 +207,10 @@ public final class Char {
       this(sequence.toMap());
     }
 
+    public Assembler(Char.Map map){
+      this(map.toMap());
+    }
+
     public Assembler(char... map) {
       chars = new StringBuilder(map.length);
       merge(map);
@@ -226,6 +230,10 @@ public final class Char {
       };
     }
 
+    public Assembler merge(Char.Map map){
+      return this.merge(map.toMap());
+
+    }
     public Assembler merge(CharSequence sequence) {
       return merge(sequence.toString());
     }

@@ -164,11 +164,13 @@ public class Parser {
         parser.start();
       }
       catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage(), fromScannerOrParser);}
-      if (! parser.isFinished())
-        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
-      else if (parser.isNotSynchronized())
-        throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
-      if (parser instanceof NewFuturePromise) scanner.flushHistory();
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
+      }
     }
     return parser;
   }

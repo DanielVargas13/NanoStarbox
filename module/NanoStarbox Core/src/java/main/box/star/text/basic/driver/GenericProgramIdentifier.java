@@ -8,12 +8,13 @@ public class GenericProgramIdentifier implements Scanner.SourceDriver.WithSimple
   private int depth = 0;
 
   protected static Char.Map FIRST_LETTER_MAP =
-      new Char.Map("first identifier letter", new Char.Assembler(Char.MAP_ASCII_LETTERS.toMap())
-          .merge('_'));
+      new Char.Map("program identifier",
+          new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('_'));
 
   protected static Char.Map NEXT_LETTER_MAP =
-      new Char.Map("identifier character", new Char.Assembler(FIRST_LETTER_MAP.toMap())
-          .merge(Char.MAP_ASCII_NUMBERS.toMap()).merge('.'));
+      new Char.Map("program identifier",
+          new Char.Assembler(FIRST_LETTER_MAP)
+              .merge(Char.MAP_ASCII_NUMBERS).merge('.'));
 
   @Override
   public boolean collect(Scanner scanner, char character) {
