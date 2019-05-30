@@ -1193,5 +1193,41 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
+  public static class CharacterList implements ObjectWithLabel {
+    final String label;
+    final char[] chars;
+    public CharacterList(String label, char... chars){
+      this.label = label;
+      this.chars = chars;
+    }
+    @Override
+    public String getRuntimeLabel() {
+      return label;
+    }
+    @Override
+    public String toString() {
+      return getRuntimeLabel();
+    }
+  }
+
+  public static class WordList implements ObjectWithLabel {
+    final String label;
+    final String[] words;
+    public WordList(String label, String... words){
+      this.label = label;
+      this.words = new String[words.length];
+      System.arraycopy(words, 0, words, 0, words.length);
+      preventWordListShortCircuit(this.words);
+    }
+    @Override
+    public String getRuntimeLabel() {
+      return label;
+    }
+    @Override
+    public String toString() {
+      return getRuntimeLabel();
+    }
+  }
+
 }
 
