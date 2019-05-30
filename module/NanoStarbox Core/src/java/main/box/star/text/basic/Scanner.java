@@ -29,6 +29,44 @@ import static box.star.text.Char.*;
  */
 public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMapping.WithConfigurationPort<Scanner> {
 
+  static public class SyntaxError extends box.star.text.SyntaxError {
+
+    SyntaxError(@NotNull String sourceTag, @NotNull String message) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n");
+    }
+
+    SyntaxError(@NotNull String sourceTag, @NotNull String message, @NotNull Throwable cause) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
+    }
+
+    SyntaxError(Bookmark location, String message) {
+      this(location.toString(), message);
+    }
+    SyntaxError(Bookmark location, String message, Throwable cause) {
+      this(location.toString(), message, cause);
+    }
+
+    public SyntaxError(@NotNull CancellableTask action, @NotNull String message){
+      this(action.cancel(), message);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull CancellableTask action, @NotNull String message, Throwable cause){
+      this(action.cancel(), message, cause);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message){
+      this(source.createBookmark(), message);
+      this.host = source;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
+      this(source.createBookmark(), message, cause);
+      this.host = source;
+    }
+
+  }
   private static Scanner BaseRuntimeResolver = new Scanner(null, "");
 
   private static final char[] SPACE_TAB_MAP = BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
@@ -474,6 +512,112 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
+      }
+      sb.append(c);
+    } while (true);
+    return sb.toString();
+  }
+
+  public static abstract class FieldController implements ObjectWithLabel {
+    final String label;
+    public FieldController(String label){
+      this.label = label;
+    }
+    @Override
+    public String getRuntimeLabel() {
+      return label;
+    }
+    public String expand(@NotNull Scanner scanner){
+      char character = scanner.current();
+      long start = scanner.getIndex();
+      switch (character) {
+        case 'd':
+          return DELETE + Tools.EMPTY_STRING;
+        case 'e':
+          return ESCAPE + Tools.EMPTY_STRING;
+        case 't':
+          return "\t";
+        case 'b':
+          return "\b";
+        case 'v':
+          return VERTICAL_TAB + Tools.EMPTY_STRING;
+        case 'r':
+          return "\r";
+        case 'n':
+          return "\n";
+        case 'f':
+          return "\f";
+        /*unicode*/
+        case 'u': {
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+          catch (NumberFormatException e) {
+            scanner.walkBack(start);
+            throw new SyntaxError(scanner, "failed to parse unicode escape sequence using hex method", e);
+          }
+        }
+        /*hex or octal*/
+        case '0': {
+          char c = scanner.next();
+          if (c == 'x') {
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+            catch (NumberFormatException e) {
+              scanner.walkBack(start);
+              throw new SyntaxError(scanner, "failed to parse hex escape sequence", e);
+            }
+          } else {
+            scanner.back();
+          }
+          String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
+          int value = Integer.parseInt(chars, 8);
+          if (value > 255) {
+            scanner.walkBack(start);
+            throw new SyntaxError(scanner, "octal escape subscript out of range; expected 00-0377; have: " + value);
+          }
+          char out = (char) value;
+          return out + Tools.EMPTY_STRING;
+        }
+        /*integer or pass-through */
+        default: {
+          if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
+            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
+            int value = Integer.parseInt(chars);
+            if (value > 255) {
+              scanner.walkBack(start);
+              throw new SyntaxError(scanner, "integer escape subscript out of range; expected 0-255; have: " + value);
+            } else {
+              char out = (char) value;
+              return out + Tools.EMPTY_STRING;
+            }
+          } else return String.valueOf(character);
+        }
+      }
+    }
+    abstract boolean breakField(Scanner scanner, int size, char current);
+  }
+
+  /**
+   * <p>Scan and assemble characters while scan is not in character list, and length < max</p>
+   *
+   * @param fieldController the controller to use for breaking the field and expanding escapes
+   * @return the delimited text; could be truncated
+   */
+  public @NotNull String nextField(@NotNull Scanner.FieldController fieldController){
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (c == BACKSLASH && ! escapeMode()){
+        c = this.next();
+        if (endOfSource()) {
+          throw new SyntaxError(this, "escape detected at end of source while scanning field");
+        }
+        sb.append(fieldController.expand(this));
+        continue;
+      }
+      if (fieldController.breakField(this, sb.length(), c)) break;
+      if (endOfSource()) {
+        throw new SyntaxError(this,
+            "expected "+fieldController.getRuntimeLabel()+" and found end of source");
       }
       sb.append(c);
     } while (true);
@@ -1193,43 +1337,5 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
-  public static class SyntaxError extends box.star.text.SyntaxError {
-
-    SyntaxError(@NotNull String sourceTag, @NotNull String message) {
-      super("\n\n"+message+":\n\n   "+sourceTag+"\n");
-    }
-
-    SyntaxError(@NotNull String sourceTag, @NotNull String message, @NotNull Throwable cause) {
-      super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
-    }
-
-    SyntaxError(Bookmark location, String message) {
-      this(location.toString(), message);
-    }
-    SyntaxError(Bookmark location, String message, Throwable cause) {
-      this(location.toString(), message, cause);
-    }
-
-    public SyntaxError(@NotNull CancellableTask action, @NotNull String message){
-      this(action.cancel(), message);
-      this.host = action;
-    }
-
-    public SyntaxError(@NotNull CancellableTask action, @NotNull String message, Throwable cause){
-      this(action.cancel(), message, cause);
-      this.host = action;
-    }
-
-    public SyntaxError(@NotNull Scanner source, @NotNull String message){
-      this(source.createBookmark(), message);
-      this.host = source;
-    }
-
-    public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
-      this(source.createBookmark(), message, cause);
-      this.host = source;
-    }
-
-  }
 }
 
