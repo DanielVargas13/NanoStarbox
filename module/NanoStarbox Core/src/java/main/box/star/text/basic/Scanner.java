@@ -35,12 +35,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   private static final char[] LINE_MAP = BaseRuntimeResolver.createRuntimeObject("line-feed", Char.toMap('\n'));
   private static final char[] SPACE_MAP = BaseRuntimeResolver.createRuntimeObject("space", Char.toMap( SPACE));
   private static final char[] TAB_MAP = BaseRuntimeResolver.createRuntimeObject("horizontal tab", Char.toMap(HORIZONTAL_TAB));
+  private static final char[] WORD_BREAK_MAP =
+      BaseRuntimeResolver.createRuntimeObject("word boundary",
+          new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap());
 
   public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
-
-  public final static Char.Map WORD_BREAK =
-      new Char.Map("word boundary",
-          new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER));
 
   // runtime object mapping
   RuntimeObjectMapping.Dictionary runtimeObjectLabels =
@@ -677,7 +676,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     StringBuilder word = new StringBuilder();
     if (! endOfSource() ) do {
       char c = next();
-      if (!WORD_BREAK.contains(c)) word.append(c);
+      if (!mapContains(c, WORD_BREAK_MAP)) word.append(c);
       else {
         if (! endOfSource()) back();
         break;
