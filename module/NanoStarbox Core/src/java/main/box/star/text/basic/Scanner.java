@@ -822,7 +822,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       buffer.append(endOfSource()?"":nextLength(min));
       if (buffer.length() < min) {
         walkBack(start);
-        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length());
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length()+" characters");
       }
     }
     if (! endOfSource()) do {
