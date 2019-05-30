@@ -959,7 +959,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     String word = nextWord();
     if ((caseSensitive?wordList.contains(word):wordList.containsIgnoreCase(word))) return word;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList)+" and found `"+nextWordPreview()+"'");
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList)+" and found `"+nextWordPreview(wordList.getMaxLength())+"'");
   }
 
   public String nextDigit(int min, int max) {

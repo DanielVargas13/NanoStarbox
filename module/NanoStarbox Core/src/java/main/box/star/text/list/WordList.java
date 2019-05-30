@@ -30,11 +30,20 @@ public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLa
   }
   final String label;
   final String[] words;
+  final int minLength, maxLength;
   public WordList(String label, String... words){
     this.label = label;
     this.words = new String[words.length];
     System.arraycopy(words, 0, words, 0, words.length);
     preventWordListShortCircuit(this.words);
+    int min = Integer.MAX_VALUE, max = 0, l;
+    for (String w: words) {
+      l = w.length();
+      if (l < min) min = l;
+      if (l > max) max = l;
+    }
+    minLength = min;
+    maxLength = max;
   }
   @Override
   public String getRuntimeLabel() {
@@ -52,4 +61,15 @@ public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLa
     for(String word:words) if (word.equalsIgnoreCase(string))return true;
     return false;
   }
+  public int getMaxLength() {
+    return maxLength;
+  }
+  public int getMinLength() {
+    return minLength;
+  }
+
+  public int size(){
+    return words.length;
+  }
+
 }
