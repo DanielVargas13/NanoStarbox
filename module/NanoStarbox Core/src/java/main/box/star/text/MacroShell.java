@@ -2,7 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
-import box.star.text.basic.LegacyScanner;
+import box.star.text.basic.Scanner;
 
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -66,27 +66,26 @@ public class MacroShell {
     return this;
   }
 
-  private String nextMacroBody(LegacyScanner scanner, char closure) {
+  private String nextMacroBody(Scanner scanner, char closure) {
     String data = scanner.nextField(closure);
-    scanner.nextCharacter(closure);
     return data;
   }
 
-  public String start(LegacyScanner scanner) {
+  public String start(Scanner scanner) {
     return scanner.run(macroRunner);
   }
 
   public String start(String file, String text) {
-    LegacyScanner scanner = new LegacyScanner(file, text);
+    Scanner scanner = new Scanner(file, text);
     return scanner.run(macroRunner);
   }
 
   public String start(String file, String text, long line, long column, long index) {
-    LegacyScanner scanner = new LegacyScanner(file, text).At(line, column, index);
+    Scanner scanner = new Scanner(file, text).At(line, column, index);
     return scanner.run(macroRunner);
   }
 
-  private String doMacro(LegacyScanner scanner) {
+  private String doMacro(Scanner scanner) {
     MacroShell context = this;
     char next = scanner.next();
     switch (next) {
@@ -97,7 +96,7 @@ public class MacroShell {
       }
       case ENTER_PROCEDURE: {
         String output = scanner.run(commandBuilder, context);
-        scanner.nextCharacter(EXIT_PROCEDURE);
+        scanner.next(EXIT_PROCEDURE);
         return (output);
       }
       case ENTER_VARIABLE: {
@@ -109,7 +108,7 @@ public class MacroShell {
     return Char.toString(macroTrigger);
   }
 
-  private String doCommand(LegacyScanner scanner, String commandName, Stack<String> parameters) {
+  private String doCommand(Scanner scanner, String commandName, Stack<String> parameters) {
     if (commands.containsKey(commandName)) {
       Command command = commands.get(commandName);
       command.enterContext(scanner, this);
@@ -136,7 +135,7 @@ public class MacroShell {
   }
 
   public static class Command implements Cloneable {
-    protected LegacyScanner scanner;
+    protected Scanner scanner;
     protected MacroShell main;
     protected String nameTag;
 
@@ -157,13 +156,13 @@ public class MacroShell {
 
     protected Stack<String> split(String source) {
       ParameterBuilder pb = new ParameterBuilder();
-      LegacyScanner scanner = new LegacyScanner("split", source + EXIT_PROCEDURE);
+      Scanner scanner = new Scanner("split", source + EXIT_PROCEDURE);
       Stack<String> parameters = new Stack<>();
       scanner.run(pb, main, parameters);
       return parameters;
     }
 
-    protected void enterContext(LegacyScanner scanner, MacroShell main) {
+    protected void enterContext(Scanner scanner, MacroShell main) {
       this.scanner = scanner;
       this.main = main;
     }
@@ -184,14 +183,14 @@ public class MacroShell {
     }
   }
 
-  public static class Main extends LegacyScanner.ScannerMethod {
+  public static class Main extends Scanner.ScannerMethod {
 
     MacroShell context;
 
     public Main(MacroShell context) { this.context = context; }
 
     @Override
-    protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
+    protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (character == context.macroTrigger) {
         swap(context.doMacro(scanner));
         return false;
@@ -201,7 +200,7 @@ public class MacroShell {
 
   }
 
-  private static class ParameterBuilder extends LegacyScanner.ScannerMethod {
+  private static class ParameterBuilder extends Scanner.ScannerMethod {
 
     private static final Char.Assembler assembler =
         new Char.Assembler(BREAK_PROCEDURE_MAP).merge(Char.DOUBLE_QUOTE, Char.SINGLE_QUOTE);
@@ -210,7 +209,7 @@ public class MacroShell {
     private char[] PARAMETER_TEXT_MAP;
 
     @Override
-    protected void start(@NotNull LegacyScanner scanner, Object[] parameters) {
+    protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
       this.parameters = (Stack<String>) parameters[1];
       PARAMETER_TEXT_MAP = assembler.merge(context.macroTrigger, ENTER_PROCEDURE).toMap();
@@ -218,26 +217,27 @@ public class MacroShell {
     }
 
     @Override
-    protected boolean scan(@NotNull LegacyScanner scanner) {
+    protected boolean scan(@NotNull Scanner scanner) {
       scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       return true;
     }
 
     protected Stack<String> split(String source) {
-      LegacyScanner scanner = new LegacyScanner("split", source + EXIT_PROCEDURE);
+      Scanner scanner = new Scanner("split", source + EXIT_PROCEDURE);
       Stack<String> parameters = new Stack<>();
       scanner.run(this, context, parameters);
       return parameters;
     }
 
+    Scanner.EscapeDriver escapeDriver = new Scanner.EscapeDriver();
     /**
      * A hack on nextBoundField that allows us to seek-beyond quotes within macro functions.
      *
      * @param scanner
      * @return
-     * @throws LegacyScanner.SyntaxError
+     * @throws Scanner.SyntaxError
      */
-    private String extractQuote(LegacyScanner scanner) throws LegacyScanner.SyntaxError {
+    private String extractQuote(Scanner scanner) throws Scanner.SyntaxError {
 
       StringBuilder sb = new StringBuilder();
 
@@ -249,13 +249,13 @@ public class MacroShell {
 
         if (c == 0) {
           if (scanner.escapeMode()) {
-            throw scanner.syntaxError("expected character escape sequence, found end of stream");
+            throw new SyntaxError(scanner, "expected character escape sequence, found end of stream");
           }
           return sb.toString();
         }
 
         if (scanner.escapeMode()) {
-          String swap = scanner.expand(c);
+          String swap = escapeDriver.expand(scanner);
           sb.append(swap);
           continue;
         }
@@ -276,31 +276,48 @@ public class MacroShell {
       return sb.toString();
     }
 
-    private String getParameter(LegacyScanner scanner, char character) {
+    private String extractLiteralText(Scanner scanner){
+      StringBuilder sb = new StringBuilder();
+      while (true){
+        char c = scanner.next();
+        if (c == BACKSLASH && ! scanner.escapeMode()){
+          scanner.next();
+          sb.append(escapeDriver.expand(scanner));
+          continue;
+        }
+        if (Char.mapContains(c, PARAMETER_TEXT_MAP)) {
+          scanner.back(); break;
+        }
+        if (scanner.endOfSource()) break;
+        sb.append(c);
+      }
+      return sb.toString();
+    }
+
+    private String getParameter(Scanner scanner, char character) {
       char c;
       StringBuilder data = new StringBuilder();
       if (character == context.macroTrigger) {
         data.append(context.doMacro(scanner));
       } else if (character == Char.DOUBLE_QUOTE) {
         data.append(this.extractQuote(scanner));
-        scanner.nextCharacter(character);
+        scanner.next(character);
       } else if (character == Char.SINGLE_QUOTE) {
         data.append(scanner.nextField(character));
-        scanner.nextCharacter(character);
       } else {
         if (character == '<') {
           String tag = scanner.nextField('>');
-          scanner.nextCharacter('>');
-          data.append(scanner.nextSequence("</" + tag + ">", true, false));
+          data.append(scanner.nextWord(true, "</" + tag + ">"));
         } else {
           scanner.back();
-          data.append(scanner.nextBoundField(PARAMETER_TEXT_MAP));
+          data.append(extractLiteralText(scanner));//.append(scanner.nextMap(PARAMETER_TEXT_MAP));
         }
       }
-      while (true) {
+      while (! scanner.endOfSource()) {
         c = scanner.next();
-        if (c == ENTER_PROCEDURE)
-          throw scanner.syntaxError("ambiguous symbol usage: '(' must be quoted or escaped");
+        if (c == ENTER_PROCEDURE) {
+          throw new Scanner.SyntaxError(scanner, "ambiguous symbol usage: '(' must be quoted or escaped");
+        }
         if (!Char.mapContains(c, BREAK_PROCEDURE_MAP)) {
           data.append(getParameter(scanner, c));
         } else {
@@ -312,7 +329,7 @@ public class MacroShell {
     }
 
     @Override
-    protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
+    protected boolean terminate(@NotNull Scanner scanner, char character) {
       if (character == EXIT_PROCEDURE) {
         backStep(scanner);
         return true;
@@ -320,27 +337,28 @@ public class MacroShell {
         parameters.addAll(split(getParameter(scanner, character)));
         return false;
       }
-      parameters.push(getParameter(scanner, character));
+      String param = getParameter(scanner, character);
+      parameters.push(param);
       return false;
     }
 
     @Override
-    protected @NotNull String compile(@NotNull LegacyScanner scanner) { return Tools.EMPTY_STRING; }
+    protected @NotNull String compile(@NotNull Scanner scanner) { return Tools.EMPTY_STRING; }
 
   }
 
-  private class CommandBuilder extends LegacyScanner.ScannerMethod {
+  private class CommandBuilder extends Scanner.ScannerMethod {
 
     MacroShell context;
     private ParameterBuilder parameterBuilder = new ParameterBuilder();
 
     @Override
-    protected void start(@NotNull LegacyScanner scanner, Object[] parameters) {
+    protected void start(@NotNull Scanner scanner, Object[] parameters) {
       this.context = (MacroShell) parameters[0];
     }
 
     @Override
-    protected boolean scan(@NotNull LegacyScanner scanner) {
+    protected boolean scan(@NotNull Scanner scanner) {
       if (current() == EXIT_PROCEDURE) { backStep(scanner); } else {
         String name = current() + scanner.nextField(BREAK_COMMAND_MAP);
         char c = scanner.next();

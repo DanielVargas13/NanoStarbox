@@ -1,6 +1,6 @@
 package box.star.text;
 
-import box.star.text.basic.LegacyScanner;
+import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +10,7 @@ class MacroShellTest {
 
   @Test
   void main() {
-    LegacyScanner scanner = new LegacyScanner(new File("src/java/resource/macro-document-test"));
+    Scanner scanner = new Scanner(new File("src/java/resource/macro-document-test"));
     MacroShell context = new MacroShell(System.getenv());
     context.environment.put("what", "Menu");
     context.addCommand("list", new MacroShell.Command() {

@@ -5,16 +5,16 @@ import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.state.MachineStorage;
-import box.star.text.Char;
 import box.star.state.RuntimeObjectMapping;
-import box.star.text.SyntaxError;
+import box.star.text.Char;
 import box.star.text.list.PatternList;
 import box.star.text.list.RangeList;
 import box.star.text.list.WordList;
 
 import java.io.*;
-import java.util.*;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -329,10 +329,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * can consume.
    *
    * @return true if not yet at the end of the source.
-   * @throws LegacyScanner.Exception thrown if there is an error stepping forward
-   *                   or backward while checking for more data.
    */
-  public boolean haveNext() throws LegacyScanner.Exception {
+  public boolean haveNext() {
     return ! endOfSource();
   }
 
@@ -426,6 +424,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   public @NotNull char next(char character) {
+    if (endOfSource()){
+      throw new SyntaxError(this,
+          "expected "+getRuntimeLabel(character)
+              +" and located end of source");
+    }
     char c = next();
     if (c != character) {
       back();
@@ -935,10 +938,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return if equals: return true; else: restore scanner state and return false
    * @throws SyntaxError if the word is not found
    */
-  public void nextWord(boolean caseSensitive, String match) throws SyntaxError {
+  public String nextWord(boolean caseSensitive, String match) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
-    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return;
+    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
     walkBack(start);
     throw new SyntaxError(this, "expected "+getRuntimeLabel(match)+" and found `"+nextWordPreview()+"'");
   }
@@ -1234,7 +1237,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   public static class EscapeDriver extends CancellableOperation implements CharacterExpander {
-    protected EscapeDriver(){super();}
+    public EscapeDriver(){super();}
     protected EscapeDriver(String label) { super(label); }
   }
 
@@ -1309,5 +1312,321 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
+  /**
+   * <h2>ScannerMethod</h2>
+   *
+   * <p>This class extends the operational capabilities of the basic text
+   * {@link Scanner}.</p>
+   * <br>
+   * <p>Use this class to perform inline stream extrapolations.</p>
+   * <br>
+   *
+   * <h3>Working Theory</h3>
+   *
+   * <p>A ScannerMethod is instantiated by an implementation to obtain structured
+   * data. The method may be started with optional parameters, and may be cloned
+   * for concurrent operations or sub-calls.</p>
+   * <br>
+   * <p>For example, you want to collect some meta-document-language attributes into a hash-map.
+   * What you will do is send a hash map to the method through the text-scanner's
+   * {@link Scanner#run(ScannerMethod, Object...)} method, and when the run method
+   * calls your {@link #compile(Scanner)} method, you simply parse the data you
+   * collected in your buffer, and store it in your attribute-map. To obtain your
+   * method parameters you must record them during the Scanner's call to your
+   * {@link #start(Scanner, Object[])} method.</p>
+   * <br>
+   * <p>A method may call other methods, and may also call upon the methods
+   * of the scanner during any execution phase of its lifecycle.</p>
+   * <br>
+   *
+   * <h3>lifecycle</h3>
+   * <ul>
+   * {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminate(Scanner, char)} and {@link #scan(Scanner)}</li>
+   * </ul>
+   */
+  public static class ScannerMethod implements Cloneable {
+
+    protected String claim;
+    protected StringBuilder buffer;
+    protected int bufferOffset;
+
+    protected ScannerMethod() {this("TextScannerMethod");}
+
+    protected ScannerMethod(@NotNull String claim) {this.claim = claim;}
+
+    /**
+     * Create the character buffer
+     *
+     * <p><i>
+     * Overriding is not recommended.
+     * </i></p>
+     */
+    protected void reset() {
+      buffer = new StringBuilder((int) SPACE);
+      bufferOffset = -1;
+    }
+
+    /**
+     * Called by the scanner to signal that a new method call is beginning.
+     *
+     * @param scanner    the host scanner
+     * @param parameters the parameters given by the caller.
+     */
+    protected void start(@NotNull Scanner scanner, Object[] parameters) {}
+
+    /**
+     * <p><i>
+     * Overriding is not recommended.
+     * </i></p>
+     *
+     * @return String representation
+     */
+    @NotNull
+    public String toString() { return claim; }
+
+    /**
+     * Places the given character on the character buffer at the current position,
+     * overwriting the current position.
+     * <p>
+     * This feature enables incorporation of escape expansions into the current
+     * buffer.
+     *
+     * @param forLastBufferCharacter
+     */
+    protected void swap(@Nullable char forLastBufferCharacter) {
+      if (bufferOffset > -1) buffer.setLength(bufferOffset--);
+      buffer.append(forLastBufferCharacter);
+      bufferOffset++;
+    }
+
+    /**
+     * Places the given string on the character buffer at the current position,
+     * overwriting the current position.
+     * <p>
+     * If the string is empty or null, the operation is silently aborted.
+     * <p>
+     * This feature enables incorporation of escape expansions into the current
+     * buffer.
+     *
+     * @param forLastBufferCharacter
+     */
+    protected void swap(@Nullable String forLastBufferCharacter) {
+      if (bufferOffset > -1) buffer.setLength(bufferOffset--);
+      if (forLastBufferCharacter == null || forLastBufferCharacter.equals(Tools.EMPTY_STRING)) return;
+      buffer.append(forLastBufferCharacter);
+      bufferOffset += forLastBufferCharacter.length();
+    }
+
+    /**
+     * Add a character to the method buffer.
+     *
+     * @param scanner
+     * @param character
+     */
+    protected void collect(@NotNull Scanner scanner, char character) {
+      buffer.append(character);
+      bufferOffset++;
+    }
+
+    /**
+     * Returns true if the character is zero.
+     *
+     * @param scanner
+     * @param character
+     * @return
+     */
+    protected final boolean zeroTerminator(@NotNull Scanner scanner, char character) {
+      //pop();
+      //backStep(scanner);
+      return character == 0;
+    }
+
+    /**
+     * Return true to break processing at this character position.
+     * <p>
+     * The default method handles the zero terminator.
+     *
+     * @param scanner
+     * @param character
+     * @return false to continue processing.
+     */
+    protected boolean terminate(@NotNull Scanner scanner, char character) {
+      return zeroTerminator(scanner, character);
+    }
+
+    /**
+     * Return the compiled buffer contents.
+     * <p>
+     * This method is called after the scanner completes a method call.
+     *
+     * @param scanner
+     * @return the buffer.
+     */
+    @NotNull
+    protected String compile(@NotNull Scanner scanner) {
+      return buffer.toString();
+    }
+
+    /**
+     * <p>Signals whether or not the process should continue reading input.</p>
+     *
+     * <p>The default method returns true.</p>
+     *
+     * @param scanner
+     * @return true if the TextScanner should read more input.
+     */
+    protected boolean scan(@NotNull Scanner scanner) { return true; }
+
+    /**
+     * Step back the scanner and the buffer by 1 character.
+     * <p><i>
+     * Overriding is not recommended.
+     * </i></p>
+     *
+     * @param scanner
+     */
+    protected void backStep(@NotNull Scanner scanner) {
+      scanner.back();
+      buffer.setLength(bufferOffset--);
+    }
+
+    /**
+     * Step back the scanner and the buffer by 1 character.
+     * <p><i>
+     * Overriding is not recommended.
+     * </i></p>
+     *
+     * @param scanner
+     */
+    protected void backStep(@NotNull Scanner scanner, long to) {
+      while (scanner.getIndex() != to) {
+        scanner.back();
+        bufferOffset--;
+      }
+      buffer.setLength(bufferOffset+1);
+    }
+
+    /**
+     * Examine the character on the top of the buffer.
+     * <p>
+     * Works like {@link #pop()}, but doesn't modify the buffer.
+     *
+     * @return
+     */
+    protected char current() {
+      return buffer.charAt(bufferOffset);
+    }
+
+    /**
+     * Examine characters on the top of the buffer.
+     * <p>
+     * Works like {@link #pop(int)}, but doesn't modify the buffer.
+     *
+     * @param count
+     * @return
+     */
+    protected char[] peek(int count) {
+      int offset = Math.max(0, buffer.length() - count);
+      return buffer.substring(offset).toCharArray();
+    }
+
+    /**
+     * Cuts the top character from the top of the buffer.
+     *
+     * @return the top character on the buffer
+     */
+    protected char pop() {
+      int newLength = buffer.length() - 1;
+      if (bufferOffset != newLength) throw new IllegalStateException("buffer offset is not at the top of the stack");
+      bufferOffset--;
+      char c = buffer.charAt(newLength);
+      buffer.setLength(newLength);
+      return c;
+    }
+
+    /**
+     * Cut characters from the top of the buffer.
+     *
+     * @param count the amount of characters to cut
+     * @return the characters selected
+     */
+    protected char[] pop(int count) {
+      int offset = Math.max(0, buffer.length() - count);
+      char[] c = buffer.substring(offset).toCharArray();
+      buffer.setLength(Math.max(0, offset));
+      bufferOffset = offset - 1;
+      return c;
+    }
+
+    /**
+     * <h2>Clone</h2>
+     * <p>Creates a re-entrant-safe-single-state-method, from a given method.</p>
+     * <br>
+     * <p>The method implementation must honor the reset contract, by configuring
+     * itself as a new instance.</p>
+     *
+     * <p>A default method should not store any runtime values. Runtime values
+     * should be applied during {@link #reset()} and
+     * {@link #start(Scanner, Object[])}.</p>
+     *
+     * @return the cloned method instance
+     */
+    @NotNull
+    @Override
+    protected ScannerMethod clone() {
+      try {
+        ScannerMethod clone = (ScannerMethod) super.clone();
+        clone.reset();
+        return clone;
+      }
+      catch (CloneNotSupportedException failure) {
+        throw new RuntimeException("unable to create method object", failure);
+      }
+    }
+
+  }
+  /**
+   * <p>Starts a {@link ScannerMethod}</p>
+   * <br>
+   * <p>Creates a copy of the method, and calls its
+   * {@link ScannerMethod#start(Scanner, Object[])} method with the given
+   * parameters.</p>
+   *
+   * @param method the method to use
+   * @param parameters the parameters to forward to the method
+   * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
+   */
+  @NotNull
+  final public String run(ScannerMethod method, Object... parameters) {
+    method = method.clone();
+    method.start(this, parameters);
+    do {
+      char c = next();
+      method.collect(this, c);
+      if (method.terminate(this, c)) break;
+    } while (method.scan(this) && ! endOfSource());
+    return method.compile(this);
+  }
+
+  /**
+   * <p>Calls upon a scanner method, as a branch from within a scanner method.</p>
+   *
+   * @param method the method to use
+   * @param parameters the parameters for the method
+   * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
+   */
+  @NotNull
+  final public String branch(ScannerMethod method, Object... parameters) {
+    method = method.clone();
+    method.start(this, parameters);
+    method.collect(this, current());
+    if (! method.terminate(this, current()) && method.scan(this))
+      do {
+        char c = next();
+        method.collect(this, c);
+        if (method.terminate(this, c)) break;
+      } while (method.scan(this));
+    return method.compile(this);
+  } 
 }
 
