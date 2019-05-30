@@ -3,6 +3,7 @@ package box.star.text.list;
 import box.star.state.RuntimeObjectMapping;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PatternList implements Serializable, RuntimeObjectMapping.ObjectWithLabel {
@@ -24,5 +25,13 @@ public class PatternList implements Serializable, RuntimeObjectMapping.ObjectWit
   public boolean matches(String input){
     for (Pattern pattern:patterns) if (pattern.matcher(input).matches())return true;
     return false;
+  }
+  public Matcher match(String input){
+    Matcher matcher;
+    for (Pattern pattern:patterns) {
+      matcher = pattern.matcher(input);
+      if (matcher.matches())return matcher;
+    }
+    return null;
   }
 }
