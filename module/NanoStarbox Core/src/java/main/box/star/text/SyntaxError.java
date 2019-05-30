@@ -1,9 +1,6 @@
 package box.star.text;
 
 import box.star.contract.NotNull;
-import box.star.text.basic.Bookmark;
-import box.star.text.basic.CancellableTask;
-import box.star.text.basic.Scanner;
 
 public class SyntaxError extends RuntimeException {
 

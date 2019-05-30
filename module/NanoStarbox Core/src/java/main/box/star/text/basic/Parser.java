@@ -29,7 +29,7 @@ import static box.star.text.basic.Parser.Status.*;
  * <br>
  * @see Scanner
  */
-public class Parser implements CancellableTask {
+public class Parser extends Scanner.CancellableOperation {
 
   protected final static String
       PARSER_DID_NOT_SYNC = ": parser did not synchronize its end result with the scanner state",
@@ -48,10 +48,10 @@ public class Parser implements CancellableTask {
 
   // Protected Properties
   protected Status status;
-  protected Scanner scanner;
+  //protected Scanner scanner;
 
   // Private Properties
-  private long start, end;
+  private long end;
   private boolean finished;
   private Bookmark origin;
 
@@ -65,6 +65,7 @@ public class Parser implements CancellableTask {
     long start = Math.max(0, this.start);
     return (end==0)?scanner.getIndex()-start:end-start;
   }
+  final public Scanner getScanner(){return scanner;}
 
   // Public Methods
   final public @NotNull Bookmark cancel() {
@@ -85,10 +86,9 @@ public class Parser implements CancellableTask {
 
   // Public Constructors
   public Parser(@NotNull Scanner scanner){
+    super(scanner);
     if (scanner.endOfSource()){ status = FAILED; return; }
-    this.scanner = scanner;
     this.origin = scanner.nextBookmark();
-    start = origin.index - 1;
     status = OK;
   }
 

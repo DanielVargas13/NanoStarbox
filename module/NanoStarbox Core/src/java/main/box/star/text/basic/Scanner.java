@@ -46,12 +46,12 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       this(location.toString(), message, cause);
     }
 
-    public SyntaxError(@NotNull CancellableTask action, @NotNull String message){
+    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message){
       this(action.cancel(), message);
       this.host = action;
     }
 
-    public SyntaxError(@NotNull CancellableTask action, @NotNull String message, Throwable cause){
+    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message, Throwable cause){
       this(action.cancel(), message, cause);
       this.host = action;
     }
@@ -460,7 +460,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(@NotNull char... map) {
+  @Deprecated public String nextField(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -476,7 +476,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return sb.toString();
   }
 
-  public @NotNull String nextField(char delimiter) {
+  @Deprecated public @NotNull String nextField(char delimiter) {
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
       char c = this.next();
@@ -499,7 +499,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @param map the collection of delimiters to break scanning with
    * @return the delimited text; could be truncated
    */
-  public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
+  @Deprecated public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (!endOfSource()) do {
@@ -518,83 +518,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return sb.toString();
   }
 
-  public static abstract class FieldDriver implements ObjectWithLabel {
-    final String label;
-    public FieldDriver(String label){
-      this.label = label;
-    }
-    @Override
-    public String getRuntimeLabel() {
-      return label;
-    }
-    public String expand(@NotNull Scanner scanner){
-      char character = scanner.current();
-      long start = scanner.getIndex();
-      switch (character) {
-        case 'd':
-          return DELETE + Tools.EMPTY_STRING;
-        case 'e':
-          return ESCAPE + Tools.EMPTY_STRING;
-        case 't':
-          return "\t";
-        case 'b':
-          return "\b";
-        case 'v':
-          return VERTICAL_TAB + Tools.EMPTY_STRING;
-        case 'r':
-          return "\r";
-        case 'n':
-          return "\n";
-        case 'f':
-          return "\f";
-        /*unicode*/
-        case 'u': {
-          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-          catch (NumberFormatException e) {
-            scanner.walkBack(start);
-            throw new SyntaxError(scanner, "failed to parse unicode escape sequence using hex method", e);
-          }
-        }
-        /*hex or octal*/
-        case '0': {
-          char c = scanner.next();
-          if (c == 'x') {
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) {
-              scanner.walkBack(start);
-              throw new SyntaxError(scanner, "failed to parse hex escape sequence", e);
-            }
-          } else {
-            scanner.back();
-          }
-          String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
-          int value = Integer.parseInt(chars, 8);
-          if (value > 255) {
-            scanner.walkBack(start);
-            throw new SyntaxError(scanner, "octal escape subscript out of range; expected 00-0377; have: " + value);
-          }
-          char out = (char) value;
-          return out + Tools.EMPTY_STRING;
-        }
-        /*integer or pass-through */
-        default: {
-          if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
-            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
-            int value = Integer.parseInt(chars);
-            if (value > 255) {
-              scanner.walkBack(start);
-              throw new SyntaxError(scanner, "integer escape subscript out of range; expected 0-255; have: " + value);
-            } else {
-              char out = (char) value;
-              return out + Tools.EMPTY_STRING;
-            }
-          } else return String.valueOf(character);
-        }
-      }
-    }
-    abstract boolean breakField(Scanner scanner, int size, char current);
-  }
-
   /**
    * <p>Scan and assemble characters while field driver signals continuation</p>
    *
@@ -602,25 +525,27 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the delimited text; could be truncated
    */
   public @NotNull String nextField(@NotNull Scanner.FieldDriver fieldDriver) {
-    char c;
     StringBuilder sb = new StringBuilder();
-    if (! endOfSource()) do {
-      c = this.next();
-      if (c == BACKSLASH && ! escapeMode()){
+    if (! endOfSource()) {
+      char c;
+      fieldDriver.setScanner(this);
+      do {
         c = this.next();
-        if (endOfSource()) {
-          throw new SyntaxError(this, "escape detected at end of source while scanning field");
-        }
-        sb.append(fieldDriver.expand(this));
-        continue;
-      }
-      if (fieldDriver.breakField(this, sb.length(), c)) break;
-      if (endOfSource()) {
-        throw new SyntaxError(this,
-            "expected "+fieldDriver.getRuntimeLabel()+" and found end of source");
-      }
-      sb.append(c);
-    } while (true);
+        if (c == BACKSLASH && ! escapeMode()){
+          c = this.next();
+          if (endOfSource())
+            throw new SyntaxError(fieldDriver,
+                "escape detected at end of source while scanning field");
+          sb.append(fieldDriver.expand(this));
+          continue; }
+        else if (fieldDriver.breakField(sb.length(), c)) break;
+        else if (endOfSource())
+          throw new SyntaxError(fieldDriver,
+              "expected "+fieldDriver.getRuntimeLabel()
+                  +" and found end of source");
+        else sb.append(c);
+      } while (true);
+    }
     return sb.toString();
   }
 
@@ -635,7 +560,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
+  @Deprecated public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
@@ -667,7 +592,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the delimited text; could be truncated
    */
   @NotNull
-  public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
+  @Deprecated public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
@@ -943,22 +868,22 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+getRuntimeLabel(matches));
   }
 
-  public String nextDigit(int min, int max) {
+  @Deprecated public String nextDigit(int min, int max) {
     String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
     return assertLengthFormat(min, "expected a minimum of "+min+" digits, have "+nextNumeric.length(), nextNumeric);
   }
 
-  public String nextAlpha(int min, int max){
+  @Deprecated public String nextAlpha(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_LETTERS);
     return assertLengthFormat(min, "expected a minimum of "+min+" alpha characters, have "+nextNumeric.length(), nextNumeric);
   }
 
-  public String nextHex(int min, int max){
+  @Deprecated public String nextHex(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_HEX);
     return assertLengthFormat(min, "expected a minimum of "+min+" hex characters, have "+nextNumeric.length(), nextNumeric);
   }
 
-  public String nextOctal(int min, int max){
+  @Deprecated public String nextOctal(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_OCTAL);
     return assertLengthFormat(min, "expected a minimum of "+min+" octal characters, have "+nextNumeric.length(), nextNumeric);
   }
@@ -1049,16 +974,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   @Override
-  public Iterator iterator() {
-    return new Iterator(this);
+  public SerialDriver iterator() {
+    return new SerialDriver(this);
   }
 
-  public static class Iterator implements java.util.Iterator<Character>, CancellableTask {
-    protected Scanner scanner;
-    protected long start;
-    public Iterator(@NotNull Scanner scanner){
-      this.scanner = scanner;
-      start = scanner.getIndex();
+  public static class SerialDriver extends CancellableOperation implements java.util.Iterator<Character> {
+    protected SerialDriver(@NotNull Scanner scanner, @NotNull String label){
+      super(scanner, label);
+    }
+    protected SerialDriver(@NotNull Scanner scanner) {
+      super(scanner, SerialDriver.class.getName());
     }
     @Override
     public boolean hasNext() {
@@ -1067,11 +992,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     @Override
     public Character next() {
       return scanner.next();
-    }
-    public @NotNull Bookmark cancel(){
-      Bookmark from = scanner.createBookmark();
-      scanner.walkBack(start);
-      return from;
     }
   }
 
@@ -1335,6 +1255,125 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       catch (CloneNotSupportedException e) {throw new RuntimeException(e);}
     }
 
+  }
+
+  public static class EscapeExpander extends CancellableOperation {
+    protected EscapeExpander(){super();}
+    protected EscapeExpander(String label) {
+      super(label);
+    }
+    public String expand(@NotNull Scanner scanner){
+      this.start = scanner.getIndex();
+      this.scanner = scanner;
+      char character = scanner.current();
+      switch (character) {
+        case 'd':
+          return DELETE + Tools.EMPTY_STRING;
+        case 'e':
+          return ESCAPE + Tools.EMPTY_STRING;
+        case 't':
+          return "\t";
+        case 'b':
+          return "\b";
+        case 'v':
+          return VERTICAL_TAB + Tools.EMPTY_STRING;
+        case 'r':
+          return "\r";
+        case 'n':
+          return "\n";
+        case 'f':
+          return "\f";
+        /*unicode*/
+        case 'u': {
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+          catch (NumberFormatException e) {
+            throw new SyntaxError(this, "failed to parse unicode escape sequence using hex method", e);
+          }
+        }
+        /*hex or octal*/
+        case '0': {
+          char c = scanner.next();
+          if (c == 'x') {
+            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+            catch (NumberFormatException e) {
+              throw new SyntaxError(this, "failed to parse hex escape sequence", e);
+            }
+          } else {
+            scanner.back();
+          }
+          String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
+          int value = Integer.parseInt(chars, 8);
+          if (value > 255) {
+            throw new SyntaxError(this, "octal escape subscript out of range; expected 00-0377; have: " + value);
+          }
+          char out = (char) value;
+          return out + Tools.EMPTY_STRING;
+        }
+        /*integer or pass-through */
+        default: {
+          if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
+            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
+            int value = Integer.parseInt(chars);
+            if (value > 255) {
+              throw new SyntaxError(this, "integer escape subscript out of range; expected 0-255; have: " + value);
+            } else {
+              char out = (char) value;
+              return out + Tools.EMPTY_STRING;
+            }
+          } else return String.valueOf(character);
+        }
+      }
+    }
+  }
+
+  public static class FieldDriver extends EscapeExpander {
+    public FieldDriver(){}
+    public FieldDriver(String label){ super(label); }
+    public boolean breakField(int size, char current){
+      return scanner.endOfSource();
+    }
+  }
+
+  public static class CancellableOperation implements ObjectWithLabel {
+    protected Scanner scanner;
+    protected long start;
+    protected String label;
+    protected boolean cancelled;
+    protected CancellableOperation() {
+      this.label = this.getClass().getName();
+    }
+    protected CancellableOperation(Scanner scanner){
+      this();
+      setScanner(scanner);
+    }
+    protected CancellableOperation(Scanner scanner, String label){
+      this(label);
+      setScanner(scanner);
+    }
+    protected CancellableOperation(String label){
+      this.label = label;
+    }
+    protected void setScanner(Scanner scanner){
+      this.scanner = scanner;
+      this.start = scanner.getIndex();
+      this.cancelled = false;
+    }
+    @NotNull protected Bookmark cancel() {
+      Bookmark bm = scanner.createBookmark();
+      if (! scanner.endOfSource()) {
+        if (scanner.getHistoryLength() > 0)
+          scanner.walkBack(Math.max(-1, start));
+      }
+      cancelled = true;
+      return bm;
+    }
+    @Override
+    final public String getRuntimeLabel() {
+      return label;
+    }
+    final public boolean isCancelled() {
+      return cancelled;
+    }
   }
 
 }
