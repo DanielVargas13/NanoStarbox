@@ -37,10 +37,10 @@ class TextScannerTest {
     assertEquals(false, x.hasStateRecordLock());
     LegacyScanner.ScannerStateRecord s = x.getStateLock();
     assertEquals(true, x.hasStateRecordLock());
-    assertEquals("01", x.nextMap(2, MAP_ASCII_NUMBERS));
+    assertEquals("01", x.nextMap(0,2, MAP_ASCII_NUMBERS));
     s.free();
     assertEquals(false, x.hasStateRecordLock());
-    assertEquals("23", x.nextMap(2, MAP_ASCII_NUMBERS));
+    assertEquals("23", x.nextMap(0,2, MAP_ASCII_NUMBERS));
     snapshot_rewind_lifecycle();
   }
 
@@ -49,10 +49,10 @@ class TextScannerTest {
     assertEquals(false, x.hasStateRecordLock());
     LegacyScanner.ScannerStateRecord s = x.getStateLock();
     assertEquals(true, x.hasStateRecordLock());
-    assertEquals("01", x.nextMap(2, MAP_ASCII_NUMBERS));
+    assertEquals("01", x.nextMap(0,2, MAP_ASCII_NUMBERS));
     s.restore();
     assertEquals(false, x.hasStateRecordLock());
-    assertEquals("01", x.nextMap(2, MAP_ASCII_NUMBERS));
+    assertEquals("01", x.nextMap(0,2, MAP_ASCII_NUMBERS));
   }
 
   @Test
