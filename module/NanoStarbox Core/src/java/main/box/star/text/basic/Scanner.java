@@ -833,7 +833,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (matcher != null) return matcher;
     } while (buffer.length() != max);
     walkBack(start);
-    return null;
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
   }
 
   /**
