@@ -748,9 +748,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+match+" and found "+nextWordPreview());
   }
 
-  public @NotNull String nextPattern(@NotNull Pattern pattern){
+  public @NotNull String nextPattern(int min, @NotNull Pattern pattern){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
+    if (min > 0) {
+      buffer.append(endOfSource()?"":nextLength(min));
+      if (buffer.length() < min) {
+        walkBack(start);
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length()+" characters");
+      }
+    }
     if (! endOfSource()) do {
       char c = next();
       if (endOfSource()) break;
@@ -758,13 +765,20 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
     } while (true);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern));
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
   }
 
-  public @NotNull String nextPattern(int max, @NotNull Pattern pattern){
+  public @NotNull String nextPattern(int min, int max, @NotNull Pattern pattern){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
     if (max == 0) --max;
+    if (min > 0) {
+      buffer.append(endOfSource()?"":nextLength(min));
+      if (buffer.length() < min) {
+        walkBack(start);
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length()+" characters");
+      }
+    }
     if (! endOfSource()) do {
       char c = next();
       if (endOfSource()) break;
@@ -772,13 +786,20 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
     } while (buffer.length() != max);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern));
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
   }
 
-  public @NotNull String nextPattern(int max, @NotNull PatternList patterns) throws SyntaxError {
+  public @NotNull String nextPattern(int min, int max, @NotNull PatternList patterns) throws SyntaxError {
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
     if (max == 0) --max;
+    if (min > 0) {
+      buffer.append(endOfSource()?"":nextLength(min));
+      if (buffer.length() < min) {
+        walkBack(start);
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(patterns)+" and have only "+buffer.length()+" characters");
+      }
+    }
     if (! endOfSource()) do {
       char c = next();
       if (endOfSource()) break;
@@ -786,7 +807,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (patterns.matches(buffer.toString())) return buffer.toString();
     } while (buffer.length() != max);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns));
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns)+" and found "+nextWordPreview());
   }
 
   public Matcher nextMatch(int min, int max, PatternList pattern){
