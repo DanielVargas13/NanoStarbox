@@ -779,6 +779,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   /**
    * <p>Gets the next word and tests it against a list of inputs</p>
+   * <br>
+   * <p>The list will be sorted from longest to shortest, which prevents
+   * short-circuiting.</p>
    * @param caseSensitive if true: the tests are case sensitive
    * @param matches the set of strings to match
    * @return if equals: return word; else: restore scanner state and return null
@@ -786,6 +789,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public @Nullable String nextWord(boolean caseSensitive, String... matches){
     long start = getIndex();
     String word = nextWord();
+    preventWordListShortCircuit(matches);
     for (String match:matches)
     if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
     walkBack(start);
@@ -875,6 +879,27 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return state.column;
   }
 
+  /**
+   * <p>Call this method on a word list to make sure it doesn't short-circuit</p>
+   * <br>
+   * <p>A word-list short-circuit is a condition, where a word list fails to correctly
+   * match an item because a shorter item matches the longer item first. This method
+   * sorts the array from longest to shortest, to ensure that a short-circuit
+   * is not possible.</p>
+   * <br>
+   * @param words
+   */
+  static public void preventWordListShortCircuit(String[] words){
+    boolean longestFirst = true;
+    Arrays.sort(words, new Comparator<String>() {
+      @Override
+      public int compare(String o1, String o2) {
+        return (longestFirst)?
+            Integer.compare(o2.length(), o1.length()):
+            Integer.compare(o1.length(), o2.length());
+      }
+    });
+  }
 
   @Override
   public Iterator iterator() {
