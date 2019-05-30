@@ -37,6 +37,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     OR
   }
 
+  protected static void globalRuntimeObject(String label, Object constVal){
+    BaseRuntimeResolver.setRuntimeLabel(label, constVal);
+  }
+
   private static final char[] SPACE_TAB_MAP =
       BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
   private static final char[] LINE_MAP =
@@ -57,8 +61,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   private Scanner runtimeLabelResolver = BaseRuntimeResolver;
 
-  {
-    setRuntimeLabel("or", RuntimeLanguage.OR);
+  static {
+    globalRuntimeObject("or", RuntimeLanguage.OR);
   }
 
   @Override
