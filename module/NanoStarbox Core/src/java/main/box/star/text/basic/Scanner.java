@@ -164,14 +164,17 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   protected boolean closeable;
   protected State state;
   protected final MachineStorage userMap = new MachineStorage();
-  /**
-   * <p>User Settings Pool</p>
-   * <br>
-   * <p>Allows a scanner user to configure a custom scanner environment with
-   * machine-state-variables (enum-keyed-objects).</p>
-   */
-  public MachineStorage getMap() {
-    return userMap;
+
+  public void set(Enum key, Object value){
+    userMap.put(key, value);
+  }
+
+  public <T> T get(Class<T> type, Enum key){
+    return userMap.get(type, key);
+  }
+
+  public void delete(Enum key){
+    userMap.remove(key);
   }
 
   public Scanner(@NotNull String path, @NotNull Reader reader) {
