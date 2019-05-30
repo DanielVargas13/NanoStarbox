@@ -29,7 +29,7 @@ public interface CharacterExpander {
         return FORM_FEED + Tools.EMPTY_STRING;
       /*unicode*/
       case 'u': {
-        try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+        try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4,4, MAP_ASCII_HEX), 16)); }
         catch (NumberFormatException e) {
           scanner.walkBack(start);
           throw new Scanner.SyntaxError(scanner, "failed to parse unicode escape sequence using hex method", e);
@@ -39,7 +39,7 @@ public interface CharacterExpander {
       case '0': {
         char c = scanner.next();
         if (c == 'x') {
-          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
+          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(1, 4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) {
             scanner.walkBack(start);
             throw new Scanner.SyntaxError(scanner, "failed to parse hex escape sequence", e);
@@ -47,7 +47,7 @@ public interface CharacterExpander {
         } else {
           scanner.back();
         }
-        String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
+        String chars = '0' + scanner.nextMap(1,3, MAP_ASCII_OCTAL);
         int value = Integer.parseInt(chars, 8);
         if (value > 255) {
           scanner.walkBack(start);
@@ -59,7 +59,7 @@ public interface CharacterExpander {
       /*integer or pass-through */
       default: {
         if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
-          String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
+          String chars = character + scanner.nextMap(1,2, MAP_ASCII_NUMBERS);
           int value = Integer.parseInt(chars);
           if (value > 255) {
             scanner.walkBack(start);

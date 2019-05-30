@@ -357,19 +357,19 @@ public class LegacyScanner extends Scanner {
         return "\f";
       /*unicode*/
       case 'u': {
-        try { return String.valueOf((char) Integer.parseInt(this.nextMap(4, MAP_ASCII_HEX), 16)); }
+        try { return String.valueOf((char) Integer.parseInt(this.nextMap(0, 4, MAP_ASCII_HEX), 16)); }
         catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
       }
       /*hex or octal*/
       case '0': {
         char c = this.next();
         if (c == 'x') {
-          try { return String.valueOf((char) Integer.parseInt(this.nextMap(4, MAP_ASCII_HEX), 16)); }
+          try { return String.valueOf((char) Integer.parseInt(this.nextMap(0, 4, MAP_ASCII_HEX), 16)); }
           catch (NumberFormatException e) { throw this.syntaxError("Illegal escape", e); }
         } else {
           this.back();
         }
-        String chars = '0' + this.nextMap(3, MAP_ASCII_OCTAL);
+        String chars = '0' + this.nextMap(0, 3, MAP_ASCII_OCTAL);
         int value = Integer.parseInt(chars, 8);
         if (value > 255) {
           throw this.syntaxError("octal escape subscript out of range; expected 00-0377; have: " + value);
@@ -380,7 +380,7 @@ public class LegacyScanner extends Scanner {
       /*integer or pass-through */
       default: {
         if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
-          String chars = character + this.nextMap(2, MAP_ASCII_NUMBERS);
+          String chars = character + this.nextMap(0, 2, MAP_ASCII_NUMBERS);
           int value = Integer.parseInt(chars);
           if (value > 255) {
             throw this.syntaxError("integer escape subscript out of range; expected 0-255; have: " + value);
