@@ -922,6 +922,32 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (matcher != null) return matcher;
     } while (buffer.length() != max);
     walkBack(start);
+    String preview;
+    if (min == 0) preview = nextWordPreview();
+    else preview = nextWordPreview(min);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+preview);
+  }
+
+  public Matcher nextOptionalMatch(int min, int max, PatternList pattern){
+    long start = getIndex();
+    Matcher matcher;
+    if (max == 0) --max;
+    StringBuilder buffer = new StringBuilder();
+    if (min > 0) {
+      buffer.append(endOfSource()?"":nextLength(min));
+      if (buffer.length() < min) {
+        walkBack(start);
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length()+" characters");
+      }
+    }
+    if (! endOfSource()) do {
+      char c = next();
+      if (endOfSource()) break;
+      buffer.append(c);
+      matcher = pattern.match(buffer.toString());
+      if (matcher != null) return matcher;
+    } while (buffer.length() != max);
+    walkBack(start);
     return null;
   }
 
