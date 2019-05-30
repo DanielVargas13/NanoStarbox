@@ -789,30 +789,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns));
   }
 
-  public int nextPatternLength(Pattern pattern) {
-    long start = getIndex();
-    StringBuilder buffer = new StringBuilder();
-    if (! endOfSource()) do {
-      char c = next(); if (endOfSource()) break;
-      buffer.append(c);
-      if (pattern.matcher(buffer.toString()).matches()) return buffer.length();
-    } while (! endOfSource());
-    walkBack(start);
-    return 0;
-  }
-
-  public int nextPatternLength(int max, Pattern pattern){
-    long start = getIndex();
-    StringBuilder buffer = new StringBuilder();
-    if (! endOfSource()) do {
-      char c = next(); if (endOfSource()) break;
-      buffer.append(c);
-      if (pattern.matcher(buffer.toString()).matches()) return buffer.length();
-    } while (! endOfSource() && buffer.length() < max);
-    walkBack(start);
-    return 0;
-  }
-
   public Matcher nextMatch(int min, int max, PatternList pattern){
     long start = getIndex();
     Matcher matcher;
