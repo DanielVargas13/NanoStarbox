@@ -614,7 +614,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public String nextSpace(){return nextMap(SPACE_MAP);}
   public String nextTab(){ return nextMap(TAB_MAP); }
 
-  private String nextWordPreview(){
+  protected String nextWordPreview(){
     if (endOfSource()) return "end of source";
     long start = getIndex();
     String word = nextWord();
