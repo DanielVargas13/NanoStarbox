@@ -637,6 +637,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return word;
   }
 
+  protected String nextWordPreview(int max){
+    if (endOfSource()) return "end of source";
+    long start = getIndex();
+    String word = nextWord(max);
+    walkBack(start);
+    return word;
+  }
+
  /**
   * <p>Runs the given source driver</p>
    * @param driver the source driver to use
@@ -731,6 +739,20 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return word.toString();
   }
 
+  public @NotNull String nextWord(int max){
+    StringBuilder word = new StringBuilder();
+    if (max == 0) --max;
+    if (! endOfSource() ) do {
+      char c = next();
+      if (!mapContains(c, WORD_BREAK_MAP)) word.append(c);
+      else {
+        if (! endOfSource()) back();
+        break;
+      }
+    } while (word.length() != max);
+    return word.toString();
+  }
+
   /**
    * <p>Gets the next word and tests it against match</p>
    * <br>
@@ -765,7 +787,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
     } while (true);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
+    String preview;
+    if (min == 0) preview = nextWordPreview();
+    else preview = nextWordPreview(min);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+preview);
   }
 
   public @NotNull String nextPattern(int min, int max, @NotNull Pattern pattern){
@@ -786,7 +811,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
     } while (buffer.length() != max);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
+    String preview;
+    if (min == 0) preview = nextWordPreview();
+    else preview = nextWordPreview(min);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+preview);
   }
 
   public @NotNull String nextPattern(int min, int max, @NotNull PatternList patterns) throws SyntaxError {
@@ -807,7 +835,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (patterns.matches(buffer.toString())) return buffer.toString();
     } while (buffer.length() != max);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns)+" and found "+nextWordPreview());
+    String preview;
+    if (min == 0) preview = nextWordPreview();
+    else preview = nextWordPreview(min);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns)+" and found "+preview);
   }
 
   public Matcher nextMatch(int min, int max, PatternList pattern){
@@ -830,7 +861,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (matcher != null) return matcher;
     } while (buffer.length() != max);
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+nextWordPreview());
+    String preview;
+    if (min == 0) preview = nextWordPreview();
+    else preview = nextWordPreview(min);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+preview);
   }
 
   /**
