@@ -13,6 +13,7 @@ import box.star.text.list.WordList;
 import java.io.*;
 import java.util.*;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static box.star.text.Char.*;
@@ -31,7 +32,7 @@ import static box.star.text.Char.*;
  */
 public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMapping.WithConfigurationPort<Scanner> {
 
-  private static Scanner BaseRuntimeResolver = new Scanner(null, "");
+  private static Scanner BaseRuntimeResolver;
 
   protected enum RuntimeLanguage {
     OR
@@ -62,6 +63,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   private Scanner runtimeLabelResolver = BaseRuntimeResolver;
 
   static {
+    BaseRuntimeResolver = new Scanner(Scanner.class.getName(), "");
     globalRuntimeObject("or", RuntimeLanguage.OR);
   }
 
@@ -809,6 +811,29 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     } while (! endOfSource() && buffer.length() < max);
     walkBack(start);
     return 0;
+  }
+
+  public Matcher nextMatch(int min, int max, PatternList pattern){
+    long start = getIndex();
+    Matcher matcher;
+    if (max == 0) --max;
+    StringBuilder buffer = new StringBuilder();
+    if (min > 0) {
+      buffer.append(endOfSource()?"":nextLength(min));
+      if (buffer.length() < min) {
+        walkBack(start);
+        throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(pattern)+" and have only "+buffer.length());
+      }
+    }
+    if (! endOfSource()) do {
+      char c = next();
+      if (endOfSource()) break;
+      buffer.append(c);
+      matcher = pattern.match(buffer.toString());
+      if (matcher != null) return matcher;
+    } while (buffer.length() != max);
+    walkBack(start);
+    return null;
   }
 
   /**
