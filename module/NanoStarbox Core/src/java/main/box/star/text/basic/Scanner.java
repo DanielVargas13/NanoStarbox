@@ -9,6 +9,7 @@ import box.star.text.Char;
 import box.star.state.RuntimeObjectMapping;
 import box.star.text.SyntaxError;
 import box.star.text.list.PatternList;
+import box.star.text.list.RangeList;
 import box.star.text.list.WordList;
 
 import java.io.*;
@@ -410,6 +411,20 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return sb.toString();
   }
 
+  public @NotNull String nextMap(@NotNull RangeList map){
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) sb.append(c);
+      else {
+        if (! endOfSource()) this.back();
+        break;
+      }
+    } while (! endOfSource());
+    return sb.toString();
+  }
+
   public @NotNull char next(char character) {
     char c = next();
     if (c != character) {
@@ -428,20 +443,48 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @param map
    * @return
    */
-  public @NotNull String nextMap(int max, @NotNull char... map) {
+  public @NotNull String nextMap(int min, int max, @NotNull char... map) {
     char c;
-    StringBuilder sb = new StringBuilder();
+    StringBuilder buffer = new StringBuilder();
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (mapContains(c, map)) sb.append(c);
+      if (mapContains(c, map)) buffer.append(c);
       else {
         if (! endOfSource()) this.back();
         break;
       }
-    } while (sb.length() != max);
+    } while (buffer.length() != max);
+    if (buffer.length() < min)
+      throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(map)+" and have only "+buffer.length()+" characters");
+    return buffer.toString();
+  }
 
-    return sb.toString();
+  /**
+   * Scan and assemble characters while scan is in map and scan-length < max.
+   *
+   * @param max
+   * @param map
+   * @return
+   */
+  public @NotNull String nextMap(int min, int max, @NotNull RangeList map) {
+    char c;
+    long start = getIndex();
+    StringBuilder buffer = new StringBuilder();
+    if (max == 0) --max;
+    if (! endOfSource()) do {
+      c = this.next();
+      if (map.contains(c)) buffer.append(c);
+      else {
+        if (! endOfSource()) this.back();
+        break;
+      }
+    } while (buffer.length() != max);
+    if (buffer.length() < min) {
+      walkBack(start);
+      throw new SyntaxError(this, "expected a minimum of "+min+" characters while searching for "+getRuntimeLabel(map)+" and have only "+buffer.length()+" characters");
+    }
+    return buffer.toString();
   }
 
   /**
@@ -919,23 +962,19 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   public String nextDigit(int min, int max) {
-    String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
-    return assertLengthFormat(min, "expected a minimum of "+min+" digits, have "+nextNumeric.length(), nextNumeric);
+    return nextMap(min, max, MAP_ASCII_NUMBERS);
   }
 
   public String nextAlpha(int min, int max){
-    String nextNumeric = nextMap(max, MAP_ASCII_LETTERS);
-    return assertLengthFormat(min, "expected a minimum of "+min+" alpha characters, have "+nextNumeric.length(), nextNumeric);
+    return nextMap(min, max, MAP_ASCII_LETTERS);
   }
 
   public String nextHex(int min, int max){
-    String nextNumeric = nextMap(max, MAP_ASCII_HEX);
-    return assertLengthFormat(min, "expected a minimum of "+min+" hex characters, have "+nextNumeric.length(), nextNumeric);
+    return nextMap(min, max, MAP_ASCII_HEX);
   }
 
   public String nextOctal(int min, int max){
-    String nextNumeric = nextMap(max, MAP_ASCII_OCTAL);
-    return assertLengthFormat(min, "expected a minimum of "+min+" octal characters, have "+nextNumeric.length(), nextNumeric);
+    return nextMap(min, max, MAP_ASCII_OCTAL);
   }
 
   /**
