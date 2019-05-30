@@ -33,7 +33,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   private static Scanner BaseRuntimeResolver = new Scanner(null, "");
 
-  public enum RuntimeLanguage {
+  protected enum RuntimeLanguage {
     OR
   }
 
@@ -118,19 +118,19 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   public String translateCharacterMap(String conjunction, char... map){
+    if (map.length == 0) return "empty character map";
     if (map.length == 1) return getRuntimeLabel(map[0]);
-    String[] out = new String[map.length];
+    String[] out = new String[map.length - 1];
     int i; for (i = 0; i < map.length - 1; i++) out[i] = getRuntimeLabel(map[i]);
-    out[i++] = conjunction+" "+getRuntimeLabel(map[map.length - 1]);
-    return String.join(", ", out);
+    return String.join(", ", out) + " "+conjunction+" "+getRuntimeLabel(map[map.length - 1]);
   }
 
   public String translateObjectMap(String conjunction, Object[] map){
+    if (map.length == 0) return "empty object map";
     if (map.length == 1) return getRuntimeLabel(map[0]);
-    String[] out = new String[map.length];
+    String[] out = new String[map.length - 1];
     int i; for (i = 0; i < map.length - 1; i++) out[i] = getRuntimeLabel(map[i]);
-    out[i++] = conjunction+" "+getRuntimeLabel(map[map.length - 1]);
-    return String.join(", ", out);
+    return String.join(", ", out) + " "+conjunction+" "+getRuntimeLabel(map[map.length - 1]);
   }
 
   @Override
