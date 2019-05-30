@@ -1,0 +1,25 @@
+package box.star.text.list;
+
+import box.star.state.RuntimeObjectMapping;
+
+import java.io.Serializable;
+
+public abstract class StandardList<T> implements Serializable, RuntimeObjectMapping.ObjectWithLabel  {
+  protected String label;
+  T[] data;
+  protected StandardList(String label, T[] data){
+    this.label = label;
+    this.data = data;
+  }
+  public int size(){
+    return data.length;
+  }
+  @Override
+  public String getRuntimeLabel() {
+    return label;
+  }
+  @Override
+  public String toString() {
+    return getRuntimeLabel();
+  }
+}

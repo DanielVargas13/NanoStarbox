@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLabel {
+public class WordList extends StandardList<String> {
   private static final long serialVersionUID = 7943841258072204166L;
   /**
    * <p>A word-list short-circuit is a condition, where a word list fails to correctly
@@ -28,14 +28,10 @@ public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLa
       }
     });
   }
-  final String label;
-  final String[] words;
   final int minLength, maxLength;
   public WordList(String label, String... words){
-    this.label = label;
-    this.words = new String[words.length];
-    System.arraycopy(words, 0, words, 0, words.length);
-    preventWordListShortCircuit(this.words);
+    super(label, words);
+    preventWordListShortCircuit(data);
     int min = Integer.MAX_VALUE, max = 0, l;
     for (String w: words) {
       l = w.length();
@@ -45,20 +41,12 @@ public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLa
     minLength = min;
     maxLength = max;
   }
-  @Override
-  public String getRuntimeLabel() {
-    return label;
-  }
-  @Override
-  public String toString() {
-    return getRuntimeLabel();
-  }
   public boolean contains(String string){
-    for (String word:words) if (word.equals(string)) return true;
+    for (String word:data) if (word.equals(string)) return true;
     return false;
   }
   public boolean containsIgnoreCase(String string){
-    for(String word:words) if (word.equalsIgnoreCase(string))return true;
+    for(String word:data) if (word.equalsIgnoreCase(string))return true;
     return false;
   }
   public int getMaxLength() {
@@ -66,10 +54,6 @@ public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLa
   }
   public int getMinLength() {
     return minLength;
-  }
-
-  public int size(){
-    return words.length;
   }
 
 }
