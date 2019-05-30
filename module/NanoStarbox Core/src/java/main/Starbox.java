@@ -17,10 +17,6 @@ public class Starbox {
 
     private Runtime() {}
 
-    public static interface MethodQuery {
-      Method queryMethod(String name, Class[] prototype);
-    }
-
     /**
      * OS.Kind ostype=OS.getOperatingSystemKind();
      * switch (ostype) {
