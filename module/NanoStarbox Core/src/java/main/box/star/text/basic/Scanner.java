@@ -922,10 +922,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (matcher != null) return matcher;
     } while (buffer.length() != max);
     walkBack(start);
-    String preview;
-    if (min == 0) preview = nextWordPreview();
-    else preview = nextWordPreview(min);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern)+" and found "+preview);
+    return null;
   }
 
   /**
