@@ -832,13 +832,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   /**
    * @return true if the current state is in escape mode for the current character.
    */
-  public boolean escapeMode() {
-    return state.escaped;
-  }
+  public boolean escapeMode() { return state.escaped; }
 
-  public Bookmark createBookmark(){
-    return new Bookmark(this);
-  }
+  public Bookmark createBookmark(){ return new Bookmark(this); }
 
   public Bookmark nextBookmark(){
     if (endOfSource()) return createBookmark();
@@ -846,56 +842,40 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return x;
   }
 
-  public String toString() {
-    return String.valueOf(createBookmark());
-  }
+  public String toString() { return String.valueOf(createBookmark()); }
 
   /**
    * @return the current scanner character or {@link Char#NULL_CHARACTER}
    */
-  public char current(){
-    return state.current();
-  }
+  public char current(){ return state.current(); }
 
   /**
    * @return the previous scanner character or {@link Char#NULL_CHARACTER}
    */
-  public char previous(){
-    return state.previous();
-  }
+  public char previous(){ return state.previous(); }
 
   /**
    * @return the scanner's connotation of where this stream-data originates
    */
-  public String getPath() {
-    return state.path;
-  }
+  public String getPath() { return state.path; }
 
   /**
    * @return the position within the text-stream
    */
-  public long getIndex() {
-    return state.index;
-  }
+  public long getIndex() { return state.index; }
 
   /**
    * @return the line number within the text-stream
    */
-  public long getLine() {
-    return state.line;
-  }
+  public long getLine() { return state.line; }
 
   /**
    * @return the column number at the current line within the text-stream
    */
-  public long getColumn() {
-    return state.column;
-  }
+  public long getColumn() { return state.column; }
 
   @Override
-  public SerialDriver iterator() {
-    return new SerialDriver(this);
-  }
+  public SerialDriver iterator() { return new SerialDriver(this); }
 
   public static class SerialDriver extends CancellableOperation implements java.util.Iterator<Character> {
     protected SerialDriver(@NotNull Scanner scanner, @NotNull String label){
@@ -904,12 +884,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     protected SerialDriver(@NotNull Scanner scanner) {
       super(scanner, SerialDriver.class.getName());
     }
-    @Override
-    public boolean hasNext() {
+    @Override public boolean hasNext() {
       return scanner.haveNext();
     }
-    @Override
-    public Character next() {
+    @Override public Character next() {
       return scanner.next();
     }
   }
@@ -1112,17 +1090,13 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   public static class EscapeDriver extends CancellableOperation implements CharacterExpander {
     protected EscapeDriver(){super();}
-    protected EscapeDriver(String label) {
-      super(label);
-    }
+    protected EscapeDriver(String label) { super(label); }
   }
 
   public static class FieldDriver extends EscapeDriver {
     public FieldDriver(){}
     public FieldDriver(String label){ super(label); }
-    public boolean breakField(int size, char current){
-      return scanner.endOfSource();
-    }
+    public boolean breakField(int size, char current){ return scanner.endOfSource(); }
   }
 
   public static class CancellableOperation implements ObjectWithLabel {
@@ -1130,9 +1104,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     protected long start;
     protected String label;
     protected boolean cancelled;
-    protected CancellableOperation() {
-      this.label = this.getClass().getName();
-    }
+    protected CancellableOperation() { this.label = this.getClass().getName(); }
     protected CancellableOperation(Scanner scanner){
       this();
       setScanner(scanner);
@@ -1141,9 +1113,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       this(label);
       setScanner(scanner);
     }
-    protected CancellableOperation(String label){
-      this.label = label;
-    }
+    protected CancellableOperation(String label){ this.label = label; }
     protected void setScanner(Scanner scanner){
       this.scanner = scanner;
       this.start = scanner.getIndex();
@@ -1158,13 +1128,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       cancelled = true;
       return bm;
     }
-    @Override
-    final public String getRuntimeLabel() {
-      return label;
-    }
-    final public boolean isCancelled() {
-      return cancelled;
-    }
+    @Override final public String getRuntimeLabel() { return label; }
+    final public boolean isCancelled() { return cancelled; }
   }
 
   static public class SyntaxError extends box.star.text.SyntaxError {
