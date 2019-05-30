@@ -245,9 +245,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * Scanner sub-section-scanning
    * @param bookmark
    * @param source
-   * @throws IllegalStateException
    */
-  public Scanner(Bookmark bookmark, String source) throws IllegalStateException {
+  public Scanner(Bookmark bookmark, String source) {
     state.path = bookmark.path;
     state.line = bookmark.line;
     state.column = bookmark.column;
