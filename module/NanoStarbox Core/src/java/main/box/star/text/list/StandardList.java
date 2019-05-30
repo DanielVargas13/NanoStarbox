@@ -22,4 +22,11 @@ public abstract class StandardList<T> implements Serializable, RuntimeObjectMapp
   public String toString() {
     return getRuntimeLabel();
   }
+  public boolean contains(T value){
+    for (T item :
+        data) {
+      if (item.equals(value)) return true;
+    }
+    return false;
+  }
 }

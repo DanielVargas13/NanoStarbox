@@ -41,10 +41,6 @@ public class WordList extends StandardList<String> {
     minLength = min;
     maxLength = max;
   }
-  public boolean contains(String string){
-    for (String word:data) if (word.equals(string)) return true;
-    return false;
-  }
   public boolean containsIgnoreCase(String string){
     for(String word:data) if (word.equalsIgnoreCase(string))return true;
     return false;

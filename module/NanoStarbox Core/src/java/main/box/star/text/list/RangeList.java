@@ -10,7 +10,7 @@ public class RangeList extends StandardList<RangeMap> {
   public RangeList(String label, RangeMap... ranges){
     super(label, ranges);
   }
-  public boolean contains(char c){
+  public boolean match(char c){
     for (RangeMap range:data) if (range.match(c)) return true;
     return false;
   }

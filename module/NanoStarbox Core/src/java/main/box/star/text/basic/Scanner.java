@@ -414,7 +414,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
       c = this.next();
-      if (map.contains(c)) sb.append(c);
+      if (map.match(c)) sb.append(c);
       else {
         if (! endOfSource()) this.back();
         break;
@@ -477,7 +477,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (map.contains(c)) buffer.append(c);
+      if (map.match(c)) buffer.append(c);
       else {
         if (! endOfSource()) this.back();
         break;

@@ -10,8 +10,4 @@ public class CharacterList extends StandardList<Character> {
   public CharacterList(String label, Character... chars){
     super(label, chars);
   }
-  public boolean contains(char c){
-    for (char t:data) if (t == c) return true;
-    return false;
-  }
 }

@@ -11,6 +11,7 @@ public class PatternList extends StandardList<Pattern> {
   public PatternList(String label, Pattern... patterns){
     super(label, patterns);
   }
+
   public boolean matches(String input){
     for (Pattern pattern:data) if (pattern.matcher(input).matches())return true;
     return false;
