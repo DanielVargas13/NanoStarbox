@@ -241,6 +241,19 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return this;
   }
 
+  /**
+   * Scanner sub-section-scanning
+   * @param bookmark
+   * @param source
+   * @throws IllegalStateException
+   */
+  public Scanner(Bookmark bookmark, String source) throws IllegalStateException {
+    state.path = bookmark.path;
+    state.line = bookmark.line;
+    state.column = bookmark.column;
+    state.index = bookmark.index;
+  }
+
   public Scanner WithTabSizeOf(int tabSize){
     // since this is a profile-method, raise hell if state is
     // in post-initialization status.
