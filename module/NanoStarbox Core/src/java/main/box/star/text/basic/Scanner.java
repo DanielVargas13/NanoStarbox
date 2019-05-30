@@ -1208,8 +1208,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     public String toString() {
       return getRuntimeLabel();
     }
+    public boolean contains(char c){
+      return Char.mapContains(c, chars);
+    }
   }
-
   public static class WordList implements ObjectWithLabel {
     final String label;
     final String[] words;
@@ -1226,6 +1228,34 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     @Override
     public String toString() {
       return getRuntimeLabel();
+    }
+    public boolean contains(String string){
+      for (String word:words) if (word.equals(string)) return true;
+      return false;
+    }
+    public boolean containsIgnoreCase(String string){
+      for(String word:words) if (word.equalsIgnoreCase(string))return true;
+      return false;
+    }
+  }
+  public static class RangeList implements ObjectWithLabel {
+    final String label;
+    final RangeMap[] ranges;
+    public RangeList(String label, RangeMap... ranges){
+      this.label = label;
+      this.ranges = ranges;
+    }
+    @Override
+    public String getRuntimeLabel() {
+      return label;
+    }
+    @Override
+    public String toString() {
+      return getRuntimeLabel();
+    }
+    public boolean contains(char c){
+      for (RangeMap range:ranges) if (range.match(c)) return true;
+      return false;
     }
   }
 
