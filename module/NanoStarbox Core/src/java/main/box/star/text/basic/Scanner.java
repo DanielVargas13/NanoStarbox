@@ -481,13 +481,13 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
           c = this.next();
           if (endOfSource())
             throw new SyntaxError(fieldDriver,
-                "escape detected at end of source while scanning field");
+                "escape detected at end of source while scanning for "+getRuntimeLabel(fieldDriver));
           sb.append(fieldDriver.expand(this));
           continue; }
         else if (fieldDriver.breakField(sb.length(), c)) break;
         else if (endOfSource())
           throw new SyntaxError(fieldDriver,
-              "expected "+fieldDriver.getRuntimeLabel()
+              "expected "+getRuntimeLabel(fieldDriver)
                   +" and found end of source");
         else sb.append(c);
       } while (true);
