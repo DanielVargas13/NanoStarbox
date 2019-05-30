@@ -1649,8 +1649,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     public WordList(String label, String... words){
       super(label, words);
       preventWordListShortCircuit(data);
-      minLength = data[0].length();
-      maxLength = data[Math.max(0, data.length - 1)].length();
+      maxLength = data[0].length();
+      minLength = data[Math.max(0, data.length - 1)].length();
     }
     public boolean containsIgnoreCase(String string){
       for(String word:data) if (word.equalsIgnoreCase(string))return true;
