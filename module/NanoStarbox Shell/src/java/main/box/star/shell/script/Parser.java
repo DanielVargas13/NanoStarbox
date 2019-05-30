@@ -3,13 +3,12 @@ package box.star.shell.script;
 import box.star.contract.NotNull;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
-import box.star.text.basic.SyntaxError;
+import box.star.text.SyntaxError;
 import box.star.text.basic.driver.GenericProgramIdentifier;
 
 import java.util.regex.Pattern;
 
 import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
-import static box.star.shell.runtime.parts.TextParameters.PARAMETER_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
 /**

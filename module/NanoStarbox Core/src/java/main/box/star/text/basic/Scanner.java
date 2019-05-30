@@ -1193,91 +1193,43 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
-  public static class CharacterList implements ObjectWithLabel {
-    final String label;
-    final char[] chars;
-    public CharacterList(String label, char... chars){
-      this.label = label;
-      this.chars = chars;
-    }
-    @Override
-    public String getRuntimeLabel() {
-      return label;
-    }
-    @Override
-    public String toString() {
-      return getRuntimeLabel();
-    }
-    public boolean contains(char c){
-      return Char.mapContains(c, chars);
-    }
-  }
-  public static class WordList implements ObjectWithLabel {
-    final String label;
-    final String[] words;
-    public WordList(String label, String... words){
-      this.label = label;
-      this.words = new String[words.length];
-      System.arraycopy(words, 0, words, 0, words.length);
-      preventWordListShortCircuit(this.words);
-    }
-    @Override
-    public String getRuntimeLabel() {
-      return label;
-    }
-    @Override
-    public String toString() {
-      return getRuntimeLabel();
-    }
-    public boolean contains(String string){
-      for (String word:words) if (word.equals(string)) return true;
-      return false;
-    }
-    public boolean containsIgnoreCase(String string){
-      for(String word:words) if (word.equalsIgnoreCase(string))return true;
-      return false;
-    }
-  }
-  public static class RangeList implements ObjectWithLabel {
-    final String label;
-    final RangeMap[] ranges;
-    public RangeList(String label, RangeMap... ranges){
-      this.label = label;
-      this.ranges = ranges;
-    }
-    @Override
-    public String getRuntimeLabel() {
-      return label;
-    }
-    @Override
-    public String toString() {
-      return getRuntimeLabel();
-    }
-    public boolean contains(char c){
-      for (RangeMap range:ranges) if (range.match(c)) return true;
-      return false;
-    }
-  }
-  public static class PatternList implements ObjectWithLabel {
-    final String label;
-    final Pattern[] patterns;
-    public PatternList(String label, Pattern... patterns){
-      this.label = label;
-      this.patterns = patterns;
-    }
-    @Override
-    public String getRuntimeLabel() {
-      return label;
-    }
-    @Override
-    public String toString() {
-      return getRuntimeLabel();
-    }
-    public boolean matches(String input){
-      for (Pattern pattern:patterns) if (pattern.matcher(input).matches())return true;
-      return false;
-    }
-  }
+  public static class SyntaxError extends box.star.text.SyntaxError {
 
+    SyntaxError(@NotNull String sourceTag, @NotNull String message) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n");
+    }
+
+    SyntaxError(@NotNull String sourceTag, @NotNull String message, @NotNull Throwable cause) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
+    }
+
+    SyntaxError(Bookmark location, String message) {
+      this(location.toString(), message);
+    }
+    SyntaxError(Bookmark location, String message, Throwable cause) {
+      this(location.toString(), message, cause);
+    }
+
+    public SyntaxError(@NotNull CancellableTask action, @NotNull String message){
+      this(action.cancel(), message);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull CancellableTask action, @NotNull String message, Throwable cause){
+      this(action.cancel(), message, cause);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message){
+      this(source.createBookmark(), message);
+      this.host = source;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
+      this(source.createBookmark(), message, cause);
+      this.host = source;
+    }
+
+  }
 }
 

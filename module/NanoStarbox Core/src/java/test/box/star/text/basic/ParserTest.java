@@ -1,6 +1,7 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
+import box.star.text.SyntaxError;
 import org.junit.jupiter.api.Test;
 
 class ParserTest {
