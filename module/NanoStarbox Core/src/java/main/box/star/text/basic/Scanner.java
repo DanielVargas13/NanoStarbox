@@ -946,6 +946,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
+   * <p>Back step on match</p>
+   * <br>
+   *   <p>method: {@link #back(int) back(<code>matcher.end() - matcher.start()</code>)}</p>
+   * @param matcher the match to back step by
+   */
+  public void back(Matcher matcher){
+    back(matcher.end() - matcher.start());
+  }
+
+  /**
    * <p>Gets the next word and tests it against match</p>
    * @param caseSensitive if true: the test is case sensitive
    * @param match the string to match
