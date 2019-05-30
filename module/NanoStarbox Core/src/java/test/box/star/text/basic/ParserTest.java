@@ -20,7 +20,7 @@ class ParserTest {
     Scanner input = new Scanner(ParserTest.class.getName(), "test input");
     try {
       Parser.parse(TestErrorParser.class, input);
-    } catch (Parser.SyntaxError pse){
+    } catch (SyntaxError pse){
       pse.printStackTrace();
     }
   }

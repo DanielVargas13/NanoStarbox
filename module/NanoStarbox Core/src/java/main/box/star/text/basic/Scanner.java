@@ -6,7 +6,6 @@ import box.star.contract.Nullable;
 import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
-import box.star.text.FormatException;
 import box.star.state.RuntimeObjectMapping;
 
 import java.io.*;
@@ -260,11 +259,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * Get the next character.
    *
    * @return
-   * @throws FormatException if read fails
+   * @throws IllegalStateException if read fails
    */
-  public char next() throws FormatException {
+  public char next() {
     if (state.haveNext()) return state.next();
-    else if (state.eof) throw new FormatException(
+    else if (state.eof) throw new IllegalStateException(
         Scanner.class.getSimpleName()+SCANNER_CODE_QUALITY_BUG
             +": virtual private int EOF = (-1) is final and"+
             " is not convertible to character value through this interface",
@@ -312,7 +311,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     char c = next();
     if (c != character) {
       back();
-      throw new FormatException(
+      throw new SyntaxError(this,
           "expected "+getRuntimeLabel(character)
           +" and located " +getRuntimeLabel(c));
     }
@@ -482,7 +481,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       c = this.next();
       if (Char.mapContains(c, map)) break;
       if (endOfSource()){
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
       }
@@ -506,7 +505,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       char c = this.next();
       if (map.contains(c)) break;
       else if (endOfSource())
-        throw new FormatException("expected "+map+" and found end of source");
+        throw new SyntaxError(this, "expected "+map+" and found end of source");
       else sb.append(c);
     } while (true);
     return sb.toString();
@@ -518,7 +517,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       char c = this.next();
       if (c == delimiter) break;
       if (endOfSource())
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(delimiter)
                 +" and found end of source");
       sb.append(c);
@@ -540,7 +539,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
       }
@@ -568,7 +567,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
       }
@@ -593,7 +592,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
       }
@@ -644,7 +643,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        throw new FormatException(
+        throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
                 +" and found end of source");
       }
@@ -686,16 +685,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
    * @param min the minimum amount of characters to accept from the source input
    * @param backStep if true: failure will rewind the scanner before throwing any FormatException
-   * @param format the string format that will be used during the call to new FormatException({@link String#format(String, Object...) String.format(format, required)});
+   * @param format the string format that will be used during the call to new SyntaxError(this, {@link String#format(String, Object...) String.format(format, required)});
    * @param source null or test value assembled from scanner
    * @return the source parameter given (operates as a pass-through filter)
-   * @throws FormatException if the required string does not meet requirements
+   * @throws SyntaxError if the required string does not meet requirements
    */
-  public String assertLengthFormat(int min, boolean backStep, @NotNull String format, @Nullable String source) throws FormatException {
+  public String assertLengthFormat(int min, boolean backStep, @NotNull String format, @Nullable String source) throws SyntaxError {
     if (min <= 0) return source;
     else if (source == null || source.length() < min) {
       if (backStep && source != null) back(source.length());
-      throw new FormatException(String.format(format, source));
+      throw new SyntaxError(this, String.format(format, source));
     }
     return source;
   }
@@ -708,16 +707,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <br>
    * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
    * @param min the minimum amount of characters to accept from the source input
-   * @param format the string format that will be used during the call to new FormatException({@link String#format(String, Object...) String.format(format, required)});
+   * @param format the string format that will be used during the call to new SyntaxError(this, {@link String#format(String, Object...) String.format(format, required)});
    * @param source null or test value assembled from scanner
    * @return the source parameter given (operates as a pass-through filter)
-   * @throws FormatException if the required string does not meet requirements
+   * @throws SyntaxError if the required string does not meet requirements
    */
-  public String assertLengthFormat(int min, @NotNull String format, @Nullable String source) throws FormatException {
+  public String assertLengthFormat(int min, @NotNull String format, @Nullable String source) throws SyntaxError {
     if (min <= 0) return source;
     else if (source == null || source.length() < min) {
       if (source != null) back(source.length());
-      throw new FormatException(String.format(format, source));
+      throw new SyntaxError(this,String.format(format, source));
     }
     return source;
   }
@@ -773,7 +772,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
       if (ending) {
         if (expansionControlPort == null && escaping)
-          throw new FormatException("expected character escape sequence, found end of stream");
+          throw new SyntaxError(this,"expected character escape sequence, found end of stream");
         //return sb.toString();
       }
 
@@ -1023,7 +1022,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return new Iterator(this);
   }
 
-  public static class Iterator implements java.util.Iterator<Character> {
+  public static class Iterator implements java.util.Iterator<Character>, CancellableTask {
     protected Scanner scanner;
     protected long start;
     public Iterator(@NotNull Scanner scanner){
@@ -1043,24 +1042,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       scanner.walkBack(start);
       return from;
     }
-    public static class SyntaxError extends RuntimeException {
-      protected Iterator parser;
-      private @NotNull String tag(){
-        return parser.getClass().getName()+".SyntaxError: ";
-      }
-      @Override
-      public @NotNull String toString() {
-        return tag() + super.getMessage();
-      }
-      public SyntaxError(@NotNull Iterator parser, @NotNull String message) {
-        super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
-        this.parser = parser;
-      }
-      public SyntaxError(@NotNull Iterator parser, @NotNull String message, @NotNull Throwable cause) {
-        super("\n\n"+message+":\n\n   "+parser.cancel()+"\n", cause);
-        this.parser = parser;
-      }
-    }
   }
 
   public static interface SourceDriver {
@@ -1071,6 +1052,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     interface WithExpansionControlPort extends SourceDriver {
       default String expand(@NotNull Scanner scanner){
         char character = scanner.current();
+        long start = scanner.getIndex();
         switch (character) {
           case 'd':
             return DELETE + Tools.EMPTY_STRING;
@@ -1091,21 +1073,28 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
           /*unicode*/
           case 'u': {
             try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) { throw new FormatException("failed to parse unicode escape sequence using hex method", e); }
+            catch (NumberFormatException e) {
+              scanner.walkBack(start);
+              throw new SyntaxError(scanner, "failed to parse unicode escape sequence using hex method", e);
+            }
           }
           /*hex or octal*/
           case '0': {
             char c = scanner.next();
             if (c == 'x') {
               try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-              catch (NumberFormatException e) { throw new FormatException("failed to parse hex escape sequence", e); }
+              catch (NumberFormatException e) {
+                scanner.walkBack(start);
+                throw new SyntaxError(scanner, "failed to parse hex escape sequence", e);
+              }
             } else {
               scanner.back();
             }
             String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
             int value = Integer.parseInt(chars, 8);
             if (value > 255) {
-              throw new FormatException("octal escape subscript out of range; expected 00-0377; have: " + value);
+              scanner.walkBack(start);
+              throw new SyntaxError(scanner, "octal escape subscript out of range; expected 00-0377; have: " + value);
             }
             char out = (char) value;
             return out + Tools.EMPTY_STRING;
@@ -1116,7 +1105,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
               String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
               int value = Integer.parseInt(chars);
               if (value > 255) {
-                throw new FormatException("integer escape subscript out of range; expected 0-255; have: " + value);
+                scanner.walkBack(start);
+                throw new SyntaxError(scanner, "integer escape subscript out of range; expected 0-255; have: " + value);
               } else {
                 char out = (char) value;
                 return out + Tools.EMPTY_STRING;

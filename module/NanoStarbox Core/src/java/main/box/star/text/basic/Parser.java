@@ -1,7 +1,6 @@
 package box.star.text.basic;
 
 import box.star.contract.NotNull;
-import box.star.text.FormatException;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -28,16 +27,9 @@ import static box.star.text.basic.Parser.Status.*;
  *   as a list of parsed results.
  * </p>
  * <br>
- * <p>Additionally this class provides a call based integrated {@link SyntaxError}
- * class inheriting from {@link RuntimeException}, which enables uniform and exact
- * syntax error reporting for all parser implementations. As a compliment
- * <i>of</i> and testament <i>to</i> the <i>isometric design</i> of this
- * <i>parser system</i>, the class features automatic syntax error recovery for
- * the scanner, which allows syntax errors to be caught, and safely ignored.</p>
- *
  * @see Scanner
  */
-public class Parser {
+public class Parser implements CancellableTask {
 
   protected final static String
       PARSER_DID_NOT_SYNC = ": parser did not synchronize its end result with the scanner state",
@@ -74,6 +66,15 @@ public class Parser {
     return (end==0)?scanner.getIndex()-start:end-start;
   }
 
+  // Public Methods
+  final public @NotNull Bookmark cancel() {
+    Bookmark bookmark = scanner.createBookmark();
+    if (scanner.getHistoryLength() > 0)
+      scanner.walkBack(this.end = this.start);
+    this.status = FAILED;
+    return bookmark;
+  }
+
   // Protected Static Class Provisions
   /**
    * This Interface allows a Parser to specify that upon successful
@@ -89,15 +90,6 @@ public class Parser {
     this.origin = scanner.nextBookmark();
     start = origin.index - 1;
     status = OK;
-  }
-
-  // Protected Methods
-  final protected @NotNull Bookmark cancel() {
-    Bookmark bookmark = scanner.createBookmark();
-    if (scanner.getHistoryLength() > 0)
-      scanner.walkBack(this.end = this.start);
-    this.status = FAILED;
-    return bookmark;
   }
 
   /**
@@ -160,10 +152,7 @@ public class Parser {
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      try {
-        parser.start();
-      }
-      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage(), fromScannerOrParser);}
+      parser.start();
       if (parser.successful()) {
         if (! parser.isFinished())
           throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
@@ -200,34 +189,16 @@ public class Parser {
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      try { parser.start(); }
-      catch (FormatException fromScannerOrParser) {throw new SyntaxError(parser, fromScannerOrParser.getMessage());}
-      if (! parser.isFinished())
-        throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
-      else if (parser.isNotSynchronized())
-        throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+      parser.start();
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+      }
       if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
-  }
-
-  public static class SyntaxError extends RuntimeException {
-    protected Parser parser;
-    private @NotNull String tag(){
-      return parser.getClass().getName()+".SyntaxError: ";
-    }
-    @Override
-    public @NotNull String toString() {
-      return tag() + super.getMessage();
-    }
-    public SyntaxError(@NotNull Parser parser, @NotNull String message) {
-      super("\n\n"+message+":\n\n   "+parser.cancel()+"\n");
-      this.parser = parser;
-    }
-    public SyntaxError(@NotNull Parser parser, @NotNull String message, @NotNull Throwable cause) {
-      super("\n\n"+message+":\n\n   "+parser.cancel()+"\n", cause);
-      this.parser = parser;
-    }
   }
 
 }

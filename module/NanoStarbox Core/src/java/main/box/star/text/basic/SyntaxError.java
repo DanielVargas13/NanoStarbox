@@ -22,20 +22,31 @@ public class SyntaxError extends RuntimeException {
     super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
   }
 
-  SyntaxError(Bookmark cancel, String message) {
-    this(cancel.toString(), message);
+  SyntaxError(Bookmark location, String message) {
+    this(location.toString(), message);
   }
-  SyntaxError(Bookmark cancel, String message, Throwable cause) {
-    this(cancel.toString(), message, cause);
+  SyntaxError(Bookmark location, String message, Throwable cause) {
+    this(location.toString(), message, cause);
   }
 
-  public SyntaxError(@NotNull Cancellable action, @NotNull String message){
+  public SyntaxError(@NotNull CancellableTask action, @NotNull String message){
     this(action.cancel(), message);
     this.host = action;
   }
 
-  public SyntaxError(@NotNull Cancellable action, @NotNull String message, Throwable cause){
+  public SyntaxError(@NotNull CancellableTask action, @NotNull String message, Throwable cause){
     this(action.cancel(), message, cause);
     this.host = action;
   }
+
+  public SyntaxError(@NotNull Scanner source, @NotNull String message){
+    this(source.createBookmark(), message);
+    this.host = source;
+  }
+
+  public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
+    this(source.createBookmark(), message, cause);
+    this.host = source;
+  }
+
 }
