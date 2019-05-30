@@ -31,50 +31,16 @@ import static box.star.text.Char.*;
  */
 public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMapping.WithConfigurationPort<Scanner> {
 
-  static public class SyntaxError extends box.star.text.SyntaxError {
-
-    SyntaxError(@NotNull String sourceTag, @NotNull String message) {
-      super("\n\n"+message+":\n\n   "+sourceTag+"\n");
-    }
-
-    SyntaxError(@NotNull String sourceTag, @NotNull String message, @NotNull Throwable cause) {
-      super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
-    }
-
-    SyntaxError(Bookmark location, String message) {
-      this(location.toString(), message);
-    }
-    SyntaxError(Bookmark location, String message, Throwable cause) {
-      this(location.toString(), message, cause);
-    }
-
-    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message){
-      this(action.cancel(), message);
-      this.host = action;
-    }
-
-    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message, Throwable cause){
-      this(action.cancel(), message, cause);
-      this.host = action;
-    }
-
-    public SyntaxError(@NotNull Scanner source, @NotNull String message){
-      this(source.createBookmark(), message);
-      this.host = source;
-    }
-
-    public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
-      this(source.createBookmark(), message, cause);
-      this.host = source;
-    }
-
-  }
   private static Scanner BaseRuntimeResolver = new Scanner(null, "");
 
-  private static final char[] SPACE_TAB_MAP = BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
-  private static final char[] LINE_MAP = BaseRuntimeResolver.createRuntimeObject("line-feed", Char.toMap('\n'));
-  private static final char[] SPACE_MAP = BaseRuntimeResolver.createRuntimeObject("space", Char.toMap( SPACE));
-  private static final char[] TAB_MAP = BaseRuntimeResolver.createRuntimeObject("horizontal tab", Char.toMap(HORIZONTAL_TAB));
+  private static final char[] SPACE_TAB_MAP =
+      BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
+  private static final char[] LINE_MAP =
+      BaseRuntimeResolver.createRuntimeObject("line-feed", Char.toMap('\n'));
+  private static final char[] SPACE_MAP =
+      BaseRuntimeResolver.createRuntimeObject("space", Char.toMap( SPACE));
+  private static final char[] TAB_MAP =
+      BaseRuntimeResolver.createRuntimeObject("horizontal tab", Char.toMap(HORIZONTAL_TAB));
   private static final char[] WORD_BREAK_MAP =
       BaseRuntimeResolver.createRuntimeObject("word boundary",
           new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap());
@@ -175,6 +141,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public void set(String label, Enum key, Object value){
     setRuntimeLabel(label, value);
     userMap.put(key, value);
+  }
+
+  public boolean has(Enum key){
+    return userMap.containsKey(key);
   }
 
   public void set(Enum key, Object value){
@@ -949,73 +919,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     interface WithSimpleControlPort extends SourceDriver {
       boolean collect(@NotNull Scanner scanner, char character);
     }
-    interface WithExpansionControlPort extends SourceDriver {
-      default String expand(@NotNull Scanner scanner){
-        char character = scanner.current();
-        long start = scanner.getIndex();
-        switch (character) {
-          case 'd':
-            return DELETE + Tools.EMPTY_STRING;
-          case 'e':
-            return ESCAPE + Tools.EMPTY_STRING;
-          case 't':
-            return "\t";
-          case 'b':
-            return "\b";
-          case 'v':
-            return VERTICAL_TAB + Tools.EMPTY_STRING;
-          case 'r':
-            return "\r";
-          case 'n':
-            return "\n";
-          case 'f':
-            return "\f";
-          /*unicode*/
-          case 'u': {
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) {
-              scanner.walkBack(start);
-              throw new SyntaxError(scanner, "failed to parse unicode escape sequence using hex method", e);
-            }
-          }
-          /*hex or octal*/
-          case '0': {
-            char c = scanner.next();
-            if (c == 'x') {
-              try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-              catch (NumberFormatException e) {
-                scanner.walkBack(start);
-                throw new SyntaxError(scanner, "failed to parse hex escape sequence", e);
-              }
-            } else {
-              scanner.back();
-            }
-            String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
-            int value = Integer.parseInt(chars, 8);
-            if (value > 255) {
-              scanner.walkBack(start);
-              throw new SyntaxError(scanner, "octal escape subscript out of range; expected 00-0377; have: " + value);
-            }
-            char out = (char) value;
-            return out + Tools.EMPTY_STRING;
-          }
-          /*integer or pass-through */
-          default: {
-            if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
-              String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
-              int value = Integer.parseInt(chars);
-              if (value > 255) {
-                scanner.walkBack(start);
-                throw new SyntaxError(scanner, "integer escape subscript out of range; expected 0-255; have: " + value);
-              } else {
-                char out = (char) value;
-                return out + Tools.EMPTY_STRING;
-              }
-            } else return String.valueOf(character);
-          }
-        }
-      }
-    }
+    interface WithExpansionControlPort extends SourceDriver, CharacterExpander {}
     interface WithBufferControlPort extends SourceDriver {
       boolean collect(@NotNull Scanner scanner, @NotNull StringBuilder buffer, char character);
     }
@@ -1206,76 +1110,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
-  public static class EscapeExpander extends CancellableOperation {
-    protected EscapeExpander(){super();}
-    protected EscapeExpander(String label) {
+  public static class EscapeDriver extends CancellableOperation implements CharacterExpander {
+    protected EscapeDriver(){super();}
+    protected EscapeDriver(String label) {
       super(label);
-    }
-    public String expand(@NotNull Scanner scanner){
-      this.start = scanner.getIndex();
-      this.scanner = scanner;
-      char character = scanner.current();
-      switch (character) {
-        case 'd':
-          return DELETE + Tools.EMPTY_STRING;
-        case 'e':
-          return ESCAPE + Tools.EMPTY_STRING;
-        case 't':
-          return "\t";
-        case 'b':
-          return "\b";
-        case 'v':
-          return VERTICAL_TAB + Tools.EMPTY_STRING;
-        case 'r':
-          return "\r";
-        case 'n':
-          return "\n";
-        case 'f':
-          return "\f";
-        /*unicode*/
-        case 'u': {
-          try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-          catch (NumberFormatException e) {
-            throw new SyntaxError(this, "failed to parse unicode escape sequence using hex method", e);
-          }
-        }
-        /*hex or octal*/
-        case '0': {
-          char c = scanner.next();
-          if (c == 'x') {
-            try { return String.valueOf((char) Integer.parseInt(scanner.nextMap(4, MAP_ASCII_HEX), 16)); }
-            catch (NumberFormatException e) {
-              throw new SyntaxError(this, "failed to parse hex escape sequence", e);
-            }
-          } else {
-            scanner.back();
-          }
-          String chars = '0' + scanner.nextMap(3, MAP_ASCII_OCTAL);
-          int value = Integer.parseInt(chars, 8);
-          if (value > 255) {
-            throw new SyntaxError(this, "octal escape subscript out of range; expected 00-0377; have: " + value);
-          }
-          char out = (char) value;
-          return out + Tools.EMPTY_STRING;
-        }
-        /*integer or pass-through */
-        default: {
-          if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
-            String chars = character + scanner.nextMap(2, MAP_ASCII_NUMBERS);
-            int value = Integer.parseInt(chars);
-            if (value > 255) {
-              throw new SyntaxError(this, "integer escape subscript out of range; expected 0-255; have: " + value);
-            } else {
-              char out = (char) value;
-              return out + Tools.EMPTY_STRING;
-            }
-          } else return String.valueOf(character);
-        }
-      }
     }
   }
 
-  public static class FieldDriver extends EscapeExpander {
+  public static class FieldDriver extends EscapeDriver {
     public FieldDriver(){}
     public FieldDriver(String label){ super(label); }
     public boolean breakField(int size, char current){
@@ -1323,6 +1165,45 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     final public boolean isCancelled() {
       return cancelled;
     }
+  }
+
+  static public class SyntaxError extends box.star.text.SyntaxError {
+
+    SyntaxError(@NotNull String sourceTag, @NotNull String message) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n");
+    }
+
+    SyntaxError(@NotNull String sourceTag, @NotNull String message, @NotNull Throwable cause) {
+      super("\n\n"+message+":\n\n   "+sourceTag+"\n", cause);
+    }
+
+    SyntaxError(Bookmark location, String message) {
+      this(location.toString(), message);
+    }
+    SyntaxError(Bookmark location, String message, Throwable cause) {
+      this(location.toString(), message, cause);
+    }
+
+    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message){
+      this(action.cancel(), message);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull CancellableOperation action, @NotNull String message, Throwable cause){
+      this(action.cancel(), message, cause);
+      this.host = action;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message){
+      this(source.createBookmark(), message);
+      this.host = source;
+    }
+
+    public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
+      this(source.createBookmark(), message, cause);
+      this.host = source;
+    }
+
   }
 
 }
