@@ -312,7 +312,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     char c = next();
     if (c != character) {
       back();
-      throw new FormatException("expected "+translate(character)+" and located "+translate(c));
+      throw new FormatException(
+          "expected "+getRuntimeLabel(character)
+          +" and located " +getRuntimeLabel(c));
     }
     return c;
   }
@@ -479,6 +481,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (! endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) break;
+      if (endOfSource()){
+        throw new FormatException(
+            "expected "+getRuntimeLabel(map)
+                +" and found end of source");
+      }
       else sb.append(c);
     } while (! endOfSource());
     return sb.toString();
@@ -511,7 +518,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       char c = this.next();
       if (c == delimiter) break;
       if (endOfSource())
-        throw new FormatException("expected "+translate(delimiter)+" and found end of source");
+        throw new FormatException(
+            "expected "+getRuntimeLabel(delimiter)
+                +" and found end of source");
       sb.append(c);
     } while (true);
     return sb.toString();
@@ -531,9 +540,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        if (eatDelimiter)
-          throw new FormatException("expected "+Char.mapToTranslation("or", map)+" and found end of source");
-        break;
+        throw new FormatException(
+            "expected "+getRuntimeLabel(map)
+                +" and found end of source");
       }
       sb.append(c);
     } while (true);
@@ -559,9 +568,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         break;
       }
       if (endOfSource()) {
-        if (eatDelimiter)
-          throw new FormatException("expected "+map+" and found end of source");
-        break;
+        throw new FormatException(
+            "expected "+getRuntimeLabel(map)
+                +" and found end of source");
       }
       sb.append(c);
     } while (true);
@@ -583,8 +592,13 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
       }
+      if (endOfSource()) {
+        throw new FormatException(
+            "expected "+getRuntimeLabel(map)
+                +" and found end of source");
+      }
       sb.append(c);
-    } while (! endOfSource() && sb.length() != max);
+    } while (sb.length() != max);
     return sb.toString();
   }
 
@@ -628,6 +642,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (Char.mapContains(c, map) && ! (handleEscape && escapeMode())) {
         if (! eatDelimiter && ! endOfSource()) this.back();
         break;
+      }
+      if (endOfSource()) {
+        throw new FormatException(
+            "expected "+getRuntimeLabel(map)
+                +" and found end of source");
       }
       sb.append(c);
     } while (! endOfSource() && sb.length() != max);
@@ -917,7 +936,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   public String nextDigit(int min, int max) {
     String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
-    return assertLengthFormat(min, "expected a minimum of "+min+" numeric characters, have "+nextNumeric.length(), nextNumeric);
+    return assertLengthFormat(min, "expected a minimum of "+min+" digits, have "+nextNumeric.length(), nextNumeric);
   }
 
   public String nextAlpha(int min, int max){
@@ -947,10 +966,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   public Bookmark nextBookmark(){
-    Bookmark x;
-    next();
-    x = createBookmark();
-    back();
+    if (endOfSource()) return createBookmark();
+    next(); Bookmark x = createBookmark(); back();
     return x;
   }
 
