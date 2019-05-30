@@ -7,6 +7,7 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.state.RuntimeObjectMapping;
+import box.star.text.list.PatternList;
 import box.star.text.list.WordList;
 
 import java.io.*;
@@ -772,42 +773,45 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+match);
   }
 
-  public @NotNull String nextMatch(@NotNull Pattern pattern){
+  public @NotNull String nextPattern(@NotNull Pattern pattern){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
     if (! endOfSource()) do {
-      char c = next(); if (endOfSource()) break;
+      char c = next();
+      if (endOfSource()) break;
       buffer.append(c);
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
-    } while (! endOfSource());
+    } while (true);
     walkBack(start);
-    return Tools.EMPTY_STRING;
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern));
   }
 
-  public @NotNull String nextMatch(int max, @NotNull Pattern pattern){
+  public @NotNull String nextPattern(int max, @NotNull Pattern pattern){
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
+    if (max == 0) --max;
     if (! endOfSource()) do {
-      char c = next(); if (endOfSource()) break;
+      char c = next();
+      if (endOfSource()) break;
       buffer.append(c);
       if (pattern.matcher(buffer.toString()).matches()) return buffer.toString();
-    } while (! endOfSource() && buffer.length() < max);
+    } while (buffer.length() != max);
     walkBack(start);
-    return Tools.EMPTY_STRING;
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(pattern));
   }
 
-  public @NotNull String nextMatch(int max, @NotNull Pattern... patterns){
+  public @NotNull String nextPattern(int max, @NotNull PatternList patterns) throws SyntaxError {
     long start = getIndex();
     StringBuilder buffer = new StringBuilder();
+    if (max == 0) --max;
     if (! endOfSource()) do {
-      char c = next(); if (endOfSource()) break;
+      char c = next();
+      if (endOfSource()) break;
       buffer.append(c);
-      for (Pattern pattern:patterns)
-        if (pattern.matcher(buffer.toString()).matches())
-          return buffer.toString();
-    } while (! endOfSource() && buffer.length() < max);
+      if (patterns.matches(buffer.toString())) return buffer.toString();
+    } while (buffer.length() != max);
     walkBack(start);
-    return Tools.EMPTY_STRING;
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns));
   }
 
   public int nextPatternLength(Pattern pattern) {
@@ -846,7 +850,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     String word = nextWord();
     if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+match);
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(match));
   }
 
   /**
@@ -855,16 +859,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>The list will be sorted from longest to shortest, which prevents
    * short-circuiting.</p>
    * @param caseSensitive if true: the tests are case sensitive
-   * @param matches the set of strings to match
+   * @param wordList the set of strings to match
    * @return matched word
    * @throws SyntaxError if one of the words is not found
    */
-  public @NotNull String nextWord(boolean caseSensitive, WordList matches) throws SyntaxError {
+  public @NotNull String nextWord(boolean caseSensitive, WordList wordList) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
-    if ((caseSensitive?matches.contains(word):matches.containsIgnoreCase(word))) return word;
+    if ((caseSensitive?wordList.contains(word):wordList.containsIgnoreCase(word))) return word;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+matches.getRuntimeLabel());
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList));
   }
 
   @Deprecated public String nextDigit(int min, int max) {

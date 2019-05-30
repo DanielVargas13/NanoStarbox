@@ -169,7 +169,7 @@ public class Parser extends box.star.text.basic.Parser {
     @Override
     protected void start() {
       variable = scanner.run(new GenericProgramIdentifier());
-      operation = scanner.nextMatch(2, Pattern.compile("="));
+      operation = scanner.nextPattern(2, Pattern.compile("="));
       if (operation.length() == 0) { cancel(); return; }
       Parameter data = parse(Parameter.class);
       if (data.status.equals(Status.OK)) value = data.getText();
