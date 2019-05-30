@@ -956,6 +956,20 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
+   * Look behind
+   * @param length
+   * @return the current string
+   * @throws ArrayIndexOutOfBoundsException if current position - length < 0
+   * @see #getHistoryLength()
+   */
+  public String currentString(int length) throws ArrayIndexOutOfBoundsException {
+    int start = state.bufferPosition - length;
+    if (start < 0)
+      throw new ArrayIndexOutOfBoundsException("cannot read "+start);
+    return state.buffer.substring(start, start + length);
+  }
+
+  /**
    * <p>Gets the next word and tests it against match</p>
    * @param caseSensitive if true: the test is case sensitive
    * @param match the string to match
