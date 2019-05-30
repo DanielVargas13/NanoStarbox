@@ -10,13 +10,15 @@ import static box.star.text.Char.DOUBLE_QUOTE;
  */
 public class Bookmark {
   public final long line, column, index;
+  int tabSize;
   public final String path;
   private String quotedOrigin;
   Bookmark(Scanner source){
-   this.line = source.getLine();
-   this.column = source.getColumn();
-   this.index = source.getIndex();
-   this.path = source.getPath();
+    this.tabSize = source.getTabSize();
+    this.line = source.getLine();
+    this.column = source.getColumn();
+    this.index = source.getIndex();
+    this.path = source.getPath();
   }
   final public String getQuotedOrigin(){
     if (quotedOrigin == null) this.quotedOrigin = quoteSource(path);

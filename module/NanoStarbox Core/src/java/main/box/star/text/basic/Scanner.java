@@ -7,6 +7,7 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.state.RuntimeObjectMapping;
+import box.star.text.SyntaxError;
 import box.star.text.list.PatternList;
 import box.star.text.list.WordList;
 
@@ -34,6 +35,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   private static Scanner BaseRuntimeResolver;
 
+  public int getTabSize() {
+    return state.tabSize;
+  }
+
   protected enum RuntimeLanguage {
     OR
   }
@@ -48,22 +53,22 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   private static final char[] SPACE_TAB_MAP =
-      BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
+      BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", toMap(SPACE, HORIZONTAL_TAB));
   private static final char[] LINE_MAP =
-      BaseRuntimeResolver.createRuntimeObject("line-feed", Char.toMap('\n'));
+      BaseRuntimeResolver.createRuntimeObject("line-feed", toMap('\n'));
   private static final char[] SPACE_MAP =
-      BaseRuntimeResolver.createRuntimeObject("space", Char.toMap( SPACE));
+      BaseRuntimeResolver.createRuntimeObject("space", toMap( SPACE));
   private static final char[] TAB_MAP =
-      BaseRuntimeResolver.createRuntimeObject("horizontal tab", Char.toMap(HORIZONTAL_TAB));
+      BaseRuntimeResolver.createRuntimeObject("horizontal tab", toMap(HORIZONTAL_TAB));
   private static final char[] WORD_BREAK_MAP =
       BaseRuntimeResolver.createRuntimeObject("word boundary",
-          new Char.Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap());
+          new Assembler(MAP_ASCII_ALL_WHITE_SPACE).merge(NULL_CHARACTER).toMap());
 
   public final static String SCANNER_CODE_QUALITY_BUG = " (code optimization bug)";
 
   // runtime object mapping
-  RuntimeObjectMapping.Dictionary runtimeObjectLabels =
-      new RuntimeObjectMapping.Dictionary();
+  Dictionary runtimeObjectLabels =
+      new Dictionary();
 
   private Scanner runtimeLabelResolver = BaseRuntimeResolver;
 
@@ -91,7 +96,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return <ol>
    *   <li>The value defined on this interface through {@link RuntimeObjectMapping#setRuntimeLabel(String, Object)}</li>
    *   <li>The value of the {@link #getRuntimeLabel(Object)} call on the scanner that has been set through {@link #setRuntimeLabelResolver(Scanner)}</li>
-   *   <li>The object label defined by the object's {@link box.star.state.RuntimeObjectMapping.ObjectWithLabel known mapping interface}</li>
+   *   <li>The object label defined by the object's {@link ObjectWithLabel known mapping interface}</li>
    *   <li>The conjunctive-or list conversion of the map if the object is a character array</li>
    *   <li>The conjunctive-or list conversion of the map if the object is an object array</li>
    *   <li>The translation offered by the {@link Char#translate(char) global character translator}</li>
@@ -106,7 +111,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     else if (runtimeLabelResolver != null)
       return runtimeLabelResolver.getRuntimeLabel(constVal);
     else if (constVal instanceof RuntimeObjectMapping.ObjectWithLabel)
-      return ((RuntimeObjectMapping.ObjectWithLabel)constVal).getRuntimeLabel();
+      return ((ObjectWithLabel)constVal).getRuntimeLabel();
     else if (constVal instanceof char[])
       return translateCharacterMap(getRuntimeLabel(RuntimeLanguage.OR), (char[]) constVal);
     else if (constVal instanceof Object[])
@@ -251,6 +256,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     state.line = bookmark.line;
     state.column = bookmark.column;
     state.index = bookmark.index;
+    WithTabSizeOf(bookmark.tabSize);
   }
 
   public Scanner WithTabSizeOf(int tabSize){
@@ -395,7 +401,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) sb.append(c);
+      if (mapContains(c, map)) sb.append(c);
       else {
         if (! endOfSource()) this.back();
         break;
@@ -428,7 +434,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) sb.append(c);
+      if (mapContains(c, map)) sb.append(c);
       else {
         if (! endOfSource()) this.back();
         break;
@@ -453,7 +459,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) break;
+      if (mapContains(c, map)) break;
       if (endOfSource()){
         throw new SyntaxError(this,
             "expected "+getRuntimeLabel(map)
@@ -558,7 +564,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
-      if (Char.mapContains(c, map)) {
+      if (mapContains(c, map)) {
         if (! endOfSource()) this.back();
         break;
       }
@@ -980,7 +986,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   @Override
   public SerialDriver iterator() { return new SerialDriver(this); }
 
-  public static class SerialDriver extends CancellableOperation implements java.util.Iterator<Character> {
+  public static class SerialDriver extends CancellableOperation implements Iterator<Character> {
     protected SerialDriver(@NotNull Scanner scanner, @NotNull String label){
       super(scanner, label);
     }
@@ -1004,7 +1010,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     interface WithBufferControlPort extends SourceDriver {
       boolean collect(@NotNull Scanner scanner, @NotNull StringBuilder buffer, char character);
     }
-    interface WithMasterControlPorts extends WithExpansionControlPort, SourceDriver.WithBufferControlPort {}
+    interface WithMasterControlPorts extends WithExpansionControlPort, WithBufferControlPort {}
   }
 
   private static class State implements Cloneable, Serializable {
