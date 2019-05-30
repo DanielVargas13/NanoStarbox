@@ -603,6 +603,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public String nextSpace(){return nextMap(SPACE_MAP);}
   public String nextTab(){ return nextMap(TAB_MAP); }
 
+  private String nextWordPreview(){
+    if (endOfSource()) return "end of source";
+    long start = getIndex();
+    String word = nextWord();
+    walkBack(start);
+    return word;
+  }
+
  /**
   * <p>Runs the given source driver</p>
    * @param driver the source driver to use
@@ -791,7 +799,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     String word = nextWord();
     if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(match));
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(match)+" and found `"+nextWordPreview()+"'");
   }
 
   /**
@@ -809,7 +817,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     String word = nextWord();
     if ((caseSensitive?wordList.contains(word):wordList.containsIgnoreCase(word))) return word;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList));
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList)+" and found `"+nextWordPreview()+"'");
   }
 
   public String nextDigit(int min, int max) {
