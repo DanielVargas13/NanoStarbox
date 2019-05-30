@@ -7,6 +7,7 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.text.Char;
 import box.star.state.RuntimeObjectMapping;
+import box.star.text.list.WordList;
 
 import java.io.*;
 import java.util.*;
@@ -858,14 +859,12 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return matched word
    * @throws SyntaxError if one of the words is not found
    */
-  public @NotNull String nextWord(boolean caseSensitive, String... matches) throws SyntaxError {
+  public @NotNull String nextWord(boolean caseSensitive, WordList matches) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
-    preventWordListShortCircuit(matches);
-    for (String match:matches)
-    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
+    if ((caseSensitive?matches.contains(word):matches.containsIgnoreCase(word))) return word;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(matches));
+    throw new SyntaxError(this, "expected "+matches.getRuntimeLabel());
   }
 
   @Deprecated public String nextDigit(int min, int max) {
@@ -949,28 +948,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    */
   public long getColumn() {
     return state.column;
-  }
-
-  /**
-   * <p>Call this method on a word list to make sure it doesn't short-circuit</p>
-   * <br>
-   * <p>A word-list short-circuit is a condition, where a word list fails to correctly
-   * match an item because a shorter item matches the longer item first. This method
-   * sorts the array from longest to shortest, to ensure that a short-circuit
-   * is not possible.</p>
-   * <br>
-   * @param words
-   */
-  static public void preventWordListShortCircuit(String[] words){
-    boolean longestFirst = true;
-    Arrays.sort(words, new Comparator<String>() {
-      @Override
-      public int compare(String o1, String o2) {
-        return (longestFirst)?
-            Integer.compare(o2.length(), o1.length()):
-            Integer.compare(o1.length(), o2.length());
-      }
-    });
   }
 
   @Override
