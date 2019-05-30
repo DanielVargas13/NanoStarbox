@@ -949,8 +949,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   /**
    * <p>Gets the next word and tests it against a list of inputs</p>
    * <br>
-   * <p>The list will be sorted from longest to shortest, which prevents
-   * short-circuiting.</p>
    * @param caseSensitive if true: the tests are case sensitive
    * @param wordList the set of strings to match
    * @return matched word
