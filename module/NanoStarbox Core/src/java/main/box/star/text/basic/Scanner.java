@@ -33,6 +33,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   private static Scanner BaseRuntimeResolver = new Scanner(null, "");
 
+  public enum RuntimeLanguage {
+    OR
+  }
+
   private static final char[] SPACE_TAB_MAP =
       BaseRuntimeResolver.createRuntimeObject("space or horizontal tab", Char.toMap(SPACE, HORIZONTAL_TAB));
   private static final char[] LINE_MAP =
@@ -52,6 +56,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       new RuntimeObjectMapping.Dictionary();
 
   private Scanner runtimeLabelResolver = BaseRuntimeResolver;
+
+  {
+    setRuntimeLabel("or", RuntimeLanguage.OR);
+  }
 
   @Override
   public Scanner deleteRuntimeLabel(Object constVal) {
@@ -94,9 +102,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     else if (constVal instanceof RuntimeObjectMapping.ObjectWithLabel)
       return ((RuntimeObjectMapping.ObjectWithLabel)constVal).getRuntimeLabel();
     else if (constVal instanceof char[])
-      return translateCharacterMap("or", (char[]) constVal);
+      return translateCharacterMap(getRuntimeLabel(RuntimeLanguage.OR), (char[]) constVal);
     else if (constVal instanceof Object[])
-      return translateObjectMap("or", (Object[])constVal);
+      return translateObjectMap(getRuntimeLabel(RuntimeLanguage.OR), (Object[])constVal);
     else if (constVal instanceof Character)
       return translate((char) constVal);
     else if (constVal != null)
@@ -503,7 +511,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
           c = this.next();
           if (endOfSource())
             throw new SyntaxError(fieldDriver,
-                "escape detected at end of source while scanning for "+getRuntimeLabel(fieldDriver));
+                "escape detected at end of source while scanning for "
+                    +getRuntimeLabel(fieldDriver));
           sb.append(fieldDriver.expand(this));
           continue; }
         else if (fieldDriver.breakField(sb.length(), c)) break;
