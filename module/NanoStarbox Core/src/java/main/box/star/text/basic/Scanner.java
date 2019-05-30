@@ -165,12 +165,28 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   protected State state;
   protected final MachineStorage userMap = new MachineStorage();
 
+  /**
+   * <p>Stores the given object in the scanner's machine storage and registers
+   * the object as a known runtime object with the given label.</p>
+   * @param label
+   * @param key
+   * @param value
+   */
+  public void set(String label, Enum key, Object value){
+    setRuntimeLabel(label, value);
+    userMap.put(key, value);
+  }
+
   public void set(Enum key, Object value){
     userMap.put(key, value);
   }
 
   public <T> T get(Class<T> type, Enum key){
     return userMap.get(type, key);
+  }
+
+  public Class typeOf(Enum key){
+    return userMap.getType(key);
   }
 
   public void delete(Enum key){
