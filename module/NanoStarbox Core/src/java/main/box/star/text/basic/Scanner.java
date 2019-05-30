@@ -692,13 +692,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <br>
    * @param match
    * @return if equals: return true; else: restore scanner, return false
+   * @throws SyntaxError if the word is not found
    */
-  public boolean nextWord(String match){
+  public void nextWord(String match) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
-    if (word.equals(match)) return true;
+    if (word.equals(match)) return;
     walkBack(start);
-    return false;
+    throw new SyntaxError(this, "expected "+match);
   }
 
   public @NotNull String nextMatch(@NotNull Pattern pattern){
@@ -768,13 +769,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @param caseSensitive if true: the test is case sensitive
    * @param match the string to match
    * @return if equals: return true; else: restore scanner state and return false
+   * @throws SyntaxError if the word is not found
    */
-  public boolean nextWord(boolean caseSensitive, String match){
+  public void nextWord(boolean caseSensitive, String match) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
-    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return true;
+    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return;
     walkBack(start);
-    return false;
+    throw new SyntaxError(this, "expected "+match);
   }
 
   /**
@@ -784,16 +786,17 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * short-circuiting.</p>
    * @param caseSensitive if true: the tests are case sensitive
    * @param matches the set of strings to match
-   * @return if equals: return word; else: restore scanner state and return null
+   * @return matched word
+   * @throws SyntaxError if one of the words is not found
    */
-  public @Nullable String nextWord(boolean caseSensitive, String... matches){
+  public @NotNull String nextWord(boolean caseSensitive, String... matches) throws SyntaxError {
     long start = getIndex();
     String word = nextWord();
     preventWordListShortCircuit(matches);
     for (String match:matches)
     if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
     walkBack(start);
-    return null;
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(matches));
   }
 
   public String nextDigit(int min, int max) {
