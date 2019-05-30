@@ -4,10 +4,9 @@ import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
-import box.star.state.MachineStorage;
-import box.star.state.RuntimeObjectMapping;
+import box.star.lang.MachineStorage;
+import box.star.lang.RuntimeObjectMapping;
 import box.star.text.Char;
-import box.star.text.StandardList;
 
 import java.io.*;
 import java.util.*;
@@ -1309,7 +1308,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     final public boolean isCancelled() { return cancelled; }
   }
 
-  static public class SyntaxError extends box.star.text.SyntaxError {
+  static public class SyntaxError extends box.star.lang.SyntaxError {
 
     SyntaxError(@NotNull String sourceTag, @NotNull String message) {
       super("\n\n"+message+":\n\n   "+sourceTag+"\n");
@@ -1635,7 +1634,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
-  final public String run(ScannerMethod method, Object... parameters) {
+  @Deprecated final public String run(ScannerMethod method, Object... parameters) {
     method = method.clone();
     method.start(this, parameters);
     do {
@@ -1654,7 +1653,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return hopefully, the result of the scanner method's {@link ScannerMethod#compile(Scanner)} routine, possibly an Exception or SyntaxError
    */
   @NotNull
-  final public String branch(ScannerMethod method, Object... parameters) {
+  @Deprecated final public String branch(ScannerMethod method, Object... parameters) {
     method = method.clone();
     method.start(this, parameters);
     method.collect(this, current());
@@ -1667,7 +1666,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return method.compile(this);
   }
 
-  public static class WordList extends StandardList<String> {
+  public static class WordList extends Box.Runtime.List<String> {
     private static final long serialVersionUID = 7943841258072204166L;
     /**
      * <p>A word-list short-circuit is a condition, where a word list fails to correctly
@@ -1708,7 +1707,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
-  public static class RangeList extends StandardList<RangeMap> {
+  public static class RangeList extends Box.Runtime.List<RangeMap> {
     private static final long serialVersionUID = 9017972538783689725L;
     public RangeList(String label, RangeMap... ranges){
       super(label, ranges);
@@ -1719,7 +1718,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     }
   }
 
-  public static class PatternList extends StandardList<Pattern> {
+  public static class PatternList extends Box.Runtime.List<Pattern> {
     private static final long serialVersionUID = -8772340584149844412L;
     public PatternList(String label, Pattern... patterns){
       super(label, patterns);

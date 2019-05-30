@@ -1,6 +1,5 @@
 package box.star.bin.sh;
 
-import box.star.OS;
 import box.star.bin.sh.promise.FactoryFunction;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
@@ -346,7 +345,7 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public String getLineSeparator() {
     if (haveVariable(LINE_SEPARATOR)) return get(LINE_SEPARATOR);
-    return OS.getLineSeparator();
+    return Starbox.Runtime.OS.getLineSeparator();
   }
 
   @Override

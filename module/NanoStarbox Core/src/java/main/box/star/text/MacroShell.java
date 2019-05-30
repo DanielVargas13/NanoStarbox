@@ -2,6 +2,7 @@ package box.star.text;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
+import box.star.lang.SyntaxError;
 import box.star.text.basic.Scanner;
 
 import java.util.Arrays;

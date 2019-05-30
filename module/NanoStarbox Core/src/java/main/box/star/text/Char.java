@@ -3,13 +3,14 @@ package box.star.text;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.io.Streams;
+import box.star.lang.Array;
 
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public final class Char {
+public class Char {
 
   public final static int CHAR_MAX = '\uffff';
   public final static char NULL_CHARACTER = 0;
@@ -86,7 +87,7 @@ public final class Char {
     importLocaleEnglishASCII();
   }
 
-  private Char() {}
+  public Char() {}
 
   public static void setLocale(Locale locale) {
     Char.locale = locale;
@@ -438,7 +439,7 @@ public final class Char {
     }
   }
 
-  public static class List extends StandardList<Character> {
+  public static class List extends Array<Character> {
     private static final long serialVersionUID = -6565154605439853891L;
     public List(String label, Character... chars){
       super(label, chars);

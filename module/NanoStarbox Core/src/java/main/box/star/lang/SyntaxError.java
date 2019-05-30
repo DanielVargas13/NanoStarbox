@@ -1,4 +1,4 @@
-package box.star.text;
+package box.star.lang;
 
 import box.star.contract.NotNull;
 

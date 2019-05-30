@@ -3,7 +3,7 @@ package box.star.shell.script;
 import box.star.contract.NotNull;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
-import box.star.text.SyntaxError;
+import box.star.lang.SyntaxError;
 import box.star.text.basic.driver.GenericProgramIdentifier;
 
 import java.util.regex.Pattern;
