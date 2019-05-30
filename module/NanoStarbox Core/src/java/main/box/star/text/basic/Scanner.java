@@ -253,7 +253,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @param source
    */
   public Scanner(Bookmark bookmark, String source) {
-    state.path = bookmark.path;
+    this(bookmark.path, source);
     state.line = bookmark.line;
     state.column = bookmark.column;
     state.index = bookmark.index;
