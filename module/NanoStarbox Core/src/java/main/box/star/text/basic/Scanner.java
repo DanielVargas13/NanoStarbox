@@ -518,9 +518,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return sb.toString();
   }
 
-  public static abstract class FieldController implements ObjectWithLabel {
+  public static abstract class FieldDriver implements ObjectWithLabel {
     final String label;
-    public FieldController(String label){
+    public FieldDriver(String label){
       this.label = label;
     }
     @Override
@@ -596,12 +596,12 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
-   * <p>Scan and assemble characters while scan is not in character list, and length < max</p>
+   * <p>Scan and assemble characters while field driver signals continuation</p>
    *
-   * @param fieldController the controller to use for breaking the field and expanding escapes
+   * @param fieldDriver the driver to use for breaking the field and expanding escapes
    * @return the delimited text; could be truncated
    */
-  public @NotNull String nextField(@NotNull Scanner.FieldController fieldController){
+  public @NotNull String nextField(@NotNull Scanner.FieldDriver fieldDriver) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -611,13 +611,13 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         if (endOfSource()) {
           throw new SyntaxError(this, "escape detected at end of source while scanning field");
         }
-        sb.append(fieldController.expand(this));
+        sb.append(fieldDriver.expand(this));
         continue;
       }
-      if (fieldController.breakField(this, sb.length(), c)) break;
+      if (fieldDriver.breakField(this, sb.length(), c)) break;
       if (endOfSource()) {
         throw new SyntaxError(this,
-            "expected "+fieldController.getRuntimeLabel()+" and found end of source");
+            "expected "+fieldDriver.getRuntimeLabel()+" and found end of source");
       }
       sb.append(c);
     } while (true);
