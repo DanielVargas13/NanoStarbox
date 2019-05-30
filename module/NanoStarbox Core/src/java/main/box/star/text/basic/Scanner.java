@@ -902,7 +902,21 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+getRuntimeLabel(patterns)+" and found "+preview);
   }
 
-  public Matcher nextMatch(boolean optional, int min, int max, PatternList pattern){
+  /**
+   * <p>Tries a list of pattern matches within the given range</p>
+   * <br>
+   * <p>method: accumulating 1 character at a time (starting with min), and trying
+   * each pattern in the pattern list until a match succeeds or branch options
+   * are exhausted.</p>
+   *
+   * @param optional if true: no errors will be thrown if matching fails
+   * @param min the minimum amount of characters to accept<br><i>this item is not affected by the optional parameter</i>
+   * @param max the maximum amount of characters to scan<br><i>this item is not affected by the optional parameter</i>
+   * @param pattern the list of patterns to match
+   * @return the match or null
+   * @throws SyntaxError if all branches are exhausted and optional = false OR if min is not available
+   */
+  public Matcher nextMatch(boolean optional, int min, int max, PatternList pattern) throws SyntaxError {
     long start = getIndex();
     Matcher matcher;
     if (max == 0) --max;
