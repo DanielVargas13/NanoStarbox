@@ -1113,11 +1113,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       return buffer.charAt(bufferPosition - START_OF_HEADING);
     }
 
-    @Override
-    @Deprecated protected State clone() {
-      try /*  throwing runtime exceptions with closure */ {
-        return (State) super.clone();
-      }
+    @Override @Deprecated protected State clone() {
+      try { return (State) super.clone(); }
       catch (CloneNotSupportedException e) {throw new RuntimeException(e);}
     }
 
@@ -1140,14 +1137,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     protected String label;
     protected boolean cancelled;
     protected CancellableOperation() { this.label = this.getClass().getName(); }
-    protected CancellableOperation(Scanner scanner){
-      this();
-      setScanner(scanner);
-    }
-    protected CancellableOperation(Scanner scanner, String label){
-      this(label);
-      setScanner(scanner);
-    }
+    protected CancellableOperation(Scanner scanner){ this(); setScanner(scanner); }
+    protected CancellableOperation(Scanner scanner, String label){ this(label); setScanner(scanner); }
     protected CancellableOperation(String label){ this.label = label; }
     protected void setScanner(Scanner scanner){
       this.scanner = scanner;
@@ -1156,10 +1147,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     }
     @NotNull protected Bookmark cancel() {
       Bookmark bm = scanner.createBookmark();
-      if (! scanner.endOfSource()) {
+      if (! scanner.endOfSource())
         if (scanner.getHistoryLength() > 0)
           scanner.walkBack(Math.max(-1, start));
-      }
       cancelled = true;
       return bm;
     }
