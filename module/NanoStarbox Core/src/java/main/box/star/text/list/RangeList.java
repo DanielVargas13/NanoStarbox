@@ -1,8 +1,12 @@
-package box.star.text;
+package box.star.text.list;
 
 import box.star.state.RuntimeObjectMapping;
+import box.star.text.Char;
 
-public class RangeList implements RuntimeObjectMapping.ObjectWithLabel {
+import java.io.Serializable;
+
+public class RangeList implements Serializable, RuntimeObjectMapping.ObjectWithLabel {
+  private static final long serialVersionUID = 9017972538783689725L;
   final String label;
   final Char.RangeMap[] ranges;
   public RangeList(String label, Char.RangeMap... ranges){

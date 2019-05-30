@@ -1,9 +1,12 @@
-package box.star.text;
+package box.star.text.list;
 
 import box.star.state.RuntimeObjectMapping;
 import box.star.text.basic.Scanner;
 
-public class WordList implements RuntimeObjectMapping.ObjectWithLabel {
+import java.io.Serializable;
+
+public class WordList implements Serializable, RuntimeObjectMapping.ObjectWithLabel {
+  private static final long serialVersionUID = 7943841258072204166L;
   final String label;
   final String[] words;
   public WordList(String label, String... words){

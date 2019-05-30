@@ -1,10 +1,12 @@
-package box.star.text;
+package box.star.text.list;
 
 import box.star.state.RuntimeObjectMapping;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
-public class PatternList implements RuntimeObjectMapping.ObjectWithLabel {
+public class PatternList implements Serializable, RuntimeObjectMapping.ObjectWithLabel {
+  private static final long serialVersionUID = -8772340584149844412L;
   final String label;
   final Pattern[] patterns;
   public PatternList(String label, Pattern... patterns){
