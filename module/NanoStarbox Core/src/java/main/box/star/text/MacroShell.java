@@ -18,11 +18,11 @@ public class MacroShell {
       ENTER_OBJECT = '{', EXIT_OBJECT = '}',
       ENTER_VARIABLE = '[', EXIT_VARIABLE = ']';
   private static final char[] BREAK_PROCEDURE_MAP =
-      new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE.toMap())
+      new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
           .merge(EXIT_PROCEDURE)
           .toMap();
   private static final char[] BREAK_COMMAND_MAP =
-      new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE.toMap())
+      new Char.Assembler(Char.MAP_ASCII_ALL_WHITE_SPACE)
           .merge(EXIT_PROCEDURE, '>')
           .toMap();
   private final static Command STAR_COMMAND = new Command() {

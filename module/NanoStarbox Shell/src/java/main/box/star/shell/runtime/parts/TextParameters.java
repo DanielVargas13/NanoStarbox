@@ -14,7 +14,7 @@ import static box.star.text.Char.PIPE;
 
   public static final char[] PARAMETER_TERMINATOR_MAP =
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
-          .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE.toMap()).toMap();
+          .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
   public static TextParameters parseParameters(LegacyScanner scanner){
     return processParameters(scanner);
@@ -38,7 +38,7 @@ import static box.star.text.Char.PIPE;
     char c;
     do {
       c = scanner.next();
-      if (Char.mapContains(c, MAP_ASCII_ALL_WHITE_SPACE.toMap())) break;
+      if (Char.mapContains(c, MAP_ASCII_ALL_WHITE_SPACE)) break;
       switch (c) {
         case '\'': {
           builder.append(c).append(processQuotedLiteralText(scanner));

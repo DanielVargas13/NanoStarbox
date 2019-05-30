@@ -68,7 +68,7 @@ public class Host {
 
   private String getMacroText(LegacyScanner scanner){
     char next = scanner.next();
-    if (MAP_ASCII_NUMBERS.contains(next)){
+    if (mapContains(next, MAP_ASCII_NUMBERS)){
       return next+scanner.nextMap(Char.MAP_ASCII_NUMBERS); }
     switch (next) {
       case '_': case '#': return Char.toString(next);
@@ -79,7 +79,7 @@ public class Host {
 
   private String doMacro(LegacyScanner scanner) {
     char next = scanner.next();
-    if (MAP_ASCII_NUMBERS.contains(next)){
+    if (mapContains(next, MAP_ASCII_NUMBERS)){
       int index = Integer.parseInt(next+scanner.nextMap(Char.MAP_ASCII_NUMBERS));
       return parameters.get(index);
     }
@@ -129,7 +129,7 @@ public class Host {
 
     String processEnvironmentLabel(LegacyScanner scanner) {
       StringBuilder output = new StringBuilder();
-      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS.toMap()).merge('-', '_').toMap();
+      char[] okay1 = new Char.Assembler(Char.MAP_ASCII_LETTERS).merge('-', '_').toMap();
       do {
         char c = scanner.next();
         if (c == 0) return null;
@@ -178,7 +178,7 @@ public class Host {
       char c;
       do {
         c = scanner.next();
-        if (MAP_ASCII_ALL_WHITE_SPACE.contains(c)) break;
+        if (mapContains(c, MAP_ASCII_ALL_WHITE_SPACE)) break;
         switch (c) {
           case '<':
           case '>': {
@@ -252,7 +252,7 @@ public class Host {
 
     @Override
     protected boolean terminate(@NotNull LegacyScanner scanner, char character) {
-      if (MAP_ASCII_ALL_WHITE_SPACE.contains(character)) {return false;}
+      if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) {return false;}
       switch (character) {
         case 0: {
           if (scanner.escapeMode()) throw new LegacyScanner.SyntaxError("escaped end of stream");

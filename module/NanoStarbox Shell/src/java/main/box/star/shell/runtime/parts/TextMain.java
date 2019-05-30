@@ -44,7 +44,7 @@ import java.util.Stack;
       }
       else if (c == '}') {
         scanner.back(1);
-        scanner.nextCharacterMap("white-space", 1, Char.MAP_ASCII_ALL_WHITE_SPACE.toMap(), true);
+        scanner.nextCharacterMap("white-space", 1, Char.MAP_ASCII_ALL_WHITE_SPACE, true);
         break;
       }
       command = parseTextCommands(scanner);

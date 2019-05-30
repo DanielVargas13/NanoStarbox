@@ -19,7 +19,9 @@ public interface RuntimeObjectMapping<HOST> {
    * @return the object label or null
    */
   @Nullable String getRuntimeLabel(Object constVal);
-  HOST setRuntimeLabel(Object constVal, String label);
+  <T> T createRuntimeObject(String label, T constVal);
+  HOST setRuntimeObjects(String label, Object... constVal);
+  HOST setRuntimeLabel(String label, Object constVal);
   HOST deleteRuntimeLabel(Object constVal);
   interface WithConfigurationPort<HOST> extends RuntimeObjectMapping<HOST>, ConfigurationPort<HOST>{}
 

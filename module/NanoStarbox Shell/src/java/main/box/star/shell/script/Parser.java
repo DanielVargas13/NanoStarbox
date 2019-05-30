@@ -84,8 +84,8 @@ public class Parser extends box.star.text.basic.Parser {
     @Override
     public boolean collect(Scanner scanner, StringBuilder buffer, char character) {
       if (scanner.endOfSource()) return false;
-      else if (MAP_ASCII_ALL_WHITE_SPACE.contains(character)) return true;
-      else if (MAP_ASCII_NUMBERS.contains(character)){
+      else if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) return true;
+      else if (mapContains(character, MAP_ASCII_NUMBERS)){
         throw new SyntaxError(this, "expected command found digits");
       }
       else switch (character){
@@ -198,7 +198,7 @@ public class Parser extends box.star.text.basic.Parser {
 
     public static final char[] PARAMETER_TERMINATOR_MAP =
         new Char.Assembler(Char.toMap(PIPE, '<', '>'))
-            .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE.toMap()).toMap();
+            .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
     public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING }
     protected QuoteType quoteType;
@@ -236,15 +236,13 @@ public class Parser extends box.star.text.basic.Parser {
       // todo check for illegal characters
       quoteType = QuoteType.NOT_QUOTING;
       text = scanner.current()
-          +scanner.nextField(
-              new Char.Map("end of parameter",
-                  new Char.Assembler(PARAMETER_TERMINATOR_MAP))) + SINGLE_QUOTE;
+          +scanner.nextField(PARAMETER_TERMINATOR_MAP) + SINGLE_QUOTE;
     }
     private void parseDoubleQuotedText(){
       if (scanner.current() != DOUBLE_QUOTE)
         throw new SyntaxError(this, "expected double quotation mark");
       quoteType = QuoteType.DOUBLE_QUOTING;
-      text = scanner.nextField(new Char.Map("end of quotation", DOUBLE_QUOTE));
+      text = scanner.nextField(PARAMETER_TERMINATOR_MAP);
     }
   }
   public static class Redirect extends Parser implements NewFuturePromise {

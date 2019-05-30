@@ -51,7 +51,7 @@ public class LegacyScanner extends Scanner {
   }
 
   @Deprecated public int nextUnsignedInteger() {
-    flagNextCharacterSyntaxError("unsigned integer", MAP_ASCII_NUMBERS.toMap());
+    flagNextCharacterSyntaxError("unsigned integer", MAP_ASCII_NUMBERS);
     String numbers = nextMap(MAP_ASCII_NUMBERS);
     return Integer.parseInt(numbers);
   }
@@ -379,7 +379,7 @@ public class LegacyScanner extends Scanner {
       }
       /*integer or pass-through */
       default: {
-        if (MAP_ASCII_NUMBERS.contains(character)) {
+        if (Char.mapContains(character, MAP_ASCII_NUMBERS)) {
           String chars = character + this.nextMap(2, MAP_ASCII_NUMBERS);
           int value = Integer.parseInt(chars);
           if (value > 255) {

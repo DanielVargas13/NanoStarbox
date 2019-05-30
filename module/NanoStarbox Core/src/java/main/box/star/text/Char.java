@@ -68,14 +68,14 @@ public final class Char {
 
   public final static char[] MAP_ASCII = loadResourceMap("MAP_ASCII");
   public final static char[] MAP_ASCII_EXTENDED = loadResourceMap("MAP_ASCII_EXTENDED");
-  public final static Char.Map MAP_ASCII_ALL_WHITE_SPACE = new Char.Map("white space", loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE"));
-  public final static Char.Map MAP_ASCII_LINE_WHITE_SPACE = new Char.Map("line white space", loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE"));
-  public final static Char.Map MAP_ASCII_LETTERS = new Char.Map("letters", loadResourceMap("MAP_ASCII_LETTERS"));
-  public final static Char.Map MAP_ASCII_NUMBERS = new Char.Map("digits", loadResourceMap("MAP_ASCII_NUMBERS"));
+  public final static char[] MAP_ASCII_ALL_WHITE_SPACE = loadResourceMap("MAP_ASCII_ALL_WHITE_SPACE");
+  public final static char[] MAP_ASCII_LINE_WHITE_SPACE = loadResourceMap("MAP_ASCII_LINE_WHITE_SPACE");
+  public final static char[] MAP_ASCII_LETTERS = loadResourceMap("MAP_ASCII_LETTERS");
+  public final static char[] MAP_ASCII_NUMBERS = loadResourceMap("MAP_ASCII_NUMBERS");
   public final static char[] MAP_ASCII_CONTROL = loadResourceMap("MAP_ASCII_CONTROL");
   public final static char[] MAP_ASCII_SYMBOLS = loadResourceMap("MAP_ASCII_SYMBOLS");
-  public final static Char.Map MAP_ASCII_HEX = new Char.Map("hex values", loadResourceMap("MAP_ASCII_HEX"));
-  public final static Char.Map MAP_ASCII_OCTAL = new Char.Map("octal values", loadResourceMap("MAP_ASCII_OCTAL"));
+  public final static char[] MAP_ASCII_HEX = loadResourceMap("MAP_ASCII_HEX");
+  public final static char[] MAP_ASCII_OCTAL = loadResourceMap("MAP_ASCII_OCTAL");
 
   private final static Hashtable<Locale, Hashtable<Character, String>> TRANSLATIONS = new Hashtable<>(3);
   private static Locale locale;
