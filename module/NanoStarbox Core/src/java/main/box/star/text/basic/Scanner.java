@@ -739,7 +739,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     String word = nextWord();
     if (word.equals(match)) return;
     walkBack(start);
-    throw new SyntaxError(this, "expected "+match);
+    throw new SyntaxError(this, "expected "+match+" and found "+nextWordPreview());
   }
 
   public @NotNull String nextPattern(@NotNull Pattern pattern){
