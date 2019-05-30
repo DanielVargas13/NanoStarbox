@@ -379,31 +379,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
-   * Scan and assemble characters while scan is in map.
-   * @param caseSensitive
-   * @param map
-   * @return
-   */
-  public @NotNull String nextMap(boolean caseSensitive, @NotNull char... map) {
-    StringBuilder mapped = new StringBuilder();
-    char[] mini = null;
-    if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
-    boolean found;
-    char c, v;
-    if (! endOfSource()) do {
-      found = false; v = next();
-      if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
-      for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
-      if (!found) {
-        back();
-        break;
-      }
-      mapped.append(v);
-    } while (! endOfSource());
-    return mapped.toString();
-  }
-
-  /**
    * Scan and assemble characters while scan is in map and scan-length < max.
    *
    * @param max
@@ -413,6 +388,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public @NotNull String nextMap(int max, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
+    if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) sb.append(c);
@@ -420,36 +396,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         if (! endOfSource()) this.back();
         break;
       }
-    } while (! endOfSource() && sb.length() < max);
+    } while (sb.length() != max);
 
     return sb.toString();
-  }
-
-  /**
-   * Scan and assemble characters while scan is in map and scan-length < max.
-   * @param max
-   * @param caseSensitive
-   * @param map
-   * @return
-   */
-  public @NotNull String nextMap(int max, boolean caseSensitive, @NotNull char... map) {
-    StringBuilder mapped = (max > 0)?new StringBuilder(max):new StringBuilder();
-    char[] mini = null;
-    if (!caseSensitive) mini = Char.toString(map).toLowerCase().toCharArray();
-    if (max == 0) --max;
-    boolean found;
-    char c, v;
-    if (! endOfSource()) do {
-      found = false; v = next();
-      if (!caseSensitive) c = Char.toLowerCase(v); else c = v;
-      for (char t:caseSensitive?map:mini) if (c == t) { found = true; break;}
-      if (!found) {
-        back();
-        break;
-      }
-      mapped.append(v);
-    } while (mapped.length() != max && ! endOfSource());
-    return mapped.toString();
   }
 
   /**
@@ -462,7 +411,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @return the delimited text; could be truncated
    */
   @NotNull
-  @Deprecated public String nextField(@NotNull char... map) {
+  public String nextField(@NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
@@ -478,7 +427,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return sb.toString();
   }
 
-  @Deprecated public @NotNull String nextField(char delimiter) {
+  /**
+   * <p>Scan and assemble characters while scan is not delimiter</p>
+   * <br>
+   * <p>Automatically eats the delimiter. The delimiter can be read through
+   * {@link #previous()}.</p>
+   * <br>
+   * @param delimiter the delimiter to break scanning with
+   * @return the delimited text; could be truncated
+   */
+  public @NotNull String nextField(char delimiter) {
     StringBuilder sb = new StringBuilder();
     if (! endOfSource()) do {
       char c = this.next();
@@ -493,30 +451,27 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
-   * <p>Scan and assemble characters while scan is not in map</p>
-   *
-   * @param eatDelimiter if true: the delimiter is discarded and can be read
-   *                     through {@link #previous()}; else: {@link #next()} will
-   *                     contain the delimiter
-   * @param map the collection of delimiters to break scanning with
+   * <p>Scan and assemble characters while scan is not delimiter</p>
+   * <br>
+   * <p>Automatically eats the delimiter. The delimiter can be read through
+   * {@link #previous()}.</p>
+   * <br>
+   * @param max the maximum amount of characters to read
+   * @param delimiter the delimiter to break scanning with
    * @return the delimited text; could be truncated
    */
-  @Deprecated public @NotNull String nextField(boolean eatDelimiter, @NotNull char... map) {
-    char c;
+  public @NotNull String nextField(int max, char delimiter) {
     StringBuilder sb = new StringBuilder();
-    if (!endOfSource()) do {
-      c = this.next();
-      if (Char.mapContains(c, map)) {
-        if (! eatDelimiter && ! endOfSource()) this.back();
-        break;
-      }
-      if (endOfSource()) {
+    if (max == 0) --max;
+    if (! endOfSource()) do {
+      char c = this.next();
+      if (c == delimiter) break;
+      if (endOfSource())
         throw new SyntaxError(this,
-            "expected "+getRuntimeLabel(map)
+            "expected "+getRuntimeLabel(delimiter)
                 +" and found end of source");
-      }
       sb.append(c);
-    } while (true);
+    } while (sb.length() != max);
     return sb.toString();
   }
 
@@ -555,21 +510,18 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>Scan and assemble characters while scan is not in map, and length < max</p>
    *
    * @param max
-   * @param eatDelimiter if true: the delimiter is discarded and can be read
-   *                     through {@link #previous()}; else: {@link #next()} will
-   *                     contain the delimiter
    * @param map the collection of delimiters to break scanning with
    * @return the delimited text; could be truncated
    */
   @NotNull
-  @Deprecated public String nextField(int max, boolean eatDelimiter, @NotNull char... map) {
+  public String nextField(int max, @NotNull char... map) {
     char c;
     StringBuilder sb = new StringBuilder();
     if (max == 0) --max;
     if (! endOfSource()) do {
       c = this.next();
       if (Char.mapContains(c, map)) {
-        if (! eatDelimiter && ! endOfSource()) this.back();
+        if (! endOfSource()) this.back();
         break;
       }
       if (endOfSource()) {
@@ -579,38 +531,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       }
       sb.append(c);
     } while (sb.length() != max);
-    return sb.toString();
-  }
-
-  /**
-   * <p>Scan and assemble characters while scan is not in map, and length < max</p>
-   *
-   * @param max
-   * @param handleEscape if true: detect and pass-through escaped delimiters
-   * @param eatDelimiter if true: the delimiter is discarded and can be read
-   *                     through {@link #previous()}; else: {@link #next()} will
-   *                     contain the delimiter
-   * @param map the collection of delimiters to break scanning with
-   * @return the delimited text; could be truncated
-   */
-  @NotNull
-  @Deprecated public String nextField(int max, boolean handleEscape, boolean eatDelimiter, @NotNull char... map) {
-    char c;
-    StringBuilder sb = new StringBuilder();
-    if (max == 0) --max;
-    if (! endOfSource()) do {
-      c = this.next();
-      if (Char.mapContains(c, map) && ! (handleEscape && escapeMode())) {
-        if (! eatDelimiter && ! endOfSource()) this.back();
-        break;
-      }
-      if (endOfSource()) {
-        throw new SyntaxError(this,
-            "expected "+getRuntimeLabel(map)
-                +" and found end of source");
-      }
-      sb.append(c);
-    } while (! endOfSource() && sb.length() != max);
     return sb.toString();
   }
 
@@ -640,7 +560,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>If this operation fails, the scanner will walk-back to the beginning
    * of this string, and flag the format exception from that point.</p>
    * <br>
-   * <p>You should not eat a delimiter if using this as a field-pass-through.</p>
+   * <p>If you want to assert the length of delimited output, use {@link #assertDelimitedLengthFormat(int, String, String)}</p>
    * @param min the minimum amount of characters to accept from the source input
    * @param format the string format that will be used during the call to new SyntaxError(this, {@link String#format(String, Object...) String.format(format, required)});
    * @param source null or test value assembled from scanner
@@ -651,14 +571,35 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (min <= 0) return source;
     else if (source == null || source.length() < min) {
       if (source != null) back(source.length());
-      throw new SyntaxError(this,String.format(format, source));
+      throw new SyntaxError(this, String.format(format, source));
+    }
+    return source;
+  }
+
+  /**
+   * <p>Checks the required string to see if it's length member meets requirements</p>
+   * <br>
+   * <p>If this operation fails, the scanner will walk-back to the beginning
+   * of this string, and flag the format exception from that point.</p>
+   * <br>
+   * @param min the minimum amount of characters to accept from the source input
+   * @param format the string format that will be used during the call to new SyntaxError(this, {@link String#format(String, Object...) String.format(format, required)});
+   * @param source null or test value assembled from scanner
+   * @return the source parameter given (operates as a pass-through filter)
+   * @throws SyntaxError if the required string does not meet requirements
+   */
+  public String assertDelimitedLengthFormat(int min, @NotNull String format, @Nullable String source) throws SyntaxError {
+    if (min <= 0) return source;
+    else if (source == null || source.length() < min) {
+      if (source != null) back(source.length()+1);
+      throw new SyntaxError(this, String.format(format, source));
     }
     return source;
   }
 
   public String nextWhiteSpace(){return nextField(MAP_ASCII_ALL_WHITE_SPACE);}
   public String nextLineSpace(){ return nextMap(SPACE_TAB_MAP);}
-  public String nextLine(){ return nextField(true, LINE_MAP);}
+  public String nextLine(){ return nextField(LINE_MAP);}
   public String nextSpace(){return nextMap(SPACE_MAP);}
   public String nextTab(){ return nextMap(TAB_MAP); }
 
@@ -667,7 +608,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @param driver the source driver to use
    * @return the compiled string output of the driver
    */
-  public String run(@NotNull SourceDriver driver) throws LegacyScanner.Exception {
+  public String run(@NotNull SourceDriver driver) throws IllegalStateException, SyntaxError {
     char c;
     boolean autoBackStep = driver instanceof SourceDriver.WithAutoBackStep;
     StringBuilder sb = new StringBuilder();
@@ -871,22 +812,22 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList));
   }
 
-  @Deprecated public String nextDigit(int min, int max) {
+  public String nextDigit(int min, int max) {
     String nextNumeric = nextMap(max, MAP_ASCII_NUMBERS);
     return assertLengthFormat(min, "expected a minimum of "+min+" digits, have "+nextNumeric.length(), nextNumeric);
   }
 
-  @Deprecated public String nextAlpha(int min, int max){
+  public String nextAlpha(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_LETTERS);
     return assertLengthFormat(min, "expected a minimum of "+min+" alpha characters, have "+nextNumeric.length(), nextNumeric);
   }
 
-  @Deprecated public String nextHex(int min, int max){
+  public String nextHex(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_HEX);
     return assertLengthFormat(min, "expected a minimum of "+min+" hex characters, have "+nextNumeric.length(), nextNumeric);
   }
 
-  @Deprecated public String nextOctal(int min, int max){
+  public String nextOctal(int min, int max){
     String nextNumeric = nextMap(max, MAP_ASCII_OCTAL);
     return assertLengthFormat(min, "expected a minimum of "+min+" octal characters, have "+nextNumeric.length(), nextNumeric);
   }
