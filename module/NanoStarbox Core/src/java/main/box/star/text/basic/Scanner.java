@@ -1258,6 +1258,26 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       return false;
     }
   }
+  public static class PatternList implements ObjectWithLabel {
+    final String label;
+    final Pattern[] patterns;
+    public PatternList(String label, Pattern... patterns){
+      this.label = label;
+      this.patterns = patterns;
+    }
+    @Override
+    public String getRuntimeLabel() {
+      return label;
+    }
+    @Override
+    public String toString() {
+      return getRuntimeLabel();
+    }
+    public boolean matches(String input){
+      for (Pattern pattern:patterns) if (pattern.matcher(input).matches())return true;
+      return false;
+    }
+  }
 
 }
 
