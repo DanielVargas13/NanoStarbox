@@ -78,6 +78,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    *   <li>The value defined on this interface through {@link RuntimeObjectMapping#setRuntimeLabel(String, Object)}</li>
    *   <li>The value of the {@link #getRuntimeLabel(Object)} call on the scanner that has been set through {@link #setRuntimeLabelResolver(Scanner)}</li>
    *   <li>The object label defined by the object's {@link box.star.state.RuntimeObjectMapping.ObjectWithLabel known mapping interface}</li>
+   *   <li>The conjunctive-or list conversion of the map if the object is a character array</li>
+   *   <li>The conjunctive-or list conversion of the map if the object is an object array</li>
    *   <li>The translation offered by the {@link Char#translate(char) global character translator}</li>
    *   <li>The translation offered by the object's toString method.</li>
    *   <li>null, because the value is null</li>
@@ -91,12 +93,32 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       return runtimeLabelResolver.getRuntimeLabel(constVal);
     else if (constVal instanceof RuntimeObjectMapping.ObjectWithLabel)
       return ((RuntimeObjectMapping.ObjectWithLabel)constVal).getRuntimeLabel();
+    else if (constVal instanceof char[])
+      return translateCharacterMap("or", (char[]) constVal);
+    else if (constVal instanceof Object[])
+      return translateObjectMap("or", (Object[])constVal);
     else if (constVal instanceof Character)
       return translate((char) constVal);
     else if (constVal != null)
       return constVal.toString();
     else
       return null;
+  }
+
+  public String translateCharacterMap(String conjunction, char... map){
+    if (map.length == 1) return getRuntimeLabel(map[0]);
+    String[] out = new String[map.length];
+    int i; for (i = 0; i < map.length - 1; i++) out[i] = getRuntimeLabel(map[i]);
+    out[i++] = conjunction+" "+getRuntimeLabel(map[map.length - 1]);
+    return String.join(", ", out);
+  }
+
+  public String translateObjectMap(String conjunction, Object[] map){
+    if (map.length == 1) return getRuntimeLabel(map[0]);
+    String[] out = new String[map.length];
+    int i; for (i = 0; i < map.length - 1; i++) out[i] = getRuntimeLabel(map[i]);
+    out[i++] = conjunction+" "+getRuntimeLabel(map[map.length - 1]);
+    return String.join(", ", out);
   }
 
   @Override
