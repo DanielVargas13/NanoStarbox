@@ -1374,13 +1374,15 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>A method may call other methods, and may also call upon the methods
    * of the scanner during any execution phase of its lifecycle.</p>
    * <br>
-   *
+   *<p>If and When MacroShell gets rewritten, this interface and its constiutent
+   * parts will be dissolved.</p>
+   * <br>
    * <h3>lifecycle</h3>
    * <ul>
    * {@link #reset()}, {@link #start(Scanner, Object[])}, {@link #collect(Scanner, char)}, {@link #terminate(Scanner, char)} and {@link #scan(Scanner)}</li>
    * </ul>
    */
-  public static class ScannerMethod implements Cloneable {
+  @Deprecated public static class ScannerMethod implements Cloneable {
 
     protected String claim;
     protected StringBuilder buffer;
