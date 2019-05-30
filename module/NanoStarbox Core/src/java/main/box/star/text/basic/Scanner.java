@@ -7,14 +7,11 @@ import box.star.io.Streams;
 import box.star.state.MachineStorage;
 import box.star.state.RuntimeObjectMapping;
 import box.star.text.Char;
-import box.star.text.list.PatternList;
-import box.star.text.list.RangeList;
-import box.star.text.list.WordList;
+import box.star.text.StandardList;
 
 import java.io.*;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1625,6 +1622,84 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
         if (method.terminate(this, c)) break;
       } while (method.scan(this));
     return method.compile(this);
-  } 
+  }
+
+  public static class WordList extends StandardList<String> {
+    private static final long serialVersionUID = 7943841258072204166L;
+    /**
+     * <p>A word-list short-circuit is a condition, where a word list fails to correctly
+     * match an item because a shorter item matches the longer item first. This method
+     * sorts the array from longest to shortest, to ensure that a short-circuit
+     * is not possible.</p>
+     * <br>
+     * @param words
+     */
+    static private void preventWordListShortCircuit(String[] words){
+      boolean longestFirst = true;
+      Arrays.sort(words, new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+          return (longestFirst)?
+              Integer.compare(o2.length(), o1.length()):
+              Integer.compare(o1.length(), o2.length());
+        }
+      });
+    }
+    final int minLength, maxLength;
+    public WordList(String label, String... words){
+      super(label, words);
+      preventWordListShortCircuit(data);
+      int min = Integer.MAX_VALUE, max = 0, l;
+      for (String w: words) {
+        l = w.length();
+        if (l < min) min = l;
+        if (l > max) max = l;
+      }
+      minLength = min;
+      maxLength = max;
+    }
+    public boolean containsIgnoreCase(String string){
+      for(String word:data) if (word.equalsIgnoreCase(string))return true;
+      return false;
+    }
+    public int getMaxLength() {
+      return maxLength;
+    }
+    public int getMinLength() {
+      return minLength;
+    }
+
+  }
+
+  public static class RangeList extends StandardList<RangeMap> {
+    private static final long serialVersionUID = 9017972538783689725L;
+    public RangeList(String label, RangeMap... ranges){
+      super(label, ranges);
+    }
+    public boolean match(char c){
+      for (RangeMap range:data) if (range.match(c)) return true;
+      return false;
+    }
+  }
+
+  public static class PatternList extends StandardList<Pattern> {
+    private static final long serialVersionUID = -8772340584149844412L;
+    public PatternList(String label, Pattern... patterns){
+      super(label, patterns);
+    }
+
+    public boolean matches(String input){
+      for (Pattern pattern:data) if (pattern.matcher(input).matches())return true;
+      return false;
+    }
+    public Matcher match(String input){
+      Matcher matcher;
+      for (Pattern pattern:data) {
+        matcher = pattern.matcher(input);
+        if (matcher.matches())return matcher;
+      }
+      return null;
+    }
+  }
 }
 

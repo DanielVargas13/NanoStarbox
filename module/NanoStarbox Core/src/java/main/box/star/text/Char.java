@@ -438,4 +438,11 @@ public final class Char {
     }
   }
 
+  public static class List extends StandardList<Character> {
+    private static final long serialVersionUID = -6565154605439853891L;
+    public List(String label, Character... chars){
+      super(label, chars);
+    }
+  }
+
 }

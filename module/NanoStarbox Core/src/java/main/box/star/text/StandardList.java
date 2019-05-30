@@ -1,4 +1,4 @@
-package box.star.text.list;
+package box.star.text;
 
 import box.star.state.RuntimeObjectMapping;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public abstract class StandardList<T> implements Serializable, RuntimeObjectMapping.ObjectWithLabel  {
   protected String label;
-  T[] data;
+  protected T[] data;
   protected StandardList(String label, T[] data){
     this.label = label;
     this.data = data;
