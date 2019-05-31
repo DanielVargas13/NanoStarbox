@@ -32,6 +32,8 @@ public class Runtime {
     return ourInstance;
   }
 
+  public static URI getBaseDirectory() { return baseDirectory; }
+
   @Nullable
   public static <T> T switchNull(@Nullable T test, @Nullable T notNull) {
     return ((test == null) ? notNull : test);
