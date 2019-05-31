@@ -15,13 +15,7 @@ public class Runtime {
   private static java.lang.Runtime jrt = java.lang.Runtime.getRuntime();
   private static Runtime ourInstance = new Runtime();
 
-  private static URI baseDirectory;
-
-  static {
-    try {
-      baseDirectory = Runtime.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-    } catch (Exception e){throw new RuntimeException("failed to get runtime base directory URI", e);}
-  }
+  private static final URI baseDirectory = baseDirectoryOf(Runtime.class);
 
   final private static Console console = System.console();
   final private static InputStream standardInput = System.in;
@@ -33,6 +27,19 @@ public class Runtime {
   }
 
   public static URI getBaseDirectory() { return baseDirectory; }
+
+  /**
+   * Retrieves the based directory of the given class
+   * @param source
+   * @return the class's base-directory
+   */
+  public static URI baseDirectoryOf(Class source){
+    URI baseDirectory;
+    try {
+      baseDirectory = source.getProtectionDomain().getCodeSource().getLocation().toURI();
+    } catch (Exception e){throw new RuntimeException("failed to get runtime base directory URI", e);}
+    return baseDirectory;
+  }
 
   @Nullable
   public static <T> T switchNull(@Nullable T test, @Nullable T notNull) {
