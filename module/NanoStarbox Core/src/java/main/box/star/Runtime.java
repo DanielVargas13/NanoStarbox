@@ -50,7 +50,7 @@ public class Runtime {
 
   @NotNull
   public static Object[] toArray(List<Object> list) {
-    Object[] out = new String[list.size()];
+    Object[] out = new Object[list.size()];
     return list.toArray(out);
   }
 
