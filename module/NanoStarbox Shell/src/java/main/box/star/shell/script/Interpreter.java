@@ -45,6 +45,16 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
+  public static EnvironmentOperationList parseEnvironmentOperationList(Scanner scanner){
+    EnvironmentOperationList operationList = new EnvironmentOperationList();
+    while (! scanner.endOfSource()) {
+      EnvironmentOperation op = Interpreter.parse(EnvironmentOperation.class, scanner);
+      if (op.status == Status.OK) operationList.add(op);
+      else break;
+    }
+    return operationList;
+  }
+
   public enum Type {
     TEXT_RECORD_TYPE_SHEBANG,
     TEXT_RECORD_TYPE_MAIN,
@@ -104,23 +114,10 @@ public class Interpreter extends box.star.text.basic.Parser {
     return (T) parser;
   }
 
-  public static class ParameterList extends List<Parameter> {
-  }
-
+  public static class ParameterList extends List<Parameter> {}
   public static class CommandList extends List<Command> {}
-
   public static class RedirectList extends List<Redirect> {}
+  public static class EnvironmentOperationList extends List<EnvironmentOperation> {}
 
-  public static class EnvironmentOperationList extends List<EnvironmentOperation> {
-    public static EnvironmentOperationList parse(Scanner scanner){
-      EnvironmentOperationList operationList = new EnvironmentOperationList();
-      while (! scanner.endOfSource()) {
-        EnvironmentOperation op = Interpreter.parse(EnvironmentOperation.class, scanner);
-        if (op.status == Status.OK) operationList.add(op);
-        else break;
-      }
-      return operationList;
-    }
-  }
 }
 

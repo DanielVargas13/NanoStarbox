@@ -175,7 +175,7 @@ public interface Shell {
     protected StreamTable compileRedirects(Map<Integer, String> redirects){
       if (this.redirects == null) this.redirects = redirects;
       else this.redirects.putAll(redirects);
-      // todo: parse redirects, and return a new stream table, which can be imported on a context
+      // todo: parseEnvironmentOperationList redirects, and return a new stream table, which can be imported on a context
       return null;
     }
 

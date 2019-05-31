@@ -11,7 +11,7 @@ public class Command extends Interpreter implements box.star.text.basic.Parser.N
     super(scanner);
   }
   protected void main(){
-    environmentOperations = EnvironmentOperationList.parse(scanner);
+    environmentOperations = Interpreter.parseEnvironmentOperationList(scanner);
     String name;
     name = "breaking point";
   }
