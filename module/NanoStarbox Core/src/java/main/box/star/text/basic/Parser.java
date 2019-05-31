@@ -144,7 +144,7 @@ public class Parser extends Scanner.CancellableOperation {
    * @return the result of the parser's execution (which may not be successful)
    * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
    */
-  final public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
+  public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
     T parser;
     try {
       Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);

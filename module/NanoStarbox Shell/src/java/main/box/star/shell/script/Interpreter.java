@@ -1,7 +1,10 @@
 package box.star.shell.script;
 
 import box.star.contract.NotNull;
+import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
+
+import java.lang.reflect.Constructor;
 
 /**
  * <p>The Shell Script Parser</p>
@@ -55,32 +58,41 @@ public class Interpreter extends box.star.text.basic.Parser {
     TEXT_RECORD_LIST_TYPE_COMMAND_LIST
   }
 
-  public static class CommandList extends List<Command> {}
-
-  public static class ParameterList extends List<Parameter> {
-    public static ParameterList parse(Scanner scanner){
-      ParameterList parameters = new ParameterList();
-      if (scanner.haveNext()) do {
-        Parameter parameter = Interpreter.parse(Parameter.class, scanner);
-        if (parameter.status.equals(Status.OK)) { parameters.add(parameter); }
-        else { break; }
-      } while (true);
-      return parameters;
-    }
-  }
-
-  public static class RedirectList extends List<Redirect> {}
-
-  public static class EnvironmentOperationList extends List<EnvironmentOperation> {
-    public static EnvironmentOperationList parse(Scanner scanner){
-      EnvironmentOperationList operationList = new EnvironmentOperationList();
-      while (! scanner.endOfSource()) {
-        EnvironmentOperation op = Interpreter.parse(EnvironmentOperation.class, scanner);
-        if (op.status == Status.OK) operationList.add(op);
-        else break;
+  /**
+   * <p>Factory Parse Method</p>
+   * <br>
+   * <p>This method constructs parsers with a given class
+   * and scanner. The method then {@link #start() executes} the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a boundary over-read-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param scanner the source scanner
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
+  public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
+    Interpreter parser;
+    try {
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
+      classConstructor.setAccessible(true);
+      parser = (Interpreter) classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
+    if (parser.successful()) {
+      parser.start();
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
       }
-      return operationList;
     }
+    return (T) parser;
   }
+
 }
 
