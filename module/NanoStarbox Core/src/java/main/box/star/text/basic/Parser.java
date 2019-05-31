@@ -47,7 +47,7 @@ public class Parser extends Scanner.CancellableOperation {
     Status {OK, FAILED}
 
   // Protected Properties
-  protected Status status;
+  public Status status;
   //protected Scanner scanner;
 
   // Private Properties
@@ -82,7 +82,7 @@ public class Parser extends Scanner.CancellableOperation {
    * completion the scanner history should be synchronized (flushed) with the
    * current position.
    */
-  protected static interface NewFuturePromise {}
+  public static interface NewFuturePromise {}
 
   // Public Constructors
   public Parser(@NotNull Scanner scanner){

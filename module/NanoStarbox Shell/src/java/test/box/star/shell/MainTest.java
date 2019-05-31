@@ -2,7 +2,7 @@ package box.star.shell;
 
 import box.star.shell.runtime.parts.TextCommand;
 import box.star.shell.runtime.parts.TextMain;
-import box.star.shell.script.Parser;
+import box.star.shell.script.Interpreter;
 import box.star.shell.runtime.parts.TextRedirection;
 import box.star.text.basic.LegacyScanner;
 import box.star.text.basic.Scanner;
@@ -27,12 +27,12 @@ class MainTest {
   @Test void text_record_main(){
     File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
     Scanner scanner = new Scanner(shebang_line_file);
-    Parser.Main result = Parser.parse(Parser.Main.class, scanner);
+    box.star.shell.script.Main result = Interpreter.parse(box.star.shell.script.Main.class, scanner);
     System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
   }
   @Test void parser_parameter_list(){
     Scanner scanner = new Scanner("test", "'echo'");
-    Parser.ParameterList pl = Parser.ParameterList.parse(scanner);
+    Interpreter.ParameterList pl = Interpreter.ParameterList.parse(scanner);
     System.err.println(pl);
   }
 }
