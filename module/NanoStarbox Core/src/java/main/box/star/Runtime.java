@@ -29,9 +29,9 @@ public class Runtime {
   public static URI getBaseDirectory() { return baseDirectory; }
 
   /**
-   * Retrieves the based directory of the given class
-   * @param source
-   * @return the class's base-directory
+   * Retrieves the class base directory
+   * @param source the class to query
+   * @return the base-directory of the given class
    */
   public static URI baseDirectoryOf(Class source){
     URI baseDirectory;
