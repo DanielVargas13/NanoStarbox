@@ -1,5 +1,6 @@
 package box.star.text;
 
+import box.star.Runtime;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.lang.SyntaxError;
@@ -91,7 +92,7 @@ public class MacroShell {
     char next = scanner.next();
     switch (next) {
       case ENTER_OBJECT: {
-        return (Tools.switchNull(
+        return (Runtime.switchNull(
             context.objects.get(nextMacroBody(scanner, EXIT_OBJECT)
             ), "undefined").toString());
       }

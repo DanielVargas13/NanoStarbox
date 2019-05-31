@@ -4,6 +4,7 @@ import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
+import box.star.lang.Array;
 import box.star.lang.MachineStorage;
 import box.star.lang.RuntimeObjectMapping;
 import box.star.text.Char;
@@ -1666,7 +1667,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return method.compile(this);
   }
 
-  public static class WordList extends Box.Runtime.List<String> {
+  public static class WordList extends Array<String> {
     private static final long serialVersionUID = 7943841258072204166L;
     /**
      * <p>A word-list short-circuit is a condition, where a word list fails to correctly
@@ -1707,7 +1708,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
 
   }
 
-  public static class RangeList extends Box.Runtime.List<RangeMap> {
+  public static class RangeList extends Array<RangeMap> {
     private static final long serialVersionUID = 9017972538783689725L;
     public RangeList(String label, RangeMap... ranges){
       super(label, ranges);
@@ -1718,7 +1719,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     }
   }
 
-  public static class PatternList extends Box.Runtime.List<Pattern> {
+  public static class PatternList extends Array<Pattern> {
     private static final long serialVersionUID = -8772340584149844412L;
     public PatternList(String label, Pattern... patterns){
       super(label, patterns);

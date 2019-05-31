@@ -9,8 +9,7 @@ public class SyntaxError extends RuntimeException {
   private @NotNull String tag(){
     return host.getClass().getName()+".SyntaxError: ";
   }
-  @Override
-  public @NotNull String toString() {
+  @Override public @NotNull String toString() {
     return tag() + super.getMessage();
   }
 

@@ -43,49 +43,6 @@ public class Tools {
     }
   }
 
-  @Nullable
-  public static <T> T switchNull(@Nullable T test, @Nullable T notNull) {
-    return ((test == null) ? notNull : test);
-  }
-
-  @NotNull
-  public static <T> T throwIsNull(@Nullable T a, @Nullable T b) {
-    T which = ((a == null) ? b : a);
-    assert which != null;
-    return which;
-  }
-
-  @NotNull
-  public static List<String> toString(Object... items) {
-    List<String> out = new ArrayList<>();
-    for (Object o : items)
-      if (o instanceof String) out.add((String) o);
-      else out.add(o.toString());
-    return out;
-  }
-
-  @NotNull
-  public static Object[] toArray(List<Object> list) {
-    Object[] out = new String[list.size()];
-    return list.toArray(out);
-  }
-
-  @NotNull
-  public static String[] toStringArray(List<String> list) {
-    String[] out = new String[list.size()];
-    return list.toArray(out);
-  }
-
-  @NotNull
-  public static <T> List<T> toList(@NotNull T[] items) {
-    return toList(Arrays.asList(items));
-  }
-
-  @NotNull
-  public static <T> List<T> toList(@NotNull Collection<T> collection) {
-    return new ArrayList<>(collection);
-  }
-
   public static Class<?> classOrNull(String className) {
     try {
       return Class.forName(className);
@@ -454,19 +411,6 @@ public class Tools {
     // Print stack trace ASAP
     ex.printStackTrace(System.err);
     throw ex;
-  }
-
-  public static <ANY> ANY arrestIsNull(ANY value) {
-    return throwIsNull(value, null);
-  }
-
-  public static <ANY> ANY arrestIsNull(ANY value, String message) {
-    if (value == null) throw new IllegalStateException(message);
-    return value;
-  }
-
-  public static void arrestNotNull(Object value, String message) {
-    if (value != null) throw new IllegalStateException(message);
   }
 
   private final static class ComplexKey {

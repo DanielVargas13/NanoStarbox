@@ -1,5 +1,6 @@
 package box.star.text.basic;
 
+import box.star.Runtime;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.contract.Nullable;
@@ -548,7 +549,7 @@ public class LegacyScanner extends Scanner {
   @Deprecated public String translateCharacter(char c) {
     if (c == 0) return "null";
     if (TRANSLATION.containsKey(c)) return TRANSLATION.get(c);
-    else return Tools.switchNull(Char.translate(c), String.valueOf(c));
+    else return Runtime.switchNull(Char.translate(c), String.valueOf(c));
   }
 
   @Deprecated private static final CharacterExpander defaultCharacterExpander = new CharacterExpander() {

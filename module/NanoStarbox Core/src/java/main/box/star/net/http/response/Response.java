@@ -33,7 +33,7 @@ package box.star.net.http.response;
  * #L%
  */
 
-import box.star.Tools;
+import box.star.Runtime;
 import box.star.net.http.HTTPServer;
 import box.star.net.http.IHTTPSession;
 import box.star.net.http.content.ContentType;
@@ -184,7 +184,7 @@ public class Response implements Closeable {
   }
 
   public static Response notFoundResponse(String mimeType, String content) {
-    return newFixedLengthResponse(Status.NOT_FOUND, Tools.switchNull(mimeType, "text/plain"), Tools.switchNull(content, "File not found"));
+    return newFixedLengthResponse(Status.NOT_FOUND, Runtime.switchNull(mimeType, "text/plain"), Runtime.switchNull(content, "File not found"));
   }
 
   public static Response newFixedLengthResponse(Status status, String mimeType, byte[] message) {

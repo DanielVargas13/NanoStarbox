@@ -1,6 +1,6 @@
 package box.star.net.tools;
 
-import box.star.Tools;
+import box.star.Runtime;
 import box.star.contract.NotNull;
 import box.star.io.Streams;
 import box.star.net.http.IHTTPSession;
@@ -152,11 +152,11 @@ public class ServerContent {
         throw new RuntimeException(e);
       }
     }
-    return Tools.arrestIsNull((URL_OR_FILE) directory);
+    return Runtime.arrestIsNull((URL_OR_FILE) directory);
   }
 
   final public ServerContent setDirectory(URI directory) {
-    this.directory = Tools.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
+    this.directory = Runtime.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
     return this;
   }
 
@@ -165,7 +165,7 @@ public class ServerContent {
   }
 
   final private ServerContent setDirectory(File directory) {
-    this.directory = Tools.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
+    this.directory = Runtime.arrestIsNull(directory, QA_MESSAGE_NULL_DIRECTORY_ARREST);
     return this;
   }
 

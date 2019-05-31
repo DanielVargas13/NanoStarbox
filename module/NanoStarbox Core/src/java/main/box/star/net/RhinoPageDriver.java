@@ -1,6 +1,6 @@
 package box.star.net;
 
-import box.star.Tools;
+import box.star.Runtime;
 import box.star.content.MimeTypeMap;
 import box.star.contract.Nullable;
 import box.star.io.Streams;
@@ -74,9 +74,9 @@ public class RhinoPageDriver implements
    * </ol>
    */
   public final static String URI_LIST_SPLITTER =
-      Tools.switchNull(
+      Runtime.switchNull(
           // System property or environment var
-          Tools.switchNull(System.getProperty(URI_LIST_SPLITTER_PROPERTY), System.getenv(URI_LIST_SPLITTER_VAR)),
+          Runtime.switchNull(System.getProperty(URI_LIST_SPLITTER_PROPERTY), System.getenv(URI_LIST_SPLITTER_VAR)),
           Char.toString(Char.BACKSLASH, Char.PIPE)); // default
   private final static String HTML_MAGIC = "<!MIME " + NANO_STARBOX_JAVASCRIPT_SERVER_PAGE + ">";
   private final static MacroShell.Command srcCommand = new MacroShell.Command() {
@@ -184,7 +184,7 @@ public class RhinoPageDriver implements
     global = Main.global;
     global.init(cx);
     if (moduleURIs == null) {
-      String modulePath = Tools.switchNull(
+      String modulePath = Runtime.switchNull(
           System.getProperty(REQUIRE_MODULE_URIS_PROPERTY),
           System.getenv(REQUIRE_MODULE_URIS_VAR));
       if (modulePath != null)
@@ -222,7 +222,7 @@ public class RhinoPageDriver implements
   public Global getGlobal() { return global; }
 
   private Scriptable getScriptShell(Context cx, @Nullable Scriptable parent) {
-    Scriptable o = ScriptRuntime.newObject(cx, Tools.switchNull(parent, global), "Object", null);
+    Scriptable o = ScriptRuntime.newObject(cx, Runtime.switchNull(parent, global), "Object", null);
     ScriptRuntime.setObjectProp(o, "global", global, cx);
     return o;
   }

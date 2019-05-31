@@ -3,9 +3,10 @@ package box.star.bin.sh;
 import box.star.bin.sh.promise.FactoryFunction;
 import box.star.bin.sh.promise.FunctionFactory;
 import box.star.bin.sh.promise.ShellHost;
-
 import java.io.*;
 import java.util.*;
+
+import box.star.Runtime;
 
 /**
  * Nano Starbox Function Shell
@@ -222,10 +223,7 @@ public class Shell implements ShellHost<Shell> {
 
   public Executive execCommand(SharedMap<String, String> locals, String... parameters) {
     Process p = null;
-    try {
-      p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
-    }
-    catch (IOException e) {throw new RuntimeException(e);}
+    p = Runtime.getRuntime().exec(parameters, variables.compileEnvirons(locals), new File(getCurrentDirectory()));
     return new Executive(p);
   }
 
@@ -345,7 +343,7 @@ public class Shell implements ShellHost<Shell> {
   @Override
   public String getLineSeparator() {
     if (haveVariable(LINE_SEPARATOR)) return get(LINE_SEPARATOR);
-    return Starbox.Runtime.OS.getLineSeparator();
+    return Runtime.OS.getLineSeparator();
   }
 
   @Override
