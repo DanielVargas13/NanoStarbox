@@ -37,7 +37,7 @@ public class Runtime {
     URI baseDirectory;
     try {
       baseDirectory = source.getProtectionDomain().getCodeSource().getLocation().toURI();
-    } catch (Exception e){throw new RuntimeException("failed to get runtime base directory URI", e);}
+    } catch (Exception e){throw new RuntimeException("failed to get base directory of "+source.getName(), e);}
     return baseDirectory;
   }
 
