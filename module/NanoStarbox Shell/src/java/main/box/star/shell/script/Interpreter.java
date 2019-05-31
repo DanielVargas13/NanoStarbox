@@ -35,6 +35,16 @@ public class Interpreter extends box.star.text.basic.Parser {
 
   public Interpreter(@NotNull Scanner scanner) { super(scanner); }
 
+  public static ParameterList parseParameterList(Scanner scanner){
+    ParameterList parameters = new ParameterList();
+    if (scanner.haveNext()) do {
+      Parameter parameter = parse(Parameter.class, scanner);
+      if (parameter.status.equals(Status.OK)) { parameters.add(parameter); }
+      else { break; }
+    } while (true);
+    return parameters;
+  }
+
   public enum Type {
     TEXT_RECORD_TYPE_SHEBANG,
     TEXT_RECORD_TYPE_MAIN,
@@ -94,5 +104,23 @@ public class Interpreter extends box.star.text.basic.Parser {
     return (T) parser;
   }
 
+  public static class ParameterList extends List<Parameter> {
+  }
+
+  public static class CommandList extends List<Command> {}
+
+  public static class RedirectList extends List<Redirect> {}
+
+  public static class EnvironmentOperationList extends List<EnvironmentOperation> {
+    public static EnvironmentOperationList parse(Scanner scanner){
+      EnvironmentOperationList operationList = new EnvironmentOperationList();
+      while (! scanner.endOfSource()) {
+        EnvironmentOperation op = Interpreter.parse(EnvironmentOperation.class, scanner);
+        if (op.status == Status.OK) operationList.add(op);
+        else break;
+      }
+      return operationList;
+    }
+  }
 }
 

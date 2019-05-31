@@ -4,7 +4,6 @@ import box.star.shell.runtime.parts.TextCommand;
 import box.star.shell.runtime.parts.TextMain;
 import box.star.shell.script.Interpreter;
 import box.star.shell.runtime.parts.TextRedirection;
-import box.star.shell.script.ParameterList;
 import box.star.text.basic.LegacyScanner;
 import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ class MainTest {
   }
   @Test void parser_parameter_list(){
     Scanner scanner = new Scanner("test", "'echo'");
-    ParameterList pl = ParameterList.parse(scanner);
+    Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
     System.err.println(pl);
   }
 }
