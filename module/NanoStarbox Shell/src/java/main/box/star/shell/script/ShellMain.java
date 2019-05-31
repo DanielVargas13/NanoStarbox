@@ -1,6 +1,6 @@
 package box.star.shell.script;
 
-import box.star.lang.SyntaxError;
+import static box.star.text.basic.Scanner.*;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
@@ -8,7 +8,7 @@ import static box.star.text.Char.*;
 /**
  * <p>Main Parser</p>
  * <br>
- * <p>{@link ScriptMain} looks for a specific shell program word and processes that word,
+ * <p>{@link ShellMain} looks for a specific shell program word and processes that word,
  * using the associated {@link Interpreter} sub-class. Additionally, this
  * class is responsible for parsing white-space-characters and unidentified garbage.</p>
  * <br>
@@ -16,10 +16,10 @@ import static box.star.text.Char.*;
  * @see Scanner
  * @see Scanner.SourceDriver
  */
-public class ScriptMain extends Interpreter
+public class ShellMain extends Interpreter
     implements box.star.text.basic.Parser.NewFuturePromise, Scanner.SourceDriver.WithBufferControlPort {
   List records = new List();
-  public ScriptMain(Scanner scanner) {
+  public ShellMain(Scanner scanner) {
     super(scanner);
   }
   @Override
@@ -42,7 +42,7 @@ public class ScriptMain extends Interpreter
         break;
       }
       case '(': {
-        SubScriptMain child = parse(SubScriptMain.class, scanner);
+        ShellSubMain child = parse(ShellSubMain.class, scanner);
         if (child.successful()) records.add(child);
         break;
       }

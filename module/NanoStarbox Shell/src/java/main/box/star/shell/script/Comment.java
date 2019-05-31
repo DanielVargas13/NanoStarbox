@@ -2,7 +2,7 @@ package box.star.shell.script;
 
 import box.star.text.basic.Scanner;
 
-public class Comment extends Interpreter implements box.star.text.basic.Parser.NewFuturePromise {
+public class Comment extends Interpreter  {
   protected String text;
   public Comment(Scanner scanner) {
     super(scanner);

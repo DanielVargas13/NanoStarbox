@@ -2,7 +2,7 @@ package box.star.shell.script;
 
 import box.star.text.basic.Scanner;
 
-public class Command extends Interpreter implements box.star.text.basic.Parser.NewFuturePromise {
+public class Command extends Interpreter {
   public EnvironmentOperationList environmentOperations;
   public ParameterList parameters;
   public RedirectList redirects;
