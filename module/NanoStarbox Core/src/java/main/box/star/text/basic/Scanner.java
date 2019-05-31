@@ -428,6 +428,11 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     }
     char c = next();
     if (c != character) {
+      if (endOfSource()){
+        throw new SyntaxError(this,
+            "expected "+getRuntimeLabel(character)
+                +" and located end of source");
+      }
       back();
       throw new SyntaxError(this,
           "expected "+getRuntimeLabel(character)
