@@ -8,7 +8,7 @@ import static box.star.text.Char.*;
 /**
  * <p>Main Parser</p>
  * <br>
- * <p>{@link box.star.shell.script.Main} looks for a specific shell program word and processes that word,
+ * <p>{@link ScriptMain} looks for a specific shell program word and processes that word,
  * using the associated {@link Interpreter} sub-class. Additionally, this
  * class is responsible for parsing white-space-characters and unidentified garbage.</p>
  * <br>
@@ -16,10 +16,10 @@ import static box.star.text.Char.*;
  * @see Scanner
  * @see Scanner.SourceDriver
  */
-public class Main extends Interpreter
+public class ScriptMain extends Interpreter
     implements box.star.text.basic.Parser.NewFuturePromise, Scanner.SourceDriver.WithBufferControlPort {
   List records = new List();
-  public Main(Scanner scanner) {
+  public ScriptMain(Scanner scanner) {
     super(scanner);
   }
   @Override
@@ -42,7 +42,7 @@ public class Main extends Interpreter
         break;
       }
       case '(': {
-        SubMain child = parse(SubMain.class, scanner);
+        SubScriptMain child = parse(SubScriptMain.class, scanner);
         if (child.successful()) records.add(child);
         break;
       }

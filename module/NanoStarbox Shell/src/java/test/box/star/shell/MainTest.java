@@ -4,6 +4,7 @@ import box.star.shell.runtime.parts.TextCommand;
 import box.star.shell.runtime.parts.TextMain;
 import box.star.shell.script.Interpreter;
 import box.star.shell.runtime.parts.TextRedirection;
+import box.star.shell.script.ScriptMain;
 import box.star.text.basic.LegacyScanner;
 import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class MainTest {
   @Test void text_record_main(){
     File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
     Scanner scanner = new Scanner(shebang_line_file);
-    box.star.shell.script.Main result = Interpreter.parse(box.star.shell.script.Main.class, scanner);
+    ScriptMain result = Interpreter.parse(ScriptMain.class, scanner);
     System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
   }
   @Test void parser_parameter_list(){

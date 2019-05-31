@@ -2,8 +2,8 @@ package box.star.shell.script;
 
 import box.star.text.basic.Scanner;
 
-public class SubMain extends Main {
-  SubMain(Scanner scanner) {
+public class SubScriptMain extends ScriptMain {
+  SubScriptMain(Scanner scanner) {
     super(scanner);
   }
 }
