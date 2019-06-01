@@ -88,7 +88,7 @@ public class Parser extends Scanner.CancellableOperation {
   public Parser(@NotNull Scanner scanner){
     super(scanner);
     if (scanner.endOfSource()){ status = FAILED; return; }
-    this.origin = scanner.nextBookmark();
+    this.origin = scanner.createBookmark();
     status = OK;
   }
 

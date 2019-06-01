@@ -3,9 +3,19 @@ package box.star.text.basic;
 import box.star.text.Char;
 import org.junit.jupiter.api.Test;
 
+import static box.star.text.Char.SINGLE_QUOTE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScannerTest {
+
+  @Test void scanner_next_field(){
+    Scanner scanner = new Scanner("test", "'echo'");
+    scanner.next();
+    assertEquals("echo", scanner.nextField(SINGLE_QUOTE));
+    assertFalse(scanner.endOfSource());
+    assertEquals(0, scanner.next());
+    assertTrue(scanner.endOfSource());
+  }
 
   @Test void next_char(){
     Scanner scan = new Scanner("next_char", "test");

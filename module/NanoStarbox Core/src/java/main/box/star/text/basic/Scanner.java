@@ -350,6 +350,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     state.stepBackward();
   }
 
+  public void escape(){ if (! endOfSource()) back(); }
+
   public void back(int count) throws IllegalStateException { while (count-- > 0) back(); }
 
   /**
@@ -783,13 +785,13 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    */
   public @NotNull String nextLength(int n) {
     if (endOfSource() || n == 0) return Tools.EMPTY_STRING;
-    char[] chars = new char[n];
-    int pos = 0;
-    while (pos < n) {
-      chars[pos++] = this.next();
-      if (this.endOfSource()) break;
-    }
-    return new String(chars);
+    StringBuilder buffer = new StringBuilder();
+    if (! endOfSource()) do {
+      char c = next();
+      if (endOfSource()) break;
+      buffer.append(c);
+    } while(buffer.length() != n);
+    return buffer.toString();
   }
 
   public @NotNull String nextWord(){
@@ -797,10 +799,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (! endOfSource() ) do {
       char c = next();
       if (!mapContains(c, WORD_BREAK_MAP)) word.append(c);
-      else {
-        if (! endOfSource()) back();
-        break;
-      }
+      else { escape(); break; }
     } while (! endOfSource());
     return word.toString();
   }
@@ -811,10 +810,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     if (! endOfSource() ) do {
       char c = next();
       if (!mapContains(c, WORD_BREAK_MAP)) word.append(c);
-      else {
-        if (! endOfSource()) back();
-        break;
-      }
+      else { escape(); break; }
     } while (word.length() != max);
     return word.toString();
   }
