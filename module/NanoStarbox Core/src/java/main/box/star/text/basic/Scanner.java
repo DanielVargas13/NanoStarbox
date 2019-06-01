@@ -825,7 +825,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    */
   public void nextWord(String match) throws SyntaxError {
     long start = getIndex();
-    String word = nextWord();
+    String word = nextLength(match.length());
     if (word.equals(match)) return;
     walkBack(start);
     throw new SyntaxError(this, "expected "+match+" and found "+nextWordPreview());
