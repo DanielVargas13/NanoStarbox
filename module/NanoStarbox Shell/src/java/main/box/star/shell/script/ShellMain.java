@@ -33,27 +33,27 @@ public class ShellMain extends Interpreter
       case '#': {
         boolean bang = scanner.getLine() == 1 && scanner.getColumn() == 1;
         if (bang){
-          Directive line = parse(Directive.class, scanner);
+          Directive line = parse(Directive.class);
           if (line.successful()) records.add(line);
         } else {
-          Comment comment = parse(Comment.class, scanner);
+          Comment comment = parse(Comment.class);
           if (comment.successful()) records.add(comment);
         }
         return true;
       }
       case '(': {
-        ShellSubMain child = parse(ShellSubMain.class, scanner);
+        ShellSubMain child = parse(ShellSubMain.class);
         if (child.successful()) records.add(child);
         return true;
       }
       case '{': {
-        CommandGroup list = parse(CommandGroup.class, scanner);
+        CommandGroup list = parse(CommandGroup.class);
         if (list.successful()) records.add(list);
         return true;
       }
     }
     scanner.back();
-    Command command = parse(Command.class, scanner);
+    Command command = parse(Command.class);
     if (command.successful()) records.add(command);
     else throw new SyntaxError(this, "expected command and found "+scanner.nextWordPreview());
     return true;

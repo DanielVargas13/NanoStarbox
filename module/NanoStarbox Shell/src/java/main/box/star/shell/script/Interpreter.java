@@ -1,6 +1,8 @@
 package box.star.shell.script;
 
 import box.star.contract.NotNull;
+import box.star.lang.Char;
+import box.star.lang.SyntaxError;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
@@ -42,6 +44,31 @@ public class Interpreter extends box.star.text.basic.Parser {
       if (parameter.status.equals(Status.OK)) { parameters.add(parameter); }
       else { break; }
     } while (true);
+    return parameters;
+  }
+
+  public static CommandList parseCommandList(Scanner scanner){
+    CommandList parameters = new CommandList();
+    if (scanner.current() != '{')
+      throw new Scanner.SyntaxError(parameters, scanner, "expected command group symbol");
+    if (scanner.haveNext()) do {
+      String space = scanner.nextMap(0, 0, Char.MAP_ASCII_ALL_WHITE_SPACE);
+      if (Char.mapContains(scanner.next(), ')', '}')) {
+        if (scanner.current() == '}') {
+          scanner.back(space.length() + 2);
+          break;
+        } else {
+          throw new Scanner.SyntaxError(parameters, scanner, "illegal symbol: "+scanner.current());
+        }
+      }
+      scanner.escape();
+      Command command = parse(Command.class, scanner);
+      if (command.status.equals(Status.OK)) { parameters.add(command); }
+      else { break; }
+    } while (true);
+    scanner.next(';');
+    scanner.nextMap(1, 0, Char.MAP_ASCII_ALL_WHITE_SPACE);
+    scanner.next('}');
     return parameters;
   }
 

@@ -12,7 +12,7 @@ public class Command extends Interpreter {
   public EnvironmentOperationList environmentOperations;
   public ParameterList parameters;
   public RedirectList redirects;
-  public box.star.shell.script.Command pipe;
+  public Interpreter pipe;
   String terminator;
   public Command(Scanner scanner) {
     super(scanner);
@@ -31,7 +31,20 @@ public class Command extends Interpreter {
         } else {
           scanner.escape();
           scanner.nextWhiteSpace();
-          pipe = parse(Command.class);
+          char t = scanner.next();
+          switch (t){
+            case '(': {
+              pipe = parse(ShellSubMain.class);
+              break;
+            }
+            case '{': {
+              pipe = parse(CommandGroup.class);
+              break;
+            }
+            default:
+              scanner.escape();
+              pipe = parse(Command.class);
+          }
         }
         break;
       }

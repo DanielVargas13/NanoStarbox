@@ -7,4 +7,10 @@ public class CommandGroup extends Interpreter {
   public CommandGroup(Scanner scanner) {
     super(scanner);
   }
+
+  @Override
+  protected void start() {
+    commands = Interpreter.parseCommandList(scanner);
+    finish();
+  }
 }
