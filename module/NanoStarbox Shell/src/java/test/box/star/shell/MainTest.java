@@ -31,7 +31,7 @@ class MainTest {
     File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
     Scanner scanner = new Scanner(shebang_line_file);
     ShellMain result = Interpreter.parse(ShellMain.class, scanner);
-    System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
+    return; // DEBUG-BREAK-HERE, and inspect Results
   }
 
   @Test void parse_literal_parameter(){

@@ -55,7 +55,7 @@ public class ShellMain extends Interpreter
     scanner.back();
     Command command = parse(Command.class, scanner);
     if (command.successful()) records.add(command);
-    else throw new SyntaxError(this, "expected shell command");
+    else throw new SyntaxError(this, "expected command and found "+scanner.nextWordPreview());
     return true;
   }
   /**
