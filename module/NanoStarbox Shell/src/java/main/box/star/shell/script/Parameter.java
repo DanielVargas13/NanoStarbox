@@ -1,7 +1,9 @@
 package box.star.shell.script;
 
 import box.star.lang.SyntaxError;
+import box.star.shell.script.content.DoubleQuotedText;
 import box.star.text.Char;
+import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
 import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
@@ -15,7 +17,7 @@ public class Parameter extends Interpreter {
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
           .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
-  public static final char[] LITERAL_PARAMETER_TERMINATOR_MAP = new Char.Assembler(PARAMETER_TERMINATOR_MAP).merge(SINGLE_QUOTE, DOUBLE_QUOTE).toMap();
+  public static final char[] LITERAL_PARAMETER_TERMINATOR_MAP = new Char.Assembler(PARAMETER_TERMINATOR_MAP).merge(SINGLE_QUOTE, DOUBLE_QUOTE, BACKSLASH).toMap();
 
   public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING}
   protected QuoteType quoteType = NOT_QUOTING;
@@ -52,6 +54,14 @@ public class Parameter extends Interpreter {
   }
 
   private void parseContinuation(){
+    if (scanner.current() == BACKSLASH) {
+      quoteType = QuoteType.COMPOUND_QUOTING;
+      do {
+        buffer.append(scanner.current())
+            .append(scanner.next())
+            .append(scanner.nextField(LITERAL_PARAMETER_TERMINATOR_MAP));
+      } while (scanner.current() == BACKSLASH);
+    }
     if (scanner.endOfSource()) return;
     long start = scanner.getIndex();
     char c = scanner.next();
@@ -68,8 +78,7 @@ public class Parameter extends Interpreter {
         default: parseLiteralText();
       }
     }
-    if (scanner.getIndex() == start)
-      throw new IllegalStateException();
+    if (scanner.getIndex() == start) throw new IllegalStateException("endless loop condition aborted"+Parser.PARSER_CODE_QUALITY_BUG);
     parseContinuation();
   }
 
@@ -97,9 +106,10 @@ public class Parameter extends Interpreter {
       throw new SyntaxError(this, "expected double quotation mark");
     if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.DOUBLE_QUOTING;
     buffer.append(DOUBLE_QUOTE)
-        .append(scanner.nextField(DOUBLE_QUOTE))
+        .append(scanner.run(doubleQuotedTextDriver))
         .append(DOUBLE_QUOTE);
     parseContinuation();
   }
 
+  private final DoubleQuotedText doubleQuotedTextDriver = new DoubleQuotedText();
 }
