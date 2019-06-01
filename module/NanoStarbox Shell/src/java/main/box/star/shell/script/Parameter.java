@@ -6,9 +6,6 @@ import box.star.text.Char;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static box.star.shell.script.Command.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
@@ -27,8 +24,6 @@ public class Parameter extends Interpreter {
   public static enum QuoteType {
     NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING
   }
-
-  public static char[] ARROWS = new char[]{'<', '>'};
 
   protected QuoteType quoteType = NOT_QUOTING;
   protected StringBuilder buffer;
@@ -49,7 +44,7 @@ public class Parameter extends Interpreter {
     }
     char c = scanner.next();
     if (mapContains(c, MAP_ASCII_NUMBERS)) {
-      if (mapContains(scanner.next(), ARROWS)) {
+      if (mapContains(scanner.next(), Redirect.ARROWS)) {
         cancel(); return;
       } else scanner.back();
     }

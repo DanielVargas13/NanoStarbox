@@ -1,5 +1,6 @@
 package box.star.shell.script;
 
+import box.star.Tools;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
@@ -18,30 +19,32 @@ public class Redirect extends Interpreter {
       OP_HERE_DOC_JUSTIFIED = "<<-",
       OP_HERE_DOC = "<<";
 
-  public static final Scanner.WordList redirectionOperators = new Scanner.WordList("",
+  public static final Scanner.WordList redirectionOperators = new Scanner.WordList("redirection operator",
       OP_OPEN_RANDOM, OP_CLOSE_READABLE, OP_CLOSE_WRITABLE,
       OP_COPY_READABLE, OP_COPY_WRITABLE, OP_OPEN_WRITABLE_APPEND,
       OP_OPEN_WRITABLE_CLOBBER, OP_HERE_DOC_JUSTIFIED, OP_HERE_DOC,
       OP_OPEN_READABLE, OP_OPEN_WRITABLE
   );
 
-  String stream;
+  public static char[] ARROWS = new char[]{'<', '>'};
+
+  int stream;
   String operation;
   Parameter file;
   public Redirect(Scanner scanner) { super(scanner); }
   @Override
   protected void start() {
+    String stream;
     scanner.nextLineSpace();
-    Redirect redirect = this;
     stream = scanner.nextMap(0,3, Char.MAP_ASCII_NUMBERS);
     scanner.nextLineSpace();
-    try {
-      redirect.operation = scanner.nextWord(true, redirectionOperators);
+    try { operation = scanner.nextWord(true, redirectionOperators);
     } catch (Exception e){cancel(); return;}
-    if (redirect.stream.equals("")){
-      if (redirect.operation.contains(">")) redirect.stream = "1";
-      else redirect.stream = "0";
+    if (stream.equals(Tools.EMPTY_STRING)){
+      if (operation.contains(OP_OPEN_WRITABLE)) stream = "1";
+      else stream = "0";
     }
+    this.stream = Integer.parseInt(stream);
     file = parse(Parameter.class);
     finish();
   }
