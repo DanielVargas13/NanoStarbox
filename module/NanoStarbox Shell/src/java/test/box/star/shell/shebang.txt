@@ -1,3 +1,3 @@
 #!/usr/bin/bash boom
-'echo'
+a=b 'echo'
 # Quasi-Modo

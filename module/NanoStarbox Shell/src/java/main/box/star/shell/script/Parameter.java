@@ -87,7 +87,8 @@ public class Parameter extends Interpreter {
     if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.NOT_QUOTING;
     buffer.append(scanner.current())
         .append(scanner.nextField(LITERAL_PARAMETER_TERMINATOR_MAP));
-    if (mapContains(scanner.current(), SINGLE_QUOTE, DOUBLE_QUOTE)) scanner.back();
+    char c = scanner.current();
+    if (c != BACKSLASH && mapContains(c, LITERAL_PARAMETER_TERMINATOR_MAP)) scanner.escape();
     parseContinuation();
   }
 

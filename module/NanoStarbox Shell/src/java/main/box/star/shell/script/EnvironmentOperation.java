@@ -6,16 +6,22 @@ import box.star.text.basic.driver.GenericProgramIdentifier;
 import java.util.regex.Pattern;
 
 public class EnvironmentOperation extends Interpreter {
-  String variable, operation, value;
+  String variable, operation;
+  Parameter value;
   public EnvironmentOperation(Scanner scanner) {
     super(scanner);
   }
   @Override
   protected void start() {
     variable = scanner.run(new GenericProgramIdentifier());
-    operation = scanner.nextPattern(2, Pattern.compile("="));
-    if (operation.length() == 0) { cancel(); return; }
-    Parameter data = parse(Parameter.class);
-    if (data.status.equals(Status.OK)) value = data.getText();
+    if (variable.length() == 0) {
+      cancel(); return;
+    }
+    operation = scanner.nextMap(0, 2,'=', '+', '-');
+    if (operation.length() == 0){
+      cancel(); return;
+    }
+    value = parse(Parameter.class);
+    finish();
   }
 }

@@ -12,6 +12,7 @@ public class Command extends Interpreter {
   }
   @Override
   protected void start() {
+    environmentOperations = parseEnvironmentOperationList(scanner);
     parameters = parseParameterList(scanner);
     if (parameters.isEmpty()) cancel(); else finish();
   }
