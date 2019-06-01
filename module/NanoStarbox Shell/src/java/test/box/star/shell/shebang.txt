@@ -1,3 +1,3 @@
 #!/usr/bin/bash boom
-a=b 'echo' > foul < ball
+a=b 'echo' 1> foul < ball
 # Quasi-Modo

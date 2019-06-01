@@ -31,8 +31,9 @@ public class Redirect extends Interpreter {
   public Redirect(Scanner scanner) { super(scanner); }
   @Override
   protected void start() {
+    scanner.nextLineSpace();
     Redirect redirect = this;
-    stream = scanner.nextMap(0,0, Char.MAP_ASCII_NUMBERS);
+    stream = scanner.nextMap(0,3, Char.MAP_ASCII_NUMBERS);
     scanner.nextLineSpace();
     try {
       redirect.operation = scanner.nextWord(true, redirectionOperators);

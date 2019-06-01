@@ -6,6 +6,9 @@ import box.star.text.Char;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static box.star.shell.script.Command.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
@@ -45,6 +48,11 @@ public class Parameter extends Interpreter {
       return;
     }
     char c = scanner.next();
+    if (mapContains(c, MAP_ASCII_NUMBERS)) {
+      if (mapContains(scanner.next(), ARROWS)) {
+        cancel(); return;
+      } else scanner.back();
+    }
     if (scanner.endOfSource() || mapContains(c, PARAMETER_TERMINATOR_MAP)) {
       cancel();
     } else {
