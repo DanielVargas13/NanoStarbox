@@ -697,7 +697,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   public String nextSpace(){return nextMap(SPACE_MAP);}
   public String nextTab(){ return nextMap(TAB_MAP); }
 
-  protected String nextWordPreview(){
+  public String nextWordPreview(){
     if (endOfSource()) return "end of source";
     long start = getIndex();
     String word = nextWord();
@@ -705,7 +705,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     return word;
   }
 
-  protected String nextWordPreview(int max){
+  public String nextWordPreview(int max){
     if (endOfSource()) return "end of source";
     long start = getIndex();
     String word = nextWord(max);
