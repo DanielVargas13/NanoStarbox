@@ -1,3 +1,4 @@
 #!/usr/bin/bash boom
-a=b 'echo' 1> foul < ball | grep fu | { exit; }
+a=b 'echo' 1> foul < ball | grep fu | {
+ exit& }
 # Quasi-Modo

@@ -65,7 +65,9 @@ public class Command extends Interpreter {
         terminator = Char.toString(c);
         break;
       }
-      default: scanner.escape();
+      default:
+        scanner.back();
+        while (Char.mapContains(scanner.current(), Char.MAP_ASCII_ALL_WHITE_SPACE)) scanner.back();
     }
     finish();
   }

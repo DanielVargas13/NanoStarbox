@@ -1,5 +1,6 @@
 package box.star.shell.script;
 
+import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.lang.Char;
 import box.star.lang.SyntaxError;
@@ -52,22 +53,32 @@ public class Interpreter extends box.star.text.basic.Parser {
     if (scanner.current() != '{')
       throw new Scanner.SyntaxError(parameters, scanner, "expected command group symbol");
     if (scanner.haveNext()) do {
-      String space = scanner.nextMap(0, 0, Char.MAP_ASCII_ALL_WHITE_SPACE);
+      String space = scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
       if (Char.mapContains(scanner.next(), ')', '}')) {
         if (scanner.current() == '}') {
-          scanner.back(space.length() + 2);
+          if (space.indexOf('\n') < 0) {
+            if (space.equals(Tools.EMPTY_STRING)) {
+              scanner.back();
+              scanner.next(' ');
+            }
+            scanner.back(space.length() + 2);
+            scanner.nextMap(1, 1, ';', '&');
+            break;
+          }
+          scanner.back();
           break;
         } else {
           throw new Scanner.SyntaxError(parameters, scanner, "illegal symbol: "+scanner.current());
         }
-      }
-      scanner.escape();
+      } else scanner.escape();
       Command command = parse(Command.class, scanner);
-      if (command.status.equals(Status.OK)) { parameters.add(command); }
+      if (command.status.equals(Status.OK)) {
+        parameters.add(command);
+        if ("\n".equals(command.terminator)) scanner.back();
+      }
       else { break; }
     } while (true);
-    scanner.next(';');
-    scanner.nextMap(1, 0, Char.MAP_ASCII_ALL_WHITE_SPACE);
+    scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
     scanner.next('}');
     return parameters;
   }
