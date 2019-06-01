@@ -45,6 +45,16 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
+  public static RedirectList parseParameterRedirectList(Scanner scanner){
+    RedirectList redirects = new RedirectList();
+    if (scanner.haveNext()) do {
+      Redirect redirect = parse(Redirect.class, scanner);
+      if (redirect.status.equals(Status.OK)) { redirects.add(redirect); }
+      else { break; }
+    } while (true);
+    return redirects;
+  }
+
   public static EnvironmentOperationList parseEnvironmentOperationList(Scanner scanner){
     EnvironmentOperationList operationList = new EnvironmentOperationList();
     while (! scanner.endOfSource()) {

@@ -6,7 +6,7 @@ import box.star.text.Char;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
-import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
+import static box.star.shell.script.Command.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
 import static box.star.shell.script.Parameter.QuoteType.*;
@@ -17,9 +17,16 @@ public class Parameter extends Interpreter {
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
           .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
-  public static final char[] LITERAL_PARAMETER_TERMINATOR_MAP = new Char.Assembler(PARAMETER_TERMINATOR_MAP).merge(SINGLE_QUOTE, DOUBLE_QUOTE, BACKSLASH).toMap();
+  public static final char[] LITERAL_PARAMETER_TERMINATOR_MAP =
+      new Char.Assembler(PARAMETER_TERMINATOR_MAP)
+          .merge(SINGLE_QUOTE, DOUBLE_QUOTE, BACKSLASH).toMap();
 
-  public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING}
+  public static enum QuoteType {
+    NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING
+  }
+
+  public static char[] ARROWS = new char[]{'<', '>'};
+
   protected QuoteType quoteType = NOT_QUOTING;
   protected StringBuilder buffer;
   protected String text;
@@ -78,7 +85,9 @@ public class Parameter extends Interpreter {
         default: parseLiteralText();
       }
     }
-    if (scanner.getIndex() == start) throw new IllegalStateException("endless loop condition aborted"+Parser.PARSER_CODE_QUALITY_BUG);
+    if (scanner.getIndex() == start)
+      throw new IllegalStateException(
+          "endless loop condition aborted"+Parser.PARSER_CODE_QUALITY_BUG);
     parseContinuation();
   }
 
@@ -113,4 +122,5 @@ public class Parameter extends Interpreter {
   }
 
   private final DoubleQuotedText doubleQuotedTextDriver = new DoubleQuotedText();
+
 }
