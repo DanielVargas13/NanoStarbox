@@ -10,13 +10,9 @@ public class Command extends Interpreter {
   public Command(Scanner scanner) {
     super(scanner);
   }
-  protected void main(){
-    environmentOperations = Interpreter.parseEnvironmentOperationList(scanner);
-    String name;
-    name = "breaking point";
-  }
   @Override
   protected void start() {
-    main(); finish();
+    parameters = parseParameterList(scanner);
+    if (parameters.isEmpty()) cancel(); else finish();
   }
 }

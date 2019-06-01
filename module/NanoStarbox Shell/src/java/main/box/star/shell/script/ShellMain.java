@@ -39,21 +39,23 @@ public class ShellMain extends Interpreter
           Comment comment = parse(Comment.class, scanner);
           if (comment.successful()) records.add(comment);
         }
-        break;
+        return true;
       }
       case '(': {
         ShellSubMain child = parse(ShellSubMain.class, scanner);
         if (child.successful()) records.add(child);
-        break;
+        return true;
       }
       case '{': {
         CommandGroup list = parse(CommandGroup.class, scanner);
         if (list.successful()) records.add(list);
-        break;
+        return true;
       }
-      default:
-        throw new SyntaxError(this, "expected shell command");
     }
+    scanner.back();
+    Command command = parse(Command.class, scanner);
+    if (command.successful()) records.add(command);
+    else throw new SyntaxError(this, "expected shell command");
     return true;
   }
   /**

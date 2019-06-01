@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static box.star.shell.script.Parameter.QuoteType.*;
+import static box.star.text.Char.SINGLE_QUOTE;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MainTest {
 
@@ -31,9 +33,41 @@ class MainTest {
     ShellMain result = Interpreter.parse(ShellMain.class, scanner);
     System.err.println(result.getOrigin()); // DEBUG-BREAK-HERE, and inspect Results
   }
-  @Test void parser_parameter_list(){
-    Scanner scanner = new Scanner("test", "'echo'");
+
+  @Test void parse_literal_parameter(){
+    String source = "echo";
+    Scanner scanner = new Scanner("test", source);
     Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
-    System.err.println(pl);
+    assertEquals(source, pl.get(0).getText());
+    assertEquals(NOT_QUOTING, pl.get(0).getQuoteType());
+    assertTrue(scanner.endOfSource());
   }
+
+  @Test void parse_single_quoted_parameter(){
+    String source = "'echo'";
+    Scanner scanner = new Scanner("test", source);
+    Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
+    assertEquals(source, pl.get(0).getText());
+    assertEquals(SINGLE_QUOTING, pl.get(0).getQuoteType());
+    assertTrue(scanner.endOfSource());
+  }
+
+  @Test void parse_double_quoted_parameter(){
+    String source = "\"echo\"";
+    Scanner scanner = new Scanner("test", source);
+    Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
+    assertEquals(source, pl.get(0).getText());
+    assertEquals(DOUBLE_QUOTING, pl.get(0).getQuoteType());
+    assertTrue(scanner.endOfSource());
+  }
+
+  @Test void parse_compound_parameter(){
+    String source = "echo'hello'\"world\"";
+    Scanner scanner = new Scanner("test", source);
+    Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
+    assertEquals(source, pl.get(0).getText());
+    assertEquals(COMPOUND_QUOTING, pl.get(0).getQuoteType());
+    assertTrue(scanner.endOfSource());
+  }
+
 }

@@ -7,54 +7,99 @@ import box.star.text.basic.Scanner;
 import static box.star.shell.runtime.parts.TextCommand.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
+import static box.star.shell.script.Parameter.QuoteType.*;
+
 public class Parameter extends Interpreter {
 
   public static final char[] PARAMETER_TERMINATOR_MAP =
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
           .merge(COMMAND_TERMINATOR_MAP).merge(MAP_ASCII_ALL_WHITE_SPACE).toMap();
 
-  public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING }
-  protected QuoteType quoteType;
+  public static final char[] LITERAL_PARAMETER_TERMINATOR_MAP = new Char.Assembler(PARAMETER_TERMINATOR_MAP).merge(SINGLE_QUOTE, DOUBLE_QUOTE).toMap();
+
+  public static enum QuoteType { NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING}
+  protected QuoteType quoteType = NOT_QUOTING;
+  protected StringBuilder buffer;
   protected String text;
   public Parameter(Scanner scanner) { super(scanner); }
-  private final String extractText(){
-    return text.substring(1, text.length()-1);
-  }
   public String getText() {
-    switch (quoteType) {
-      case NOT_QUOTING: return text;
-      default: return extractText();
-    }
+    return text;
+  }
+  public QuoteType getQuoteType() {
+    return quoteType;
   }
   @Override public String toString() { return text; }
   @Override protected void start() {
     scanner.nextLineSpace();
-    char c = scanner.next();
-    switch (c) {
-      case SINGLE_QUOTE: { parseSingleQuotedText(); break; }
-      case DOUBLE_QUOTE: { parseDoubleQuotedText(); break; }
-      default: parseLiteralText();
+    if (scanner.endOfSource()) {
+      cancel();
+      return;
     }
-    finish();
+    char c = scanner.next();
+    if (scanner.endOfSource() || mapContains(c, PARAMETER_TERMINATOR_MAP)) {
+      cancel();
+    } else {
+      buffer = new StringBuilder();
+      switch (c) {
+        case SINGLE_QUOTE: { parseSingleQuotedText(); break; }
+        case DOUBLE_QUOTE: { parseDoubleQuotedText(); break; }
+        default: parseLiteralText();
+      }
+      text = buffer.toString();
+      buffer = null;
+      finish();
+    }
   }
-  private void parseSingleQuotedText() {
-    char delim = scanner.current();
-    if (delim != SINGLE_QUOTE)
-      throw new SyntaxError(this, "expected literal quotation mark");
-    quoteType = QuoteType.SINGLE_QUOTING;
-    text = delim+scanner.nextField(SINGLE_QUOTE);
-    text += scanner.next(delim);
+
+  private void parseContinuation(){
+    if (scanner.endOfSource()) return;
+    long start = scanner.getIndex();
+    char c = scanner.next();
+    if (scanner.endOfSource()) return;
+    if (mapContains(c, PARAMETER_TERMINATOR_MAP)) {
+      scanner.back();
+      return;
+    }
+    else {
+      quoteType = QuoteType.COMPOUND_QUOTING;
+      switch (c) {
+        case SINGLE_QUOTE: { parseSingleQuotedText(); break; }
+        case DOUBLE_QUOTE: { parseDoubleQuotedText(); break; }
+        default: parseLiteralText();
+      }
+    }
+    if (scanner.getIndex() == start)
+      throw new IllegalStateException();
+    parseContinuation();
   }
+
   private void parseLiteralText() {
     // todo check for illegal characters
-    quoteType = QuoteType.NOT_QUOTING;
-    text = scanner.current()
-        +scanner.nextField(PARAMETER_TERMINATOR_MAP) + SINGLE_QUOTE;
+    if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.NOT_QUOTING;
+    buffer.append(scanner.current())
+        .append(scanner.nextField(LITERAL_PARAMETER_TERMINATOR_MAP));
+    if (mapContains(scanner.current(), SINGLE_QUOTE, DOUBLE_QUOTE)) scanner.back();
+    parseContinuation();
   }
+
+  private void parseSingleQuotedText() {
+    if (scanner.current() != SINGLE_QUOTE)
+      throw new SyntaxError(this, "expected literal quotation mark");
+    if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.SINGLE_QUOTING;
+    buffer.append(SINGLE_QUOTE)
+        .append(scanner.nextField(SINGLE_QUOTE))
+        .append(SINGLE_QUOTE);
+    parseContinuation();
+  }
+
   private void parseDoubleQuotedText(){
     if (scanner.current() != DOUBLE_QUOTE)
       throw new SyntaxError(this, "expected double quotation mark");
-    quoteType = QuoteType.DOUBLE_QUOTING;
-    text = scanner.nextField(PARAMETER_TERMINATOR_MAP);
+    if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.DOUBLE_QUOTING;
+    buffer.append(DOUBLE_QUOTE)
+        .append(scanner.nextField(DOUBLE_QUOTE))
+        .append(DOUBLE_QUOTE);
+    parseContinuation();
   }
+
 }
