@@ -754,7 +754,6 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
       if (ending) {
         if (expansionControlPort == null && escaping)
           throw new SyntaxError(this,"expected character escape sequence, found end of stream");
-        //return sb.toString();
       }
 
       if (expansionControlPort != null && escaping) {
@@ -773,7 +772,7 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
      sb.append(c);
 
     } while (! ending);
-    if (autoBackStep && ! endOfSource()) back();
+    if (autoBackStep) escape();
     return sb.toString();
   }
 
@@ -1345,6 +1344,16 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     public SyntaxError(@NotNull Scanner source, @NotNull String message, Throwable cause){
       this(source.createBookmark(), message, cause);
       this.host = source;
+    }
+
+    public SyntaxError(Object host, @NotNull Scanner source, @NotNull String message){
+      this(source.createBookmark(), message);
+      this.host = host;
+    }
+
+    public SyntaxError(Object host, @NotNull Scanner source, @NotNull String message, Throwable cause){
+      this(source.createBookmark(), message, cause);
+      this.host = host;
     }
 
   }
