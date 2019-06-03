@@ -83,6 +83,32 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
+  public static CommandList parseSubShell(Scanner scanner){
+    CommandList parameters = new CommandList();
+    if (scanner.current() != '(')
+      throw new Scanner.SyntaxError(parameters, scanner, "expected command shell symbol");
+    if (scanner.haveNext()) do {
+      String space = scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
+      if (Char.mapContains(scanner.next(), ')', '}')) {
+        if (scanner.current() == ')') {
+          scanner.back();
+          break;
+        } else {
+          throw new Scanner.SyntaxError(parameters, scanner, "illegal symbol: "+scanner.current());
+        }
+      } else scanner.escape();
+      Command command = parse(Command.class, scanner);
+      if (command.status.equals(Status.OK)) {
+        parameters.add(command);
+        if ("\n".equals(command.terminator)) scanner.back();
+      }
+      else { break; }
+    } while (true);
+    scanner.nextMap(Char.MAP_ASCII_ALL_WHITE_SPACE);
+    scanner.next(')');
+    return parameters;
+  }
+
   public static RedirectList parseParameterRedirectList(Scanner scanner){
     RedirectList redirects = new RedirectList();
     if (scanner.haveNext()) do {

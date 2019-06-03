@@ -12,8 +12,9 @@ public class Command extends Interpreter {
   public EnvironmentOperationList environmentOperations;
   public ParameterList parameters;
   public RedirectList redirects;
-  public Interpreter pipe;
-  String terminator;
+  public Command pipe;
+  public String terminator;
+
   public Command(Scanner scanner) {
     super(scanner);
   }
@@ -21,6 +22,10 @@ public class Command extends Interpreter {
   protected void start() {
     environmentOperations = parseEnvironmentOperationList(scanner);
     parameters = parseParameterList(scanner);
+    parseEnding();
+    finish();
+  }
+  protected void parseEnding(){
     redirects = parseParameterRedirectList(scanner);
     scanner.nextLineSpace();
     char c = scanner.next();
@@ -69,6 +74,5 @@ public class Command extends Interpreter {
         scanner.back();
         while (Char.mapContains(scanner.current(), Char.MAP_ASCII_ALL_WHITE_SPACE)) scanner.back();
     }
-    finish();
   }
 }
