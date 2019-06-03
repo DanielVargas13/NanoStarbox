@@ -3,6 +3,9 @@ package box.star.shell.script;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
+import static box.star.text.Char.LINE_FEED;
+import static box.star.text.Char.MAP_ASCII_ALL_WHITE_SPACE;
+
 public class Command extends Interpreter {
 
   public static final char[] COMMAND_TERMINATOR_MAP = new Char.Assembler(
@@ -63,9 +66,13 @@ public class Command extends Interpreter {
         break;
       }
       case '\r':
-        c = scanner.next('\n');
-      case '\n':
-      case '#':
+        terminator = Char.toString(c, scanner.next(LINE_FEED));
+        break;
+      case '#': {
+        terminator = c + scanner.nextMap('\0', LINE_FEED);
+        break;
+      }
+      case LINE_FEED:
       case ';': {
         terminator = Char.toString(c);
         break;
