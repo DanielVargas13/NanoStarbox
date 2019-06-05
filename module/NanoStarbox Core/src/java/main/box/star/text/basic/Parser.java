@@ -17,7 +17,7 @@ import static box.star.text.basic.Parser.Status.*;
  * <p>This class and it's subclasses can be used to execute any parser
  * implementation through it's {@link #parse(Class, Scanner) static parse}
  * method. Each subclass also has an {@link #parse(Class) instance parse} method, which uses the
- * parser's {@link #scanner} to create and start a new parser as an serial scanner pipeline task.</p>
+ * parser's {@link #scanner} to create and start a new parser as a serial scanner pipeline task.</p>
  * <br>
  * <p>
  *   In a typical parser implementation, there is the notion of an elliptical
@@ -76,7 +76,7 @@ public class Parser extends Scanner.CancellableOperation {
     return bookmark;
   }
 
-  // Protected Static Class Provisions
+  // Public Static Class Provisions
   /**
    * This Interface allows a Parser to specify that upon successful
    * completion the scanner history should be synchronized (flushed) with the
@@ -135,7 +135,7 @@ public class Parser extends Scanner.CancellableOperation {
    * and scanner. The method then {@link #start() executes} the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
-   * parser's current position, which provides a boundary over-read-sanity-check
+   * parser's current position, which provides a stream-synchronization-sanity-check
    * </p>
    * <br>
    * @param parserSubclass the parser class reference
@@ -173,7 +173,7 @@ public class Parser extends Scanner.CancellableOperation {
    * The method then {@link #start() executes} the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
-   * parser's current position, which provides a boundary over-read-sanity-check
+   * parser's current position, which provides a stream-synchronization-sanity-check
    * </p>
    * <br>
    * @param parserSubclass the parser class reference
@@ -195,8 +195,8 @@ public class Parser extends Scanner.CancellableOperation {
           throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
         else if (parser.isNotSynchronized())
           throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
       }
-      if (parser instanceof NewFuturePromise) scanner.flushHistory();
     }
     return parser;
   }

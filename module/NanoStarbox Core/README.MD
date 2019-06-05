@@ -19,8 +19,8 @@ Aggressive Runtime Package Loading, Runtime Package Introspection and URL Classl
 * WebServer Interface Library (uses HTTPServer Interface)
 * WebServer Archive/Directory Mounting (uses HTTPServer Content Provider Interface)
 * Unix Command Shell Emulation Library
-* TextScanner Library
-* Text Macro Shell Library (uses TextScanner)
+* Basic (universal) Text Scanner Library
+* Text Macro Shell Library (uses Basic Text Scanner Library)
 * MimeType Map Library
 * MimeType Driver Interface Library
 * JavaScript Server Page Library (for WebServer Interface, uses Mozilla Rhino JavaScript, MimeType Driver Interface and Text Macro Shell, features Mozilla-Rhino/[REQUIRE.JS](https://requirejs.org/) support for server-side-script-includes)

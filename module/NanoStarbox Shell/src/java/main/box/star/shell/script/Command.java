@@ -3,8 +3,7 @@ package box.star.shell.script;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
-import static box.star.text.Char.LINE_FEED;
-import static box.star.text.Char.MAP_ASCII_ALL_WHITE_SPACE;
+import static box.star.text.Char.*;
 
 public class Command extends Interpreter {
 
@@ -79,7 +78,7 @@ public class Command extends Interpreter {
       }
       default:
         scanner.back();
-        while (Char.mapContains(scanner.current(), Char.MAP_ASCII_ALL_WHITE_SPACE)) scanner.back();
+        while (Char.mapContains(scanner.current(), MAP_ASCII_ALL_WHITE_SPACE)) scanner.back();
     }
   }
 }

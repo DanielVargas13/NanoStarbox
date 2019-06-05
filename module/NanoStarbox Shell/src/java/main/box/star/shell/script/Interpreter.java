@@ -159,7 +159,7 @@ public class Interpreter extends box.star.text.basic.Parser {
    * and scanner. The method then {@link #start() executes} the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
-   * parser's current position, which provides a boundary over-read-sanity-check
+   * parser's current position, which provides a stream-synchronization-sanity-check
    * </p>
    * <br>
    * @param parserSubclass the parser class reference
