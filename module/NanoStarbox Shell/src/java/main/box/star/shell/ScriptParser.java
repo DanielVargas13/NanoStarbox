@@ -7,6 +7,7 @@ import box.star.shell.script.Command;
 import box.star.shell.script.Parameter;
 import box.star.shell.script.Redirect;
 import box.star.shell.script.content.DataOperation;
+import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
 import java.lang.reflect.Constructor;
@@ -31,12 +32,9 @@ import java.lang.reflect.Constructor;
  * interpret the script components, and the shell contexts interpret these
  * models.</p>
  * <br>
- * <p>{@link Type} lists a manually curated enumeration for each parser model
- * kind of this class and {@link ListType} lists a manually curated enumeration
- * for each parser list model kind of this class.</p>
  * <br>
  */
-public class ScriptParser extends box.star.text.basic.Parser {
+public class ScriptParser extends Parser {
 
   public ScriptParser(@NotNull Scanner scanner) { super(scanner); }
 
@@ -153,14 +151,50 @@ public class ScriptParser extends box.star.text.basic.Parser {
       Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
       parser = (ScriptParser) classConstructor.newInstance(scanner);
-    } catch (Exception e){throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
+    } catch (Exception e){throw new RuntimeException(ScriptParser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
       parser.call(NO_PARAMETERS);
       if (parser.successful()) {
         if (! parser.isFinished())
-          throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+          throw new RuntimeException(ScriptParser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
         else if (parser.isNotSynchronized())
-          throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+          throw new RuntimeException(ScriptParser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
+      }
+    }
+    return (T) parser;
+  }
+
+  /**
+   * <p>Factory Parse Method</p>
+   * <br>
+   * <p>This method constructs parsers with a given class
+   * and scanner. The method then {@link #start() executes} the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a stream-synchronization-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param scanner the source scanner
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
+  public static <T extends box.star.text.basic.Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner, Object... parameters) throws IllegalStateException {
+    ScriptParser parser;
+    try {
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
+      classConstructor.setAccessible(true);
+      parser = (ScriptParser) classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(ScriptParser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
+    if (parser.successful()) {
+      parser.call(parameters);
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(ScriptParser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(ScriptParser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
         if (parser instanceof NewFuturePromise) scanner.flushHistory();
       }
     }
