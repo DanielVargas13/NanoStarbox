@@ -2,8 +2,24 @@ package box.star.shell.script;
 
 import box.star.text.basic.Scanner;
 
-public class HereDocument extends Parameter {
-  HereDocument(Scanner scanner) {
+import static box.star.text.Char.*;
+
+public class HereDocument extends Interpreter {
+  public HereDocument(Scanner scanner) {
     super(scanner);
+  }
+  Parameter documentTag;
+  StringBuilder document = new StringBuilder();
+  @Override
+  protected void start() {
+    documentTag = parse(Parameter.class);
+    String line;
+    do {
+      line = scanner.nextField(LINE_FEED);
+      if (line.equals(documentTag.text)) break;
+      else document.append(line + scanner.previous());
+    } while (true);
+    scanner.escape();
+    finish();
   }
 }

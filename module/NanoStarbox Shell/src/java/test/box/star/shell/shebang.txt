@@ -1,3 +1,5 @@
 #!/usr/bin/bash boom
-a=b 'head' < ball | (grep fu | { exit& } | tac) 1> foul;
+a=b 'head' | (grep fu | { exit& } | tac) 1> foul << DING
+    This is my document!
+DING
 # Quasi-Modo

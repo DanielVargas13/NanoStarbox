@@ -6,6 +6,8 @@ import box.star.text.basic.Scanner;
 
 public class Redirect extends Interpreter {
 
+  HereDocument hereDocument;
+
   public final static String
       OP_OPEN_RANDOM = "<>",
       OP_OPEN_READABLE = "<",
@@ -45,7 +47,14 @@ public class Redirect extends Interpreter {
       else stream = "0";
     }
     this.stream = Integer.parseInt(stream);
-    file = parse(Parameter.class);
+    boolean
+        here_doc_mode = operation.equals(OP_HERE_DOC),
+        justified_here_doc_mode = operation.equals(OP_HERE_DOC_JUSTIFIED);
+    if (here_doc_mode || justified_here_doc_mode) {
+      hereDocument = parse(HereDocument.class);
+    } else {
+      file = parse(Parameter.class);
+    }
     finish();
   }
 }
