@@ -25,7 +25,7 @@ class MainTest {
     Scanner scanner = new Scanner("test", source);
     Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
     assertEquals(source, pl.get(0).getText());
-    assertEquals(NOT_QUOTING, pl.get(0).getQuoteType());
+    assertEquals(NOT_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
   }
 
@@ -34,7 +34,7 @@ class MainTest {
     Scanner scanner = new Scanner("test", source);
     Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
     assertEquals(source, pl.get(0).getText());
-    assertEquals(SINGLE_QUOTING, pl.get(0).getQuoteType());
+    assertEquals(SINGLE_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
   }
 
@@ -43,7 +43,7 @@ class MainTest {
     Scanner scanner = new Scanner("test", source);
     Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
     assertEquals(source, pl.get(0).getText());
-    assertEquals(DOUBLE_QUOTING, pl.get(0).getQuoteType());
+    assertEquals(DOUBLE_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
   }
 
@@ -52,7 +52,7 @@ class MainTest {
     Scanner scanner = new Scanner("test", source);
     Interpreter.ParameterList pl = Interpreter.parseParameterList(scanner);
     assertEquals(source, pl.get(0).getText());
-    assertEquals(COMPOUND_QUOTING, pl.get(0).getQuoteType());
+    assertEquals(COMPOUND_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
   }
 
