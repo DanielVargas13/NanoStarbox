@@ -6,6 +6,8 @@ import box.star.text.Char;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
+import java.util.regex.Pattern;
+
 import static box.star.shell.script.Command.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
@@ -97,9 +99,24 @@ public class Parameter extends Interpreter {
     parseContinuation();
   }
 
+  // eat line continuation-sequence: backslash, optional carriage return, line-feed and all following line space
+  private void eatLineContinuation(){
+    long start = scanner.getIndex();
+    if (scanner.current() == BACKSLASH) {
+      scanner.next();
+      if (scanner.current() == '\r') scanner.next();
+      if (scanner.current() == '\n') { scanner.next();
+        scanner.nextLineSpace();
+        return;
+      }
+    }
+    scanner.walkBack(start);
+  }
+
   private void parseLiteralText() {
     // todo check for illegal characters
     if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.NOT_QUOTING;
+    eatLineContinuation();
     buffer.append(scanner.current())
         .append(scanner.nextField(LITERAL_PARAMETER_TERMINATOR_MAP));
     char c = scanner.current();
