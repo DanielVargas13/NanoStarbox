@@ -5,10 +5,10 @@ import box.star.text.basic.driver.GenericProgramIdentifier;
 
 import java.util.regex.Pattern;
 
-public class EnvironmentOperation extends Interpreter {
+public class DataOperation extends Interpreter {
   public String variable, operation;
   public Parameter value;
-  public EnvironmentOperation(Scanner scanner) {
+  public DataOperation(Scanner scanner) {
     super(scanner);
   }
   @Override

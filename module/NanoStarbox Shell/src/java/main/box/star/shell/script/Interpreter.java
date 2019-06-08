@@ -3,7 +3,6 @@ package box.star.shell.script;
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.lang.Char;
-import box.star.lang.SyntaxError;
 import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
 
@@ -122,7 +121,7 @@ public class Interpreter extends box.star.text.basic.Parser {
   public static EnvironmentOperationList parseEnvironmentOperationList(Scanner scanner){
     EnvironmentOperationList operationList = new EnvironmentOperationList();
     while (! scanner.endOfSource()) {
-      EnvironmentOperation op = Interpreter.parse(EnvironmentOperation.class, scanner);
+      DataOperation op = Interpreter.parse(DataOperation.class, scanner);
       if (op.status == Status.OK) operationList.add(op);
       else break;
     }
@@ -191,7 +190,7 @@ public class Interpreter extends box.star.text.basic.Parser {
   public static class ParameterList extends List<Parameter> {}
   public static class CommandList extends List<Command> {}
   public static class RedirectList extends List<Redirect> {}
-  public static class EnvironmentOperationList extends List<EnvironmentOperation> {}
+  public static class EnvironmentOperationList extends List<DataOperation> {}
 
 }
 

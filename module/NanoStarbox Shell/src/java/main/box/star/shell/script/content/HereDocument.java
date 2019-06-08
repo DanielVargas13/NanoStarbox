@@ -1,5 +1,7 @@
-package box.star.shell.script;
+package box.star.shell.script.content;
 
+import box.star.shell.script.Interpreter;
+import box.star.shell.script.Parameter;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;

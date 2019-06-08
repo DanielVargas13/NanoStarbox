@@ -1,7 +1,7 @@
 package box.star.shell;
 
 import box.star.shell.script.Interpreter;
-import box.star.shell.script.ShellMain;
+import box.star.shell.script.Document;
 import box.star.text.basic.Scanner;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class MainTest {
   @Test void parse_shell_script_main(){
     File shebang_line_file = new File("src/java/test/box/star/shell/shebang.txt");
     Scanner scanner = new Scanner(shebang_line_file);
-    ShellMain result = Interpreter.parse(ShellMain.class, scanner);
+    Document result = Interpreter.parse(Document.class, scanner);
     return; // DEBUG-BREAK-HERE, and inspect Results
   }
 

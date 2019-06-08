@@ -1,6 +1,7 @@
 package box.star.shell.script;
 
 import box.star.Tools;
+import box.star.shell.script.content.HereDocument;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 

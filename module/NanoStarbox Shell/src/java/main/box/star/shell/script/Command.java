@@ -41,7 +41,7 @@ public class Command extends Interpreter {
           char t = scanner.next();
           switch (t){
             case '(': {
-              pipe = parse(ShellSubMain.class);
+              pipe = parse(CommandContext.class);
               break;
             }
             case '{': {

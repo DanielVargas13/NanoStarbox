@@ -2,11 +2,11 @@ package box.star.shell.script;
 
 import box.star.text.basic.Scanner;
 
-public class ShellSubMain extends Command {
+public class CommandContext extends Command {
 
   public CommandList commandList;
 
-  public ShellSubMain(Scanner scanner) {
+  public CommandContext(Scanner scanner) {
     super(scanner);
   }
 

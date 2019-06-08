@@ -16,6 +16,7 @@ public interface Shell {
   interface Executive {
     int exec(Context context, Stack<String> parameters);
   }
+
   interface Plugin {
     int exec(Context context, Stack<Object> parameters);
   }
