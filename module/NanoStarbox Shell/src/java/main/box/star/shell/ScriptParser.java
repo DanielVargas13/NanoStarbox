@@ -27,19 +27,19 @@ import java.lang.reflect.Constructor;
  * <p>Each parser model forms or conforms with the struts about which each shell
  * execution context interface is built.</p>
  * <br>
- * <p>A script parser does not perform any expansions, evaluations, or interact
- * with any shell specific environment settings. In short, these parsers
- * interpret the script components, and the shell contexts interpret these
- * models.</p>
+ * <p>Parsers implementing this class interpret individual shell script components.</p>
  * <br>
+ * <p>This parser class provides several sets of parser instance lists which
+ * are the equivalent of <code>...</code> (elliptical pattern expansions)
+ * of the shell script grammar.</p>
  * <br>
  */
 public class ScriptParser extends Parser {
 
   public ScriptParser(@NotNull Scanner scanner) { super(scanner); }
 
-  public static ParameterList parseParameterList(Scanner scanner){
-    ParameterList parameters = new ParameterList();
+  public static ParameterSet parseParameterSet(Scanner scanner){
+    ParameterSet parameters = new ParameterSet();
     if (scanner.haveNext()) do {
       Parameter parameter = parse(Parameter.class, scanner);
       if (parameter.status.equals(Status.OK)) { parameters.add(parameter); }
@@ -109,8 +109,8 @@ public class ScriptParser extends Parser {
     return parameters;
   }
 
-  public static RedirectList parseParameterRedirectList(Scanner scanner){
-    RedirectList redirects = new RedirectList();
+  public static RedirectSet parseRedirections(Scanner scanner){
+    RedirectSet redirects = new RedirectSet();
     if (scanner.haveNext()) do {
       Redirect redirect = parse(Redirect.class, scanner);
       if (redirect.status.equals(Status.OK)) { redirects.add(redirect); }
@@ -119,8 +119,8 @@ public class ScriptParser extends Parser {
     return redirects;
   }
 
-  public static DataOperationList parseDataOperationList(Scanner scanner){
-    DataOperationList operationList = new DataOperationList();
+  public static DataOperationSet parseDataOperations(Scanner scanner){
+    DataOperationSet operationList = new DataOperationSet();
     while (! scanner.endOfSource()) {
       DataOperation op = ScriptParser.parse(DataOperation.class, scanner);
       if (op.status == Status.OK) operationList.add(op);
@@ -201,10 +201,10 @@ public class ScriptParser extends Parser {
     return (T) parser;
   }
 
-  public static class ParameterList extends List<Parameter> {}
+  public static class ParameterSet extends List<Parameter> {}
   public static class CommandSet extends List<Command> {}
-  public static class RedirectList extends List<Redirect> {}
-  public static class DataOperationList extends List<DataOperation> {}
+  public static class RedirectSet extends List<Redirect> {}
+  public static class DataOperationSet extends List<DataOperation> {}
 
 }
 

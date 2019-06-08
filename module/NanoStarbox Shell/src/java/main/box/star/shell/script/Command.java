@@ -12,9 +12,9 @@ public class Command extends ScriptParser {
       Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')
   ).toMap();
 
-  public DataOperationList environmentOperations;
-  public ParameterList parameters;
-  public RedirectList redirects;
+  public DataOperationSet environmentOperations;
+  public ParameterSet parameters;
+  public RedirectSet redirects;
   public Command pipe;
   public String terminator;
 
@@ -23,13 +23,13 @@ public class Command extends ScriptParser {
   }
   @Override
   protected void start() {
-    environmentOperations = parseDataOperationList(scanner);
-    parameters = parseParameterList(scanner);
+    environmentOperations = parseDataOperations(scanner);
+    parameters = parseParameterSet(scanner);
     parseEnding();
     finish();
   }
   protected void parseEnding(){
-    redirects = parseParameterRedirectList(scanner);
+    redirects = parseRedirections(scanner);
     scanner.nextLineSpace();
     char c = scanner.next();
     switch (c){

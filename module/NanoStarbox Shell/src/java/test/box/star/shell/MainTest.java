@@ -22,7 +22,7 @@ class MainTest {
   @Test void parse_literal_parameter(){
     String source = "echo";
     Scanner scanner = new Scanner("test", source);
-    ScriptParser.ParameterList pl = ScriptParser.parseParameterList(scanner);
+    ScriptParser.ParameterSet pl = ScriptParser.parseParameterSet(scanner);
     assertEquals(source, pl.get(0).getText());
     assertEquals(NOT_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
@@ -31,7 +31,7 @@ class MainTest {
   @Test void parse_single_quoted_parameter(){
     String source = "'echo'";
     Scanner scanner = new Scanner("test", source);
-    ScriptParser.ParameterList pl = ScriptParser.parseParameterList(scanner);
+    ScriptParser.ParameterSet pl = ScriptParser.parseParameterSet(scanner);
     assertEquals(source, pl.get(0).getText());
     assertEquals(SINGLE_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
@@ -40,7 +40,7 @@ class MainTest {
   @Test void parse_double_quoted_parameter(){
     String source = DOUBLE_QUOTE+"echo"+BACKSLASH+DOUBLE_QUOTE+DOUBLE_QUOTE;
     Scanner scanner = new Scanner("test", source);
-    ScriptParser.ParameterList pl = ScriptParser.parseParameterList(scanner);
+    ScriptParser.ParameterSet pl = ScriptParser.parseParameterSet(scanner);
     assertEquals(source, pl.get(0).getText());
     assertEquals(DOUBLE_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
@@ -49,7 +49,7 @@ class MainTest {
   @Test void parse_compound_parameter(){
     String source = "echo'hello'\"world\"echo\\ ";
     Scanner scanner = new Scanner("test", source);
-    ScriptParser.ParameterList pl = ScriptParser.parseParameterList(scanner);
+    ScriptParser.ParameterSet pl = ScriptParser.parseParameterSet(scanner);
     assertEquals(source, pl.get(0).getText());
     assertEquals(COMPOUND_QUOTING, pl.get(0).quoteType);
     assertTrue(scanner.endOfSource());
