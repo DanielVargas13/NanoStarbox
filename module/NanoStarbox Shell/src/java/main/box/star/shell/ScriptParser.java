@@ -33,6 +33,21 @@ import java.lang.reflect.Constructor;
  * are the equivalent of <code>...</code> (elliptical pattern expansions)
  * of the shell script grammar.</p>
  * <br>
+ * <p>Shell Code Reference</p>
+ * <br>
+ *   <h4>Text Command Shell: Text Command Model</h4>
+ *   <code>
+ *     RULE-SYNTAX: `?' = maybe, '?:' = if-then, '...' = repeating-or-empty-rule, '()' = anonymous-group
+ *   </code><br><br>
+ * <code>
+ *   COMMAND: ([DATA_OPERATION]...) [PROGRAM]?: (([PARAMETER]...) ([REDIRECT]...) ([PIPE]?: [COMMAND])...)? [TERMINATOR]
+ * </code><br><br>
+ * <p>Technically, a command may do nothing by specifying no environment or program, using only a terminator such as comment.</p><br>
+ * <p>Conventionally, a shell such as the BASH shell does not allow for
+ * current process re-directions, using this form, which is why re-directions are dependent upon
+ * the PROGRAM rule. Instead the shell delegates such functionality to the exec command.</p>
+ * <br><p>For the list of command terminators see {@link box.star.shell.script.Command#COMMAND_TERMINATOR_MAP}.</p>
+ * <br>
  */
 public class ScriptParser extends Parser {
 
