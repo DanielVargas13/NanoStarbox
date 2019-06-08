@@ -350,6 +350,14 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
     state.stepBackward();
   }
 
+  /**
+   * <p>Step the scanner back by one character position, if the current position is not
+   * the end of the scanner source</p>
+   *
+   * <p>This method provides touch-and-go delimiter bounds recovery, and lookahead
+   * recovery. Typically called from within the domain of a parser or driver,
+   * to allow the parent operation to successfully handle the end of the data stream.</p>
+   */
   public void escape(){ if (! endOfSource()) back(); }
 
   public void back(int count) throws IllegalStateException { while (count-- > 0) back(); }
