@@ -1,19 +1,17 @@
 package box.star.shell.script;
 
 import box.star.lang.SyntaxError;
+import box.star.shell.ScriptParser;
 import box.star.shell.script.content.DoubleQuotedText;
 import box.star.text.Char;
-import box.star.text.basic.Parser;
 import box.star.text.basic.Scanner;
-
-import java.util.regex.Pattern;
 
 import static box.star.shell.script.Command.COMMAND_TERMINATOR_MAP;
 import static box.star.text.Char.*;
 
 import static box.star.shell.script.Parameter.QuoteType.*;
 
-public class Parameter extends Interpreter {
+public class Parameter extends ScriptParser {
 
   public static final char[] PARAMETER_TERMINATOR_MAP =
       new Char.Assembler(Char.toMap(PIPE, '<', '>'))
@@ -95,7 +93,7 @@ public class Parameter extends Interpreter {
     }
     if (scanner.getIndex() == start)
       throw new IllegalStateException(
-          "endless loop condition aborted"+Parser.PARSER_CODE_QUALITY_BUG);
+          "endless loop condition aborted"+ box.star.text.basic.Parser.PARSER_CODE_QUALITY_BUG);
     parseContinuation();
   }
 

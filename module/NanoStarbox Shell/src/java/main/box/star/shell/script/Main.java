@@ -1,6 +1,10 @@
 package box.star.shell.script;
 
 import static box.star.text.basic.Scanner.*;
+
+import box.star.shell.ScriptParser;
+import box.star.shell.script.content.Comment;
+import box.star.shell.script.content.Directive;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
@@ -8,18 +12,18 @@ import static box.star.text.Char.*;
 /**
  * <p>Main Parser</p>
  * <br>
- * <p>{@link Document} looks for a specific shell program word and processes that word,
- * using the associated {@link Interpreter} sub-class. Additionally, this
+ * <p>{@link Main} looks for a specific shell program word and processes that word,
+ * using the associated {@link ScriptParser} sub-class. Additionally, this
  * class is responsible for parsing white-space-characters and unidentified garbage.</p>
  * <br>
- * @see Interpreter#parse(Class, Scanner)  Parsing Text Records with the Parser class
+ * @see ScriptParser#parse(Class, Scanner)  Parsing Text Records with the Parser class
  * @see Scanner
  * @see Scanner.SourceDriver
  */
-public class Document extends Interpreter
+public class Main extends ScriptParser
     implements box.star.text.basic.Parser.NewFuturePromise, Scanner.SourceDriver.WithBufferControlPort {
   public List records = new List();
-  public Document(Scanner scanner) {
+  public Main(Scanner scanner) {
     super(scanner);
   }
   @Override
@@ -42,7 +46,7 @@ public class Document extends Interpreter
         return true;
       }
       case '(': {
-        CommandList child = parse(CommandList.class);
+        CommandShell child = parse(CommandShell.class);
         if (child.successful()) records.add(child);
         return true;
       }

@@ -1,11 +1,11 @@
-package box.star.shell.script;
+package box.star.shell.script.content;
 
+import box.star.shell.ScriptParser;
+import box.star.shell.script.Parameter;
 import box.star.text.basic.Scanner;
 import box.star.text.basic.driver.GenericProgramIdentifier;
 
-import java.util.regex.Pattern;
-
-public class DataOperation extends Interpreter {
+public class DataOperation extends ScriptParser {
   public String variable, operation;
   public Parameter value;
   public DataOperation(Scanner scanner) {

@@ -1,11 +1,12 @@
 package box.star.shell.script;
 
 import box.star.Tools;
+import box.star.shell.ScriptParser;
 import box.star.shell.script.content.HereDocument;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
-public class Redirect extends Interpreter {
+public class Redirect extends ScriptParser {
 
   HereDocument hereDocument;
 

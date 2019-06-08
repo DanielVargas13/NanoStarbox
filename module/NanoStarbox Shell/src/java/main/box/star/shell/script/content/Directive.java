@@ -1,5 +1,6 @@
-package box.star.shell.script;
+package box.star.shell.script.content;
 
+import box.star.shell.script.content.Comment;
 import box.star.text.basic.Scanner;
 
 public class Directive extends Comment {

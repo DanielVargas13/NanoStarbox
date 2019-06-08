@@ -1,9 +1,12 @@
-package box.star.shell.script;
+package box.star.shell;
 
 import box.star.Tools;
 import box.star.contract.NotNull;
 import box.star.lang.Char;
-import box.star.text.basic.Parser;
+import box.star.shell.script.Command;
+import box.star.shell.script.Parameter;
+import box.star.shell.script.Redirect;
+import box.star.shell.script.content.DataOperation;
 import box.star.text.basic.Scanner;
 
 import java.lang.reflect.Constructor;
@@ -33,9 +36,9 @@ import java.lang.reflect.Constructor;
  * for each parser list model kind of this class.</p>
  * <br>
  */
-public class Interpreter extends box.star.text.basic.Parser {
+public class ScriptParser extends box.star.text.basic.Parser {
 
-  public Interpreter(@NotNull Scanner scanner) { super(scanner); }
+  public ScriptParser(@NotNull Scanner scanner) { super(scanner); }
 
   public static ParameterList parseParameterList(Scanner scanner){
     ParameterList parameters = new ParameterList();
@@ -47,7 +50,7 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
-  public static CommandSet parseCommandList(Scanner scanner){
+  public static CommandSet parseCommandGroup(Scanner scanner){
     CommandSet parameters = new CommandSet();
     if (scanner.current() != '{')
       throw new Scanner.SyntaxError(parameters, scanner, "expected command group symbol");
@@ -82,7 +85,7 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
-  public static CommandSet parseSubShell(Scanner scanner){
+  public static CommandSet parseCommandShell(Scanner scanner){
     CommandSet parameters = new CommandSet();
     if (scanner.current() != '(')
       throw new Scanner.SyntaxError(parameters, scanner, "expected command shell symbol");
@@ -121,7 +124,7 @@ public class Interpreter extends box.star.text.basic.Parser {
   public static EnvironmentOperationList parseEnvironmentOperationList(Scanner scanner){
     EnvironmentOperationList operationList = new EnvironmentOperationList();
     while (! scanner.endOfSource()) {
-      DataOperation op = Interpreter.parse(DataOperation.class, scanner);
+      DataOperation op = ScriptParser.parse(DataOperation.class, scanner);
       if (op.status == Status.OK) operationList.add(op);
       else break;
     }
@@ -167,20 +170,20 @@ public class Interpreter extends box.star.text.basic.Parser {
    * @return the result of the parser's execution (which may not be successful)
    * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
    */
-  public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
-    Interpreter parser;
+  public static <T extends box.star.text.basic.Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner) throws IllegalStateException {
+    ScriptParser parser;
     try {
       Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
       classConstructor.setAccessible(true);
-      parser = (Interpreter) classConstructor.newInstance(scanner);
-    } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
+      parser = (ScriptParser) classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
       parser.start();
       if (parser.successful()) {
         if (! parser.isFinished())
-          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+          throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
         else if (parser.isNotSynchronized())
-          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+          throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
         if (parser instanceof NewFuturePromise) scanner.flushHistory();
       }
     }

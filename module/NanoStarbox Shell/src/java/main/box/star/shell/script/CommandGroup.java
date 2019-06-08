@@ -1,5 +1,6 @@
 package box.star.shell.script;
 
+import box.star.shell.ScriptParser;
 import box.star.text.basic.Scanner;
 
 public class CommandGroup extends Command {
@@ -12,7 +13,7 @@ public class CommandGroup extends Command {
 
   @Override
   protected void start() {
-    commands = Interpreter.parseCommandList(scanner);
+    commands = ScriptParser.parseCommandGroup(scanner);
     parseEnding();
     finish();
   }

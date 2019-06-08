@@ -1,11 +1,12 @@
-package box.star.shell.script;
+package box.star.shell.script.content;
 
 import static box.star.text.Char.*;
 
 import box.star.lang.Char;
+import box.star.shell.ScriptParser;
 import box.star.text.basic.Scanner;
 
-public class Comment extends Interpreter  {
+public class Comment extends ScriptParser {
   public final static char[] BREAK_COMMENT_MAP=Char.toMap(NULL_CHARACTER, LINE_FEED);
   public String text;
   public Comment(Scanner scanner) {

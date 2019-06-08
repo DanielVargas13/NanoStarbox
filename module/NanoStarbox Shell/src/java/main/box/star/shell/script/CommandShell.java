@@ -1,18 +1,19 @@
 package box.star.shell.script;
 
+import box.star.shell.ScriptParser;
 import box.star.text.basic.Scanner;
 
-public class CommandList extends Command {
+public class CommandShell extends Command {
 
   public CommandSet commandList;
 
-  public CommandList(Scanner scanner) {
+  public CommandShell(Scanner scanner) {
     super(scanner);
   }
 
   @Override
   protected void start() {
-    commandList = Interpreter.parseSubShell(scanner);
+    commandList = ScriptParser.parseCommandShell(scanner);
     parseEnding();
     finish();
   }

@@ -1,11 +1,12 @@
 package box.star.shell.script;
 
+import box.star.shell.ScriptParser;
 import box.star.text.Char;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
 
-public class Command extends Interpreter {
+public class Command extends ScriptParser {
 
   public static final char[] COMMAND_TERMINATOR_MAP = new Char.Assembler(
       Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')
@@ -41,7 +42,7 @@ public class Command extends Interpreter {
           char t = scanner.next();
           switch (t){
             case '(': {
-              pipe = parse(CommandList.class);
+              pipe = parse(CommandShell.class);
               break;
             }
             case '{': {

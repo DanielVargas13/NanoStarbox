@@ -1,12 +1,12 @@
 package box.star.shell.script.content;
 
-import box.star.shell.script.Interpreter;
+import box.star.shell.ScriptParser;
 import box.star.shell.script.Parameter;
 import box.star.text.basic.Scanner;
 
 import static box.star.text.Char.*;
 
-public class HereDocument extends Interpreter {
+public class HereDocument extends ScriptParser {
   public HereDocument(Scanner scanner) {
     super(scanner);
   }
