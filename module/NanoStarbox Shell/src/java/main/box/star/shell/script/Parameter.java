@@ -109,13 +109,12 @@ public class Parameter extends Interpreter {
         scanner.nextLineSpace();
         return;
       }
+      scanner.walkBack(start);
     }
-    scanner.walkBack(start);
   }
 
   private void parseLiteralText() {
     // todo check for illegal characters
-    if (NOT_QUOTING.equals(quoteType)) quoteType = QuoteType.NOT_QUOTING;
     eatLineContinuation();
     buffer.append(scanner.current())
         .append(scanner.nextField(LITERAL_PARAMETER_TERMINATOR_MAP));
