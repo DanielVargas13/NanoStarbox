@@ -121,37 +121,14 @@ public class ScriptParser extends box.star.text.basic.Parser {
     return redirects;
   }
 
-  public static EnvironmentOperationList parseEnvironmentOperationList(Scanner scanner){
-    EnvironmentOperationList operationList = new EnvironmentOperationList();
+  public static DataOperationList parseDataOperationList(Scanner scanner){
+    DataOperationList operationList = new DataOperationList();
     while (! scanner.endOfSource()) {
       DataOperation op = ScriptParser.parse(DataOperation.class, scanner);
       if (op.status == Status.OK) operationList.add(op);
       else break;
     }
     return operationList;
-  }
-
-  public enum Type {
-    TEXT_RECORD_TYPE_SHEBANG,
-    TEXT_RECORD_TYPE_MAIN,
-    TEXT_RECORD_TYPE_CHILD,
-    TEXT_RECORD_TYPE_COMMAND_GROUP,
-    TEXT_RECORD_TYPE_COMMENT,
-    TEXT_RECORD_TYPE_ENVIRONMENT_OPERATION,
-    TEXT_RECORD_TYPE_COMMAND,
-    TEXT_RECORD_TYPE_PARAMETER,
-    TEXT_RECORD_TYPE_PARAMETER_TEXT,
-    TEXT_RECORD_TYPE_PARAMETER_LITERAL,
-    TEXT_RECORD_TYPE_PARAMETER_QUOTED,
-    TEXT_RECORD_TYPE_REDIRECT,
-    TEXT_RECORD_TYPE_HERE_DOCUMENT
-  }
-
-  public enum ListType {
-    TEXT_RECORD_LIST_TYPE_ENVIRONMENT_OPERATION_LIST,
-    TEXT_RECORD_LIST_TYPE_PARAMETER_LIST,
-    TEXT_RECORD_LIST_TYPE_REDIRECT_LIST,
-    TEXT_RECORD_LIST_TYPE_COMMAND_LIST
   }
 
   /**
@@ -178,7 +155,7 @@ public class ScriptParser extends box.star.text.basic.Parser {
       parser = (ScriptParser) classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      parser.start();
+      parser.call(NO_PARAMETERS);
       if (parser.successful()) {
         if (! parser.isFinished())
           throw new RuntimeException(box.star.text.basic.Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
@@ -193,7 +170,7 @@ public class ScriptParser extends box.star.text.basic.Parser {
   public static class ParameterList extends List<Parameter> {}
   public static class CommandSet extends List<Command> {}
   public static class RedirectList extends List<Redirect> {}
-  public static class EnvironmentOperationList extends List<DataOperation> {}
+  public static class DataOperationList extends List<DataOperation> {}
 
 }
 

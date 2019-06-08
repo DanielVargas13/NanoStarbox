@@ -12,7 +12,7 @@ public class Command extends ScriptParser {
       Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')
   ).toMap();
 
-  public EnvironmentOperationList environmentOperations;
+  public DataOperationList environmentOperations;
   public ParameterList parameters;
   public RedirectList redirects;
   public Command pipe;
@@ -23,7 +23,7 @@ public class Command extends ScriptParser {
   }
   @Override
   protected void start() {
-    environmentOperations = parseEnvironmentOperationList(scanner);
+    environmentOperations = parseDataOperationList(scanner);
     parameters = parseParameterList(scanner);
     parseEnding();
     finish();

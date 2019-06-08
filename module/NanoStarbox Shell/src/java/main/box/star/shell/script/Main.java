@@ -30,9 +30,6 @@ public class Main extends ScriptParser
   public boolean collect(Scanner scanner, StringBuilder buffer, char character) {
     if (scanner.endOfSource()) return false;
     else if (mapContains(character, MAP_ASCII_ALL_WHITE_SPACE)) return true;
-    else if (mapContains(character, MAP_ASCII_NUMBERS)){
-      throw new SyntaxError(this, "expected command found digits");
-    }
     else switch (character){
       case '#': {
         boolean bang = scanner.getLine() == 1 && scanner.getColumn() == 1;
@@ -43,16 +40,6 @@ public class Main extends ScriptParser
           Comment comment = parse(Comment.class);
           if (comment.successful()) records.add(comment);
         }
-        return true;
-      }
-      case '(': {
-        CommandShell child = parse(CommandShell.class);
-        if (child.successful()) records.add(child);
-        return true;
-      }
-      case '{': {
-        CommandGroup list = parse(CommandGroup.class);
-        if (list.successful()) records.add(list);
         return true;
       }
     }
