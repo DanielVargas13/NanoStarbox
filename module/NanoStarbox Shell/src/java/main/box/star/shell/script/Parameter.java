@@ -105,8 +105,9 @@ public class Parameter extends Interpreter {
     if (scanner.current() == BACKSLASH) {
       scanner.next();
       if (scanner.current() == '\r') scanner.next();
-      if (scanner.current() == '\n') { scanner.next();
+      if (scanner.current() == '\n') {
         scanner.nextLineSpace();
+        scanner.next();
         return;
       }
       scanner.walkBack(start);
