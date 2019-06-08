@@ -14,5 +14,6 @@ public class ReadEvalPrintLoopPrototype {
     do {
       cmd = Interpreter.parse(Command.class, x);
     } while (! cmd.parameters.get(0).text.equals("exit"));
+
   }
 }
