@@ -1,7 +1,9 @@
 package box.star.text.basic;
 
+import box.star.Parameter;
 import box.star.contract.NotNull;
 
+import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -39,6 +41,8 @@ public class Parser extends Scanner.CancellableOperation {
       PARSER_CODE_QUALITY_BUG = " (code optimization bug)"
   ;
 
+  protected static final Object[] NO_PARAMETERS = new Object[0];
+
   // Public Static Class Provisions
   public static class
     List<T extends Parser> extends ArrayList<T> {}
@@ -47,8 +51,7 @@ public class Parser extends Scanner.CancellableOperation {
     Status {OK, FAILED}
 
   // Protected Properties
-  public Status status;
-  //protected Scanner scanner;
+  protected Object[] parameters;
 
   // Private Properties
   private long end;
@@ -56,6 +59,7 @@ public class Parser extends Scanner.CancellableOperation {
   private Bookmark origin;
 
   // Public Properties
+  public Status status;
   final public boolean successful(){return status.equals(OK);}
   final public boolean isFinished() { return finished; }
   final public long getStart() { return start; }
@@ -124,7 +128,40 @@ public class Parser extends Scanner.CancellableOperation {
    * may do any number of things, but it must synchronize with the scanner by the
    * end of it's execution pipe-line.</p>
    */
-  protected void start(){};
+  protected void start(){
+    throw new RuntimeException("this operation is not yet implemented by "+this.getClass().getName());
+  };
+  protected void start(Object[] parameters){
+    if (this instanceof ParameterPort) throw new RuntimeException("this operation is not yet implemented by "+this.getClass().getName());
+    throw new RuntimeException(this.getClass().getName()+" does not host the "+ParameterPort.class.getName()+" control port");
+  };
+
+  /**
+   * <p>A subclass of {@link Parser} implements this control port to directly receive
+   * procedure call parameters through {@link #start(Object[])}</p>
+   * <br>
+   * <p>
+   *   If an object doesn't host this control port, the parameters given
+   *   may be accessed through {@link #parameters}. This is a backwards
+   *   compatibility feature. Parser parameters were not a part of the original
+   *   parser design specification. A parser could be designed as a method call
+   *   with extensions beyond this specification, and that will require parameter
+   *   handling.
+   * </p>
+   * <br>
+   *   <p>Using this control port has the effect that {@link #start()} will
+   *   not be called.</p>
+   * <br>
+   */
+  public interface ParameterPort {}
+
+  protected void call(Object[] parameters){
+    if (this instanceof ParameterPort) start(parameters);
+    else {
+      this.parameters = parameters;
+      start();
+    }
+  }
 
   // Public Static Methods
 
@@ -132,7 +169,7 @@ public class Parser extends Scanner.CancellableOperation {
    * <p>Factory Parse Method</p>
    * <br>
    * <p>This method constructs parsers with a given class
-   * and scanner. The method then {@link #start() executes} the parser for it's results. This
+   * The method then executes the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
    * parser's current position, which provides a stream-synchronization-sanity-check
@@ -152,7 +189,44 @@ public class Parser extends Scanner.CancellableOperation {
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      parser.start();
+      parser.call(NO_PARAMETERS);
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
+      }
+    }
+    return parser;
+  }
+
+  /**
+   * <p>Factory Parse Method</p>
+   * <br>
+   * <p>This method constructs parsers with a given class
+   * The method then executes the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a stream-synchronization-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param scanner the source scanner
+   * @param parameters the parameters for the subclass
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
+  public static <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, @NotNull Scanner scanner, Object... parameters) throws IllegalStateException {
+    T parser;
+    try {
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
+      classConstructor.setAccessible(true);
+      parser = classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(Parser.class.getName()+PARSER_CODE_QUALITY_BUG, e);}
+    if (parser.successful()) {
+      parser.call(parameters);
       if (parser.successful()) {
         if (! parser.isFinished())
           throw new RuntimeException(Parser.class.getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
@@ -170,7 +244,7 @@ public class Parser extends Scanner.CancellableOperation {
    * <p>Factory Parse Method: serial scanner pipeline task</p>
    * <br>
    * <p>This method constructs serial pipeline [co]parsers with a given class.
-   * The method then {@link #start() executes} the parser for it's results. This
+   * The method then executes the parser for it's results. This
    * setup provides between-parser-call scanner method synchronization. A parser
    * cannot return to this method if it's end point is not consistent with the
    * parser's current position, which provides a stream-synchronization-sanity-check
@@ -189,7 +263,43 @@ public class Parser extends Scanner.CancellableOperation {
       parser = classConstructor.newInstance(scanner);
     } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
     if (parser.successful()) {
-      parser.start();
+      parser.call(NO_PARAMETERS);
+      if (parser.successful()) {
+        if (! parser.isFinished())
+          throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
+        else if (parser.isNotSynchronized())
+          throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_SYNC));
+        if (parser instanceof NewFuturePromise) scanner.flushHistory();
+      }
+    }
+    return parser;
+  }
+
+  /**
+   * <p>Factory Parse Method: serial scanner pipeline task</p>
+   * <br>
+   * <p>This method constructs serial pipeline [co]parsers with a given class.
+   * The method then executes the parser for it's results. This
+   * setup provides between-parser-call scanner method synchronization. A parser
+   * cannot return to this method if it's end point is not consistent with the
+   * parser's current position, which provides a stream-synchronization-sanity-check
+   * </p>
+   * <br>
+   * @param parserSubclass the parser class reference
+   * @param parameters the parameters for the subclass
+   * @param <T> the subclass specification
+   * @return the result of the parser's execution (which may not be successful)
+   * @throws IllegalStateException if the parser succeeds but does not correctly finish it's session with the scanner
+   */
+  protected <T extends Parser> @NotNull T parse(@NotNull Class<T> parserSubclass, Object... parameters){
+    T parser;
+    try {
+      Constructor<T> classConstructor = parserSubclass.getConstructor(Scanner.class);
+      classConstructor.setAccessible(true);
+      parser = classConstructor.newInstance(scanner);
+    } catch (Exception e){throw new RuntimeException(this.getClass().getName()+PARSER_CODE_QUALITY_BUG, e);}
+    if (parser.successful()) {
+      parser.call(parameters);
       if (parser.successful()) {
         if (! parser.isFinished())
           throw new RuntimeException(this.getClass().getName()+PARSER_QA_BUG, new IllegalStateException(parserSubclass.getName()+PARSER_DID_NOT_FINISH));
