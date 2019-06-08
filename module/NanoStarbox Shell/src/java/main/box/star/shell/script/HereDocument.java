@@ -16,7 +16,7 @@ public class HereDocument extends Interpreter {
     String line;
     do {
       line = scanner.nextField(LINE_FEED);
-      if (line.equals(documentTag.text)) break;
+      if (line.equals(documentTag.getPlainText())) break;
       else document.append(line + scanner.previous());
     } while (true);
     scanner.escape();

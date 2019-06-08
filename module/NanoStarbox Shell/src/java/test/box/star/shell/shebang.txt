@@ -1,5 +1,5 @@
 #!/usr/bin/bash boom
-a=b 'head' | (grep fu | { exit& } | tac) 1> foul << DING
+a=b 'head' | (grep fu | { exit& } | tac) 1> foul << "DING"
     This is my document!
 DING
 # Quasi-Modo

@@ -32,6 +32,12 @@ public class Parameter extends Interpreter {
   public String getText() {
     return text;
   }
+  public String getPlainText(){
+    if (quoteType.equals(SINGLE_QUOTING) || quoteType.equals(DOUBLE_QUOTING))
+      return text.substring(0, text.length() - 1).substring(1);
+    else if (quoteType.equals(NOT_QUOTING)) return text;
+    throw new RuntimeException("cannot convert quote type: `"+quoteType+"' to plain text");
+  }
   public QuoteType getQuoteType() {
     return quoteType;
   }
