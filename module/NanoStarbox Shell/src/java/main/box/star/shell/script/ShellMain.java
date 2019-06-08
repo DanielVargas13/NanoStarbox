@@ -18,7 +18,7 @@ import static box.star.text.Char.*;
  */
 public class ShellMain extends Interpreter
     implements box.star.text.basic.Parser.NewFuturePromise, Scanner.SourceDriver.WithBufferControlPort {
-  List records = new List();
+  public List records = new List();
   public ShellMain(Scanner scanner) {
     super(scanner);
   }

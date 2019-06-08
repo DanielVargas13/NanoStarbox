@@ -6,11 +6,11 @@ public class Directive extends Comment {
   public Directive(Scanner scanner) {
     super(scanner);
   }
-  String getParameterString(){
+  public String getParameterString(){
     String[] data = text.split("\\s", 2);
     return data[data.length - 1];
   }
-  String getInterpreterPath(){
+  public String getInterpreterPath(){
     String[] data = text.split("\\s", 2);
     return data[0];
   }

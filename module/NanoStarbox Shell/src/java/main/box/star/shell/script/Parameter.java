@@ -25,9 +25,9 @@ public class Parameter extends Interpreter {
     NOT_QUOTING, SINGLE_QUOTING, DOUBLE_QUOTING, COMPOUND_QUOTING
   }
 
-  protected QuoteType quoteType = NOT_QUOTING;
+  public QuoteType quoteType = NOT_QUOTING;
   protected StringBuilder buffer;
-  protected String text;
+  public String text;
   public Parameter(Scanner scanner) { super(scanner); }
   public String getText() {
     return text;
@@ -37,9 +37,6 @@ public class Parameter extends Interpreter {
       return text.substring(0, text.length() - 1).substring(1);
     else if (quoteType.equals(NOT_QUOTING)) return text;
     throw new RuntimeException("cannot convert quote type: `"+quoteType+"' to plain text");
-  }
-  public QuoteType getQuoteType() {
-    return quoteType;
   }
   @Override public String toString() { return text; }
   @Override protected void start() {

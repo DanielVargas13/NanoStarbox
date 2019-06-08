@@ -8,8 +8,8 @@ public class HereDocument extends Interpreter {
   public HereDocument(Scanner scanner) {
     super(scanner);
   }
-  Parameter documentTag;
-  StringBuilder document = new StringBuilder();
+  public Parameter documentTag;
+  public StringBuilder document = new StringBuilder();
   @Override
   protected void start() {
     documentTag = parse(Parameter.class);

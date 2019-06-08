@@ -28,11 +28,11 @@ public class Redirect extends Interpreter {
       OP_OPEN_READABLE, OP_OPEN_WRITABLE
   );
 
-  public static char[] ARROWS = new char[]{'<', '>'};
+  public static final char[] ARROWS = new char[]{'<', '>'};
 
-  int stream;
-  String operation;
-  Parameter file;
+  public int stream;
+  public String operation;
+  public Parameter file;
   public Redirect(Scanner scanner) { super(scanner); }
   @Override
   protected void start() {

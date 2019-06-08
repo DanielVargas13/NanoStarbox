@@ -4,7 +4,7 @@ import box.star.text.basic.Scanner;
 
 public class CommandGroup extends Command {
 
-  CommandList commands;
+  public CommandList commands;
 
   public CommandGroup(Scanner scanner) {
     super(scanner);

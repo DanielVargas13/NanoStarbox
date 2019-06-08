@@ -6,8 +6,8 @@ import box.star.text.basic.driver.GenericProgramIdentifier;
 import java.util.regex.Pattern;
 
 public class EnvironmentOperation extends Interpreter {
-  String variable, operation;
-  Parameter value;
+  public String variable, operation;
+  public Parameter value;
   public EnvironmentOperation(Scanner scanner) {
     super(scanner);
   }
