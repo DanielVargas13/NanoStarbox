@@ -280,7 +280,7 @@ public interface Shell {
     }
   }
 
-  class CommandShellContext extends /* [$](COMMAND...) */ MainContext implements Context.FirstClassExecutive {
+  class CommandListContext extends /* [$](COMMAND...) */ MainContext implements Context.FirstClassExecutive {
     @Override
     void importContext(Context parent) {
       super.importContext(parent);
@@ -288,7 +288,7 @@ public interface Shell {
       // spec uses a parameter copy
       importParameters(parent);
     }
-    CommandShellContext(Context parent, String origin) { super(parent, origin); }
+    CommandListContext(Context parent, String origin) { super(parent, origin); }
     @Override
     public int exec() {
       return 0;

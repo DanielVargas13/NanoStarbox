@@ -42,7 +42,7 @@ public class Document extends Interpreter
         return true;
       }
       case '(': {
-        CommandContext child = parse(CommandContext.class);
+        CommandList child = parse(CommandList.class);
         if (child.successful()) records.add(child);
         return true;
       }

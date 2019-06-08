@@ -47,8 +47,8 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
-  public static CommandList parseCommandList(Scanner scanner){
-    CommandList parameters = new CommandList();
+  public static CommandSet parseCommandList(Scanner scanner){
+    CommandSet parameters = new CommandSet();
     if (scanner.current() != '{')
       throw new Scanner.SyntaxError(parameters, scanner, "expected command group symbol");
     if (scanner.haveNext()) do {
@@ -82,8 +82,8 @@ public class Interpreter extends box.star.text.basic.Parser {
     return parameters;
   }
 
-  public static CommandList parseSubShell(Scanner scanner){
-    CommandList parameters = new CommandList();
+  public static CommandSet parseSubShell(Scanner scanner){
+    CommandSet parameters = new CommandSet();
     if (scanner.current() != '(')
       throw new Scanner.SyntaxError(parameters, scanner, "expected command shell symbol");
     if (scanner.haveNext()) do {
@@ -188,7 +188,7 @@ public class Interpreter extends box.star.text.basic.Parser {
   }
 
   public static class ParameterList extends List<Parameter> {}
-  public static class CommandList extends List<Command> {}
+  public static class CommandSet extends List<Command> {}
   public static class RedirectList extends List<Redirect> {}
   public static class EnvironmentOperationList extends List<DataOperation> {}
 
