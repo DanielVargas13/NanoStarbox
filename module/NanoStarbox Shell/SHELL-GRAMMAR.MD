@@ -74,6 +74,10 @@ such scripts are dependency-trash (arcane-technology), and could be
 written better using the jvm technology, if a genuine script interpreter
 is not available for the user's target distribution.
 
+Additionally in regards to compatibility, an actual system command could
+used as the script interpreter portion of this shell if a developer so
+chose to create the integration port.
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
