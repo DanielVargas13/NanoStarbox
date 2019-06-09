@@ -131,7 +131,7 @@ Command Shell: () Context Properties:
 [X] has parent file descriptors (copy)
 [ ] has default file descriptors
 [X] has command exec file descriptors 
-[ ] has command exec environment
+[X] has command exec environment
 
 ```
 
