@@ -118,9 +118,15 @@ object of the current context upon execution, or by creating an object
 with a reference to some super context, which the current context
 derives from.
 
-The context interface is an interface which derives from main context,
-so to each child, there is no noticeable difference as to which type
-of context the command is being executed within.
+Each sub context is an object which derives from a single main context,
+so to each child context, there is no difference in context which
+affects the operational performance of execution, and there is no
+difference in environment manipulation or access techniques.
+
+It is noted that this performance model may not be compatible with the
+desired implementation of command shell, and that this is what the
+defacto implementation provides, having an affinity for running shell
+styled programs with hassle-free java integrations.
 <br><br>
 ```
 Command Shell: () Context Properties:
