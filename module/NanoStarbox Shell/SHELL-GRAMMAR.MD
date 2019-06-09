@@ -112,11 +112,11 @@ has full access to its parent context, but not all contexts require the
 functionality. Historically functions must have access to local and
 parent environment.
 
-Java based environment objects have no context 
-interface, but they could be integrated by the an implementation, that
-chooses to notify the object of the current context upon execution,
-or by creating an object with a reference to some super context, which
-the current context derives from.
+Java based environment objects have no context interface, but they 
+could be integrated by an implementation, that chooses to notify the 
+object of the current context upon execution, or by creating an object
+with a reference to some super context, which the current context
+derives from.
 <br><br>
 ```
 Command Shell: () Context Properties:
