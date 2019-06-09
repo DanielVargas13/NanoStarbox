@@ -117,7 +117,6 @@ interface, but they could be integrated by the an implementation, that
 chooses to notify the object of the current context upon execution,
 or by creating an object with a reference to some super context, which
 the current context derives from.
-
 <br><br>
 ```
 Command Shell: () Context Properties:
