@@ -95,7 +95,7 @@ the object is marked for export. The toString method of each object,
 is the defacto serialization method, for execution instances that will
 typically fall outside of the shell's own sphere of influence, such as
 calling a java class as a command rather than using a java class 
-function specifically using one of the shell's function interfaces.
+function derived from one of the shell's function interfaces.
 
 #### Shell Command Grammar
 
