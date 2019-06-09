@@ -85,6 +85,9 @@ command, that command will be integrated into the shell, because it
 makes it easier to run java package commands, and commands which are
 not listed in the path table, as a synonym.
 
+The commands `set` and `local` may need to be integrated, but their usage
+is not clear at this time.
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
