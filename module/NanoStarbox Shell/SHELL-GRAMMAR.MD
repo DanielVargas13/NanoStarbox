@@ -142,6 +142,12 @@ used to get the return value of a background command. With the advent
 of java objects, these facilities may not be needed, because custom
 objects, functions and commands can emulate the job control layer.
 
+A context can programmatically do, everything a script can do, such
+as run commands, evaluate statements and expressions, access environment
+and configuration, etc, which makes it convenient to write a compiler,
+optimized command form or script interpreter backend with seamless
+integration.
+
 It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
 defacto implementation provides, having an affinity for running shell
