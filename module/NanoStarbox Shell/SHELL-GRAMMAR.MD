@@ -133,7 +133,14 @@ be externally) always fills in the parameters for the exec call.
 Background command executions execute in a Command Shell Context (details below) as a
 java thread. Java doesn't play well with process handles out of the box
 so, strategy on implementation is less than forthcoming at this time,
-with looming questions for command solutions such as: `bg, fg, and kill`.
+with looming questions for shell job control such as: `bg, fg, and kill`.
+Normally, these integrations are not used in scripting, but in interactive
+sessions.
+
+Pipe execution status is a question, as well as which method will be
+used to get the return value of a background command. With the advent
+of java objects, these facilities may not be needed, because custom
+objects, functions and commands can emulate the job control layer.
 
 It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
