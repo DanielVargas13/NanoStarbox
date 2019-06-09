@@ -14,7 +14,7 @@ DIGITS: \[0-9]+
 ###### RULE-SYNTAX
 - `?' = maybe
 - `?:' = if-then
-- `...' = list
+- `...' = list (zero or more; implies: maybe)
 - `()' = group
 - ` ' = line-white-space (spaces, tabs, form-feeds)
 - `||' = logical-or
@@ -29,7 +29,7 @@ PARAMETER: literal-text || single-quoted-text || double-quoted-text || compound-
 
 REDIRECT: (stream-descriptor)?(stream-operation)(stream-descriptor-reference || ((line-white-space)?(here-document || file-path)))
 
-COMMAND: (\[DATA_OPERATION]...) \[PROGRAM]?: ((\[PARAMETER]...) (\[REDIRECT]...)? (PIPE?: [COMMAND])...))? TERMINATOR  
+COMMAND: (\[DATA_OPERATION]...) \[PROGRAM]?: ((\[PARAMETER]...) (\[REDIRECT]...) (PIPE?: [COMMAND])...))? TERMINATOR  
 <br>
 <i>This document is a supplemental reference that does not yet
 describe all technical semantics.</i>
