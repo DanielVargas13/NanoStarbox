@@ -97,6 +97,12 @@ typically fall outside of the shell's own sphere of influence, such as
 calling a java class as a command rather than using a java class 
 function derived from one of the shell's function interfaces.
 
+The shell will employ a special exit value object for all execution, call
+results which can double as an object or integer, provided that any
+object returned through an execution method which returns an object,
+must return an object hosting the box.star.contract.NumericValue
+interface, and that value must be convertible to an integer.
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
