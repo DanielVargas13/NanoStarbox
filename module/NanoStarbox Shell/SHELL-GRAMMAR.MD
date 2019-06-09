@@ -128,7 +128,7 @@ It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
 defacto implementation provides, having an affinity for running shell
 styled programs with hassle-free java integrations. If your script interpreter
-uses a different scheme, you will need this tables if you hope to write
+uses a different scheme, you will need these tables if you hope to write
 a compatible script translation.
 <br><br>
 ```
