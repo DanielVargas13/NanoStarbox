@@ -88,6 +88,11 @@ not listed in the path table, as a synonym.
 The commands `set` and `local` may need to be integrated, but their usage
 is not clear at this time.
 
+With java objects, in terms of shell, we take a different approach from the
+standard shell environments, having no contract liability with these
+terms, the object model is shared throughout all child contexts, if
+the object is marked for export.
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
