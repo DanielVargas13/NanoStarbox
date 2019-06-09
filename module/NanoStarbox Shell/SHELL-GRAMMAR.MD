@@ -107,7 +107,7 @@ from that interface must be convertible to an absolute integer.
 
 A shell sub context inherits from its parent, which could be a main context,
 or a sub context. The following text tables document what the capacity
-and differences are between the main (3) sub contexts. Each context also
+and differences are between these main (4) sub contexts. Each context also
 has full access to its parent context, but not all contexts require the
 functionality. Historically functions must have access to local and
 parent environment.
@@ -142,7 +142,6 @@ Command Shell: () Context Properties:
 [ ] has default file descriptors
 [X] has command exec file descriptors 
 [X] has command exec environment
-
 ```
 
 ```
@@ -159,7 +158,6 @@ Command Group: {} Context Properties:
 [ ] has default file descriptors
 [X] has command exec file descriptors 
 [X] has command exec environment
-
 ```
 
 ```
@@ -176,7 +174,22 @@ Function Context Properties:
 [X] has default file descriptors
 [X] has command exec file descriptors 
 [X] has command exec environment
+```
 
+```
+Source Command Context Properties:
+
+[ ] has parent environment OR
+[X] has parent environment (copy)
+[X] has children
+[ ] has parent parameters OR
+[X] has parent parameters (copy) OR
+[X] has function parameters
+[ ] has parent file descriptors OR
+[X] has parent file descriptors (copy)
+[ ] has default file descriptors
+[X] has command exec file descriptors 
+[X] has command exec environment
 ```
 
 #### Shell Command Grammar
