@@ -1,5 +1,14 @@
 #### User Guide: box.star.shell
 
+##### Blend: Main Ingriedients
+A few java-specific-end-user-benefits of the toolkit are:
+<br><p><i>reasons to integrate</i></p>
+- java class name (in classpath) as commands
+- java classes as functions
+- java object as variable
+- java/subclass user-defined macro/script interpretation
+- java tracing & debugging vs. shell tracing & debugging
+
 ##### Development Notes
 
 The NanoStarbox Shell toolkit aims to provide a common shell parser,
@@ -52,6 +61,14 @@ Additionally in terms of "login shell", there is nothing to "login" to,
 so a "login shell" is virtual by virtue of this natural condition, 
 imposing no known requirement/limitation on 
 basic-text-command-shell-toolkit (generic-type-summary for box.star.shell.*).
+
+Tracing and debugging do concern command execution, but the toolkit
+only supports these features as inherent java runtime properties. That
+is a not an actual script runtime feature, so it should not affect
+production scripts that are not "ugly hacks"/workarounds for features
+this toolkit deprecates with sheer operational supremacy. In other words,
+such scripts are trash, and could be written better using the jvm 
+technology.
 
 #### Shell Command Grammar
 
