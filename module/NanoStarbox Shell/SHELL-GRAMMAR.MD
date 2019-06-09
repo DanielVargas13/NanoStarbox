@@ -117,6 +117,10 @@ could be integrated by an implementation, that chooses to notify the
 object of the current context upon execution, or by creating an object
 with a reference to some super context, which the current context
 derives from.
+
+The context interface is an interface which derives from main context,
+so to each child, there is no noticeable difference as to which type
+of context the command is being executed within.
 <br><br>
 ```
 Command Shell: () Context Properties:
