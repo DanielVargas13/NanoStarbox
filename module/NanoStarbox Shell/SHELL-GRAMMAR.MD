@@ -130,6 +130,11 @@ context of the caller, for filling in the data. This is "normal" shell
 operation, meaning that the calling context (whatever that notion may 
 be externally) always fills in the parameters for the exec call.
 
+Background command executions execute in a Command Shell Context (details below) as a
+java thread. Java doesn't play well with process handles out of the box
+so, strategy on implementation is less than forthcoming at this time,
+with looming questions for command solutions such as: `bg, fg, and kill`.
+
 It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
 defacto implementation provides, having an affinity for running shell
