@@ -75,8 +75,10 @@ written better using the jvm technology, if a genuine script interpreter
 is not available for the user's target distribution.
 
 Additionally in regards to compatibility, an actual system command could
-used as the script interpreter portion of this shell if a developer so
-chose to create the integration port.
+be used as the script interpreter portion of this shell-toolkit if a
+developer so chose to create the integration port, which would upgrade
+that interpreter's capabilities to be compatible with this new shell
+technology with full java integration.
 
 #### Shell Command Grammar
 
