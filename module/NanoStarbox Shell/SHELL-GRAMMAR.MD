@@ -112,7 +112,7 @@ and differences are between the main (3) sub contexts.
 ```
 Command Shell: () Context Properties:
 
-[ ] has parent OR
+[ ] has parent environment OR
 [X] has parent environment (copy)
 [X] has children
 [ ] has parent parameters OR
@@ -129,7 +129,7 @@ Command Shell: () Context Properties:
 ```
 Command Group: {} Context Properties:
 
-[ ] has parent OR
+[ ] has parent environment OR
 [X] has parent environment (copy)
 [X] has children
 [X] has parent parameters OR
@@ -146,7 +146,7 @@ Command Group: {} Context Properties:
 ```
 Function Context Properties:
 
-[ ] has parent OR
+[ ] has parent environment OR
 [X] has parent environment (copy)
 [X] has children
 [ ] has parent parameters OR
