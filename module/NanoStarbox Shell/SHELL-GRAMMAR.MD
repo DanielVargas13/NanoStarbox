@@ -91,7 +91,9 @@ is not clear at this time.
 With java objects, in terms of shell, we take a different approach from the
 standard shell environments, having no contract liability with these
 terms, the object model is shared throughout all child contexts, if
-the object is marked for export.
+the object is marked for export. The toString method of each object,
+is the defacto serialization method, for execution instances that will
+typically fall outside of the jvm.
 
 #### Shell Command Grammar
 
