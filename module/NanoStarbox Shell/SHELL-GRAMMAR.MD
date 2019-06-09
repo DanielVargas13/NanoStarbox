@@ -26,8 +26,10 @@ This project will be fully integrated into the NanoStarbox Core NSR9
 Release when the example implementation is capable of executing system
 commands and custom functions within an environment which can host object
 variables, string variables and stream-sets in a context based manner 
-which is consistent with basic shell protocols: `command, function, (),
+which is consistent with basic shell protocols: `test, eval, source, command, function, (),
 {}, background = &, immediate = ;, logical-or = ||, and logical-and = &&`.
+The finer aspects of logic and environment control are implementation
+dependent.
 
 It is beyond this implementation to aim to be compatible with any particular external
 shell, meaning all extensions to this toolkit will aim to be compatible
