@@ -124,6 +124,12 @@ affects the operational performance of execution, and there is no
 difference in environment manipulation or access techniques among the 
 various contexts.
 
+Whenever an evaluation or expansion is required for an execution, such
+as in the case of parameters, the interpreter will be provided with the
+context of the caller, for filling in the data. This is "normal" shell
+operation, meaning that the calling context (whatever that notion may 
+be externally) always fills in the parameters for the exec call.
+
 It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
 defacto implementation provides, having an affinity for running shell
