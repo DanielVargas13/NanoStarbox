@@ -29,7 +29,7 @@ public class Command extends ScriptParser {
     finish();
   }
   protected void parseEnding(){
-    redirects = parseRedirections(scanner);
+    redirects = parseRedirects(scanner);
     scanner.nextLineSpace();
     char c = scanner.next();
     switch (c){

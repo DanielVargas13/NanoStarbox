@@ -124,7 +124,7 @@ public class ScriptParser extends Parser {
     return parameters;
   }
 
-  public static RedirectSet parseRedirections(Scanner scanner){
+  public static RedirectSet parseRedirects(Scanner scanner){
     RedirectSet redirects = new RedirectSet();
     if (scanner.haveNext()) do {
       Redirect redirect = parse(Redirect.class, scanner);
