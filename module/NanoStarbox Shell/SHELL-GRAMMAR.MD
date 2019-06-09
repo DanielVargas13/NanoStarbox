@@ -101,7 +101,7 @@ The shell will employ a special exit value object for all execution
 results which can perform as an object, boolean or integer, provided 
 that any object returned through an execution method must host 
 the box.star.contract.NumericValue interface, and the value returned
-from that interface must be convertible to an integer.
+from that interface must be convertible to an absolute integer.
 
 #### Shell Command Grammar
 
