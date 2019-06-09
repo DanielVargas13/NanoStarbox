@@ -42,6 +42,17 @@ to execute the compiled result comes about, an execution method will be
 called, with the shell context as a parameter, and that operation is
 expected to return an integer result of success = 0.
 
+There are no plans to design an "interactive shell", or "login shell".
+This may create use case and historical compatibility issues. For example,
+the bash shell, can read script component fragments separated by lines, 
+while issuing prompts on the standard error handle during an interactive
+session. That may be a slight-setback for some uses however, the toolkit
+provides everything needed to handle complete script components. 
+Additionally in terms of "login shell", there is nothing to "login" to,
+so a "login shell" is virtual by virtue of this natural condition, 
+imposing no known requirement/limitation on 
+basic-text-command-shell-toolkit (generic-type-summary for box.star.shell.*).
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
