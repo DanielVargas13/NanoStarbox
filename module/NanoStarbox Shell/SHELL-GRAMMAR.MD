@@ -8,6 +8,7 @@ A few java-specific-end-user-benefits of the toolkit are:
 - java object as variable
 - java/subclass user-defined macro/script interpretation
 - java tracing & debugging vs. shell tracing & debugging
+- java/enabled Platform Independent Script Solutions with a Universal Command Platform
 
 ##### Development Notes
 
