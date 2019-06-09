@@ -107,7 +107,17 @@ from that interface must be convertible to an absolute integer.
 
 A shell sub context inherits from its parent, which could be a main context,
 or a sub context. The following text tables document what the capacity
-and differences are between the main (3) sub contexts.
+and differences are between the main (3) sub contexts. Each context also
+has full access to its parent context, but not all contexts require the
+functionality. Historically functions must have access to local and
+parent environment.
+
+Java based environment objects have no context 
+interface, but they could be integrated by the an implementation, that
+chooses to notify the object of the current context upon execution,
+or by creating an object with a reference to some super context, which
+the current context derives from.
+
 <br><br>
 ```
 Command Shell: () Context Properties:
@@ -129,8 +139,8 @@ Command Shell: () Context Properties:
 ```
 Command Group: {} Context Properties:
 
-[ ] has parent environment OR
-[X] has parent environment (copy)
+[X] has parent environment OR
+[ ] has parent environment (copy)
 [X] has children
 [X] has parent parameters OR
 [ ] has parent parameters (copy) OR
