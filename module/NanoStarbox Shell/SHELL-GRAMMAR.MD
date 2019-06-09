@@ -103,6 +103,63 @@ that any object returned through an execution method must host
 the box.star.contract.NumericValue interface, and the value returned
 from that interface must be convertible to an absolute integer.
 
+###### Shell Sub Contexts
+
+A shell sub context inherits from its parent, which could be a main context,
+or a sub context. The following text tables document what the capacity
+and differences are between the main (3) sub contexts.
+<br><br>
+```
+Command Shell: () Context Properties:
+
+[ ] has parent OR
+[X] has parent environment (copy)
+[X] has children
+[ ] has parent parameters OR
+[X] has parent parameters (copy) OR
+[ ] has function parameters
+[ ] has parent file descriptors OR
+[X] has parent file descriptors (copy)
+[ ] has default file descriptors
+[X] has command exec file descriptors 
+[ ] has command exec environment
+
+```
+
+```
+Command Group: {} Context Properties:
+
+[ ] has parent OR
+[X] has parent environment (copy)
+[X] has children
+[X] has parent parameters OR
+[ ] has parent parameters (copy) OR
+[ ] has function parameters
+[ ] has parent file descriptors OR
+[X] has parent file descriptors (copy)
+[ ] has default file descriptors
+[X] has command exec file descriptors 
+[X] has command exec environment
+
+```
+
+```
+Function Context Properties:
+
+[ ] has parent OR
+[X] has parent environment (copy)
+[X] has children
+[ ] has parent parameters OR
+[ ] has parent parameters (copy) OR
+[X] has function parameters
+[ ] has parent file descriptors OR
+[X] has parent file descriptors (copy)
+[X] has default file descriptors
+[X] has command exec file descriptors 
+[X] has command exec environment
+
+```
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
