@@ -80,6 +80,11 @@ developer so chose to create the integration port, which would upgrade
 that interpreter's capabilities to be compatible with this new shell
 technology with full java integration.
 
+Despite the various complaints among various developers about the `alias`
+command, that command will be integrated into the shell, because it 
+makes it easier to run java package commands, and commands which are
+not listed in the path table, as a synonym.
+
 #### Shell Command Grammar
 
 ###### TERMINALS, SYMBOLS, AND WORDS
