@@ -3,7 +3,7 @@
 ##### Blend: Main Ingriedients
 A few java-specific-end-user-benefits of the toolkit are:
 <br><p><i>reasons to integrate</i></p>
-- java class name (in classpath) as commands
+- java class name (in classpath) as commands (instant-run-from-memory in same jvm)
 - java classes as functions
 - java object as variable
 - java/subclass user-defined macro/script interpretation
