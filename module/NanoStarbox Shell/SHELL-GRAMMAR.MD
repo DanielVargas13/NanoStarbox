@@ -121,12 +121,15 @@ derives from.
 Each sub context is an object which derives from a single main context,
 so to each child context, there is no difference in context which
 affects the operational performance of execution, and there is no
-difference in environment manipulation or access techniques.
+difference in environment manipulation or access techniques among the 
+various contexts.
 
 It is noted that this performance model may not be compatible with the
 desired implementation of command shell, and that this is what the
 defacto implementation provides, having an affinity for running shell
-styled programs with hassle-free java integrations.
+styled programs with hassle-free java integrations. If your script interpreter
+uses a different scheme, you will need this tables if you hope to write
+a compatible script translation.
 <br><br>
 ```
 Command Shell: () Context Properties:
