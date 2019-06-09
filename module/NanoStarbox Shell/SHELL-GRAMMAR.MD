@@ -1,6 +1,6 @@
 #### User Guide: box.star.shell
 
-##### Develpment Notes
+##### Development Notes
 
 The NanoStarbox Shell toolkit aims to provide a common shell parser,
 which can be used to create text-based-shells with different language
@@ -14,10 +14,10 @@ how to interpret commands, this toolkit can provide basic command support
 to any program, or custom script interpreter.
 
 This project will be fully integrated into the NanoStarbox Core NSR9
-Release when the example implementation is capable of executing system,
+Release when the example implementation is capable of executing system
 commands and custom functions within an environment which can host object
-variables, string variables and stream-sets in a context based manner,
-that is consistent with basic shell protocols: `command, function, (),
+variables, string variables and stream-sets in a context based manner 
+which is consistent with basic shell protocols: `command, function, (),
 {}, background = &, immediate = ;, logical-or = ||, and logical-and = &&`.
 
 It is beyond this implementation to aim to be compatible with any particular external
