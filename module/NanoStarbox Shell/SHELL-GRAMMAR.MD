@@ -70,8 +70,9 @@ only supports these features as inherent java runtime properties. That
 is a not an actual script runtime feature, so it should not affect
 production scripts that are not "ugly hacks"/workarounds for features
 this toolkit deprecates with sheer operational supremacy. In other words,
-such scripts are trash, and could be written better using the jvm 
-technology.
+such scripts are dependency-trash (arcane-technology), and could be 
+written better using the jvm technology, if a genuine script interpreter
+is not available for the user's target distribution.
 
 #### Shell Command Grammar
 
