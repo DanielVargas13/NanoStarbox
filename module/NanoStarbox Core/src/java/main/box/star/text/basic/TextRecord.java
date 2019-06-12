@@ -53,6 +53,14 @@ public class TextRecord<ENUM_CLASS extends Enum> {
     return creationTime != modificationTime;
   }
 
+  public long getCreationTime() {
+    return creationTime;
+  }
+
+  public long getModificationTime() {
+    return modificationTime;
+  }
+
   public boolean isReadOnly() {
     return readOnly;
   }
@@ -68,6 +76,10 @@ public class TextRecord<ENUM_CLASS extends Enum> {
 
   public <T> T getObject(Class<T>cls){
     return cls.cast(object);
+  }
+
+  public Object getObject() {
+    return object;
   }
 
   @Override
