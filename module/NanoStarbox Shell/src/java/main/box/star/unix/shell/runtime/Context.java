@@ -2,7 +2,7 @@ package box.star.unix.shell.runtime;
 
 import java.util.Stack;
 
-public class Context extends Environment<Context> {
+public abstract class Context extends Environment<Context> {
 
   protected Context(){}
 
@@ -34,16 +34,16 @@ public class Context extends Environment<Context> {
     exitValue = new ContextResult(status, value);
   }
 
-  public Main getMain() {
-    if (this instanceof Main) return (Main) this;
+  public MainContext getMain() {
+    if (this instanceof MainContext) return (MainContext) this;
     Context parent = getParent();
-    if (parent instanceof Main) return (Main) parent;
+    if (parent instanceof MainContext) return (MainContext) parent;
     else if (parent != null) return parent.getMain();
     throw new RuntimeException("unable to locate main context");
   }
 
   public <T extends Context> T createSubContext(Class<T> cls) {
-    if (cls.equals(Main.class)) {
+    if (cls.equals(MainContext.class)) {
       throw new IllegalStateException("cannot create main sub context");
     }
     try {
@@ -84,12 +84,7 @@ public class Context extends Environment<Context> {
     return parameters.peek();
   }
 
-  public static class Main extends Context {}
-  public static class Source extends Context {}
+  public static class CommandGroupContext extends Context {}
 
-  public static class Command {
-    public static class Group extends Context {}
-    public static class Shell extends Context {}
-  }
-
+  public static class CommandShellContext extends Context {}
 }

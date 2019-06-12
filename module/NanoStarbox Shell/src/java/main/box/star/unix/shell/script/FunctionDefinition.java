@@ -1,8 +1,13 @@
 package box.star.unix.shell.script;
 
-import java.util.ArrayList;
+import box.star.contract.NotNull;
+import box.star.text.basic.Scanner;
 
-public class FunctionDefinition implements ScriptElement {
-  public String name;
-  public Command.Shell body;
+public class FunctionDefinition extends SourceElement {
+  public String commandName;
+  public CommandGroup body;
+  public RedirectionList redirects;
+  public FunctionDefinition(@NotNull Scanner scanner) {
+    super(scanner);
+  }
 }

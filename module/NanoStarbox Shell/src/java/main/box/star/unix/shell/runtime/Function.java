@@ -20,7 +20,7 @@ public abstract class Function extends FunctionModel<Function.ContextModel> {
 
   @Override
   public String toString(){
-    return functionDefinition.name;
+    return functionDefinition.commandName;
   }
 
 }

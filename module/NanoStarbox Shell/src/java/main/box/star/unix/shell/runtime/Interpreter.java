@@ -1,11 +1,9 @@
 package box.star.unix.shell.runtime;
 
 import box.star.text.basic.Bookmark;
-import box.star.unix.shell.script.ParameterList;
-import box.star.unix.shell.script.RedirectionList;
-import box.star.unix.shell.script.ScriptFragment;
-import box.star.unix.shell.script.VariableOperationList;
+import box.star.text.basic.TextRecord;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Interpreter {
@@ -50,11 +48,10 @@ public class Interpreter {
    * <br>
    * (https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_06_02)
    * @param context
-   * @param origin
-   * @param text
+   * @param source
    * @return a java object or string object representing the environment variable script
    */
-  static public Object expandVariable(Context context, Bookmark origin, String text) {
+  static public Object expandVariable(Context context, TextRecord source) {
     return null;
   }
 
@@ -65,11 +62,10 @@ public class Interpreter {
    *   command script is the text found between '$(' and ')'
    * </p>
    * @param context
-   * @param origin
-   * @param text
+   * @param source
    * @return
    */
-  static public String expandCommand(Context context, Bookmark origin, String text) {
+  static public String expandCommand(Context context, TextRecord source) {
     return null;
   }
 
@@ -95,7 +91,7 @@ public class Interpreter {
    * @param text
    * @return
    */
-  static public Stack<String> splitField(Context context, Bookmark origin, String text) {
+  static public ArrayList<String> splitField(Context context, Bookmark origin, String text) {
     return null;
   }
 
