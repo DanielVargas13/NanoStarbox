@@ -1,43 +1,43 @@
-package box.star.unix.shell.io;
+package box.star.unix.shell.runtime.io;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.PipedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PipedOutputStream;
 
-public class ReadableStream implements Stream {
-  private InputStream stream;
+public class WritableStream implements Stream {
+  private OutputStream stream;
   private String uri;
-  public ReadableStream(InputStream stream){
+  public WritableStream(OutputStream stream){
     this.stream = stream;
   }
-  public ReadableStream(String uri, InputStream stream){
+  public WritableStream(String uri, OutputStream stream){
     this(stream);
     this.uri = uri;
   }
   @Override
   final public boolean isWritable() {
-    return false;
-  }
-  @Override
-  final public boolean isReadable() {
     return true;
   }
   @Override
+  final public boolean isReadable() {
+    return false;
+  }
+  @Override
   final public boolean isTerminal() {
-    return System.in.equals(stream);
+    return System.out.equals(stream) || System.err.equals(stream);
   }
   @Override
   public boolean isPipe() {
-    return stream instanceof PipedInputStream;
+    return stream instanceof PipedOutputStream;
   }
   @Override
   public boolean isFile() {
-    return stream instanceof FileInputStream;
+    return stream instanceof FileOutputStream;
   }
   @Override
   public boolean isBuffered() {
-    return stream instanceof BufferedInputStream;
+    return stream instanceof BufferedOutputStream;
   }
   @Override
   final public boolean isRandom() {

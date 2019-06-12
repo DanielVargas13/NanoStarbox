@@ -1,4 +1,4 @@
-package box.star.unix.shell.io;
+package box.star.unix.shell.runtime.io;
 
 public interface Stream {
   boolean isWritable();
