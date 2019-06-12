@@ -6,14 +6,24 @@ import java.util.Locale;
 
 /**
  * <p>A class that can be used as a string token, with source reference point</p>
+ * <br>
+ * <p>
+ *   The class supports constant text data, which prevents text modifications.
+ *   To access the text, use the toString method, or another string method. If
+ *   the text, is changed, then the type should also be changed. Such as if an
+ *   operation changes a quoted text item to a literal text item. Ideally, the
+ *   final composition should be made read-only when all transformations are
+ *   complete for this generic text data container.
+ * </p>
  * @param <ENUM_CLASS> the enumeration (token-identity-set) to use for the type field
  */
-public class TextRecord<ENUM_CLASS> {
+public class TextRecord<ENUM_CLASS extends Enum> {
 
   final public Bookmark origin;
   String text;
   ENUM_CLASS type;
   long creationTime, modificationTime;
+  boolean readOnly;
 
   public TextRecord(Bookmark origin){
     this.origin = origin;
@@ -21,6 +31,7 @@ public class TextRecord<ENUM_CLASS> {
   }
 
   public void setText(ENUM_CLASS type, String text) {
+    if (this.readOnly) throw new IllegalStateException("cannot set text of "+this.getClass().getName()+" the field is marked read-only for this interface");
     if (this.text != null) {
       modificationTime = System.currentTimeMillis();
     }
@@ -28,8 +39,16 @@ public class TextRecord<ENUM_CLASS> {
     this.text = text;
   }
 
+  public void setReadOnly(){
+    this.readOnly = true;
+  }
+
   public boolean isModified(){
     return creationTime != modificationTime;
+  }
+
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
   public ENUM_CLASS getType() {
