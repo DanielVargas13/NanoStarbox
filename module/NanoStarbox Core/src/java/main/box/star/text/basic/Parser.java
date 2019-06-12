@@ -1,9 +1,7 @@
 package box.star.text.basic;
 
-import box.star.Parameter;
 import box.star.contract.NotNull;
 
-import javax.naming.OperationNotSupportedException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -132,8 +130,8 @@ public class Parser extends Scanner.CancellableOperation {
     throw new RuntimeException("this operation is not yet implemented by "+this.getClass().getName());
   };
   protected void start(Object[] parameters){
-    if (this instanceof ParameterPort) throw new RuntimeException("this operation is not yet implemented by "+this.getClass().getName());
-    throw new RuntimeException(this.getClass().getName()+" does not host the "+ParameterPort.class.getName()+" control port");
+    if (this instanceof WithParameterPort) throw new RuntimeException("this operation is not yet implemented by "+this.getClass().getName());
+    throw new RuntimeException(this.getClass().getName()+" does not host the "+ WithParameterPort.class.getName()+" control port");
   };
 
   /**
@@ -153,10 +151,10 @@ public class Parser extends Scanner.CancellableOperation {
    *   not be called.</p>
    * <br>
    */
-  public interface ParameterPort {}
+  public interface WithParameterPort {}
 
   protected void call(Object[] parameters){
-    if (this instanceof ParameterPort) start(parameters);
+    if (this instanceof WithParameterPort) start(parameters);
     else {
       this.parameters = parameters;
       start();

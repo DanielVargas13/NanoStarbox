@@ -1041,7 +1041,9 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   /**
    * @return the current scanner character or {@link Char#NULL_CHARACTER}
    */
-  public char current(){ return state.current(); }
+  public char current(){
+    return state.current();
+  }
 
   /**
    * @return the previous scanner character or {@link Char#NULL_CHARACTER}
@@ -1264,6 +1266,8 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
      * @return
      */
     public char current(){
+      if (bufferPosition < NULL_CHARACTER)
+        throw new IllegalStateException("read has not been called on the scanner");
       return previousCharacter();
     }
 

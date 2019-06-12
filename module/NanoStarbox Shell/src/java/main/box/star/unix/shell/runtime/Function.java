@@ -2,21 +2,19 @@ package box.star.unix.shell.runtime;
 
 import box.star.unix.shell.script.FunctionDefinition;
 
-public abstract class Function extends FunctionModel<Function.ContextModel> {
+public abstract class Function extends FunctionModel<FunctionContext> {
 
   final FunctionDefinition functionDefinition;
 
   public Function(Context parent) {
-    super(parent, ContextModel.class);
+    super(parent, FunctionContext.class);
     functionDefinition = null;
   }
 
   public Function(Context parent, FunctionDefinition functionDefinition){
-    super(parent, ContextModel.class);
+    super(parent, FunctionContext.class);
     this.functionDefinition = functionDefinition;
   }
-
-  public static class ContextModel extends Context {}
 
   @Override
   public String toString(){

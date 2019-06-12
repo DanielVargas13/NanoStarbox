@@ -12,8 +12,8 @@ public class Command extends ScriptParser {
       Char.toMap('\0', '\n', '\r', '#', ';', '&', '(', ')', '{', '}')
   ).toMap();
 
-  public DataOperationSet environmentOperations;
   public ParameterSet parameters;
+  public DataOperationSet environmentOperations;
   public RedirectSet redirects;
   public Command pipe;
   public String terminator;

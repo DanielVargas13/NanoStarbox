@@ -1,6 +1,7 @@
 package box.star.unix.shell.builtin;
 
 import box.star.unix.shell.runtime.Builtin;
+import box.star.unix.shell.runtime.BuiltinContext;
 import box.star.unix.shell.runtime.Context;
 import box.star.unix.shell.runtime.ContextResult;
 
@@ -20,7 +21,7 @@ public class True extends Builtin {
   }
 
   @Override
-  public ContextResult exec(ContextModel context, Stack<Object> parameters) {
+  public ContextResult exec(BuiltinContext context, Stack<Object> parameters) {
     return TRUE;
   }
 

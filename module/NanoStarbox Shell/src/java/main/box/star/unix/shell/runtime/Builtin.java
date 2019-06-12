@@ -1,8 +1,7 @@
 package box.star.unix.shell.runtime;
 
-public abstract class Builtin extends FunctionModel<Builtin.ContextModel> {
+public abstract class Builtin extends FunctionModel<BuiltinContext> {
   public Builtin(Context parent) {
-    super(parent, ContextModel.class);
+    super(parent, BuiltinContext.class);
   }
-  public static class ContextModel extends Function.ContextModel {}
 }
