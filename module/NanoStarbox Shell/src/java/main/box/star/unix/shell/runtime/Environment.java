@@ -1,5 +1,7 @@
 package box.star.unix.shell.runtime;
 
+import box.star.unix.shell.runtime.io.StreamMap;
+
 public class Environment<ParentEnvironment extends Environment> {
 
   ParentEnvironment parent;

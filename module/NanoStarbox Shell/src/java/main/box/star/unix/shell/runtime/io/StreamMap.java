@@ -1,8 +1,4 @@
-package box.star.unix.shell.runtime;
-
-import box.star.unix.shell.runtime.io.ReadableStream;
-import box.star.unix.shell.runtime.io.Stream;
-import box.star.unix.shell.runtime.io.WritableStream;
+package box.star.unix.shell.runtime.io;
 
 import java.util.Hashtable;
 
