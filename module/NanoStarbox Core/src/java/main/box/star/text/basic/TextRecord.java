@@ -15,6 +15,11 @@ import java.util.Locale;
  *   final composition should be made read-only when all transformations are
  *   complete for this generic text data container.
  * </p>
+ * <br>
+ * <p>
+ *   Additionally the class supports get/set object, which allows any object
+ *   to be associated with the source text.
+ * </p>
  * @param <ENUM_CLASS> the enumeration (token-identity-set) to use for the type field
  */
 public class TextRecord<ENUM_CLASS extends Enum> {
@@ -24,6 +29,7 @@ public class TextRecord<ENUM_CLASS extends Enum> {
   ENUM_CLASS type;
   long creationTime, modificationTime;
   boolean readOnly;
+  Object object;
 
   public TextRecord(Bookmark origin){
     this.origin = origin;
@@ -53,6 +59,15 @@ public class TextRecord<ENUM_CLASS extends Enum> {
 
   public ENUM_CLASS getType() {
     return type;
+  }
+
+  public void setObject(Object object) {
+    if (this.readOnly) throw new IllegalStateException("cannot set object of "+this.getClass().getName()+" the field is marked read-only for this interface");
+    this.object = object;
+  }
+
+  public <T> T getObject(Class<T>cls){
+    return cls.cast(object);
   }
 
   @Override
