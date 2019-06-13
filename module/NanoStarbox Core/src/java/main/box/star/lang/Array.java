@@ -1,8 +1,10 @@
 package box.star.lang;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
 
-public abstract class Array<T> implements Serializable, RuntimeObjectMapping.ObjectWithLabel  {
+public abstract class Array<T> implements Serializable, RuntimeObjectMapping.ObjectWithLabel, Iterable<T> {
   protected String label;
   protected T[] data;
   protected Array(String label, T[] data){
@@ -27,4 +29,10 @@ public abstract class Array<T> implements Serializable, RuntimeObjectMapping.Obj
     }
     return false;
   }
+
+  @Override
+  public Iterator<T> iterator() {
+    return (Iterator<T>) Arrays.asList(data);
+  }
+
 }
