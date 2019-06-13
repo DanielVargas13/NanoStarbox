@@ -608,6 +608,32 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
   }
 
   /**
+   * <p>Scan and assemble characters while scan is not in map</p>
+   * <br>
+   * <p>Automatically eats the delimiter. The delimiter can be read through
+   * {@link #previous()}.</p>
+   * <br>
+   * @param delimiterMap the collection of delimiters to break scanning with
+   * @return the delimited text; could be truncated
+   */
+  @NotNull
+  public String nextField(Char.Map delimiterMap) {
+    char c;
+    StringBuilder sb = new StringBuilder();
+    if (! endOfSource()) do {
+      c = this.next();
+      if (delimiterMap.contains(c)) break;
+      if (endOfSource()){
+        throw new SyntaxError(this,
+            "expected "+getRuntimeLabel(delimiterMap)
+                +" and found end of source");
+      }
+      else sb.append(c);
+    } while (! endOfSource());
+    return sb.toString();
+  }
+
+  /**
    * <p>Scan and assemble characters while scan is not in map, and length < max</p>
    *
    * @param max
@@ -980,15 +1006,17 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * <p>Gets the next word and tests it against match</p>
    * @param caseSensitive if true: the test is case sensitive
    * @param match the string to match
-   * @return if equals: return true; else: restore scanner state and return false
-   * @throws SyntaxError if the word is not found
+   * @return true if the next word matches the input
    */
-  public String nextWord(boolean caseSensitive, String match) throws SyntaxError {
+  public boolean nextWord(boolean caseSensitive, String match) {
     long start = getIndex();
-    String word = nextWord();
-    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) return word;
+    String word = nextWord(match.length());
     walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(match)+" and found `"+nextWordPreview()+"'");
+    if ((caseSensitive?word.equals(match):word.equalsIgnoreCase(match))) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -1000,11 +1028,10 @@ public class Scanner implements Closeable, Iterable<Character>, RuntimeObjectMap
    * @throws SyntaxError if one of the words is not found
    */
   public @NotNull String nextWord(boolean caseSensitive, WordList wordList) throws SyntaxError {
-    long start = getIndex();
-    String word = nextWord();
-    if ((caseSensitive?wordList.contains(word):wordList.containsIgnoreCase(word))) return word;
-    walkBack(start);
-    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList)+" and found `"+nextWordPreview(wordList.getMaxLength())+"'");
+    for (String word: wordList) {
+      if (nextWord(caseSensitive, word)) return nextWord(word.length());
+    }
+    throw new SyntaxError(this, "expected "+getRuntimeLabel(wordList)+" and found `"+nextWordPreview()+"'");
   }
 
   public String nextDigit(int min, int max) {

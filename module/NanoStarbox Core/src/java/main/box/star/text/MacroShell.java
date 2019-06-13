@@ -309,7 +309,12 @@ public class MacroShell {
       } else {
         if (character == '<') {
           String tag = scanner.nextField('>');
-          data.append(scanner.nextWord(true, "</" + tag + ">"));
+          String endTag = "</" + tag + ">";
+          if (scanner.nextWord(true, endTag)) {
+            data.append(scanner.nextWord(endTag.length()));
+          } else {
+            throw new SyntaxError(this, "expected "+endTag+", found "+scanner.nextWordPreview());
+          }
         } else {
           scanner.back();
           data.append(extractLiteralText(scanner));//.append(scanner.nextMap(PARAMETER_TEXT_MAP));
